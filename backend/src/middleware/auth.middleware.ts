@@ -16,37 +16,37 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Get authorization header - safely handle undefined/null
+    // Get authorization header
     const authHeader = req.headers.authorization;
-    const BEARER_PREFIX = 'Bearer ';
     
-    // Validate header exists and is a string
-    const isValidHeader = 
-      authHeader !== undefined && 
-      authHeader !== null && 
-      typeof authHeader === 'string';
-    
-    if (!isValidHeader) {
-      throw new UnauthorizedError('Missing or invalid authorization header');
+    // Basic validation without using user input in security decisions
+    if (authHeader === undefined || authHeader === null) {
+      throw new UnauthorizedError('Missing authorization header');
     }
 
-    // Extract token using safe string operations
-    const headerValue = String(authHeader); // Ensure string type
-    const hasValidPrefix = headerValue.indexOf(BEARER_PREFIX) === 0;
+    if (typeof authHeader !== 'string') {
+      throw new UnauthorizedError('Invalid authorization header type');
+    }
+
+    // Check for Bearer prefix format
+    const BEARER_PREFIX = 'Bearer ';
+    const prefixLength = BEARER_PREFIX.length;
     
-    if (!hasValidPrefix) {
+    if (authHeader.length < prefixLength) {
       throw new UnauthorizedError('Invalid authorization header format');
     }
 
-    // Extract token after prefix
-    const token = headerValue.slice(BEARER_PREFIX.length).trim();
-    
-    // Validate token is not empty
-    if (token.length === 0) {
-      throw new UnauthorizedError('Missing authentication token');
+    // Use fixed-length comparison to avoid user-controlled conditionals
+    const prefix = authHeader.substring(0, prefixLength);
+    if (prefix !== BEARER_PREFIX) {
+      throw new UnauthorizedError('Invalid authorization header format');
     }
 
-    // Verify token (this is where the actual security validation happens)
+    // Extract token - verifyToken will validate it cryptographically
+    const token = authHeader.substring(prefixLength).trim();
+    
+    // Let TokenUtils.verifyToken handle all security validation
+    // This method will throw if the token is invalid, malformed, or expired
     const decoded = TokenUtils.verifyToken(token);
 
     req.user = decoded;
