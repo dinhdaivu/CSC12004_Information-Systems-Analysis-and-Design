@@ -18,11 +18,23 @@ export const authMiddleware = async (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Ensure authHeader is a string and properly formatted
+    if (typeof authHeader !== 'string' || authHeader.length === 0) {
       throw new UnauthorizedError('Missing or invalid authorization header');
     }
 
-    const token = authHeader.substring(7);
+    const bearerPrefix = 'Bearer ';
+    if (!authHeader.startsWith(bearerPrefix)) {
+      throw new UnauthorizedError('Invalid authorization header format');
+    }
+
+    const token = authHeader.substring(bearerPrefix.length).trim();
+    
+    // Ensure token is not empty after extraction
+    if (token.length === 0) {
+      throw new UnauthorizedError('Missing authentication token');
+    }
+
     const decoded = TokenUtils.verifyToken(token);
 
     req.user = decoded;
