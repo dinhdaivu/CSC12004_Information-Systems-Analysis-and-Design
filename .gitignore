@@ -4,7 +4,8 @@ node_modules/
 .pnp.js
 
 # Testing
-/coverage
+/frontend/coverage
+/backend/coverage
 *.lcov
 
 # Production

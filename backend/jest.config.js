@@ -8,6 +8,7 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/index.ts',
+    '!src/config/**',
   ],
   coverageThreshold: {
     global: {
@@ -26,5 +27,13 @@ module.exports = {
     '^@routes/(.*)$': '<rootDir>/src/routes/$1',
     '^@models/(.*)$': '<rootDir>/src/models/$1',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+  },
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: {
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+      },
+    }],
   },
 };
