@@ -15,14 +15,14 @@ export class TokenUtils {
   }
 
   static generateToken(payload: any): string {
-    return jwt.sign(payload, JWT_SECRET, {
+    return jwt.sign(payload, JWT_SECRET as string, {
       expiresIn: JWT_EXPIRE,
-    });
+    } as jwt.SignOptions);
   }
 
   static verifyToken(token: string): any {
     try {
-      return jwt.verify(token, JWT_SECRET);
+      return jwt.verify(token, JWT_SECRET as string);
     } catch (error) {
       throw new Error('Invalid token');
     }
