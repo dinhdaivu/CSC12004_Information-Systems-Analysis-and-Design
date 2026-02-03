@@ -9,14 +9,10 @@ module.exports = {
   testMatch: [
     '<rootDir>/src/**/*.spec.ts'
   ],
-  transform: {
-    '^.+\\.(ts|mjs|js|html)$': [
-      'jest-preset-angular',
-      {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
-        stringifyContentPathRegex: '\\.(html|svg)$',
-      },
-    ],
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
   },
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
   snapshotSerializers: [

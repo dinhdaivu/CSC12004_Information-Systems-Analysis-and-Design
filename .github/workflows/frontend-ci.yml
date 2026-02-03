@@ -47,7 +47,7 @@ jobs:
       - name: Run tests
         run: |
           cd frontend
-          npm test -- --watch=false --browsers=ChromeHeadless
+          npm run test:ci
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
