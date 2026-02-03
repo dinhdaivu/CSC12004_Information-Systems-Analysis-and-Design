@@ -1,0 +1,33 @@
+-- TODO: Row Level Security (RLS) Policies
+-- This file contains RLS policies for database access control
+
+-- RLS Policies to implement:
+-- 
+-- Users Table:
+-- - Users can only view their own profile
+-- - Admins can view all users
+-- - Staff can view customers in their branch
+--
+-- Rooms Table:
+-- - All authenticated users can view available rooms
+-- - Admins can modify rooms
+-- - Staff can modify rooms in their branch
+--
+-- Deposits Table:
+-- - Users can only view their own deposits
+-- - Staff can view deposits for their branch
+-- - Admins can view all deposits
+--
+-- Contracts Table:
+-- - Users can only view their own contracts
+-- - Staff can view contracts for their branch
+-- - Admins can view all contracts
+--
+-- Transactions Table:
+-- - Users can only view their own transactions
+-- - Staff can view transactions for their branch
+-- - Admins can view all transactions
+
+-- TODO: Create individual policy files for each table
+-- TODO: Test policies with different user roles
+-- TODO: Document policy rules and exceptions
