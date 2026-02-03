@@ -131,39 +131,84 @@ Create free accounts and get credentials:
 
 ### Step 3: Configure Environment
 
+#### Backend Environment Setup
+
+The backend uses `.env` file for environment variables:
+
 ```bash
+cd backend
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials:
+Edit `backend/.env` with your credentials:
 
 ```env
-# Supabase
-SUPABASE_URL=your_project_url
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Resend Email
-RESEND_API_KEY=your_resend_api_key
-
-# VietQR Payment
-VIETQR_CLIENT_ID=your_client_id
-VIETQR_CLIENT_SECRET=your_client_secret
-
-# Application
+# Application Configuration
 NODE_ENV=development
 PORT=3000
 FRONTEND_URL=http://localhost:4200
 
-# JWT
-JWT_SECRET=your_jwt_secret_key
+# Supabase Database & Auth
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Cloudinary Image Storage
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Resend Email Service
+RESEND_API_KEY=your_resend_api_key
+
+# VietQR Payment Gateway (Optional)
+VIETQR_CLIENT_ID=your_client_id
+VIETQR_CLIENT_SECRET=your_client_secret
+
+# JWT Authentication
+JWT_SECRET=your_strong_secret_key_at_least_32_characters
 JWT_EXPIRE=7d
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:4200
 ```
+
+**Important Notes:**
+- The backend uses `.env` for environment variables
+- Never commit `.env` to version control (it's in `.gitignore`)
+- Generate a strong JWT_SECRET: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- For production, use `.env.production` with production URLs
+
+#### Frontend Environment Setup
+
+The frontend uses environment TypeScript files (not .env files):
+
+Edit `frontend/src/environments/environment.ts` for development:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000/api/v1',
+  supabaseUrl: 'https://your-project.supabase.co',
+  supabaseAnonKey: 'your_anon_key_here'
+};
+```
+
+Edit `frontend/src/environments/environment.prod.ts` for production:
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://api.your-domain.com/api/v1',
+  supabaseUrl: 'https://your-project.supabase.co',
+  supabaseAnonKey: 'your_anon_key_here'
+};
+```
+
+**Important Notes:**
+- Frontend environment files ARE committed to the repository
+- Only use public keys (never service role keys) in frontend
+- Update `apiUrl` to match your backend deployment URL in production
 
 ### Step 4: Run Development Servers
 

@@ -1,4 +1,4 @@
-import { ApiResponse, ApiResponseBuilder } from '@models/api.model';
+import { ApiResponseBuilder } from '@models/api.model';
 
 describe('API Models', () => {
   describe('ApiResponseBuilder', () => {

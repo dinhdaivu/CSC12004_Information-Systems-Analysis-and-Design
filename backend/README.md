@@ -54,33 +54,118 @@ npm run lint:fix       # Auto-fix linting issues
 
 ## Environment Configuration
 
-Create `.env.local` with:
-``` env
-# Supabase
-SUPABASE_URL=your_project_url
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+### Setup Environment File
 
-# Cloudinary
+Create `.env` in the `backend/` directory:
+
+```bash
+cp .env.example .env
+```
+
+### Environment Variables
+
+Edit `.env` with your configuration:
+
+```env
+# Application Configuration
+NODE_ENV=development                    # Environment: development, production, test
+PORT=3000                               # Server port (default: 3000)
+FRONTEND_URL=http://localhost:4200     # Frontend URL for CORS
+
+# Supabase Configuration
+# Get these from: https://supabase.com/dashboard > Project Settings > API
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Cloudinary Configuration
+# Get these from: https://cloudinary.com/console
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-# Resend Email
+# Resend Email Service
+# Get API key from: https://resend.com/api-keys
 RESEND_API_KEY=your_resend_api_key
 
-# VietQR Payment
+# VietQR Payment Gateway (Optional)
+# Get credentials from: https://vietqr.io
 VIETQR_CLIENT_ID=your_client_id
 VIETQR_CLIENT_SECRET=your_client_secret
 
-# Application
-NODE_ENV=development
-PORT=3000
-FRONTEND_URL=http://localhost:4200
+# JWT Configuration
+# Generate strong secret: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+JWT_SECRET=your_strong_secret_key_at_least_32_characters
+JWT_EXPIRE=7d                          # Token expiration: 1h, 24h, 7d, 30d
 
-# JWT
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRE=7d
+# CORS Configuration
+CORS_ORIGIN=http://localhost:4200      # Allowed frontend origins
+```
+
+### Environment Variable Details
+
+#### Required Variables
+
+- **SUPABASE_URL**: Your Supabase project URL
+- **SUPABASE_ANON_KEY**: Public anon key for client-side operations
+- **SUPABASE_SERVICE_ROLE_KEY**: Service role key for admin operations (keep secret!)
+- **JWT_SECRET**: Secret key for signing JWT tokens (minimum 32 characters)
+
+#### Optional Variables
+
+- **CLOUDINARY_***: Required only if using image upload features
+- **RESEND_API_KEY**: Required only if using email notifications
+- **VIETQR_***: Required only if using VietQR payment gateway
+
+#### Default Values
+
+- **NODE_ENV**: Defaults to `development`
+- **PORT**: Defaults to `3000`
+- **JWT_EXPIRE**: Defaults to `7d` (7 days)
+
+### Security Best Practices
+
+1. **Never commit `.env` to version control**
+   - Already in `.gitignore`
+   - Use `.env.example` as template
+
+2. **Generate strong JWT_SECRET**
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+
+3. **Use different secrets for each environment**
+   - Development: `.env`
+   - Production: `.env.production`
+   - Testing: `.env.test`
+
+4. **Rotate secrets regularly**
+   - Change JWT_SECRET every 90 days
+   - Update API keys on security incidents
+
+### Environment File Priority
+
+The application loads environment variables in this order:
+
+1. `.env` (local development)
+2. `.env.production` (production builds)
+3. `.env.test` (testing environment)
+
+### Validating Configuration
+
+Verify your environment setup:
+
+```bash
+# Check if all required variables are set
+npm run dev
+
+# Should see:
+✅ Server is running on http://localhost:3000
+
+# If you see errors about missing config:
+# - Check .env exists in backend/ directory
+# - Verify all required variables are set
+# - Ensure no syntax errors in .env
 ```
 
 ## API Routes

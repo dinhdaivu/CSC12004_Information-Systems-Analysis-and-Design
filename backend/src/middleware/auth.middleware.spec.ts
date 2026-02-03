@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { authMiddleware, roleMiddleware, AuthRequest } from '@middleware/auth.middleware';
 import { TokenUtils } from '@utils/token';
 import { UnauthorizedError, ForbiddenError } from '@utils/errors';
