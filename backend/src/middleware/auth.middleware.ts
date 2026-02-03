@@ -16,25 +16,37 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    // Get authorization header - safely handle undefined/null
     const authHeader = req.headers.authorization;
-
-    // Ensure authHeader is a string and properly formatted
-    if (typeof authHeader !== 'string' || authHeader.length === 0) {
+    const BEARER_PREFIX = 'Bearer ';
+    
+    // Validate header exists and is a string
+    const isValidHeader = 
+      authHeader !== undefined && 
+      authHeader !== null && 
+      typeof authHeader === 'string';
+    
+    if (!isValidHeader) {
       throw new UnauthorizedError('Missing or invalid authorization header');
     }
 
-    const bearerPrefix = 'Bearer ';
-    if (!authHeader.startsWith(bearerPrefix)) {
+    // Extract token using safe string operations
+    const headerValue = String(authHeader); // Ensure string type
+    const hasValidPrefix = headerValue.indexOf(BEARER_PREFIX) === 0;
+    
+    if (!hasValidPrefix) {
       throw new UnauthorizedError('Invalid authorization header format');
     }
 
-    const token = authHeader.substring(bearerPrefix.length).trim();
+    // Extract token after prefix
+    const token = headerValue.slice(BEARER_PREFIX.length).trim();
     
-    // Ensure token is not empty after extraction
+    // Validate token is not empty
     if (token.length === 0) {
       throw new UnauthorizedError('Missing authentication token');
     }
 
+    // Verify token (this is where the actual security validation happens)
     const decoded = TokenUtils.verifyToken(token);
 
     req.user = decoded;
