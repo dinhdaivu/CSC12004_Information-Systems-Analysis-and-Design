@@ -1,4 +1,9 @@
-export const AUTH_ROUTES = [
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { Routes } from '@angular/router';
+
+export const AUTH_ROUTES: Routes = [
   {
     path: '',
     redirectTo: 'login',
@@ -6,14 +11,14 @@ export const AUTH_ROUTES = [
   },
   {
     path: 'login',
-    component: () => ({})  // TODO: Implement LoginComponent
+    component: LoginComponent
   },
   {
     path: 'register',
-    component: () => ({})  // TODO: Implement RegisterComponent
+    component: RegisterComponent
   },
   {
     path: 'forgot-password',
-    component: () => ({})  // TODO: Implement ForgotPasswordComponent
+    component: ForgotPasswordComponent
   }
 ];

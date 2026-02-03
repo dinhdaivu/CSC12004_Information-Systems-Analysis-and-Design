@@ -13,7 +13,6 @@ The API will start at `http://localhost:3000`
 
 ## Project Structure
 
-```
 src/
 ├── index.ts               # Application entry point
 ├── config/                # Service configurations
@@ -28,7 +27,6 @@ src/
 └── utils/
     ├── errors.ts          # Error classes
     └── token.ts           # Token utilities
-```
 
 ## Available Commands
 
@@ -57,7 +55,7 @@ npm run lint:fix       # Auto-fix linting issues
 ## Environment Configuration
 
 Create `.env.local` with:
-```env
+``` env
 # Supabase
 SUPABASE_URL=your_project_url
 SUPABASE_ANON_KEY=your_anon_key

@@ -1,18 +1,24 @@
-export const ADMIN_ROUTES = [
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { UsersManagementComponent } from './components/users-management/users-management.component';
+import { RoomsManagementComponent } from './components/rooms-management/rooms-management.component';
+import { TransactionsComponent } from './components/transactions/transactions.component';
+import { Routes } from '@angular/router';
+
+export const ADMIN_ROUTES: Routes = [
   {
     path: '',
-    component: () => ({})  // TODO: Implement AdminDashboardComponent
+    component: AdminDashboardComponent
   },
   {
     path: 'users',
-    component: () => ({})  // TODO: Implement UsersManagementComponent
+    component: UsersManagementComponent
   },
   {
     path: 'rooms',
-    component: () => ({})  // TODO: Implement RoomsManagementComponent
+    component: RoomsManagementComponent
   },
   {
     path: 'transactions',
-    component: () => ({})  // TODO: Implement TransactionsComponent
+    component: TransactionsComponent
   }
 ];
