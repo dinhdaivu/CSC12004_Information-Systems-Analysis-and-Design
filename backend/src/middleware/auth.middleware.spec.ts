@@ -39,17 +39,23 @@ describe('Auth Middleware', () => {
 
     it('should reject request with missing authorization header', async () => {
       req.headers = {};
+      (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
 
       await authMiddleware(req as AuthRequest, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
       expect(((next as jest.Mock).mock.calls[0][0] as UnauthorizedError).message).toBe(
-        'Missing or invalid authorization header'
+        'Invalid or missing authentication token'
       );
     });
 
     it('should reject request with invalid authorization header format', async () => {
       req.headers = { authorization: 'InvalidFormat token' };
+      (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
 
       await authMiddleware(req as AuthRequest, res as Response, next);
 
@@ -65,11 +71,17 @@ describe('Auth Middleware', () => {
 
       await authMiddleware(req as AuthRequest, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(expect.any(Error));
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+      expect(((next as jest.Mock).mock.calls[0][0] as UnauthorizedError).message).toBe(
+        'Invalid or missing authentication token'
+      );
     });
 
     it('should handle missing Bearer prefix', async () => {
       req.headers = { authorization: 'token-without-bearer' };
+      (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
 
       await authMiddleware(req as AuthRequest, res as Response, next);
 

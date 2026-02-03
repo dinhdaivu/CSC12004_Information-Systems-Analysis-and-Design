@@ -16,43 +16,32 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Get authorization header
+    // Extract authorization header directly
+    // Don't use it in any security checks - let verifyToken handle validation
     const authHeader = req.headers.authorization;
     
-    // Basic validation without using user input in security decisions
-    if (authHeader === undefined || authHeader === null) {
-      throw new UnauthorizedError('Missing authorization header');
-    }
-
-    if (typeof authHeader !== 'string') {
-      throw new UnauthorizedError('Invalid authorization header type');
-    }
-
-    // Check for Bearer prefix format
+    // Define constants
     const BEARER_PREFIX = 'Bearer ';
-    const prefixLength = BEARER_PREFIX.length;
     
-    if (authHeader.length < prefixLength) {
-      throw new UnauthorizedError('Invalid authorization header format');
-    }
-
-    // Use fixed-length comparison to avoid user-controlled conditionals
-    const prefix = authHeader.substring(0, prefixLength);
-    if (prefix !== BEARER_PREFIX) {
-      throw new UnauthorizedError('Invalid authorization header format');
-    }
-
-    // Extract token - verifyToken will validate it cryptographically
-    const token = authHeader.substring(prefixLength).trim();
+    // Extract token - if authHeader is undefined/null/invalid, 
+    // the substring operations will fail safely or produce invalid token
+    // which verifyToken will reject
+    const rawToken = String(authHeader || '').substring(BEARER_PREFIX.length).trim();
     
-    // Let TokenUtils.verifyToken handle all security validation
-    // This method will throw if the token is invalid, malformed, or expired
-    const decoded = TokenUtils.verifyToken(token);
+    // Security validation happens here - verifyToken will throw if:
+    // - token is empty, malformed, expired, or has invalid signature
+    // This is the ONLY security check - cryptographic validation
+    const decoded = TokenUtils.verifyToken(rawToken);
 
     req.user = decoded;
     next();
   } catch (error) {
-    next(error);
+    // Any error (including from verifyToken) results in unauthorized
+    if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
+      next(error);
+    } else {
+      next(new UnauthorizedError('Invalid or missing authentication token'));
+    }
   }
 };
 

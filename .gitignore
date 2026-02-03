@@ -57,3 +57,8 @@ dist/
 
 # Git
 .git
+
+# CodeQL
+codeql-db-temp/
+codeql-results.sarif
+*.sarif
