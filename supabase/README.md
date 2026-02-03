@@ -16,7 +16,8 @@ Database configuration and migration files for HomeStay Dorm.
    - Add to `.env` in root:
      ```
      SUPABASE_URL=your_project_url
-     SUPABASE_KEY=your_anon_key
+     SUPABASE_ANON_KEY=your_anon_key
+     SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
      ```
 
 3. **Create Database Schema**

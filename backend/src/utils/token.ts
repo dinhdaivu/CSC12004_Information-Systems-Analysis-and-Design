@@ -23,7 +23,7 @@ export class TokenUtils {
   static verifyToken(token: string): any {
     try {
       return jwt.verify(token, JWT_SECRET as string);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid token');
     }
   }

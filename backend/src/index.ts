@@ -26,7 +26,7 @@ app.get('/api/health', (req, res) => {
 // TODO: Add routes here
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, req: express.Request, res: express.Response) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
@@ -44,7 +44,7 @@ app.use((req: express.Request, res: express.Response) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
+  console.warn(`✅ Server is running on http://localhost:${PORT}`);
 });
 
 export default app;
