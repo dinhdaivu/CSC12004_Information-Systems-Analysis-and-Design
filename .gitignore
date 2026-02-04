@@ -53,7 +53,7 @@ dist/
 
 # Misc
 .cache
-.env.*.local
+.env
 
 # Git
 .git
