@@ -1,31 +1,28 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: '[BUG] '
+title: '[Bug] '
 labels: bug
 assignees: ''
 ---
 
-Describe the bug
-A clear and concise description of what the bug is.
+### Describe the Bug
+<!-- Describe the bug encountered concisely. -->
 
-To Reproduce
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error
+### Steps to reproduce
+<!-- Describe how one can reproduce the issue - this is very important. Please use an ordered list. -->
 
-Expected behavior
-A clear and concise description of what you expected to happen.
+### The current *bug* behavior?
+<!-- Describe what actually happens. -->
 
-Screenshots
-If applicable, add screenshots to help explain your problem.
+### The expected behavior?
+<!-- Describe what you should see instead. -->
 
-Environment (please complete the following information):
-- OS: (e.g. Windows 10)
-- Browser / runtime: (e.g. Chrome 90, Python 3.11)
-- Version: (e.g. commit SHA, release number)
+### OS, Browser
 
-Additional context
-Add any other context about the problem here.
+### Relevant logs and/or screenshots
+<!-- Paste any relevant logs - please use code blocks (```) to format console output, 
+logs, and code as it's tough to read otherwise. -->
+
+### Possible fixes
+<!-- If you can, link to the line of code that might be responsible for the problem. -->

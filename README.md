@@ -86,7 +86,6 @@ HomeStay Dorm/
 ├── README.md                  # This file
 ├── CONTRIBUTING.md            # Guidelines
 ├── LICENSE                    # MIT
-├── .env.example
 └── .gitignore
 ```
 
