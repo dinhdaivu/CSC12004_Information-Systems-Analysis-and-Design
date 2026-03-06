@@ -20,14 +20,21 @@ A comprehensive web-based platform for room rental, deposits, contracts, and pay
 
 ## Overview
 
-HomeStay Dorm provides an intuitive interface for:
+HomeStay Dorm is a private dormitory (ký túc xá) management system covering the full tenant lifecycle:
 
-- Viewing and managing available rooms
-- Processing rental bookings with automated deposits
-- Managing rental agreements and contracts
-- Tracking payments and transactions
-- Role-based access control (User, Staff, Admin)
-- Real-time room availability updates
+| Process | Description |
+|---|---|
+| **UC1 — Tư vấn & Tiếp nhận yêu cầu** | Inquiry intake, room availability consultation, room visit scheduling and viewing |
+| **UC2 — Đặt cọc & xác nhận thuê** | Room availability check, rental confirmation, deposit collection |
+| **UC3 — Nhận phòng & bàn giao** | Lodging condition check, contract signing, room handover |
+| **UC4 — Trả phòng** | Check-out request, room inspection, deposit reconciliation & refund |
+
+**Actors:**
+
+- **Khách hàng** (Customer) — initiates all major flows
+- **Nhân viên Sales** (Sales Staff) — coordinates with customer for bookings and check-out
+- **Quản lý** (Manager) — inspects rooms, approves conditions, oversees handovers
+- **Kế toán** (Accountant) — calculates deposits, fees, and refunds
 
 ## Technology Stack
 
@@ -261,14 +268,36 @@ npm run lint:fix       # Auto-fix issues
 
 ---
 
-## Key Features
+## Business Processes
 
-- **Room Management** - Browse and manage available rooms
-- **Booking System** - Reserve rooms with automated deposit processing
-- **Contract Management** - Digital rental agreements
-- **Payment Tracking** - Secure payment and transaction history
-- **Role-Based Access** - User, Staff, and Admin roles
-- **Real-time Updates** - Live room availability and notifications
+### UC1 — Tư vấn & Tiếp nhận yêu cầu (Inquiry & Consultation)
+
+- **UC1-1** Tiếp nhận yêu cầu — Customer contacts Sales; Sales logs rental needs and advises on available room types and services; confirms rental intent
+  - Alt: if no matching room available, Sales suggests other dormitory services
+- **UC1-2** Ghi nhận đăng ký & sắp xếp lịch xem phòng — Sales checks room availability against rental policy; records booking registration; schedules room visit appointment
+  - Alt: if requested room type unavailable, Sales proposes alternatives
+- **UC1-3** Xem phòng — Sales accompanies customer on room tour; presents room details; confirms deposit intent → triggers UC2-1
+  - Alt: if customer is unsatisfied, Sales suggests other room options
+
+### UC2 — Deposit & Rental Confirmation
+- **UC2-1** Xác nhận tình trạng phòng — Sales staff + Manager verify room is available and clean
+- **UC2-2** Xác nhận nhu cầu thuê — Collect tenant documents and rental info; forward to accounting
+- **UC2-3** Xác nhận đặt cọc — Accounting calculates deposit; Sales collects and records payment; room status updated
+
+### UC3 — Check-in, Contract & Room Handover
+- **UC3-1** Kiểm tra điều kiện lưu trú — Verify identity docs and deposit; invalid info triggers 80% refund
+- **UC3-2** Lập hợp đồng — Draft and sign contract; Accounting collects initial fees
+- **UC3-3** Nhận phòng — Manager inspects room, briefs tenant on rules, signs handover report
+
+### UC4 — Check-out
+- **UC4-1** Xử lý đơn đăng ký trả phòng — Sales receives request; Manager inspects room; Accounting calculates refund:
+  - Deposit paid, no contract (cancelled): **refund 80%**
+  - Contract signed, < 6 months stayed: **refund 50%**
+  - Contract signed, ≥ 6 months stayed: **refund 70%**
+  - Contract expired naturally: **refund 100%**
+  - Deductions: unpaid rent, utilities, damages, penalties
+- **UC4-2** Xác nhận đối soát & thanh toán — Manager presents settlement; customer confirms and pays/receives refund
+- **UC4-3** Trả phòng — Sign check-out report and contract termination; finalize handover
 
 ---
 
