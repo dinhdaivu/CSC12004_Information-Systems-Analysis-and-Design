@@ -78,6 +78,35 @@ npm run lint:fix
 
 ---
 
+## Architecture
+
+The system follows 3 complementary patterns:
+
+| Pattern | Role |
+| --- | --- |
+| **3-Layer Architecture** | Overall deployment structure |
+| **MVC Pattern** | Organizes processing between UI and business logic |
+| **Boundary-Control-Entity (BCE)** | Class-level analysis model |
+
+### Layers
+
+| Layer | MVC | BCE | What lives here |
+| --- | --- | --- | --- |
+| Presentation | View | `<<boundary>>` | BookingView, PaymentView, ContractView, CheckoutView, RoomView |
+| Business Logic | Controller | `<<control>>` | BookingController, PaymentController, ContractController, CheckoutController, RefundCalculator, **SchedulerController** |
+| Data | Model | `<<entity>>` | Customer, Employee, Room, Bed, DepositRequest, Payment, Contract, CheckoutRequest, Settlement |
+
+**SchedulerController** — auto-cancels deposit requests not paid within **24 hours** (sets `DepositStatus = EXPIRED`, `RoomStatus = AVAILABLE`).
+
+### Backend mapping (Express.js)
+
+- `routes/` = boundary layer (receives HTTP requests)
+- `controllers/` = control layer (orchestrates business logic)
+- `services/` = control layer (business logic implementation)
+- `models/` = entity layer (TypeScript interfaces)
+
+---
+
 ## Architecture Decisions
 
 ### Backend Patterns
@@ -94,7 +123,7 @@ npm run lint:fix
 - **Dependency injection** — use `inject()` function (not constructor injection) in Angular 21
 - **HTTP calls** — use Angular's `HttpClient` via `HttpClientModule`; backend URL from `environment.apiUrl`
 - **Auth state** — managed via Supabase Auth client in `core/services/auth.service.ts`
-- **Role-based guards** — in `core/guards/`; roles: `user`, `staff`, `admin`
+- **Role-based guards** — in `core/guards/`; roles: `customer`, `staff`, `admin`
 
 ### Database
 - All tables use UUID primary keys
@@ -216,33 +245,61 @@ UC4-3: Trả phòng
 
 ---
 
-## Domain Model
+## Domain Model (BCE Entities)
 
 ```
-users          — id, email, full_name, phone, identity_number, role, status
-               role: 'customer' | 'staff' | 'admin'
+-- ENTITY LAYER (<<entity>>) --
 
-branches       — id, name, address, phone, manager_id
+Customer       (BCE: Customer)
+               id, email, full_name, phone, identity_number
+               Maps to: users WHERE role = 'customer'
 
-rooms          — id, branch_id, room_number, room_type, capacity, price, status
-               status: 'available' | 'reserved' | 'occupied' | 'maintenance'
+Employee       (BCE: Employee)
+               id, email, full_name, phone, role (sales | manager | accountant)
+               Maps to: users WHERE role = 'staff' | 'admin'
 
-deposits       — id, user_id, room_id, amount, status, paid_at
-               status: 'pending' | 'paid' | 'refunded' | 'forfeited'
+Branch         id, name, address, phone, manager_id
 
-contracts      — id, user_id, room_id, start_date, end_date, monthly_rent,
-                 terms, status, signed_at
-               status: 'draft' | 'active' | 'terminated' | 'expired'
+Room           (BCE: Room)
+               id, branch_id, room_number, room_type, capacity, price
+               status: AVAILABLE | HOLDING | DEPOSITED | OCCUPIED | CHECKOUT_PENDING
 
-transactions   — id, deposit_id, contract_id, amount, type, payment_method,
-                 status, created_at
-               type: 'deposit' | 'rent' | 'refund' | 'penalty' | 'utility'
-               payment_method: 'cash' | 'bank_transfer' | 'vietqr'
+Bed            (BCE: Bed)
+               id, room_id, bed_number, status
+               A room can have multiple beds
 
-room_handovers — id, contract_id, type, condition_notes, asset_list,
-                 signed_at, manager_id
-               type: 'checkin' | 'checkout'
+DepositRequest (BCE: DepositRequest)
+               id, customer_id, room_id, bed_id, amount, status, expires_at, paid_at
+               status: PENDING | PAID | CANCELLED | EXPIRED
+               Auto-expires after 24 hours via SchedulerController
+
+Payment        (BCE: Payment)
+               id, deposit_request_id, contract_id, amount, type, payment_method, status
+               type: deposit | rent | refund | penalty | utility
+               payment_method: cash | bank_transfer | vietqr
+
+Contract       (BCE: Contract)
+               id, customer_id, room_id, start_date, end_date, monthly_rent, terms
+               status: ACTIVE | TERMINATED | COMPLETED
+
+CheckoutRequest (BCE: CheckoutRequest)
+               id, contract_id, customer_id, requested_at
+               status: REQUESTED | CONFIRMED | COMPLETED
+
+Settlement     (BCE: Settlement)
+               id, checkout_request_id, deposit_refund_amount, deductions,
+               net_amount, refund_method, created_by (accountant)
 ```
+
+### Business Rules
+
+- Deposit auto-expires: `SchedulerController` runs every hour, sets `EXPIRED` on `DepositRequest` older than 24h with status `PENDING`.
+- Refund calculation (on Settlement):
+  - Deposit paid, no contract (CANCELLED): 80%
+  - Contract ACTIVE, stayed < 6 months: 50%
+  - Contract ACTIVE, stayed >= 6 months: 70%
+  - Contract COMPLETED (expired naturally): 100%
+  - Deductions: unpaid rent, utilities, damages, penalties
 
 ---
 
