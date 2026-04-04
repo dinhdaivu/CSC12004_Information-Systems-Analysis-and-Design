@@ -1,0 +1,77 @@
+
+%USE CASE 1-2
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.2cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center % Cho phép dùng \\ ngắt dòng
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.8cm of start] (s1) {Kiểm tra tình\\ trạng phòng};
+
+\node[decision, below=1cm of s1] (dec) {Phòng/giường còn\\ trống và phù hợp\\ để đăng ký không?};
+
+% Nhánh thay thế
+\node[action, right=1.2cm of dec] (s1_alt) {Thông báo cho khách hàng\\ và đề xuất phòng/dịch vụ khác};
+
+% Dòng cơ bản
+\node[action, below=1cm of dec] (s2) {Đối chiếu yêu cầu với\\ quy định thuê trọ};
+
+\node[action, below=1cm of s2] (s3) {Ghi nhận thông tin\\ đăng ký};
+
+\node[action, below=1cm of s3] (s4) {Sắp xếp lịch\\ xem phòng};
+\node[action, below=1cm of s4] (s5) {Thông báo lịch xem phòng\\ cho khách hàng};
+
+\node[end, below=1cm of s5] (end) {};
+\fill (end.center) circle (0.15cm);
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (dec);
+
+% Decision splits
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s2);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (s1_alt);
+
+% Main flow (Dòng cơ bản)
+\draw[control] (s2) -- (s3);
+\draw[control] (s3) -- (s4);
+\draw[control] (s4) -- (s5);
+\draw[control] (s5) -- (end);
+
+% Alternative flow (Dòng thay thế -> kết thúc hoặc bẻ về vòng lặp)
+% Ở đây trỏ về nút kết thúc để đóng Use Case theo nhánh phụ
+\draw[control] (s1_alt.south) |- (end.east);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC1-2}
+\end{figure}

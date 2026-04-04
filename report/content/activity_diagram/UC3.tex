@@ -1,0 +1,70 @@
+
+% USE CASE 3 
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.2cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center % Cho phép dùng \\ ngắt dòng
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.8cm of start] (s1) {Thực hiện UC3-1:\\ Kiểm tra điều kiện};
+
+\node[decision, below=1cm of s1] (dec) {Thành công?};
+
+% Nhánh thay thế: Không thành công -> Kết thúc ngay
+\node[action, right=2cm of dec] (fail_notice) {Thông báo chưa đủ điều kiện\\ để tiếp tục lưu trú};
+\node[end, below=0.8cm of fail_notice] (end_fail) {};
+\fill (end_fail.center) circle (0.15cm);
+
+% Dòng cơ bản: Thành công
+\node[action, below=1cm of dec] (s2) {Thực hiện UC3-2:\\ Ký hợp đồng thuê};
+
+\node[action, below=1cm of s2] (s3) {Thực hiện UC3-3:\\ Bàn giao phòng/giường};
+
+\node[end, below=1cm of s3] (end) {};
+\fill (end.center) circle (0.15cm);
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (dec);
+
+% Decision splits
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s2);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (fail_notice);
+\draw[control] (fail_notice) -- (end_fail);
+
+% Main flow
+\draw[control] (s2) -- (s3);
+\draw[control] (s3) -- (end);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC3: Ký thỏa thuận và nhận phòng}
+\end{figure}

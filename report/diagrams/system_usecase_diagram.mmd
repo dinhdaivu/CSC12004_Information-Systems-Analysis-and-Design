@@ -1,0 +1,96 @@
+flowchart TB
+    classDef actor fill:#fff,stroke:#555,stroke-width:1px,color:#111;
+    classDef sales fill:#f3fff1,stroke:#2f9e44,stroke-width:1.5px,color:#1b5e20;
+    classDef customer fill:#eef8ff,stroke:#1c7ed6,stroke-width:1.5px,color:#0b5394;
+    classDef accountant fill:#f7f0ff,stroke:#8e44ad,stroke-width:1.5px,color:#6a1b9a;
+    classDef manager fill:#fff1f0,stroke:#e03131,stroke-width:1.5px,color:#a61e1e;
+    classDef neutral fill:#ffffff,stroke:#666,stroke-width:1.2px,color:#111;
+    classDef external fill:#fff7e6,stroke:#f08c00,stroke-width:1.5px,color:#9c5a00;
+
+    Sales["<<actor>><br/>Nhân viên Sales"]:::actor
+    Accountant["<<actor>><br/>Kế toán"]:::actor
+    Manager["<<actor>><br/>Quản lý"]:::actor
+    Customer["<<actor>><br/>Khách hàng"]:::actor
+    VietQR["<<actor>><br/>VietQR"]:::actor
+
+    subgraph System["HomeStay Dorm"]
+        direction TB
+
+        subgraph G1["Thuê phòng"]
+            direction LR
+            SUC3(["SUC3<br/>Quản lý đăng ký thuê phòng"]):::sales
+            SUC14(["SUC14<br/>Sắp xếp lịch xem phòng"]):::sales
+            SUC2(["SUC2<br/>Đăng ký thuê phòng"]):::customer
+            SUC13(["SUC13<br/>Xem/tra cứu giường/phòng"]):::sales
+            SUC15(["SUC15<br/>Ghi nhận kết quả xem phòng"]):::sales
+        end
+
+        subgraph G2["Hợp đồng và nhận phòng"]
+            direction LR
+            SUC7(["SUC7<br/>Quản lý hợp đồng"]):::sales
+            SUC16(["SUC16<br/>Kiểm tra điều kiện lưu trú"]):::manager
+            SUC1(["SUC1<br/>Đăng nhập"]):::neutral
+            SUC17(["SUC17<br/>Nhận phòng và bàn giao"]):::manager
+        end
+
+        subgraph G3["Đặt cọc, thanh toán, trả phòng"]
+            direction LR
+            SUC9(["SUC9<br/>Tính toán chi phí"]):::accountant
+            SUC4(["SUC4<br/>Quản lý đặt cọc"]):::neutral
+            SUC5(["SUC5<br/>Thanh toán"]):::customer
+            SUC8(["SUC8<br/>Đối soát chi phí"]):::accountant
+            SUC6(["SUC6<br/>Quản lý thanh toán"]):::accountant
+            SUC11(["SUC11<br/>Quản lý đăng ký trả phòng"]):::manager
+            SUC10(["SUC10<br/>Đăng ký trả phòng"]):::customer
+            SUC12(["SUC12<br/>Quản lý giường phòng"]):::manager
+        end
+    end
+
+    Sales --- SUC1
+    Sales --- SUC3
+    Sales --- SUC4
+    Sales --- SUC7
+    Sales --- SUC13
+    Sales --- SUC14
+    Sales --- SUC15
+
+    Accountant --- SUC1
+    Accountant --- SUC4
+    Accountant --- SUC6
+    Accountant --- SUC8
+    Accountant --- SUC9
+
+    Manager --- SUC1
+    Manager --- SUC4
+    Manager --- SUC11
+    Manager --- SUC12
+    Manager --- SUC16
+    Manager --- SUC17
+
+    Customer --- SUC1
+    Customer --- SUC2
+    Customer --- SUC5
+    Customer --- SUC10
+    Customer --- SUC13
+
+    VietQR --- SUC5
+
+    SUC3 -. "<<include>>" .-> SUC13
+    SUC3 -. "<<include>>" .-> SUC14
+    SUC3 -. "<<include>>" .-> SUC15
+    SUC2 -. "<<include>>" .-> SUC13
+    SUC14 -. "<<include>>" .-> SUC13
+
+    SUC4 -. "<<extend>>" .-> SUC3
+
+    SUC7 -. "<<include>>" .-> SUC16
+    SUC7 -. "<<include>>" .-> SUC9
+    SUC7 -. "<<include>>" .-> SUC5
+    SUC7 -. "<<include>>" .-> SUC17
+
+    SUC4 -. "<<include>>" .-> SUC9
+    SUC4 -. "<<include>>" .-> SUC5
+    SUC8 -. "<<include>>" .-> SUC9
+    SUC5 -. "<<include>>" .-> SUC6
+    SUC5 -. "<<extend>>" .-> SUC11
+    SUC11 -. "<<include>>" .-> SUC8

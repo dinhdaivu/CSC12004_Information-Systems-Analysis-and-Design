@@ -1,0 +1,62 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=4.1cm,
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    entity/.style={
+        circle, draw=black, thick, fill=white,
+        minimum size=1.5cm, inner sep=0pt,
+        path picture={
+            \draw[thick] (0, -0.75) -- (0.72, -0.22);
+        },
+        append after command={
+            \pgfextra{
+                \draw[thick] (\tikzlastnode.south) +(-0.9cm,0) -- +(0.9cm,0);
+            }
+        },
+        label={[yshift=-0.1cm, align=center, font=\footnotesize]below:#1}
+    },
+    control/.style={->, thick, >=Stealth},
+    signal/.style={->, thick, dashed, >=Stealth}
+]
+
+\def\xMain{0}
+\def\xObj{-4.5}
+
+\node[font=\bfseries\large] at (\xMain, 1.1) {Quản lý};
+
+\node[start] (start) at (\xMain, 0) {};
+
+\node[action, below=0.8cm of start] (a1) {Ký biên bản trả phòng\\ \& thanh lý hợp đồng};
+\node[action, below=1.0cm of a1] (a2) {Thu hồi toàn bộ\\ chìa khóa/thẻ ra vào};
+\node[action, below=1.0cm of a2] (a3) {Cập nhật thông tin\\ bàn giao tài sản};
+\node[action, below=1.0cm of a3] (a4) {Xác nhận kết thúc lưu trú\\ \& cập nhật phòng trống};
+
+\node[end, below=0.9cm of a4] (end) {};
+\fill (end.center) circle (0.15cm);
+
+\node[entity={\itshape :Biên bản\\ \itshape trả phòng}, left=1cm of a1] (doc) {};
+
+\node[entity={\itshape :Hệ thống}, left=1cm of a4] (sys) {};
+
+\draw[control] (start) -- (a1);
+\draw[control] (a1) -- (a2);
+\draw[control] (a2) -- (a3);
+\draw[control] (a3) -- (a4);
+\draw[control] (a4) -- (end);
+
+\draw[signal] (a1.west) -- (doc.east);
+\draw[signal] (a4.west) -- (sys.east);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC4-3: Thanh lý hợp đồng và hoàn tất trả phòng}
+\end{figure}

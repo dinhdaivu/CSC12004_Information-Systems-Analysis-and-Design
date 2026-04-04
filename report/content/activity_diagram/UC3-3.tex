@@ -1,0 +1,77 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xManager{0} 
+
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+
+% ===== 2. MANAGER LANE NODES =====
+\node[start] (start) at (\xManager, 0) {};
+
+\node[decision, below=0.6cm of start] (dec0) {Hợp đồng đã\\ được ký kết?};
+
+% Nhánh thay thế (A0) - Rẽ sang phải
+\node[action, right=1.2cm of dec0] (alt0) {Thông báo chưa thể\\ nhận phòng};
+\node[end, below=0.8cm of alt0] (end_alt0) {};
+\fill (end_alt0.center) circle (0.15cm);
+
+% Dòng cơ bản (Có) - Đi thẳng xuống
+\node[action, below=0.8cm of dec0] (m1) {Kiểm tra \& ghi nhận tình\\ trạng phòng/giường};
+
+\node[action, below=0.8cm of m1] (m2) {Hướng dẫn quy định,\\ nội quy lưu trú};
+
+\node[action, below=0.8cm of m2] (m3) {Lập \& ký biên bản\\ bàn giao tài sản};
+
+\node[action, below=0.8cm of m3] (m4) {Bàn giao phòng/giường\\ \& tài sản cho khách};
+\node[action, below=0.8cm of m4] (m5) {Thông báo hoàn tất\\ nhận phòng};
+
+\node[end, below=0.8cm of m5] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (dec0);
+
+% Rẽ nhánh tại nút kiểm tra đầu vào (A0)
+\draw[control] (dec0) -- node[right, font=\footnotesize] {Có} (m1);
+\draw[control] (dec0) -- node[above, font=\footnotesize] {Không} (alt0);
+
+% Kết thúc nhánh phụ
+\draw[control] (alt0) -- (end_alt0);
+
+% Luồng chính của Quản lý
+\draw[control] (m1) -- (m2);
+\draw[control] (m2) -- (m3);
+\draw[control] (m3) -- (m4);
+\draw[control] (m4) -- (m5);
+
+% Kết thúc luồng chính
+\draw[control] (m5) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC3-3: Nhận phòng}
+\end{figure}

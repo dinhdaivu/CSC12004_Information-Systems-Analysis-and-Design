@@ -1,0 +1,1669 @@
+    TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN
+
+
+       KHOA CÔNG NGHỆ THÔNG TIN
+
+
+MÔN PHÂN TÍCH THIẾT KẾ HỆ THỐNG THÔNG TIN
+
+
+
+
+               BÁO CÁO ĐỒ ÁN
+
+                 GIẢNG VIÊN:
+           ThS. Nguyễn Ngọc Minh Châu
+
+            SINH VIÊN (NHÓM 6):
+            Lê Nguyên Thảo - 23127118
+          Đởm Quang Minh Triết - 23127131
+              Đinh Đại Vũ - 23127144
+           Nguyễn Đăng Phôn - 23127451
+
+
+
+
+                         1
+Mục lục
+1 Phân tích Use-case nghiệp vụ                                                              6
+  1.1 Đặc tả Use-case nghiệp vụ . . . . . . . . . . . . . . . . . . . . . . . . . . . .     7
+      1.1.1 Đăng ký thuê phòng . . . . . . . . . . . . . . . . . . . . . . . . . . .        7
+      1.1.2 Đặt cọc và xác nhận thuê . . . . . . . . . . . . . . . . . . . . . . . .        8
+      1.1.3 Nhận phòng, ký thỏa thuận và bàn giao phòng . . . . . . . . . . . . .          10
+      1.1.4 Use-case Trả phòng . . . . . . . . . . . . . . . . . . . . . . . . . . . .     13
+  1.2 Activity Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   13
+      1.2.1 Đăng kí thuê phòng . . . . . . . . . . . . . . . . . . . . . . . . . . . .     13
+      1.2.2 Đặt cọc và xác nhận thuê . . . . . . . . . . . . . . . . . . . . . . . .       18
+      1.2.3 Nhận phòng, kí thỏa thuận và bàn giao phòng . . . . . . . . . . . . .          22
+      1.2.4 Trả phòng và hoàn cọc . . . . . . . . . . . . . . . . . . . . . . . . . .      26
+  1.3 Phân tích lớp ở mức chức năng . . . . . . . . . . . . . . . . . . . . . . . . .      28
+
+2 System Use-case Diagram                                                                  29
+
+3 Đặc tả System Use Case                                                                   31
+
+Tài liệu tham khảo                                                                         43
+
+
+
+
+                                              2
+Danh sách hình ảnh
+ 1    Mô hình Use-case nghiệp vụ . . . . . . . . . . . . . . . . . . . . . . . . . . .     6
+ 2    Activity Diagram UC1-1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    13
+ 3    Activity Diagram UC1-2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    14
+ 4    Activity Diagram UC1-3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    16
+ 5    Activity Diagram UC2: Đặt cọc và xác nhận thuê . . . . . . . . . . . . . . .        18
+ 6    Activity Diagram UC2-1: Xác nhận tình trạng phòng . . . . . . . . . . . . .         19
+ 7    Activity Diagram UC2-2: Xác nhận nhu cầu thuê . . . . . . . . . . . . . . .         20
+ 8    Activity Diagram UC2-3: Xác nhận đặt cọc . . . . . . . . . . . . . . . . . .        21
+ 9    Activity Diagram UC3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    22
+ 10   Activity Diagram UC3-1: Kiểm tra điều kiện lưu trú . . . . . . . . . . . . .        23
+ 11   Activity Diagram UC3-2: Lập hợp đồng . . . . . . . . . . . . . . . . . . . .        24
+ 12   Activity Diagram UC3-3: Nhận phòng . . . . . . . . . . . . . . . . . . . . .        25
+ 13   Activity Diagram UC4-1: Xử lý đơn đăng ký trả phòng . . . . . . . . . . . .         26
+ 14   Activity Diagram UC4-2: Xác nhận đối soát và thanh toán . . . . . . . . . .         27
+ 15   System Use-case Diagram . . . . . . . . . . . . . . . . . . . . . . . . . . . .     30
+
+Danh sách bảng
+ 1    Danh sách thành viên nhóm . . . . . . . . . . . . . . . . . . . . . . . . . . .      5
+ 2    Danh sách phân công công việc . . . . . . . . . . . . . . . . . . . . . . . . .      5
+ 3    Đặc tả UC1: Đăng ký thuê phòng . . . . . . . . . . . . . . . . . . . . . . . .       7
+ 4    Đặc tả UC1-1: Tiếp nhận yêu cầu . . . . . . . . . . . . . . . . . . . . . . . .      7
+ 5    Đặc tả UC1-2: Ghi nhận đăng ký và sắp xếp lịch xem phòng . . . . . . . . .           8
+ 6    Đặc tả UC1-3: Xem phòng . . . . . . . . . . . . . . . . . . . . . . . . . . . .      8
+ 7    Đặc tả UC2: Đặt cọc và xác nhận thuê . . . . . . . . . . . . . . . . . . . . .       9
+ 8    Đặc tả UC2-1: Xác nhận tình trạng phòng . . . . . . . . . . . . . . . . . . .        9
+ 9    Đặc tả UC2-2: Xác nhận nhu cầu thuê . . . . . . . . . . . . . . . . . . . . .       10
+ 10   Đặc tả UC2-3: Xác nhận đặt cọc . . . . . . . . . . . . . . . . . . . . . . . .      10
+ 11   Đặc tả UC3: Nhận phòng, ký thỏa thuận và bàn giao phòng . . . . . . . . .           11
+ 12   Đặc tả UC3-1: Kiểm tra điều kiện lưu trú . . . . . . . . . . . . . . . . . . .      12
+ 13   Đặc tả UC3-2: Lập hợp đồng . . . . . . . . . . . . . . . . . . . . . . . . . .      13
+ 14   Đặc tả UC3-3: Nhận phòng . . . . . . . . . . . . . . . . . . . . . . . . . . .      14
+ 15   Đặc tả UC4-1: Xử lý đơn đăng ký trả phòng và hoàn cọc . . . . . . . . . . .         15
+ 16   Đặc tả UC4-2: Xác nhận đối soát và thanh toán . . . . . . . . . . . . . . . .       16
+ 17   Đặc tả UC4-3: Trả phòng . . . . . . . . . . . . . . . . . . . . . . . . . . . .     17
+ 18   Đặc tả SUC1: Đăng nhập . . . . . . . . . . . . . . . . . . . . . . . . . . . .      31
+ 19   Đặc tả SUC2: Đăng ký thuê phòng . . . . . . . . . . . . . . . . . . . . . . .       32
+ 20   Đặc tả SUC3: Quản lý đăng ký thuê phòng . . . . . . . . . . . . . . . . . .         32
+ 21   Đặc tả SUC4: Quản lý đặt cọc . . . . . . . . . . . . . . . . . . . . . . . . .      33
+ 22   Đặc tả SUC5: Thanh toán . . . . . . . . . . . . . . . . . . . . . . . . . . . .     34
+ 23   Đặc tả SUC6: Quản lý thanh toán . . . . . . . . . . . . . . . . . . . . . . .       35
+ 24   Đặc tả SUC7: Quản lý hợp đồng . . . . . . . . . . . . . . . . . . . . . . . .       36
+ 25   Đặc tả SUC8: Đối soát chi phí . . . . . . . . . . . . . . . . . . . . . . . . . .   37
+ 26   Đặc tả SUC9: Tính toán chi phí . . . . . . . . . . . . . . . . . . . . . . . . .    38
+ 27   Đặc tả SUC10: Đăng ký trả phòng . . . . . . . . . . . . . . . . . . . . . . .       39
+ 28   Đặc tả SUC11: Quản lý đăng ký trả phòng . . . . . . . . . . . . . . . . . . .       40
+
+                                            3
+29   Đặc tả SUC12: Quản lý giường phòng . . . . . . . . . . . . . . . . . . . . .   41
+30   Đặc tả SUC13: Xem/tra cứu giường/phòng . . . . . . . . . . . . . . . . . .     42
+
+
+
+
+                                        4
+Danh sách thành viên nhóm
+
+STT    Họ & Tên                 MSSV      Email                            Đóng góp
+ 1     Lê Nguyên Thảo          23127118   lnthao23@clc.fitus.edu.vn            25%
+ 2     Đởm Quang Minh Triết    23127131   dqmtriet23@clc.fitus.edu.vn          25%
+ 3     Đinh Đại Vũ             23127144   ddvu23@clc.fitus.edu.vn              25%
+ 4     Nguyễn Đăng Phôn        23127451   ndphon23@clc.fitus.edu.vn            25%
+
+                          Table 1: Danh sách thành viên nhóm
+
+
+
+
+Danh sách phân công
+
+ STT    Công việc    Phụ trách                    Student ID     Mức độ hoàn thành
+  1                  Lê Nguyên Thảo                23127118             100%
+  2                  Đởm Quang Minh Triết          23127131             100%
+  3                  Đinh Đại Vũ                   23127144             100%
+  4                  Nguyễn Đăng Phôn              23127451             100%
+
+                        Table 2: Danh sách phân công công việc
+
+
+
+
+                                           5
+1   Phân tích Use-case nghiệp vụ
+                           HomeStay Dorm
+                                                                                     Tiếp nhận
+                                                                                      yêu cầu
+
+                                                          ⟨⟨include⟩⟩
+                                      Đăng ký
+                                     thuê phòng
+                                                         ⟨⟨include⟩⟩              Ghi nhận
+                                                                                   đăng ký
+                                            ⟨⟨include⟩⟩                        và xếp lịch xem
+                                                                                    phòng
+
+
+                                                       Xem phòng
+
+
+
+                                                                      Xác nhận
+                                                                      tình trạng
+                                                                        phòng
+
+                                                     ⟨⟨include⟩⟩
+
+                                    Đặt cọc & xác                             Xác nhận nhu
+                                     nhận thuê         ⟨⟨extend⟩⟩               cầu thuê
+
+
+                                                      ⟨⟨extend⟩⟩
+
+                                                                          Xác nhận
+                                                                           đặt cọc
+
+
+
+                                                                                     Kiểm tra
+                                                                                     điều kiện
+                                                                                      lưu trú
+                                                        ⟨⟨include⟩⟩
+
+
+                                   Nhận phòng, ký
+                                    thỏa thuận và      ⟨⟨extend⟩⟩                  Lập hợp đồng
+                                   bàn giao phòng
+
+
+
+         Khách hàng                                      ⟨⟨include⟩⟩
+
+                                                                                   Nhận phòng
+
+
+
+
+                                                                                   Tiếp nhận
+                                                                                   thông tin
+                                                                                    đăng ký
+                                                                                   trả phòng
+
+
+
+                                                         ⟨⟨include⟩⟩
+
+                                                                                 Xác nhận
+                                                                                  đối soát
+                                                         ⟨⟨include⟩⟩           và thanh toán
+                                     Trả phòng
+
+
+
+                                                         ⟨⟨include⟩⟩
+                                                                                    Tính toán
+                                                                                    hoàn cọc
+                                                                                   và khấu trừ
+                                                    ⟨⟨include⟩⟩                     phát sinh
+
+
+
+
+                                                                      Trả phòng
+
+
+
+
+                      Figure 1: Mô hình Use-case nghiệp vụ
+
+
+
+
+                                            6
+1.1      Đặc tả Use-case nghiệp vụ
+
+1.1.1    Đăng ký thuê phòng
+
+
+        Use Case                     UC1: Đăng ký thuê phòng
+
+         Actor      Khách hàng.
+                    - Bao quát toàn bộ quá trình từ khi tiếp nhận yêu cầu thuê phòng,
+         Mô tả        kiểm tra tình trạng phòng, ghi nhận đăng ký cho đến khi xem
+                      phòng thực tế.
+                    1. Nhân viên sales thực hiện UC1-1: Tiếp nhận yêu cầu.
+                    2. Nhân viên sales thực hiện UC1-2: Ghi nhận đăng ký và sắp
+   Dòng cơ bản         xếp lịch xem phòng.
+                    3. Nhân viên sales thực hiện UC1-3: Xem phòng.
+                    4. Kết thúc UC1.
+                    - Tại bất kỳ bước nào, nếu khách hàng không đồng ý hoặc phòng
+  Dòng thay thế
+                      không đáp ứng, quy trình sẽ kết thúc sớm.
+
+                     Table 3: Đặc tả UC1: Đăng ký thuê phòng
+
+
+
+        Use Case                     UC1-1: Tiếp nhận yêu cầu
+
+         Actor      Khách hàng (Cá nhân hoặc đại diện nhóm).
+                    - UC này bắt đầu khi khách hàng liên hệ với nhân viên sales để yêu
+                      cầu tư vấn thuê chỗ ở.
+         Mô tả
+                    - UC mô tả quy trình tiếp nhận yêu cầu và thông tin nhu cầu khách
+                      hàng, tư vấn và xác nhận thuê.
+                    1. Tiếp nhận yêu cầu thuê phòng
+                    2. Tiếp nhận thông tin nhu cầu khách hàng
+   Dòng cơ bản      3. Tư vấn các loại dịch vụ
+                    4. Xác nhận nhu cầu thuê phòng
+                    5. Kết thúc UC1-1
+
+                    - Tại bước 2: Nếu ký túc xá không có phòng đáp ứng đúng nhu
+  Dòng thay thế       cầu khách hàng thì nhân viên sẽ gợi ý khách hàng dịch vụ khác
+                      của ký túc xá
+
+                     Table 4: Đặc tả UC1-1: Tiếp nhận yêu cầu
+
+
+
+
+                                         7
+        Use Case         UC1-2: Ghi nhận đăng ký và sắp xếp lịch xem phòng
+
+         Actor        Khách hàng (Cá nhân hoặc đại diện nhóm).
+                      - UC này bắt đầu sau khi nhân viên đã xác nhận với khách hàng về
+                        các yêu cầu thuê phòng.
+         Mô tả
+                      - UC mô tả quy trình ghi nhận đăng ký thuê phòng và sắp xếp lịch
+                        dẫn khách xem tình trạng phòng thực tế.
+                      1. Kiểm tra tình trạng phòng
+                      2. Đối chiếu yêu cầu của khách với quy định thuê trọ
+   Dòng cơ bản        3. Ghi nhận thông tin đăng ký
+                      4. Sắp xếp lịch xem phòng
+                      5. Kết thúc UC1-2
+                      - Tại bước 1: Nếu phòng theo nhu cầu của khách hàng không có
+  Dòng thay thế         sẵn, nhân viên sẽ đề xuất khách hàng đổi qua chọn loại phòng
+                        hoặc dịch vụ khác
+
+           Table 5: Đặc tả UC1-2: Ghi nhận đăng ký và sắp xếp lịch xem phòng
+
+        Use Case                           UC1-3: Xem phòng
+
+         Actor        Khách hàng (Cá nhân hoặc đại diện nhóm).
+                      - UC này bắt đầu sau khi nhân viên và khách hàng đã thống nhất
+                        được thời gian xem phòng thực tế.
+         Mô tả
+                      - UC mô tả quy trình xem phòng và xác nhận nhu cầu đặt phòng
+                        của khách hàng.
+                      1. Dẫn khách xem phòng
+                      2. Giới thiệu thông tin phòng
+   Dòng cơ bản
+                      3. Xác nhận nhu cầu đặt cọc của khách
+                      4. Thực hiện UC2-1
+                      - Tại bước 2: Nếu khách hàng không hài lòng về phòng, nhân viên
+  Dòng thay thế
+                        sẽ gợi ý cho khách hàng về các lựa chọn phòng khác
+
+                          Table 6: Đặc tả UC1-3: Xem phòng
+
+
+1.1.2    Đặt cọc và xác nhận thuê
+
+
+
+
+                                           8
+Tên Use Case                     UC2: Đặt cọc và xác nhận thuê
+
+   Actor          Khách hàng
+                  - UC này bắt đầu khi khách hàng đồng ý thuê phòng/giường sau
+                    khi xem phòng.
+                  - UC mô tả quy trình xác nhận tình trạng phòng thực tế, xác nhận
+   Mô tả
+                    nhu cầu thuê và thực hiện đặt cọc để giữ chỗ.
+                  - UC bao gồm các use-case con: UC2-1 (Include), UC2-2 và UC2-3
+                    (Extend).
+                  1. Tiếp nhận quyết định thuê phòng/giường của Khách hàng.
+                  2. Nhân viên Sales thực hiện UC2-1: Xác nhận tình trạng phòng.
+                  3. Nếu phòng hợp lệ, Nhân viên Sales thực hiện UC2-2: Xác nhận
+                     nhu cầu thuê.
+Dòng cơ bản
+                  4. Sau khi thông tin thuê được xác nhận, thực hiện UC2-3: Xác
+                     nhận đặt cọc.
+                  5. Hoàn tất ghi nhận tình trạng phòng/giường trên hệ thống.
+                  6. Kết thúc Use-case.
+                  - Tại UC2-1: Nếu phòng không còn trống hoặc không đạt yêu cầu,
+                    thông báo cho khách và dừng UC.
+Dòng thay thế     - Tại UC2-2: Nếu khách không tiếp tục thuê, UC kết thúc.
+                  - Tại UC2-3: Nếu khách không đặt cọc trong thời gian quy định,
+                    phòng không được giữ chỗ.
+
+                 Table 7: Đặc tả UC2: Đặt cọc và xác nhận thuê
+
+Tên Use Case                   UC2-1: Xác nhận tình trạng phòng
+
+   Actor          Khách hàng
+                  - UC này được Include trong UC2.
+   Mô tả          - UC nhằm đảm bảo phòng/giường còn trống và phù hợp để cho
+                    thuê.
+                  1. Nhân viên Sales rà soát thông tin khách hàng và phòng/giường
+                     đã chọn.
+                  2. Nhân viên Sales liên hệ Quản lý để kiểm tra tình trạng phòng
+Dòng cơ bản          thực tế.
+                  3. Quản lý kiểm tra tình trạng phòng (đang trống, vệ sinh, tài sản).
+                  4. Quản lý gửi kết quả kiểm tra cho Nhân viên Sales.
+                  5. Nhân viên Sales thông báo kết quả cho khách hàng.
+                  - Nếu phòng không đạt yêu cầu, Nhân viên Sales đề xuất phòng
+Dòng thay thế
+                    khác hoặc kết thúc UC.
+
+                Table 8: Đặc tả UC2-1: Xác nhận tình trạng phòng
+
+
+
+
+                                        9
+  Tên Use Case                    UC2-2: Xác nhận nhu cầu thuê
+
+        Actor      Khách hàng
+                   - UC này Extend từ UC2 khi khách hàng đã xác nhận tình trạng
+        Mô tả        phòng và muốn thuê.
+                   - UC nhằm xác nhận đầy đủ thông tin thuê trước khi đặt cọc.
+                   1. Nhân viên Sales tiếp nhận quyết định thuê của khách hàng.
+                   2. Nhân viên Sales yêu cầu khách bổ sung thông tin cần thiết (giấy
+                      tờ, thời gian thuê, số người).
+   Dòng cơ bản     3. Ghi nhận thông tin bổ sung từ Khách hàng.
+                   4. Nhân viên Sales xác nhận thông tin.
+                   5. Nhân viên Sales chuyển thông tin thuê cho Kế toán.
+                   6. Thực hiện UC2-3.
+  Dòng thay thế    - Nếu khách không bổ sung đầy đủ thông tin, UC tạm dừng.
+
+                  Table 9: Đặc tả UC2-2: Xác nhận nhu cầu thuê
+
+  Tên Use Case                       UC2-3: Xác nhận đặt cọc
+
+        Actor      Khách hàng
+                   - UC này Extend từ UC2 khi khách hàng đã xác nhận thuê.
+        Mô tả
+                   - UC nhằm xác nhận việc đặt cọc để giữ phòng/giường.
+                   1. Kế toán tính toán số tiền cọc theo quy định.
+                   2. Kế toán gửi thông tin tiền cọc cho Nhân viên Sales.
+                   3. Nhân viên Sales thông báo tiền cọc cho khách hàng.
+                   4. Yêu cầu khách hàng đặt cọc.
+                   5. Nhân viên Sales ghi nhận chứng từ đặt cọc và gửi cho Quản lý
+   Dòng cơ bản        xác nhận.
+                   6. Quản lý xác nhận tình trạng đặt cọc với Nhân viên Sales.
+                   7. Nhân viên Sales thông báo kết quả đặt cọc cho khách hàng.
+                   8. Ghi nhận kết quả đặt cọc và cập nhật trạng thái phòng/giường
+                      trên hệ thống.
+                   9. Kết thúc Use-case.
+                   - Nếu khách không đặt cọc đúng hạn, phòng/giường không được
+  Dòng thay thế
+                     giữ chỗ.
+
+                    Table 10: Đặc tả UC2-3: Xác nhận đặt cọc
+
+
+1.1.3   Nhận phòng, ký thỏa thuận và bàn giao phòng
+
+
+
+
+                                        10
+Tên Use Case        UC3: Nhận phòng, ký thỏa thuận và bàn giao phòng
+
+                 - Use-case này được thực hiện sau khi Use-case Đặt cọc và xác nhận
+                   thuê hoàn thành.
+   Mô tả         - UC mô tả toàn bộ quy trình từ khi khách hàng đến nhận phòng,
+                   kiểm tra điều kiện, ký hợp đồng thuê, thanh toán các khoản cần
+                   thiết và được bàn giao phòng/giường.
+                 1. Khi Use-case Đặt cọc và xác nhận thuê thành công, hệ thống cho
+                    phép thực hiện Use-case UC3.
+                 2. Thực hiện UC3-1: Kiểm tra điều kiện trước khi ký hợp đồng.
+Dòng cơ bản      3. Nếu UC3-1 thành công, thực hiện UC3-2: Lập hợp đồng thuê.
+                 4. Thực hiện UC3-3: Nhận phòng và bàn giao phòng/giường cho
+                    khách hàng.
+                 5. Kết thúc Use-case UC3.
+                 - A3: Nếu UC3-1 không thành công, Use-case UC3 kết thúc và
+Dòng thay thế
+                   không tiến hành ký hợp đồng hay bàn giao phòng.
+
+      Table 11: Đặc tả UC3: Nhận phòng, ký thỏa thuận và bàn giao phòng
+
+
+
+
+                                      11
+Tên Use Case                    UC3-1: Kiểm tra điều kiện lưu trú
+
+                   - Use-case này được thực hiện khi Use-case UC3 (Nhận phòng, ký
+                     thỏa thuận và bàn giao phòng) bắt đầu.
+   Mô tả           - UC3-1 mô tả quá trình kiểm tra điều kiện lưu trú của khách hàng
+                     nhằm đảm bảo đủ điều kiện trước khi tiến hành lập hợp đồng thuê
+                     phòng/giường.
+                   1. Thực hiện Use-case UC3-1: Kiểm tra điều kiện trước khi lập hợp
+                      đồng.
+                   2. Nhân viên Sales kiểm tra thông tin đặt cọc của khách hàng trên
+                      hệ thống.
+                   3. Nhân viên Sales đối chiếu giấy tờ tùy thân của khách hàng.
+                   4. Nhân viên Sales thu thập các thông tin lưu trú cần thiết của
+Dòng cơ bản           khách hàng.
+                   5. Nhân viên Sales chuyển toàn bộ thông tin lưu trú cho Quản lý.
+                   6. Nhân viên quản lý kiểm tra lại điều kiện lưu trú của từng khách
+                      hàng.
+                   7. Nhân viên quản lý thông báo kết quả kiểm tra điều kiện lưu trú
+                      cho Nhân viên Sales để tiến hành lập hợp đồng.
+                   8. Kết thúc Use-case UC3-1.
+                   - A2: Nếu Nhân viên Sales kiểm tra thông tin khách hàng không
+                     hợp lệ, thực hiện hoàn lại 80% tiền đặt cọc cho khách hàng và kết
+                     thúc Use-case.
+Dòng thay thế      - A3: Nếu Nhân viên quản lý phát hiện có khách hàng không đủ
+                     điều kiện lưu trú, Nhân viên Sales xác nhận lại nguyện vọng của
+                     các khách hàng đủ điều kiện và thực hiện hoàn 80% tiền đặt cọc
+                     cho khách hàng không đủ điều kiện, sau đó kết thúc Use-case.
+
+                Table 12: Đặc tả UC3-1: Kiểm tra điều kiện lưu trú
+
+
+
+
+                                        12
+  Tên Use Case                              UC3-2: Lập hợp đồng
+
+                   - Use-case này được thực hiện khi Use-case UC3-1 (Kiểm tra điều
+                     kiện lưu trú) hoàn thành và các thông tin, điều kiện lưu trú của
+                     khách hàng hợp lệ.
+        Mô tả
+                   - UC mô tả quy trình lập, ký kết hợp đồng thuê phòng/giường giữa
+                     khách hàng và nhân viên Sales, đồng thời thực hiện các thủ tục
+                     thu phí ban đầu theo hợp đồng.
+                   1. Thực hiện Use-case UC3-2: Lập hợp đồng.
+                   2. Nhân viên Sales lập hợp đồng thuê phòng/giường dựa trên thông
+                      tin đã được xác nhận.
+                   3. Nhân viên Sales hướng dẫn nội dung hợp đồng và tiến hành ký
+                      hợp đồng với khách hàng.
+   Dòng cơ bản     4. Nhân viên Sales chuyển hợp đồng đã ký cho bộ phận Kế toán.
+                   5. Kế toán tính toán các khoản tiền cần thu theo nội dung hợp đồng.
+                   6. Kế toán xác nhận đã thu đủ các khoản cần thu từ khách hàng.
+                   7. Thông báo cho Nhân viên quản lý để thực hiện Use-case UC3-3:
+                      Nhận phòng và bàn giao phòng/giường cho khách hàng.
+                   8. Kết thúc Use-case UC3-2.
+                   - A0: Nếu các thông tin hoặc điều kiện lưu trú không hợp lệ, không
+  Dòng thay thế
+                     thực hiện Use-case UC3-2.
+
+                      Table 13: Đặc tả UC3-2: Lập hợp đồng
+
+1.1.4   Use-case Trả phòng
+
+1.2     Activity Diagram
+1.2.1   Đăng kí thuê phòng
+
+                     Nhân viên Sales
+
+
+
+                       Tiếp nhận yêu cầu
+                          thuê phòng
+
+
+
+                      Tiếp nhận thông tin
+                      nhu cầu khách hàng
+
+
+
+
+                         Phòng đáp ứng       Không   Gợi ý dịch vụ
+                         đúng nhu cầu?               khác của KTX
+
+
+                                Có
+
+                          Tư vấn các
+                          loại dịch vụ
+                                            13
+Tên Use Case                              UC3-3: Nhận phòng
+
+                - Use-case này được thực hiện khi Use-case UC3-2 (Lập hợp đồng)
+                  hoàn thành, tức hợp đồng thuê phòng/giường đã được ký kết.
+   Mô tả
+                - UC mô tả quy trình bàn giao phòng/giường và tài sản cho khách
+                  hàng, đồng thời hướng dẫn các quy định lưu trú tại ký túc xá.
+                1. Thực hiện Use-case UC3-3: Nhận phòng.
+                2. Nhân viên quản lý kiểm tra và ghi nhận tình trạng phòng/giường
+                   trước khi bàn giao tài sản cho khách hàng.
+                3. Nhân viên quản lý hướng dẫn khách hàng các quy định, nội quy
+                   và các lưu ý khi lưu trú tại ký túc xá.
+Dòng cơ bản
+                4. Nhân viên quản lý lập và ký biên bản bàn giao tài sản với khách
+                   hàng.
+                5. Nhân viên quản lý bàn giao phòng/giường và các tài sản liên
+                   quan cho khách hàng.
+                6. Kết thúc Use-case UC3-3.
+                - A0: Nếu hợp đồng không được ký kết, không thực hiện Use-case
+Dòng thay thế
+                  UC3-3.
+
+                   Table 14: Đặc tả UC3-3: Nhận phòng
+
+                 Nhân viên Sales
+
+
+
+                     Kiểm tra tình
+                     trạng phòng
+
+
+
+                         Phòng       Không Đề xuất đổi loại phòng
+                         có sẵn?              hoặc dịch vụ khác
+
+                             Có
+
+                  Đối chiếu yêu cầu với
+                   quy định thuê trọ
+
+
+
+                   Ghi nhận thông tin
+                        đăng ký
+
+
+
+                      Sắp xếp lịch
+                      xem phòng
+
+
+
+
+                     Figure 3: Activity Diagram UC1-2
+                                     14
+  Use Case                    UC4-1: Xử lý đơn đăng ký trả phòng
+
+   Actor         Khách hàng
+                 - UC4-2 bắt đầu sau khi UC4-1 được thực hiện hoàn tất
+                 - UC4- mô tả quy trình kiểm tra hợp đồng cũng như kiểm tra
+   Mô tả
+                   điều kiện phòng khách đang ở để tính toán các khoản tiền cần bổ
+                   sung/được hoàn
+                 1. Nhân viên sales tiếp nhận nhu cầu trả phòng của khách hàng.
+                 2. Thực hiện UC4-1
+                 3. Nhân viên sales kiểm tra thông tin đăng kí trả phòng (thời gian
+                    trả phòng, hợp đồng, phiếu đặt cọc...) của khách hàng.
+                 4. Nhân viên sales ghi nhận lại thông tin phòng để quản lý kiểm tra
+                    khi kết thúc hợp đồng.
+                 5. Đến thời điểm trả phòng, quản lý kiểm tra tình trạng thực tế của
+                    phòng/giường
+                 6. Quản lý ghi nhận lại tình trạng thực tế của phòng và đối chiếu
+                    thông tin hợp đồng và các nghĩa vụ liên quan của khách thuê.
+                 7. Sau khi hoàn tất kiểm tra ban đầu, quản lý sẽ tổng hợp các thông
+                    tin cần thiết (tình trạng phòng, đồ đạc...)
+                 8. Quản lý chuyển thông tin cần thiết cho kế toán
+                 9. Kế toán xác định mức hoàn cọc cơ bản theo tình trạng thuê và
+                    thời gian lưu trú của khách:
+Dòng cơ bản            • Đã đặt cọc nhưng chưa ký hợp đồng (hoặc hủy thuê): hoàn
+                          80% tiền cọc.
+                       • Đã ký hợp đồng, chưa hết hạn, lưu trú dưới 6 tháng: hoàn
+                          50% tiền cọc.
+                       • Đã ký hợp đồng, chưa hết hạn, lưu trú trên 6 tháng: hoàn
+                          70% tiền cọc.
+                       • Hết hạn thuê theo hợp đồng: hoàn 100% tiền cọc.
+                10. Kế toán khấu trừ các chi phí phát sinh trong quá trình lưu trú
+                    (tiền thuê còn nợ, điện nước, chi phí sửa chữa/bồi thường, phạt
+                    vi phạm...).
+                11. Kế toán lập bảng đối soát/phiếu thanh toán sau khi tính toán
+                    xong.
+                12. Kế toán báo lại thông tin cho quản lý để làm việc với khách hàng
+                    thuê.
+                13. Thực hiện UC4-2
+                14. Kết thúc UC4-1.
+                 - Tại bước 2: Nếu thông tin đăng kí của khách hàng không hợp
+Dòng thay thế      lệ, yêu cầu khách hàng gửi lại đơn đăng ký trả phòng khác và kết
+                   thúc UC4-1
+
+       Table 15: Đặc tả UC4-1: Xử lý đơn đăng ký trả phòng và hoàn cọc
+
+
+
+
+                                      15
+  Use Case                   UC4-2: Xác nhận đối soát và thanh toán
+
+   Actor           Khách hàng
+                   - UC4-2 bắt đầu sau khi hoàn thành UC4-1
+   Mô tả           - UC4-2 mô tả quy trình quản lý trao đổi với khách hàng để xác
+                     nhận kết quả đối soát và hoàn tất thanh toán.
+                   1. Quản lý sẽ thông báo chi tiết các khoản khấu trừ và số tiền hoàn
+                      cọc (hoặc số tiền cần thanh toán thêm) cho khách hàng
+                   2. Quản lý xác nhận lại với khách về việc đồng ý trả phòng theo kết
+                      quả đối soát.
+                   3. Nếu khách cần thanh toán thêm, quản lý thông báo cho kế toán
+Dòng cơ bản
+                      hướng dẫn khách thanh toán
+                   4. Kế toán hướng dẫn khách thanh toán
+                   5. Kế toán xác nhận thanh toán của khách
+                   6. Nếu thanh toán thành công, thực hiện UC4-3
+                   7. Kết thúc UC4-2.
+                   - Tại bước 3, nếu khách được hoàn cọc:
+                     4A. Quản lý thông báo cho kế toán
+                     5A. Kế toán thống nhất phương thức thanh toán với khách hàng
+Dòng thay thế            (tiền mặt hoặc chuyển khoản theo quy định).
+                     6A. Thực hiện UC4-3
+                   - Tại bước 6, nếu khách hàng thanh toán thất bại, kế toán yêu cầu
+                     khách hàng thanh toán lại, quay lại bước 5.
+
+             Table 16: Đặc tả UC4-2: Xác nhận đối soát và thanh toán
+
+                    Nhân viên Sales
+
+
+
+                          Dẫn khách
+                          xem phòng
+
+
+
+                           Giới thiệu
+                        thông tin phòng
+
+
+
+
+                          Khách hàng       Không Gợi ý các lựa chọn
+                           hài lòng?                 phòng khác
+
+
+                                Có
+
+                       Xác nhận nhu cầu
+                       đặt cọc của khách
+
+
+                                           16
+                       Thực hiện UC2-1
+  Use Case                            UC4-3: Trả phòng
+
+   Actor        Khách hàng
+                - UC4-3 bắt đầu sau khi hoàn thành UC4-2
+   Mô tả        - UC4-3 mô tả quy trình trả phòng sau khi khách đã xác nhận kết
+                  quả đối soát và hoàn tất thanh toán các khoản phát sinh
+                1. Khách hàng xác nhận kết quả đối soát và hoàn tất thanh toán
+                   các khoản phát sinh
+                2. Thực hiện UC4-3.
+                3. Quản lý tiến hành cho khách ký biên bản trả phòng và thanh lý
+Dòng cơ bản        hợp đồng thuê.
+                4. Kế toán hướng dẫn khách thanh toán
+                5. Kế toán xác nhận thanh toán của khách
+                6. Nếu thanh toán thành công, thực hiện UC4-3
+                7. Kết thúc UC4-2.
+                - Tại bước 3, nếu khách được hoàn cọc:
+                  4A. Quản lý thông báo cho kế toán
+                  5A. Kế toán thống nhất phương thức thanh toán với khách hàng
+Dòng thay thế         (tiền mặt hoặc chuyển khoản theo quy định).
+                  6A. Tiếp tục thực hiện bước 5
+                - Tại bước 6, nếu khách hàng thanh toán thất bại, kế toán yêu cầu
+                  khách hàng thanh toán lại, quay lại bước 5.
+
+                    Table 17: Đặc tả UC4-3: Trả phòng
+
+
+
+
+                                    17
+1.2.2   Đặt cọc và xác nhận thuê
+
+                     Nhân viên Sales
+
+
+
+                      Tiếp nhận quyết định
+                       thuê phòng/giường
+
+
+                        Thực hiện UC2-1:
+                    Xác nhận tình trạng phòng
+
+
+
+                              Phòng           Không      Thông báo
+                              hợp lệ?                    cho khách
+
+                                  Có
+                        Thực hiện UC2-2:
+                      Xác nhận nhu cầu thuê
+
+
+
+                            Khách tiếp           Không
+                            tục thuê?
+
+
+                                  Có
+                        Thực hiện UC2-3:
+                        Xác nhận đặt cọc
+
+
+
+
+                           Đặt cọc trong             Không Phòng không được
+                        thời gian quy định?                     giữ chỗ
+
+
+                                  Có
+
+                      Hoàn tất ghi nhận tình
+                       trạng trên hệ thống
+
+
+
+
+              Figure 5: Activity Diagram UC2: Đặt cọc và xác nhận thuê
+
+
+
+
+                                                18
+  Nhân viên Sales                                          Quản lý
+
+
+
+Rà soát thông tin khách hàng
+ và phòng/giường đã chọn
+
+
+  Liên hệ Quản lý kiểm tra
+  tình trạng phòng thực tế
+
+                                                    Kiểm tra tình trạng phòng
+                                                     (trống, vệ sinh, tài sản)
+
+
+                                                      Gửi kết quả kiểm tra
+                                                      cho Nhân viên Sales
+
+
+
+         Phòng đạt       Không Đề xuất phòng khác
+          yêu cầu?             hoặc kết thúc UC
+
+              Có
+
+     Thông báo kết quả
+      cho khách hàng
+
+
+
+
+   Figure 6: Activity Diagram UC2-1: Xác nhận tình trạng phòng
+
+
+
+
+                                        19
+  Nhân viên Sales                                 Kế toán
+
+
+
+   Tiếp nhận quyết định
+   thuê của khách hàng
+
+
+     Yêu cầu bổ sung
+    thông tin cần thiết
+
+
+    Ghi nhận thông tin
+     bổ sung từ khách
+
+
+
+        Thông tin         Không
+                                  Tạm dừng UC
+         đầy đủ?
+
+
+              Có
+
+   Xác nhận thông tin
+
+
+
+  Chuyển thông tin thuê
+      cho Kế toán
+
+
+                                                Thực hiện UC2-3
+
+
+
+
+Figure 7: Activity Diagram UC2-2: Xác nhận nhu cầu thuê
+
+
+
+
+                                  20
+     Kế toán                Nhân viên Sales                                   Quản lý
+
+
+
+Tính toán số tiền cọc
+   theo quy định
+
+
+Gửi thông tin tiền cọc
+ cho Nhân viên Sales
+
+                              Thông báo tiền cọc
+                               cho khách hàng
+
+
+                              Yêu cầu khách hàng
+                                    đặt cọc
+
+
+
+
+                                 Khách đặt cọc        Không Phòng/giường không
+                                  đúng hạn?                    được giữ chỗ
+
+
+                                        Có
+                              Ghi nhận chứng từ
+                            và gửi quản lý xác nhận
+
+                                                                        Xác nhận tình trạng
+                                                                        đặt cọc với NV Sales
+
+                              Thông báo kết quả
+                            đặt cọc cho khách hàng
+
+
+                              Ghi nhận kết quả &
+                          cập nhật trạng thái hệ thống
+
+
+
+
+             Figure 8: Activity Diagram UC2-3: Xác nhận đặt cọc
+
+
+
+
+                                        21
+1.2.3   Nhận phòng, kí thỏa thuận và bàn giao phòng
+
+                          Nhân viên Sales
+
+
+
+                            Thực hiện UC3-1:
+                            Kiểm tra điều kiện
+
+
+
+                                                  Không
+                               Thành công?
+
+
+                                     Có
+
+                            Thực hiện UC3-2:
+                            Lập hợp đồng thuê
+
+
+
+                            Thực hiện UC3-3:
+                          Bàn giao phòng/giường
+
+
+
+
+                         Figure 9: Activity Diagram UC3
+
+
+
+
+                                          22
+Nhân viên Sales                                        Quản lý
+
+
+
+  Kiểm tra thông tin
+ đặt cọc trên hệ thống
+
+
+   Đối chiếu giấy tờ
+       tùy thân
+
+
+
+       Thông tin        Không Hoàn lại 80% tiền
+        hợp lệ?               đặt cọc cho khách
+
+            Có
+  Thu thập thông tin
+   lưu trú cần thiết
+
+
+ Chuyển thông tin lưu
+   trú cho Quản lý
+
+                                                   Kiểm tra lại điều kiện
+                                                  lưu trú của khách hàng
+
+
+
+Xác nhận nguyện vọng &                 Không           Đủ điều kiện
+   hoàn 80% tiền cọc                                     lưu trú?
+
+
+                                                              Có
+
+                                                    Thông báo kết quả
+                                                      cho NV Sales
+
+  Nhận kết quả & tiến
+   hành lập hợp đồng
+
+
+
+
+ Figure 10: Activity Diagram UC3-1: Kiểm tra điều kiện lưu trú
+
+
+
+
+                                       23
+Nhân viên Sales                                   Kế toán
+
+
+
+
+       Điều kiện        Không   Không thực hiện
+    lưu trú hợp lệ?                 UC3-2
+
+
+            Có
+  Lập hợp đồng thuê
+  dựa trên thông tin
+
+
+Hướng dẫn nội dung &
+tiến hành ký hợp đồng
+
+
+Chuyển hợp đồng đã ký
+     cho Kế toán
+
+                                              Tính toán các khoản
+                                                  tiền cần thu
+
+
+                                               Xác nhận thu đủ
+                                              các khoản từ khách
+
+
+                                            Thông báo cho Quản lý
+                                              (Thực hiện UC3-3)
+
+
+
+
+  Figure 11: Activity Diagram UC3-2: Lập hợp đồng
+
+
+
+
+                                24
+         Quản lý
+
+
+
+
+         Hợp đồng đã        Không   Không thực hiện
+         được ký kết?                   UC3-3
+
+               Có
+
+   Kiểm tra & ghi nhận tình
+      trạng phòng/giường
+
+
+     Hướng dẫn quy định,
+       nội quy lưu trú
+
+
+      Lập & ký biên bản
+       bàn giao tài sản
+
+
+    Bàn giao phòng/giường
+     & tài sản cho khách
+
+
+
+
+Figure 12: Activity Diagram UC3-3: Nhận phòng
+
+
+
+
+                           25
+1.2.4    Trả phòng và hoàn cọc
+
+                 Nhân viên Sales                        Quản lý                           Kế toán
+
+
+
+                    Tiếp nhận nhu cầu
+                        trả phòng
+
+
+                        Kiểm tra
+  :Đơn đăng ký      thông tin đăng ký
+    trả phòng
+
+                                   Không Yêu cầu gửi lại
+                         Hợp lệ?
+                                          đơn đăng ký
+   :Hợp đồng
+                             Có
+                        Ghi nhận
+                     thông tin phòng
+
+  :Phiếu kiểm tra                               Kiểm tra phòng thực tế &
+  phòng [Tạo mới]                                  đối chiếu hợp đồng
+
+
+
+                                                   Tổng hợp thông tin
+
+
+                                                                        :Phiếu kiểm tra
+                                                                        phòng [Đã kiểm]
+                                                    Chuyển thông tin
+                                                      cho Kế toán
+
+                                                                                    Xác định mức hoàn
+                                                                                        cọc cơ bản
+
+
+
+                                                                                     Khấu trừ chi phí
+                                                                                        phát sinh
+
+
+
+                                                                                    Lập bảng đối soát/
+                                                                                     phiếu thanh toán
+
+                                                                                                          :Bảng
+                                                                                                         đối soát
+                                                                                     Báo lại thông tin
+                                                                                       cho Quản lý
+
+
+                                                    Thực hiện UC4-2
+
+
+
+
+                 Figure 13: Activity Diagram UC4-1: Xử lý đơn đăng ký trả phòng
+
+
+
+
+                                                           26
+               Quản lý                            Kế toán
+
+
+
+        Thông báo chi tiết khấu trừ
+         & số tiền hoàn/thu thêm
+
+
+        Xác nhận đồng ý trả phòng
+          theo kết quả đối soát
+
+
+
+
+Không           Khách cần
+             thanh toán thêm?
+
+
+
+                      Có
+
+           Thông báo thu thêm                  Hướng dẫn khách
+              cho Kế toán                        thanh toán
+
+
+                                              Xác nhận thanh toán
+                                                   của khách
+
+
+
+                                                  Thanh toán        Không   Yêu cầu khách
+                                                  thành công?               thanh toán lại
+
+                                                    Có
+
+
+
+           Thông báo hoàn cọc               Thống nhất phương thức
+              cho Kế toán                    thanh toán với khách
+
+
+
+                                               Thực hiện UC4-3
+
+
+
+
+        Figure 14: Activity Diagram UC4-2: Xác nhận đối soát và thanh toán
+
+
+
+
+                                       27
+1.3   Phân tích lớp ở mức chức năng
+
+
+
+
+                               28
+2   System Use-case Diagram
+
+
+
+
+                        29
+                    Hệ thống quản lý phòng trọ
+
+                          Quản lý đăng ký                                           Đăng ký thuê
+                            thuê phòng                                                 phòng
+                                                                             ⟨⟨include⟩⟩
+
+
+
+
+                                                       ⟨⟨include⟩⟩
+
+                           Xem/tra cứu
+                           giường/phòng
+
+
+                                            ⟨⟨extend⟩⟩
+
+
+Nhân viên
+  Sales                      Quản lý
+                             hợp đồng
+
+
+
+
+                           ⟨⟨include⟩⟩
+                                                Đăng nhập
+
+
+
+
+                                                                                                           Khách hàng
+
+                                               ⟨⟨include⟩⟩
+                     Tính toán
+                      chi phí
+                                                                Quản lý
+                                                                đặt cọc
+
+
+
+
+                                                ⟨⟨include⟩⟩
+                                                                                             ⟨⟨include⟩⟩
+
+                      Đối soát           ⟨⟨include⟩⟩
+                      chi phí
+
+
+                                                                       ⟨⟨include⟩⟩
+
+ Kế toán
+
+
+                      Quản lý                                                           Thanh toán
+                                                                 ⟨⟨include⟩⟩
+                     thanh toán
+
+                                                                          ⟨⟨extend⟩⟩
+
+
+
+
+            ⟨⟨include⟩⟩
+
+                     Quản lý đăng ký                                                   Đăng ký trả
+                       trả phòng                                                         phòng
+
+
+
+
+Quản lý               Quản lý giường
+                         phòng                                                                              VietQR
+
+
+
+
+                  Figure 15: System Use-case Diagram
+
+
+
+
+                                                       30
+3     Đặc tả System Use Case
+
+      Use Case                             SUC1: Đăng nhập
+
+                     Cho phép người dùng truy cập hệ thống để thực hiện các chức năng
+        Mô tả
+                     tương ứng với vai trò.
+                       • Nhân viên Sales
+                       • Kế toán
+        Actor
+                       • Quản lý
+                       • Khách hàng
+     Sự kiện kích
+                     Người dùng chọn chức năng “Đăng nhập”.
+         hoạt
+    Tiền điều kiện   Người dùng đã có tài khoản.
+    Hậu điều kiện    Người dùng đăng nhập thành công vào hệ thống.
+                     1. Hệ thống hiển thị màn hình đăng nhập.
+                     2. Người dùng nhập username và password.
+                     3. Hệ thống kiểm tra thông tin.
+     Dòng chính
+                     4. Hệ thống xác thực thành công.
+                     5. Hệ thống chuyển vào màn hình chính.
+                     6. Kết thúc use case.
+                     - A1 – Sai thông tin đăng nhập: Hệ thống hiển thị lỗi; người
+                       dùng nhập lại.
+    Dòng thay thế
+                     - A2 – Quên mật khẩu: Hệ thống hiển thị form nhập email;
+                       người dùng nhập email; hệ thống gửi link reset.
+    Use-Case liên
+                     Không.
+        quan
+
+                         Table 18: Đặc tả SUC1: Đăng nhập
+
+
+
+
+                                         31
+  Use Case                          SUC2: Đăng ký thuê phòng
+
+    Mô tả          Khách hàng gửi yêu cầu thuê phòng tới hệ thống.
+    Actor          • Khách hàng
+
+ Sự kiện kích
+                   Khách hàng chọn “Đăng ký thuê phòng”.
+     hoạt
+Tiền điều kiện     Khách hàng đã đăng nhập.
+Hậu điều kiện      Yêu cầu thuê được tạo.
+                   1. Hệ thống hiển thị danh sách phòng.
+                   2. Khách hàng tra cứu phòng.
+                   3. Khách hàng chọn phòng.
+ Dòng chính
+                   4. Khách hàng nhập thông tin thuê.
+                   5. Hệ thống lưu yêu cầu thuê.
+                   6. Kết thúc.
+Dòng thay thế      - A1 – Không có phòng phù hợp: Hệ thống thông báo; kết thúc.
+Use-Case liên      - (include) Xem/tra cứu giường/phòng.
+    quan
+
+                   Table 19: Đặc tả SUC2: Đăng ký thuê phòng
+
+  Use Case                     SUC3: Quản lý đăng ký thuê phòng
+
+    Mô tả          Nhân viên sales tiếp nhận và xử lý yêu cầu thuê phòng.
+    Actor          • Nhân viên Sales
+
+ Sự kiện kích
+                   Có yêu cầu thuê phòng từ khách hàng.
+     hoạt
+Tiền điều kiện     Nhân viên đã đăng nhập và có yêu cầu thuê.
+Hậu điều kiện      Yêu cầu được xử lý (chấp nhận / từ chối / tư vấn lại).
+                   1. Hệ thống hiển thị danh sách yêu cầu thuê.
+                   2. Nhân viên chọn yêu cầu.
+                   3. Hệ thống hiển thị thông tin phòng.
+ Dòng chính
+                   4. Nhân viên xác nhận thuê.
+                   5. Hệ thống cập nhật trạng thái.
+                   6. Kết thúc.
+                   - A1 – Phòng không còn trống: Hệ thống thông báo; nhân viên
+Dòng thay thế
+                     từ chối yêu cầu hoặc liên hệ tư vấn lại với khách.
+Use-Case liên      - (include) Xem/tra cứu giường/phòng.
+    quan           - (extend) Quản lý đặt cọc.
+
+                Table 20: Đặc tả SUC3: Quản lý đăng ký thuê phòng
+
+                                        32
+  Use Case                           SUC4: Quản lý đặt cọc
+
+    Mô tả        Thực hiện tạo và xử lý yêu cầu đặt cọc cho việc thuê phòng.
+                 • Nhân viên Sales
+    Actor        • Kế toán
+                 • Quản lý
+ Sự kiện kích
+                 Yêu cầu thuê phòng được chấp nhận.
+     hoạt
+Tiền điều kiện   Yêu cầu thuê đã được xác nhận và người dùng đã đăng nhập hợp lệ.
+Hậu điều kiện    Đặt cọc được ghi nhận thành công.
+                 1. Nhân viên tạo yêu cầu đặt cọc.
+                 2. Hệ thống hiển thị thông tin đặt cọc.
+                 3. Kế toán kiểm tra và nhập số tiền cọc.
+ Dòng chính      4. Hệ thống xác nhận số tiền.
+                 5. Thực hiện thanh toán.
+                 6. Hệ thống lưu trạng thái đặt cọc.
+                 7. Kết thúc.
+                 - A1 – Thanh toán thất bại: Hệ thống thông báo lỗi; cho phép
+Dòng thay thế
+                   thực hiện lại.
+Use-Case liên    - (include) Thanh toán.
+    quan         - (include) Tính toán chi phí.
+
+                   Table 21: Đặc tả SUC4: Quản lý đặt cọc
+
+
+
+
+                                      33
+  Use Case                            SUC5: Thanh toán
+    Mô tả        Thực hiện giao dịch thanh toán cho các nghiệp vụ trong hệ thống.
+                 • Khách hàng
+    Actor        • VietQR
+ Sự kiện kích
+                 Có yêu cầu thanh toán từ hệ thống.
+     hoạt
+Tiền điều kiện   Có giao dịch cần thanh toán.
+Hậu điều kiện    Giao dịch thanh toán thành công hoặc thất bại được ghi nhận.
+                 1. Hệ thống hiển thị thông tin thanh toán.
+                 2. Khách hàng chọn phương thức thanh toán.
+                 3. Hệ thống gửi yêu cầu tới VietQR.
+ Dòng chính      4. VietQR xử lý giao dịch.
+                 5. Hệ thống nhận kết quả.
+                 6. Hệ thống cập nhật trạng thái thanh toán.
+                 7. Kết thúc.
+                 - A1 – Thanh toán thất bại: Hệ thống hiển thị lỗi; cho phép
+                   thanh toán lại.
+Dòng thay thế
+                 - A2 – Timeout / lỗi kết nối VietQR: Hệ thống thông báo lỗi;
+                   giao dịch bị hủy.
+Use-Case liên    - (include) Quản lý thanh toán.
+    quan
+
+                     Table 22: Đặc tả SUC5: Thanh toán
+
+
+
+
+                                     34
+  Use Case                         SUC6: Quản lý thanh toán
+
+    Mô tả        Quản lý và xử lý các giao dịch thanh toán trong hệ thống.
+    Actor        • Kế toán
+ Sự kiện kích
+                 Có giao dịch thanh toán phát sinh.
+     hoạt
+Tiền điều kiện   Có dữ liệu giao dịch.
+Hậu điều kiện    Giao dịch được ghi nhận và xử lý.
+                 1. Hệ thống nhận thông tin giao dịch.
+                 2. Kế toán kiểm tra giao dịch.
+                 3. Hệ thống đối chiếu thông tin.
+ Dòng chính
+                 4. Kế toán xác nhận giao dịch.
+                 5. Hệ thống lưu vào hệ thống.
+                 6. Kết thúc.
+                 - A1 – Sai lệch giao dịch: Hệ thống thông báo lỗi; kế toán kiểm
+Dòng thay thế      tra lại.
+                 - A2 – Giao dịch bị hủy: Hệ thống cập nhật trạng thái hủy.
+Use-Case liên    - (được include bởi) Thanh toán.
+    quan
+
+                 Table 23: Đặc tả SUC6: Quản lý thanh toán
+
+
+
+
+                                         35
+  Use Case                           SUC7: Quản lý hợp đồng
+
+    Mô tả        Tạo và quản lý hợp đồng thuê phòng giữa khách hàng và hệ thống.
+    Actor        • Nhân viên Sales
+
+ Sự kiện kích
+                 Khách hàng hoàn tất đặt cọc và đủ điều kiện thuê.
+     hoạt
+Tiền điều kiện   Khách hàng đã đặt cọc và nhân viên Sales đã đăng nhập.
+Hậu điều kiện    Hợp đồng được tạo và lưu trong hệ thống.
+                 1. Nhân viên chọn tạo hợp đồng.
+                 2. Hệ thống hiển thị thông tin khách hàng và phòng.
+                 3. Nhân viên nhập thông tin hợp đồng.
+ Dòng chính      4. Hệ thống kiểm tra thông tin.
+                 5. Thực hiện thanh toán (nếu có).
+                 6. Hệ thống lưu hợp đồng.
+                 7. Kết thúc.
+                 - A1 – Thông tin hợp đồng không hợp lệ: Hệ thống thông báo
+Dòng thay thế
+                   lỗi; nhân viên nhập lại.
+Use-Case liên    - (include) Thanh toán.
+    quan         - (include) Tính toán chi phí.
+
+                  Table 24: Đặc tả SUC7: Quản lý hợp đồng
+
+
+
+
+                                      36
+  Use Case                           SUC8: Đối soát chi phí
+
+    Mô tả        Tính toán và tổng hợp các chi phí phát sinh khi khách trả phòng.
+    Actor        • Kế toán
+ Sự kiện kích
+                 Có yêu cầu trả phòng.
+     hoạt
+Tiền điều kiện   Có dữ liệu thuê phòng và người dùng đã đăng nhập.
+Hậu điều kiện    Tổng chi phí được xác định.
+                 1. Hệ thống hiển thị thông tin thuê.
+                 2. Kế toán kiểm tra thời gian thuê.
+                 3. Hệ thống tính tiền phòng.
+ Dòng chính
+                 4. Hệ thống tính các chi phí phát sinh.
+                 5. Hệ thống tổng hợp chi phí.
+                 6. Kết thúc.
+                 - A1 – Thiếu dữ liệu: Hệ thống thông báo lỗi; không thực hiện
+Dòng thay thế
+                   tiếp.
+Use-Case liên    - (include) trong Quản lý đăng ký trả phòng.
+    quan
+
+                   Table 25: Đặc tả SUC8: Đối soát chi phí
+
+
+
+
+                                      37
+  Use Case                          SUC9: Tính toán chi phí
+
+                 Thực hiện tính toán các khoản chi phí liên quan đến thuê phòng,
+    Mô tả
+                 bao gồm tiền cọc, tiền thuê và các chi phí phát sinh.
+    Actor        • Kế toán
+ Sự kiện kích    Có yêu cầu xác định chi phí từ hệ thống (đặt cọc, lập hợp đồng hoặc
+     hoạt        trả phòng).
+                 Có dữ liệu liên quan đến thuê phòng (giá phòng, thời gian thuê,
+Tiền điều kiện
+                 thông tin khách hàng) và người dùng đã đăng nhập.
+Hậu điều kiện    Các khoản chi phí được tính toán và cung cấp cho use case gọi.
+                 1. Hệ thống nhận yêu cầu tính toán chi phí.
+                 2. Hệ thống xác định loại nghiệp vụ (đặt cọc / hợp đồng / trả
+                    phòng).
+                 3. Hệ thống truy xuất dữ liệu liên quan.
+                 4. Hệ thống tính toán chi phí theo nghiệp vụ:
+ Dòng chính         • Tiền cọc (nếu đặt cọc).
+                    • Tiền thuê (nếu lập hợp đồng).
+                    • Chi phí phát sinh (nếu trả phòng).
+                 5. Hệ thống tổng hợp kết quả.
+                 6. Hệ thống trả kết quả cho use case gọi.
+                 7. Kết thúc.
+                 - A1 – Thiếu dữ liệu: Hệ thống phát hiện thiếu thông tin (giá
+                   phòng / thời gian thuê / hợp đồng); hệ thống thông báo lỗi; không
+                   thực hiện tính toán.
+                 - A2 – Dữ liệu không hợp lệ: Hệ thống phát hiện dữ liệu sai
+Dòng thay thế
+                   (thời gian âm, giá không hợp lệ); hệ thống yêu cầu kiểm tra lại;
+                   kết thúc.
+                 - A3 – Không có chi phí phát sinh: Hệ thống xác định không
+                   có khoản phụ phí; hệ thống trả kết quả chỉ gồm chi phí cơ bản.
+                 - (được include bởi) Quản lý đăng ký trả phòng.
+Use-Case liên    - (được include bởi) Quản lý đặt cọc.
+    quan         - (được include bởi) Quản lý hợp đồng.
+
+                  Table 26: Đặc tả SUC9: Tính toán chi phí
+
+
+
+
+                                      38
+  Use Case                        SUC10: Đăng ký trả phòng
+
+    Mô tả        Khách hàng gửi yêu cầu trả phòng tới hệ thống.
+    Actor        • Khách hàng
+
+ Sự kiện kích
+                 Khách hàng chọn chức năng “Đăng ký trả phòng”.
+     hoạt
+Tiền điều kiện   Khách hàng đang có hợp đồng thuê và đã đăng nhập.
+Hậu điều kiện    Yêu cầu trả phòng được tạo.
+                 1. Hệ thống hiển thị thông tin thuê.
+                 2. Khách hàng chọn trả phòng.
+ Dòng chính      3. Khách hàng xác nhận.
+                 4. Hệ thống tạo yêu cầu trả phòng.
+                 5. Kết thúc.
+Dòng thay thế    - A1 – Không có hợp đồng thuê: Hệ thống thông báo; kết thúc.
+Use-Case liên
+                 Không.
+    quan
+
+                 Table 27: Đặc tả SUC10: Đăng ký trả phòng
+
+
+
+
+                                      39
+  Use Case                      SUC11: Quản lý đăng ký trả phòng
+
+    Mô tả          Tiếp nhận và xử lý yêu cầu trả phòng của khách hàng.
+    Actor          • Quản lý
+
+ Sự kiện kích
+                   Có yêu cầu trả phòng từ khách hàng.
+     hoạt
+                   • Có yêu cầu trả phòng.
+Tiền điều kiện     • Quản lý đã đăng nhập.
+Hậu điều kiện      Trả phòng được xử lý hoàn tất.
+                   1. Hệ thống hiển thị danh sách yêu cầu trả phòng.
+                   2. Quản lý chọn yêu cầu.
+                   3. Hệ thống hiển thị thông tin thuê.
+                   4. Thực hiện đối soát chi phí.
+ Dòng chính
+                   5. Hệ thống hiển thị kết quả chi phí.
+                   6. Quản lý xác nhận trả phòng.
+                   7. Hệ thống cập nhật trạng thái phòng.
+                   8. Kết thúc.
+                   - A1 – Khách phải trả thêm tiền: Thực hiện UC Thanh toán;
+                     sau đó quay lại luồng chính.
+                   - A2 – Có tiền hoàn lại: Hệ thống thực hiện hoàn cọc (thông
+Dòng thay thế        qua thanh toán); kết thúc.
+                   - A3 – Lỗi cập nhật trạng thái phòng: Hệ thống thông báo lỗi;
+                     không hoàn tất.
+                   - (include) Đối soát chi phí.
+Use-Case liên
+                   - (extend) Thanh toán.
+    quan
+                   - (include) Tính toán chi phí.
+
+                Table 28: Đặc tả SUC11: Quản lý đăng ký trả phòng
+
+
+
+
+                                        40
+  Use Case                       SUC12: Quản lý giường phòng
+
+    Mô tả         Quản lý thông tin giường/phòng (thêm, sửa, xóa, xem).
+    Actor         • Quản lý
+
+ Sự kiện kích
+                  Quản lý chọn chức năng quản lý giường/phòng.
+     hoạt
+Tiền điều kiện    Quản lý đã đăng nhập.
+Hậu điều kiện     Thông tin giường/phòng được cập nhật.
+                  1. Hệ thống hiển thị danh sách giường/phòng.
+                  2. Quản lý chọn thao tác: thêm / sửa / xóa / xem.
+                  3. Quản lý chọn thông tin để xem / nhập thông tin mới / chỉnh sửa
+ Dòng chính          thông tin đã có / xóa thông tin cũ.
+                  4. Hệ thống mở dữ liệu xem / lưu dữ liệu mới / cập nhật dữ liệu
+                     tương ứng / xóa dữ liệu.
+                  5. Kết thúc.
+                  - A1 – Dữ liệu không hợp lệ: Hệ thống thông báo lỗi; nhập lại.
+Dòng thay thế     - A2 – Không thể xóa (đang được sử dụng): Hệ thống từ chối;
+                    kết thúc.
+Use-Case liên
+                  Không.
+    quan
+
+                 Table 29: Đặc tả SUC12: Quản lý giường phòng
+
+
+
+
+                                      41
+  Use Case                     SUC13: Xem/tra cứu giường/phòng
+
+    Mô tả          Cho phép người dùng tra cứu thông tin phòng/giường.
+                   • Nhân viên Sales
+    Actor          • Khách hàng
+ Sự kiện kích
+                   Người dùng chọn chức năng tra cứu.
+     hoạt
+Tiền điều kiện     Người dùng đã đăng nhập (có thể bỏ nếu hệ thống cho phép public).
+Hậu điều kiện      Danh sách phòng được hiển thị.
+                   1. Hệ thống hiển thị danh sách phòng.
+                   2. Người dùng nhập tiêu chí tìm kiếm.
+                   3. Hệ thống lọc dữ liệu.
+ Dòng chính
+                   4. Hệ thống hiển thị kết quả.
+                   5. Người dùng xem chi tiết phòng.
+                   6. Kết thúc.
+Dòng thay thế      - A1 – Không có kết quả: Hệ thống thông báo; cho phép tìm lại.
+Use-Case liên      - (được include bởi) Quản lý đăng ký thuê phòng.
+    quan           - (được include bởi) Đăng ký thuê phòng.
+
+                Table 30: Đặc tả SUC13: Xem/tra cứu giường/phòng
+
+
+
+
+                                       42
+References
+
+
+
+
+             43
+

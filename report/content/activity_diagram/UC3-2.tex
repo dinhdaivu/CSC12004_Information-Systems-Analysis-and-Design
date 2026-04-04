@@ -1,0 +1,93 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+\def\xAcc{8} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xAcc, 1) {Kế toán};
+
+% Đường kẻ phân cách 2 cột
+\draw[swimlane] (4, 1.5) -- (4, -12);
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[decision, below=0.6cm of start] (dec0) {Điều kiện\\ lưu trú hợp lệ?};
+
+% Nhánh thay thế (A0) - Rẽ sang phải
+\node[action, right=1.2cm of dec0] (alt0) {Thông báo chưa đủ điều kiện\\ để lập hợp đồng};
+\node[end, below=0.8cm of alt0] (end_alt0) {};
+\fill (end_alt0.center) circle (0.15cm);
+
+% Dòng cơ bản (Có) - Đi thẳng xuống
+\node[action, below=0.8cm of dec0] (s1) {Ký hợp đồng thuê\\ dựa trên thông tin};
+
+\node[action, below=0.8cm of s1] (s2) {Hướng dẫn nội dung \&\\ tiến hành ký hợp đồng};
+
+\node[action, below=0.8cm of s2] (s3) {Chuyển hợp đồng đã ký\\ cho Kế toán};
+
+
+% ===== 3. ACCOUNTANT LANE NODES =====
+\node[action] (a1) at (\xAcc, 0 |- s3) [yshift=-1.5cm] {Tính toán các khoản\\ tiền cần thu};
+
+\node[action, below=0.8cm of a1] (a2) {Xác nhận thu đủ\\ các khoản từ khách};
+
+\node[action, below=0.8cm of a2] (a3) {Thông báo cho Quản lý\\ (Thực hiện UC3-3)};
+
+\node[end, below=0.8cm of a3] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 4. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (dec0);
+
+% Rẽ nhánh tại nút kiểm tra đầu vào (A0)
+\draw[control] (dec0) -- node[right, font=\footnotesize] {Có} (s1);
+\draw[control] (dec0) -- node[above, font=\footnotesize] {Không} (alt0);
+
+% Kết thúc nhánh phụ
+\draw[control] (alt0) -- (end_alt0);
+
+% Luồng chính của Sales
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (s3);
+
+% Chuyển lane từ Sales sang Kế toán
+\draw[control] (s3.south) |- (a1.west);
+
+% Luồng chính của Kế toán
+\draw[control] (a1) -- (a2);
+\draw[control] (a2) -- (a3);
+
+% Kết thúc luồng chính
+\draw[control] (a3) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC3-2: Ký hợp đồng thuê}
+\end{figure}

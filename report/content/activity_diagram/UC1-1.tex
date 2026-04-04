@@ -1,0 +1,77 @@
+%  USE CASE 1-1
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.2cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center 
+    },
+    merge/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        minimum width=0.9cm,
+        minimum height=0.9cm
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.8cm of start] (s1) {Gửi yêu cầu\\ thuê phòng};
+
+\node[action, below=1cm of s1] (s2) {Tiếp nhận thông tin\\ nhu cầu khách hàng};
+
+\node[decision, below=1cm of s2] (dec) {Phòng/giường có\\ đáp ứng đúng\\ nhu cầu khách hàng?};
+
+\node[action, below=1cm of dec] (s3_yes) {Tư vấn các\\ loại dịch vụ};
+\node[action, right=1.2cm of dec] (s3_no) {Gợi ý dịch vụ\\ khác của KTX};
+
+\node[merge, below=1cm of s3_yes] (merge1) {};
+\node[action, below=0.9cm of merge1] (s4) {Xác nhận nhu cầu\\ thuê phòng};
+\node[action, below=1cm of s4] (s5) {Thông báo kết quả tiếp nhận\\ yêu cầu cho khách hàng};
+
+\node[end, below=1cm of s5] (end) {};
+\fill (end.center) circle (0.15cm);
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec);
+
+% Decision splits
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s3_yes);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (s3_no);
+
+% Merging back to step 4
+\draw[control] (s3_yes) -- (merge1);
+\draw[control] (s3_no.south) |- (merge1.east);
+
+\draw[control] (merge1) -- (s4);
+\draw[control] (s4) -- (s5);
+\draw[control] (s5) -- (end);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC1-1}
+\end{figure}

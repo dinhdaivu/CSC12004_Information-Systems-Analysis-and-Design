@@ -1,0 +1,87 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+\def\xManager{10} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+
+% Đường kẻ phân cách 2 cột
+\draw[swimlane] (5.2, 1.5) -- (5.2, -11);
+
+% ===== 2. SALES LANE NODES (Phần 1) =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.6cm of start] (s1) {Rà soát thông tin khách hàng\\ và phòng/giường đã chọn};
+
+\node[action, below=0.8cm of s1] (s2) {Liên hệ Quản lý kiểm tra\\ tình trạng phòng thực tế};
+
+% ===== 3. MANAGER LANE NODES =====
+\node[action] (m1) at (\xManager, 0 |- s2) [yshift=-1.5cm] {Kiểm tra tình trạng phòng\\ (trống, vệ sinh, tài sản)};
+
+\node[action, below=0.8cm of m1] (m2) {Gửi kết quả kiểm tra\\ cho Nhân viên Sales};
+
+% ===== 4. SALES LANE NODES (Phần 2) =====
+% Đặt khối quyết định thấp xuống để mũi tên từ Quản lý trả về có khoảng trống
+\node[decision] (dec) at (\xSales, 0 |- m2) [yshift=-2.2cm] {Phòng đạt\\ yêu cầu?};
+
+% Nhánh thay thế (Không) rẽ sang phải
+\node[action, right=0.8cm of dec] (alt1) {Đề xuất phòng khác\\ hoặc kết thúc UC};
+\node[end, below=0.8cm of alt1] (end_alt) {};
+\fill (end_alt.center) circle (0.15cm);
+
+% Dòng cơ bản (Có) đi thẳng xuống
+\node[action, below=0.8cm of dec] (s3) {Thông báo kết quả\\ cho khách hàng};
+
+\node[end, below=0.8cm of s3] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+% ===== 5. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+
+% Chuyển lane từ Sales sang Manager
+\draw[control] (s2.south) |- (m1.west);
+
+\draw[control] (m1) -- (m2);
+
+% Chuyển lane từ Manager quay lại Sales (Đi xuống một chút rồi ngoặt trái)
+\draw[control] (m2.south) -- ++(0,-0.8) -| (dec.north);
+
+% Rẽ nhánh tại nút quyết định
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (alt1);
+
+% Đến các nút kết thúc
+\draw[control] (alt1) -- (end_alt);
+\draw[control] (s3) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC2-1: Kiểm tra tình trạng phòng}
+\end{figure}

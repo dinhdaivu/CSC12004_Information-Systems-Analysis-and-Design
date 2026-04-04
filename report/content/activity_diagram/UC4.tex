@@ -1,0 +1,36 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=4.6cm,
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth}
+]
+
+\node[start] (start) at (0,0) {};
+
+\node[action, below=0.8cm of start] (s1) {Thực hiện UC4-1:\\ Đăng ký trả phòng};
+\node[action, below=1cm of s1] (s2) {Thực hiện UC4-2:\\ Đối soát và thanh toán\\ khi trả phòng};
+\node[action, below=1cm of s2] (s3) {Thực hiện UC4-3:\\ Thanh lý hợp đồng\\ \& hoàn tất trả phòng};
+\node[action, below=1cm of s3] (s4) {Thông báo hoàn tất\\ trả phòng cho khách hàng};
+
+\node[end, below=0.9cm of s4] (end) {};
+\fill (end.center) circle (0.15cm);
+
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (s3);
+\draw[control] (s3) -- (s4);
+\draw[control] (s4) -- (end);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC4: Trả phòng và hoàn cọc (Tổng quát)}
+\end{figure}

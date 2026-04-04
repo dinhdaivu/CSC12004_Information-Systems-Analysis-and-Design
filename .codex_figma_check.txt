@@ -1,0 +1,8 @@
+I could not inspect the Figma file because the configured Figma MCP server failed before it could initialize or fetch any file metadata.
+
+Exact reason returned by the MCP layer:
+`MCP startup failed: handshaking with MCP server failed: Send message error ... Auth required, when send initialize request`
+
+That means this session can see a `figma` MCP server entry, but it is not authenticated, so I could not retrieve the file structure, pages, or frames for `https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?...`.
+
+Most likely cause, based on the configured Figma workflow, is missing or invalid Figma OAuth credentials for the MCP server, typically the `FIGMA_OAUTH_TOKEN` setup.

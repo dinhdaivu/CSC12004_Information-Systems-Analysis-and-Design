@@ -1,0 +1,108 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape, % Thu nhỏ tỷ lệ để vừa 3 cột trên giấy
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xAcc{0} 
+\def\xSales{6.5} 
+\def\xManager{14} 
+
+\node[font=\bfseries\large] at (\xAcc, 1) {Kế toán};
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+
+% Đường kẻ phân cách 3 cột
+\draw[swimlane] (3.25, 1.5) -- (3.25, -16.5);
+\draw[swimlane] (10.25, 1.5) -- (10.25, -16.5);
+
+% ===== 2. ACCOUNTANT LANE NODES =====
+\node[start] (start) at (\xAcc, 0) {};
+
+\node[action, below=0.6cm of start] (a1) {Tính toán số tiền cọc\\ theo quy định};
+
+\node[action, below=0.8cm of a1] (a2) {Gửi thông tin tiền cọc\\ cho Nhân viên Sales};
+
+
+% ===== 3. SALES LANE NODES (Phần 1) =====
+\node[action] (s1) at (\xSales, 0 |- a2) [yshift=-1.5cm] {Thông báo tiền cọc\\ cho khách hàng};
+
+\node[action, below=0.8cm of s1] (s2) {Yêu cầu khách hàng\\ đặt cọc};
+
+\node[decision, below=0.8cm of s2] (dec) {Khách đặt cọc\\ đúng hạn?};
+
+% Nhánh thay thế (Không) rẽ sang phải
+\node[action, right=1.2cm of dec] (alt1) {Thông báo phòng/giường\\ không được giữ chỗ};
+\node[end, below=0.8cm of alt1] (end_alt) {};
+\fill (end_alt.center) circle (0.15cm);
+
+% Dòng cơ bản (Có) đi thẳng xuống
+\node[action, below=0.8cm of dec] (s3) {Ghi nhận chứng từ\\ và gửi quản lý xác nhận};
+
+
+% ===== 4. MANAGER LANE NODES =====
+\node[action] (m1) at (\xManager, 0 |- s3) [yshift=-1.5cm] {Xác nhận tình trạng\\ đặt cọc với NV Sales};
+
+
+% ===== 5. SALES LANE NODES (Phần 2) =====
+\node[action] (s4) at (\xSales, 0 |- m1) [yshift=-1.5cm] {Thông báo kết quả\\ đặt cọc cho khách hàng};
+
+\node[action, below=0.8cm of s4] (s5) {Ghi nhận kết quả \&\\ cập nhật trạng thái hệ thống};
+
+\node[end, below=0.8cm of s5] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 6. CONNECTIONS =====
+
+% -- Luồng Kế toán --
+\draw[control] (start) -- (a1);
+\draw[control] (a1) -- (a2);
+
+% -- Chuyển từ Kế toán sang Sales --
+\draw[control] (a2.south) |- (s1.west);
+
+% -- Luồng Sales (Phần 1) --
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec);
+
+% Rẽ nhánh tại nút quyết định
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (alt1);
+
+% Kết thúc nhánh phụ
+\draw[control] (alt1) -- (end_alt);
+
+% -- Chuyển từ Sales sang Quản lý --
+\draw[control] (s3.south) |- (m1.west);
+
+% -- Chuyển từ Quản lý quay lại Sales --
+\draw[control] (m1.south) |- (s4.east);
+
+% -- Luồng Sales kết thúc --
+\draw[control] (s4) -- (s5);
+\draw[control] (s5) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC2-3: Đặt cọc thuê phòng}
+\end{figure}

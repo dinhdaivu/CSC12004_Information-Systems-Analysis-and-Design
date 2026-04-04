@@ -1,0 +1,11 @@
+{
+  "APP": {
+    "TITLE": "HomeStay Dorm",
+    "WELCOME": "Welcome to HomeStay Dorm"
+  },
+  "COMMON": {
+    "LANGUAGE": "Language",
+    "ENGLISH": "English",
+    "VIETNAMESE": "Vietnamese"
+  }
+}

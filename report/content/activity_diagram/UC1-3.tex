@@ -1,0 +1,73 @@
+
+% USE CASE 1-3
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.2cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center % Cho phép dùng \\ ngắt dòng
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.8cm of start] (s1) {Dẫn khách\\ xem phòng};
+
+\node[action, below=1cm of s1] (s2) {Giới thiệu\\ thông tin phòng};
+
+\node[decision, below=1cm of s2] (dec) {Khách hàng có\\ đồng ý thuê phòng/giường\\ sau khi xem không?};
+
+% Nhánh thay thế: Không đồng ý thuê
+\node[action, right=1.2cm of dec] (s2_alt) {Thông báo cho khách hàng\\ và gợi ý phòng khác};
+
+% Dòng cơ bản: Hài lòng
+\node[action, below=1cm of dec] (s3) {Xác nhận nhu cầu\\ đặt cọc của khách};
+
+\node[action, below=1cm of s3] (s4) {Thực hiện UC2-1};
+
+\node[end, below=1cm of s4] (end) {};
+\fill (end.center) circle (0.15cm);
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec);
+
+% Decision splits
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (s2_alt);
+
+% Main flow
+\draw[control] (s3) -- (s4);
+\draw[control] (s4) -- (end);
+
+% Alternative flow
+% Trỏ nhánh "Không" về điểm kết thúc để đóng quy trình
+\draw[control] (s2_alt.south) |- (end.east);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC1-3}
+\end{figure}

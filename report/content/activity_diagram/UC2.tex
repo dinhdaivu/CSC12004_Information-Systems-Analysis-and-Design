@@ -1,0 +1,100 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.9, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.2cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.6cm of start] (s1) {Tiếp nhận quyết định\\ thuê phòng/giường};
+
+\node[action, below=0.8cm of s1] (s2) {Thực hiện UC2-1:\\ Kiểm tra tình trạng phòng};
+
+\node[decision, below=0.8cm of s2] (dec1) {Phòng\\ hợp lệ?};
+
+% Nhánh thay thế 1 (UC2-1)
+\node[action, right=1.2cm of dec1] (alt1) {Thông báo\\ cho khách};
+\node[end, below=0.8cm of alt1] (end1) {};
+\fill (end1.center) circle (0.15cm);
+
+% Dòng cơ bản 1
+\node[action, below=0.8cm of dec1] (s3) {Thực hiện UC2-2:\\ Xác nhận thuê phòng};
+
+\node[decision, below=0.8cm of s3] (dec2) {Khách tiếp\\ tục thuê?};
+
+% Nhánh thay thế 2 (UC2-2) -> Kết thúc ngay
+\node[action, right=2cm of dec2] (alt2) {Thông báo khách hàng\\ kết thúc nhu cầu thuê};
+\node[end, below=0.8cm of alt2] (end2) {};
+\fill (end2.center) circle (0.15cm);
+
+% Dòng cơ bản 2
+\node[action, below=0.8cm of dec2] (s4) {Thực hiện UC2-3:\\ Đặt cọc thuê phòng};
+
+\node[decision, below=0.8cm of s4] (dec3) {Đặt cọc trong\\ thời gian quy định?};
+
+% Nhánh thay thế 3 (UC2-3)
+\node[action, right=1.2cm of dec3] (alt3) {Phòng không được\\ giữ chỗ};
+\node[end, below=0.8cm of alt3] (end3) {};
+\fill (end3.center) circle (0.15cm);
+
+% Dòng cơ bản 3
+\node[action, below=0.8cm of dec3] (s5) {Hoàn tất ghi nhận tình\\ trạng trên hệ thống};
+
+\node[end, below=0.8cm of s5] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 3. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec1);
+
+% Rẽ nhánh 1 (UC2-1)
+\draw[control] (dec1) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec1) -- node[above, font=\footnotesize] {Không} (alt1);
+\draw[control] (alt1) -- (end1);
+
+% Rẽ nhánh 2 (UC2-2)
+\draw[control] (s3) -- (dec2);
+\draw[control] (dec2) -- node[right, font=\footnotesize] {Có} (s4);
+\draw[control] (dec2) -- node[above, font=\footnotesize] {Không} (alt2);
+\draw[control] (alt2) -- (end2);
+
+% Rẽ nhánh 3 (UC2-3)
+\draw[control] (s4) -- (dec3);
+\draw[control] (dec3) -- node[right, font=\footnotesize] {Có} (s5);
+\draw[control] (dec3) -- node[above, font=\footnotesize] {Không} (alt3);
+\draw[control] (alt3) -- (end3);
+
+% Kết thúc luồng chính
+\draw[control] (s5) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC2: Đặt cọc và xác nhận thuê}
+\end{figure}

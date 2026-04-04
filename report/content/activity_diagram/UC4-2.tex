@@ -1,0 +1,110 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xManager{0} 
+\def\xAcc{8} 
+
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+\node[font=\bfseries\large] at (\xAcc, 1) {Kế toán};
+
+% Đường kẻ phân cách 2 cột
+\draw[swimlane] (4, 1.5) -- (4, -16.5);
+
+% ===== 2. MANAGER LANE NODES (Phần Đầu) =====
+\node[start] (start) at (\xManager, 0) {};
+
+\node[action, below=0.6cm of start] (m1) {Thông báo chi tiết khấu trừ\\ \& số tiền hoàn/thu thêm};
+
+\node[action, below=0.8cm of m1] (m2) {Xác nhận đồng ý trả phòng\\ theo kết quả đối soát};
+
+\node[decision, below=0.8cm of m2] (dec1) {Khách cần\\ thanh toán thêm?};
+
+% Nhánh Có (Thu thêm)
+\node[action, below=1cm of dec1] (m3_yes) {Thông báo thu thêm\\ cho Kế toán};
+
+
+% ===== 3. ACCOUNTANT LANE NODES (Luồng Thu Thêm) =====
+\node[action] (a1_yes) at (\xAcc, 0 |- m3_yes) {Hướng dẫn khách\\ thanh toán};
+
+\node[action, below=0.8cm of a1_yes] (a2) {Xác nhận thanh toán\\ của khách};
+
+\node[decision, below=0.8cm of a2] (dec2) {Thanh toán\\ thành công?};
+
+% Nhánh thay thế (Thất bại) rẽ phải để tạo vòng lặp
+\node[action, right=1.2cm of dec2] (a_fail) {Yêu cầu khách\\ thanh toán lại};
+
+
+% ===== 4. KẾT HỢP HAI LUỒNG (Bên dưới) =====
+% Nhánh Không (Hoàn cọc) - Kế toán
+\node[action, below=1.5cm of dec2] (a1_no) {Thống nhất phương thức\\ thanh toán với khách};
+
+% Nhánh Không (Hoàn cọc) - Quản lý
+\node[action] (m3_no) at (\xManager, 0 |- a1_no) {Thông báo hoàn cọc\\ cho Kế toán};
+
+% Hội tụ cả 2 luồng về UC4-3
+\node[action, below=1cm of a1_no] (a3) {Thực hiện UC4-3};
+
+\node[end, below=0.8cm of a3] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 5. CONNECTIONS =====
+
+% -- Luồng Quản lý Ban Đầu --
+\draw[control] (start) -- (m1);
+\draw[control] (m1) -- (m2);
+\draw[control] (m2) -- (dec1);
+
+% -- Rẽ nhánh 1 (Thu thêm hay Hoàn cọc) --
+\draw[control] (dec1) -- node[right, font=\footnotesize] {Có} (m3_yes);
+
+% Nhánh Không đi vòng qua mép trái xuống khối m3_no
+\draw[control] (dec1.west) -- node[above, font=\footnotesize] {Không} ++(-2.2,0) |- (m3_no.west);
+
+% -- Chuyển giao sang Kế toán --
+\draw[control] (m3_yes) -- (a1_yes);
+\draw[control] (m3_no) -- (a1_no);
+
+% -- Luồng Thu Thêm của Kế toán --
+\draw[control] (a1_yes) -- (a2);
+\draw[control] (a2) -- (dec2);
+
+% Vòng lặp yêu cầu thanh toán lại
+\draw[control] (dec2) -- node[above, font=\footnotesize] {Không} (a_fail);
+\draw[control] (a_fail.north) |- ([yshift=5pt]a2.east);
+
+% -- Mũi tên hội tụ về UC4-3 --
+% Luồng Hoàn cọc đâm thẳng xuống
+\draw[control] (a1_no) -- (a3);
+
+% Luồng Thu Thêm (Có) đi vòng qua bên phải để không cắt ngang khối a1_no
+\draw[control] (dec2.south) -- node[left, font=\footnotesize] {Có} ++(0,-0.6) -| ([xshift=2.5cm]a3.east) -- (a3.east);
+
+\draw[control] (a3) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC4-2: Đối soát và thanh toán khi trả phòng}
+\end{figure}

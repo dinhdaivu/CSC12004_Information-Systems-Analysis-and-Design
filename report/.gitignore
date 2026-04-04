@@ -1,0 +1,40 @@
+# Legacy temp patterns
+.output
+.log
+.tmp
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+
+# Beamer / presentation artifacts
+*.nav
+*.snm
+*.vrb
+
+# Glossary / index artifacts
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.idx
+*.ilg
+*.ind
+
+# Local temporary render outputs
+tmp_*.png

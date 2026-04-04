@@ -1,0 +1,90 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+\def\xAcc{8} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xAcc, 1) {Kế toán};
+
+% Đường kẻ phân cách 2 cột
+\draw[swimlane] (4.5, 1.5) -- (4.5, -13.7);
+
+% ===== 2. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.6cm of start] (s1) {Tiếp nhận quyết định\\ thuê của khách hàng};
+
+\node[action, below=0.8cm of s1] (s2) {Yêu cầu bổ sung\\ thông tin cần thiết};
+
+\node[action, below=0.8cm of s2] (s3) {Ghi nhận thông tin\\ bổ sung từ khách};
+
+\node[decision, below=0.8cm of s3] (dec) {Thông tin\\ đầy đủ?};
+
+% Nhánh thay thế (Không) rẽ sang phải
+\node[action, right=1.2cm of dec] (alt1) {Thông báo khách hàng\\ bổ sung thông tin sau};
+\node[end, below=0.8cm of alt1] (end_alt) {};
+\fill (end_alt.center) circle (0.15cm);
+
+% Dòng cơ bản (Có) đi thẳng xuống
+\node[action, below=0.8cm of dec] (s4) {Xác nhận thông tin};
+
+\node[action, below=0.8cm of s4] (s5) {Chuyển thông tin thuê\\ cho Kế toán};
+
+% ===== 3. ACCOUNTANT LANE NODES =====
+\node[action] (a1) at (\xAcc, 0 |- s5) [yshift=-1.5cm] {Thực hiện UC2-3};
+
+\node[end, below=0.8cm of a1] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 4. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (s3);
+\draw[control] (s3) -- (dec);
+
+% Rẽ nhánh tại nút quyết định
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s4);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (alt1);
+
+% Kết thúc nhánh phụ
+\draw[control] (alt1) -- (end_alt);
+
+% Tiếp tục luồng chính ở Sales
+\draw[control] (s4) -- (s5);
+
+% Chuyển lane từ Sales sang Kế toán
+\draw[control] (s5.south) |- (a1.west);
+
+% Kết thúc luồng chính
+\draw[control] (a1) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC2-2: Xác nhận thuê phòng}
+\end{figure}

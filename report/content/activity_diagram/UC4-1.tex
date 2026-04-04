@@ -1,0 +1,145 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.8, transform shape, 
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3cm,
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.2cm,
+        align=center
+    },
+    % --- ENTITY STYLE ---
+    entity/.style={
+        circle, draw=black, thick, fill=white,
+        minimum size=1.5cm, inner sep=0pt,
+        path picture={
+            \draw[thick] (0, -0.75) -- (0.72, -0.22);
+        },
+        append after command={
+            \pgfextra{
+                \draw[thick] (\tikzlastnode.south) +(-0.9cm,0) -- +(0.9cm,0);
+            }
+        },
+        label={[yshift=-0.1cm, align=center, font=\footnotesize]below:#1}
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    objflow/.style={->, dashed, >=Stealth},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES =====
+\def\xSales{0}
+\def\xManager{5.5}
+\def\xAcc{11}
+
+% ===== 2. HEADERS & DIVIDERS =====
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+\node[font=\bfseries\large] at (\xAcc, 1) {Kế toán};
+
+% Đường kẻ phân cách cột
+\draw[swimlane] (2.75, 1.5) -- (2.75, -20);
+\draw[swimlane] (8.25, 1.5) -- (8.25, -20);
+
+% ===== 3. SALES LANE NODES =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.6cm of start] (s1) {Tiếp nhận nhu cầu\\ trả phòng};
+
+\node[action, below=0.8cm of s1] (s2) {Kiểm tra\\ thông tin đăng ký};
+
+% Objects Input
+\node[entity={\itshape :Đơn đăng ký\\ \itshape trả phòng}, left=1cm of s2, yshift=1cm] (objInfo) {};
+\node[entity={\itshape :Hợp đồng}, below=1cm of objInfo] (objContract) {};
+
+\node[decision, below=0.8cm of s2] (dec) {Hợp lệ?};
+
+% Nhánh thay thế: Báo lỗi và kết thúc
+% --- THAY ĐỔI Ở ĐÂY: Đổi 'left' thành 'right' ---
+\node[action, right=0.8cm of dec] (s_fail) {Yêu cầu gửi lại\\ đơn đăng ký};
+\node[end, below=0.8cm of s_fail] (end_fail) {};
+\fill (end_fail.center) circle (0.15cm);
+
+% Dòng cơ bản
+\node[action, below=0.8cm of dec] (s3) {Ghi nhận\\ thông tin phòng};
+
+% Object Output
+\node[entity={\itshape :Phiếu kiểm tra\\ \itshape phòng [Tạo mới]}, left=0.8cm of s3] (objCheck) {};
+
+% ===== 4. MANAGER LANE NODES =====
+\node[action] (m1) at (\xManager, 0 |- s3) [yshift=-1.5cm] {Kiểm tra phòng thực tế \&\\ đối chiếu hợp đồng};
+
+\node[action, below=1cm of m1] (m2) {Tổng hợp thông tin};
+\node[action, below=1cm of m2] (m3) {Chuyển thông tin\\ cho Kế toán};
+
+% Object Output Manager
+\node[entity={\itshape :Phiếu kiểm tra\\ \itshape phòng [Đã kiểm]}, right=0.5cm of m2] (objReport) {};
+
+% ===== 5. ACCOUNTANT LANE NODES =====
+\node[action] (a1) at (\xAcc, 0 |- m3) [yshift=-1.5cm] {Xác định mức hoàn\\ cọc cơ bản};
+
+\node[action, below=1cm of a1] (a2) {Khấu trừ chi phí\\ phát sinh};
+\node[action, below=1cm of a2] (a3) {Lập bảng đối soát/\\ phiếu thanh toán};
+\node[action, below=1cm of a3] (a4) {Báo lại thông tin\\ cho Quản lý};
+
+% Object Output Accountant
+\node[entity={\itshape :Bảng\\ \itshape đối soát}, right=0.8cm of a3] (objInvoice) {};
+
+% ===== 6. BACK TO MANAGER (Thực hiện UC4-2) =====
+\node[action] (m4) at (\xManager, 0 |- a4) [yshift=-1.5cm] {Thực hiện UC4-2};
+
+\node[end, below=1cm of m4] (end) {};
+\fill (end.center) circle (0.15cm);
+
+% ===== 7. CONNECTIONS (CONTROL FLOW) =====
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec);
+
+% Rẽ nhánh
+\draw[control] (dec) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec) -- node[above, font=\footnotesize] {Không} (s_fail);
+\draw[control] (s_fail) -- (end_fail);
+
+% Chuyển lane từ Sales sang Manager
+\draw[control] (s3.south) |- (m1.west);
+
+\draw[control] (m1) -- (m2);
+\draw[control] (m2) -- (m3);
+
+% Chuyển lane từ Manager sang Accountant
+\draw[control] (m3.south) |- (a1.west);
+
+\draw[control] (a1) -- (a2);
+\draw[control] (a2) -- (a3);
+\draw[control] (a3) -- (a4);
+
+% Chuyển lane từ Accountant quay lại Manager
+\draw[control] (a4.south) |- (m4.east);
+\draw[control] (m4) -- (end);
+
+% ===== 8. CONNECTIONS (OBJECT FLOW) =====
+\draw[objflow] (objInfo) -- (s2);
+\draw[objflow] (objContract) -- (s2);
+
+\draw[objflow] (s3) -- (objCheck);
+
+\draw[objflow] (m2) -- (objReport);
+\draw[objflow] (objReport) |- (m3);
+
+\draw[objflow] (a3) -- (objInvoice);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC4-1: Đăng ký trả phòng}
+\end{figure}

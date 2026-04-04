@@ -1,0 +1,112 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85, transform shape,
+    % --- STYLES ---
+    action/.style={
+        rectangle, rounded corners=0.3cm,
+        draw=black, fill=white,
+        minimum width=3.4cm, 
+        minimum height=1cm,
+        align=center, font=\small,
+        inner sep=4pt
+    },
+    decision/.style={
+        diamond, draw=black, fill=white,
+        aspect=2, inner sep=2pt,
+        font=\footnotesize, minimum width=2.5cm,
+        align=center
+    },
+    start/.style={circle, fill=black, minimum size=0.5cm},
+    end/.style={circle, draw=black, double, minimum size=0.5cm, inner sep=1pt},
+    control/.style={->, thick, >=Stealth, rounded corners=5pt},
+    swimlane/.style={thick, black!60}
+]
+
+% ===== 1. COORDINATES & HEADERS =====
+\def\xSales{0} 
+\def\xManager{10} 
+
+\node[font=\bfseries\large] at (\xSales, 1) {Nhân viên Sales};
+\node[font=\bfseries\large] at (\xManager, 1) {Quản lý};
+
+% Đường kẻ phân cách 2 cột
+\draw[swimlane] (5, 1.5) -- (5, -17.5);
+
+% ===== 2. SALES LANE NODES (Phần 1) =====
+\node[start] (start) at (\xSales, 0) {};
+
+\node[action, below=0.6cm of start] (s1) {Kiểm tra thông tin\\ đặt cọc trên hệ thống};
+
+\node[action, below=0.8cm of s1] (s2) {Đối chiếu giấy tờ\\ tùy thân};
+
+\node[decision, below=0.8cm of s2] (dec1) {Thông tin\\ hợp lệ?};
+
+% Nhánh thay thế 1 (A2)
+\node[action, right=1.2cm of dec1] (alt1) {Hoàn lại 80\% tiền\\ đặt cọc cho khách};
+\node[end, below=0.8cm of alt1] (end_alt1) {};
+\fill (end_alt1.center) circle (0.15cm);
+
+% Dòng cơ bản 1
+\node[action, below=0.8cm of dec1] (s3) {Thu thập thông tin\\ lưu trú cần thiết};
+
+\node[action, below=0.8cm of s3] (s4) {Chuyển thông tin lưu\\ trú cho Quản lý};
+
+
+% ===== 3. MANAGER LANE NODES =====
+\node[action] (m1) at (\xManager, 0 |- s4) [yshift=-1.5cm] {Kiểm tra lại điều kiện\\ lưu trú của khách hàng};
+
+\node[decision, below=0.8cm of m1] (dec2) {Đủ điều kiện\\ lưu trú?};
+
+% Luồng chính của Quản lý
+\node[action, below=0.8cm of dec2] (m2) {Thông báo kết quả\\ cho NV Sales};
+
+
+% ===== 4. SALES LANE NODES (Phần 2) =====
+% Nhánh thay thế 2 (A3) - Đặt ngang hàng với dec2 nhưng nằm bên cột Sales
+\node[action] (alt2) at (\xSales, 0 |- dec2) {Xác nhận nguyện vọng \&\\ hoàn 80\% tiền cọc};
+\node[end, below=0.8cm of alt2] (end_alt2) {};
+\fill (end_alt2.center) circle (0.15cm);
+
+% Luồng chính quay về Sales để kết thúc
+\node[action] (s5) at (\xSales, 0 |- m2) [yshift=-1.5cm] {Thông báo đủ điều kiện\\ và thực hiện UC3-2};
+\node[end, below=0.8cm of s5] (end_main) {};
+\fill (end_main.center) circle (0.15cm);
+
+
+% ===== 5. CONNECTIONS =====
+
+% -- Control Flow --
+\draw[control] (start) -- (s1);
+\draw[control] (s1) -- (s2);
+\draw[control] (s2) -- (dec1);
+
+% Rẽ nhánh 1 (A2)
+\draw[control] (dec1) -- node[right, font=\footnotesize] {Có} (s3);
+\draw[control] (dec1) -- node[above, font=\footnotesize] {Không} (alt1);
+\draw[control] (alt1) -- (end_alt1);
+
+\draw[control] (s3) -- (s4);
+
+% Chuyển lane từ Sales sang Manager
+\draw[control] (s4.south) |- (m1.west);
+
+\draw[control] (m1) -- (dec2);
+
+% Rẽ nhánh 2 (A3) tại Quản lý
+\draw[control] (dec2) -- node[right, font=\footnotesize] {Có} (m2);
+
+% Nhánh "Không" (A3) đi ngang từ Quản lý quay ngược về Sales
+\draw[control] (dec2.west) -- node[above, font=\footnotesize] {Không} (alt2.east);
+
+% Kết thúc nhánh "Không" (A3)
+\draw[control] (alt2) -- (end_alt2);
+
+% Chuyển lane từ Manager quay lại Sales (Luồng chính)
+\draw[control] (m2.south) |- (s5.east);
+
+\draw[control] (s5) -- (end_main);
+
+\end{tikzpicture}
+\caption{Activity Diagram UC3-1: Kiểm tra điều kiện lưu trú}
+\end{figure}
