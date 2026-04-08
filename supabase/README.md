@@ -49,9 +49,14 @@ Only use this if the team wants Supabase CLI validation/deploys.
 ```powershell
 supabase link --project-ref <project-ref>
 supabase db lint --linked
+supabase db push --dry-run
+supabase db push
+supabase seed buckets --linked
 ```
 
 You can find `<project-ref>` in the Supabase project URL or dashboard settings. Do not commit Supabase access tokens or service keys.
+
+For local development, the CLI reads `supabase/config.toml`. Running `supabase db reset` applies migrations and then runs `supabase/seed.sql`.
 
 ## Environment Variables
 
@@ -76,7 +81,9 @@ Never put `SUPABASE_SERVICE_ROLE_KEY` in frontend code.
 
 ```text
 supabase/
+|-- config.toml
 |-- README.md
+|-- seed.sql
 |-- migrations/
 |   `-- 001_initial_schema.sql
 `-- policies/

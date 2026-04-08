@@ -1,0 +1,66 @@
+# Supabase CLI configuration
+# https://supabase.com/docs/reference/cli/config
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+# Seed data configuration
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://localhost"
+
+[auth]
+enabled = true
+# Angular runs on port 4200; Express backend runs on port 3000.
+site_url = "http://localhost:4200"
+additional_redirect_urls = [
+  "http://localhost:4200/auth/callback",
+  "http://localhost:3000/auth/callback"
+]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+# avatars: public bucket for user avatar images
+# Local: created on `supabase start`
+# Remote: run `supabase seed buckets --linked` after db push
+[storage.buckets.avatars]
+public = true
+
+# room-images: public bucket for branch/room listing images
+# Local: created on `supabase start`
+# Remote: run `supabase seed buckets --linked` after db push
+[storage.buckets.room-images]
+public = true
+
+# transaction-proofs: private bucket for deposit/transaction proof images
+# Local: created on `supabase start`
+# Remote: run `supabase seed buckets --linked` after db push
+[storage.buckets.transaction-proofs]
+public = false
+
+# contract-documents: private bucket for signed contract files
+# Local: created on `supabase start`
+# Remote: run `supabase seed buckets --linked` after db push
+[storage.buckets.contract-documents]
+public = false
