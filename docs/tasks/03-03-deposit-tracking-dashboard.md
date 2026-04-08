@@ -3,7 +3,7 @@
 > **Implementation Rules**
 > 1. **Before implementation**: Check [frontend-status.md](../frontend-status.md), [api-endpoints.md](../architecture/api-endpoints.md), [database.md](../architecture/database.md), and [state-machine.md](../architecture/state-machine.md).
 > 2. **Stubs**: If a dependency is not implemented, create a typed stub and add `// TODO: Implemented in task 03-03`.
-> 3. **After implementation**: Update docs if deposit/payment endpoint behavior or status transitions change.
+> 3. **After implementation**: Update docs if deposit/transaction endpoint behavior or status transitions change.
 
 ## GitHub Issue
 
@@ -30,7 +30,7 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 | [UC2](../UC/UC2.md) | Deposit and rental confirmation |
 | [API Endpoints](../architecture/api-endpoints.md) | Deposits, Transactions |
 | [State Machine](../architecture/state-machine.md) | DepositStatus, RoomStatus |
-| [Software Layers](../architecture/layers.md) | PaymentController, DepositRequest, Payment |
+| [Software Layers](../architecture/layers.md) | TransactionController, DepositRequest, Transaction |
 
 ---
 
@@ -65,11 +65,11 @@ Deposit tracking flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/deposits` for staff/admin.
-- [ ] Implement `GET /api/v1/deposits/:id`.
-- [ ] Implement `PATCH /api/v1/deposits/:id/confirm`.
-- [ ] Implement `PATCH /api/v1/deposits/:id/cancel`.
-- [ ] Implement `GET /api/v1/transactions`.
+- [ ] Implement `GET /api/deposits` for staff/admin.
+- [ ] Implement `GET /api/deposits/:id`.
+- [ ] Implement `PATCH /api/deposits/:id/confirm`.
+- [ ] Implement `PATCH /api/deposits/:id/cancel`.
+- [ ] Implement `GET /api/transactions`.
 - [ ] Ensure confirm flow updates DepositStatus and RoomStatus consistently.
 
 ### Tests
@@ -106,7 +106,7 @@ Implement `docs/tasks/03-03-deposit-tracking-dashboard.md`.
 - Replace `TransactionsComponent` placeholder.
 - Add typed deposit and transaction service.
 - Implement filters and list/dashboard UI.
-- Wire `GET /api/v1/deposits` and `GET /api/v1/transactions`.
+- Wire `GET /api/deposits` and `GET /api/transactions`.
 - Implement confirm/cancel actions if backend scope is included.
 - If backend is missing, create typed stubs with `// TODO: Implemented in task 03-03`.
 

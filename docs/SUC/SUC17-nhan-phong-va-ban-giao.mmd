@@ -1,0 +1,45 @@
+sequenceDiagram
+    title SUC17: Nhận phòng và bàn giao
+    autonumber
+    actor M as Quản lý
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Bàn giao nhận phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(contracts, handovers, handover_items, rooms, beds)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Mở hợp đồng cần bàn giao
+        M->>Web: Mở hợp đồng cần bàn giao phòng
+        Web->>API: GET /api/contracts/{id}
+        API->>DB: Read contract, room/bed, transaction and deposit status
+        DB-->>API: Contract handover input data
+    end
+
+    alt A1 - Hợp đồng chưa hiệu lực hoặc còn thiếu nghĩa vụ tài chính
+        API-->>Web: Contract not eligible for handover
+        Web-->>M: Không cho phép bàn giao phòng
+    else Hợp đồng đủ điều kiện bàn giao
+        API-->>Web: Handover input data
+        Web-->>M: Hiển thị hợp đồng, phòng/giường và tài sản
+        M-->>C: Kiểm tra thực tế tình trạng phòng/giường trước khi bàn giao
+        M->>Web: Nhập/xác nhận biên bản bàn giao tài sản
+        Web->>API: POST /api/handovers<br/>(type=checkin, contractId, items)
+        API->>DB: Validate handover items
+
+        alt A2 - Dữ liệu bàn giao chưa đầy đủ
+            DB-->>API: Missing handover items
+            API-->>Web: Handover incomplete
+            Web-->>M: Yêu cầu cập nhật lại biên bản
+        else Dữ liệu bàn giao đầy đủ
+            API->>DB: Insert handover and handover_items
+            DB-->>API: Handover created
+            M-->>C: Bàn giao chìa khóa/thẻ và hướng dẫn lưu trú
+            M->>Web: Xác nhận đã bàn giao cho khách hàng
+            Web->>API: PATCH /api/handovers/{id}/sign
+            API->>DB: Sign handover, update room/bed status=occupied
+            API->>DB: Update contract check-in state
+            DB-->>API: Handover completed
+            API-->>Web: Handover complete
+            Web-->>M: Thông báo bàn giao hoàn tất
+        end
+    end

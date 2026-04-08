@@ -31,7 +31,7 @@ Implement the customer-facing rental request flow. A customer searches rooms/bed
 |----------|---------|
 | `report/content/2_System Analyze.tex` | SUC2: Dang ky thue phong |
 | [UC1](../UC/UC1.md) | Inquiry and room viewing |
-| [API Endpoints](../architecture/api-endpoints.md) | Rooms, Deposits, possible booking/request endpoint |
+| [API Endpoints](../architecture/api-endpoints.md) | Rooms, Rental Requests |
 
 ---
 
@@ -64,9 +64,9 @@ Customer rental request flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Add rental request model/table or map to deposit/booking model.
-- [ ] Implement `POST /api/v1/bookings` or `POST /api/v1/rental-requests`.
-- [ ] Implement `GET /api/v1/bookings` or request list endpoint for staff follow-up.
+- [ ] Add rental request model/table.
+- [ ] Implement `POST /api/rental-requests`.
+- [ ] Implement `GET /api/rental-requests` for staff follow-up.
 - [ ] Validate room/bed availability before accepting a request.
 
 ### Tests
@@ -91,7 +91,7 @@ Implement `docs/tasks/01-03-customer-rental-request.md`.
 ## Implementation
 - Replace `NewBookingComponent` placeholder with a typed rental request form.
 - Add Angular service methods for creating rental requests.
-- Add backend route or typed stub for `POST /api/v1/rental-requests`.
+- Add backend route or typed stub for `POST /api/rental-requests`.
 - Validate room/bed availability and required customer fields.
 
 ## Test Requirements
@@ -109,4 +109,3 @@ Implement `docs/tasks/01-03-customer-rental-request.md`.
 - [ ] Request data includes selected branch/room/bed and rental preferences.
 - [ ] Staff-facing request list can consume the created data.
 - [ ] Tests pass for changed code.
-

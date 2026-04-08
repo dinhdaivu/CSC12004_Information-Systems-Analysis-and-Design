@@ -30,7 +30,7 @@ Implement customer checkout request submission. A customer with an active contra
 | `report/content/2_System Analyze.tex` | SUC10 |
 | [UC4](../UC/UC4.md) | Checkout request |
 | [State Machine](../architecture/state-machine.md) | CheckoutStatus, RoomStatus |
-| [API Endpoints](../architecture/api-endpoints.md) | Handovers/checkout endpoint to add |
+| [API Endpoints](../architecture/api-endpoints.md) | Check-out Requests |
 
 ---
 
@@ -63,8 +63,8 @@ Customer checkout request flow:
 ### Backend (Express/Supabase)
 
 - [ ] Add checkout request model/table if needed.
-- [ ] Implement `POST /api/v1/checkout-requests`.
-- [ ] Implement `GET /api/v1/checkout-requests/:id`.
+- [ ] Implement `POST /api/checkout-requests`.
+- [ ] Implement `GET /api/checkout-requests/:id`.
 - [ ] Update room status to `CHECKOUT_PENDING` after request creation.
 - [ ] Reject request when no active contract exists.
 
@@ -110,4 +110,3 @@ Implement `docs/tasks/05-01-customer-checkout-request.md`.
 - [ ] Checkout request status starts as `REQUESTED`.
 - [ ] Room status becomes `CHECKOUT_PENDING`.
 - [ ] Tests pass for changed code.
-

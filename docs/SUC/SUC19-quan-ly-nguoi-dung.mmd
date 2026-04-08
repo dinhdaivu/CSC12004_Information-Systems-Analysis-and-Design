@@ -1,0 +1,64 @@
+sequenceDiagram
+    title SUC19: Quản lý người dùng
+    autonumber
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Quản lý người dùng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(users)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Kiểm tra quyền và hiển thị danh sách người dùng
+        M->>Web: Mở màn hình quản lý người dùng
+        Web->>API: GET /api/users<br/>(keyword, role, status, page)
+        API->>DB: Check manager/admin permission
+    end
+
+    alt A1 - Không đủ quyền
+        DB-->>API: Permission denied
+        API-->>Web: 403 Forbidden
+        Web-->>M: Hiển thị lỗi quyền truy cập
+    else Có quyền truy cập
+        API->>DB: Query users with filters
+        DB-->>API: User list + count
+        API-->>Web: User list + count
+        Web-->>M: Hiển thị danh sách người dùng
+
+        rect rgb(255, 250, 240)
+            Note over M, DB: Tìm kiếm/lọc và xem chi tiết người dùng
+            M->>Web: Tìm kiếm hoặc lọc người dùng
+            Web->>API: GET /api/users<br/>(keyword, role, status, page=1)
+            API->>DB: Search users by filters
+            DB-->>API: Search result
+        end
+
+        alt A3 - Không tìm thấy người dùng
+            API-->>Web: Empty list + 0 count
+            Web-->>M: Thông báo không có kết quả phù hợp
+        else Có người dùng phù hợp
+            API-->>Web: Filtered user list
+            Web-->>M: Hiển thị kết quả lọc
+            M->>Web: Chọn người dùng để xem chi tiết
+            Web->>API: GET /api/users/{id}
+            API->>DB: Get user detail
+            DB-->>API: User detail
+            API-->>Web: User detail
+            Web-->>M: Hiển thị chi tiết người dùng
+
+            rect rgb(240, 255, 240)
+                Note over M, DB: Cập nhật thông tin, vai trò hoặc trạng thái
+                M->>Web: Cập nhật thông tin/vai trò/trạng thái
+                Web->>API: PATCH /api/users/{id}<br/>(profile, role, status)
+                API->>DB: Validate role/status and update user
+            end
+
+            alt A2 - Vai trò hoặc trạng thái không hợp lệ
+                DB-->>API: Invalid role/status
+                API-->>Web: 422 Invalid user update
+                Web-->>M: Yêu cầu kiểm tra lại dữ liệu
+            else Thay đổi hợp lệ
+                DB-->>API: User updated
+                API-->>Web: Updated user
+                Web-->>M: Hiển thị danh sách người dùng đã cập nhật
+            end
+        end
+    end

@@ -71,8 +71,8 @@ Customer homepage flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/branches`.
-- [ ] Implement `GET /api/v1/branches/:id`.
+- [ ] Implement `GET /api/branches`.
+- [ ] Implement `GET /api/branches/:id`.
 - [ ] Return branch name, address, description, hero image, and related room summary.
 - [ ] Add temporary mock data only if Supabase schema is not ready.
 
@@ -114,7 +114,7 @@ Implement `docs/tasks/01-01-customer-homepage-branch-discovery.md`.
 ## Implementation
 - Replace the placeholder `DashboardComponent` with the customer homepage.
 - Add a typed Angular service for branch loading.
-- Use `GET /api/v1/branches`; if backend is missing, create a typed frontend stub with `// TODO: Implemented in task 01-01`.
+- Use `GET /api/branches`; if backend is missing, create a typed frontend stub with `// TODO: Implemented in task 01-01`.
 - Implement search, branch selection, and "View more" navigation.
 - Preserve the existing Angular standalone component pattern.
 

@@ -67,10 +67,10 @@ Auth flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/v1/auth/login`.
-- [ ] Implement `POST /api/v1/auth/logout`.
-- [ ] Implement `GET /api/v1/auth/me`.
-- [ ] Implement `PATCH /api/v1/auth/me`.
+- [ ] Implement `POST /api/auth/login`.
+- [ ] Implement `POST /api/auth/logout`.
+- [ ] Implement `GET /api/auth/me`.
+- [ ] Implement `PATCH /api/auth/me`.
 - [ ] Implement reset-password entry point if Supabase Auth is used.
 
 ### Tests

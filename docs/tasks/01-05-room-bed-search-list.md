@@ -48,7 +48,7 @@ Implement the `/rooms` list/search screen for SUC13. This route is distinct from
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/rooms` with filters.
+- [ ] Implement `GET /api/rooms` with filters.
 - [ ] Return availability and bed/room summary.
 - [ ] Ensure public-safe room fields for customer access.
 

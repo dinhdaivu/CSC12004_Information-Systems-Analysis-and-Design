@@ -1,0 +1,46 @@
+sequenceDiagram
+    title SUC21: Tổng quan quản trị
+    autonumber
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Tổng quan quản trị)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(users, rooms, beds, rental_requests, deposits, transactions, checkout_requests)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Mở trang tổng quan và kiểm tra quyền
+        M->>Web: Mở trang tổng quan quản trị
+        Web->>API: GET /api/admin/dashboard
+        API->>DB: Check manager/admin permission
+    end
+
+    alt A1 - Không đủ quyền truy cập
+        DB-->>API: Permission denied
+        API-->>Web: 403 Forbidden
+        Web-->>M: Chuyển hướng đăng nhập hoặc hiển thị thông báo không có quyền
+    else Có quyền truy cập
+        rect rgb(255, 250, 240)
+            Note over M, DB: Tải số liệu vận hành
+            API->>DB: Aggregate users, rooms/beds, rental requests, deposits, transactions, checkout tasks
+            DB-->>API: Dashboard metrics + recent activities
+        end
+
+        alt A3 - Lỗi tải dữ liệu
+            API-->>Web: Dashboard load failed
+            Web-->>M: Hiển thị lỗi và cho phép tải lại
+        else Tải dữ liệu thành công
+            API-->>Web: Dashboard metrics + task links
+            alt A2 - Không có dữ liệu thống kê
+                Web-->>M: Hiển thị giá trị mặc định và trạng thái rỗng
+            else Có dữ liệu thống kê
+                Web-->>M: Hiển thị chỉ số và tác vụ cần theo dõi
+            end
+
+            rect rgb(240, 255, 240)
+                Note over M, DB: Điều hướng đến màn hình quản lý chi tiết
+                M->>Web: Chọn thẻ thống kê hoặc liên kết nhanh
+                Web->>API: GET /api/admin/dashboard/link-target<br/>(module)
+                API-->>Web: Target module route/filter
+                Web-->>M: Điều hướng đến màn hình quản lý chi tiết tương ứng
+            end
+        end
+    end

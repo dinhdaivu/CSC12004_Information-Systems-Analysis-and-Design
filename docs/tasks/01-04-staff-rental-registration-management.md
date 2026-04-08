@@ -3,7 +3,7 @@
 > **Implementation Rules**
 > 1. **Before implementation**: Check [api-endpoints.md](../architecture/api-endpoints.md), [layers.md](../architecture/layers.md), and `report/content/2_System Analyze.tex` SUC3, SUC14, and SUC15.
 > 2. **Stubs**: If a dependency is not implemented, create a typed stub and add `// TODO: Implemented in task 01-04`.
-> 3. **After implementation**: Update docs if request statuses or schedule endpoints change.
+> 3. **After implementation**: Update docs if request statuses or viewing appointment endpoints change.
 
 ## GitHub Issue
 
@@ -30,7 +30,7 @@ Implement the staff workflow for processing rental registrations: review custome
 |----------|---------|
 | `report/content/2_System Analyze.tex` | SUC3, SUC14, SUC15 |
 | [UC1](../UC/UC1.md) | Rental inquiry and viewing |
-| [API Endpoints](../architecture/api-endpoints.md) | Add rental request/schedule endpoints if missing |
+| [API Endpoints](../architecture/api-endpoints.md) | Rental Requests, Viewing Appointments |
 
 ---
 
@@ -109,4 +109,3 @@ Implement `docs/tasks/01-04-staff-rental-registration-management.md`.
 - [ ] Accepted request can proceed to deposit flow.
 - [ ] API or typed stub exists.
 - [ ] Tests pass for changed code.
-

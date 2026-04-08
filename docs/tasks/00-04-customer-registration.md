@@ -62,7 +62,7 @@ Customer registration flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/v1/auth/register`.
+- [ ] Implement `POST /api/auth/register`.
 - [ ] Create auth user through Supabase Auth or the chosen auth provider.
 - [ ] Create customer profile record.
 - [ ] Reject duplicate email/phone when required.
@@ -99,7 +99,7 @@ Implement `docs/tasks/00-04-customer-registration.md`.
 ## Implementation
 - Replace `RegisterComponent` placeholder.
 - Add typed register payload and response models.
-- Implement or wire `POST /api/v1/auth/register`.
+- Implement or wire `POST /api/auth/register`.
 - Create customer profile after auth user creation.
 - If backend is not ready, create a typed frontend stub with `// TODO: Implemented in task 00-04`.
 
