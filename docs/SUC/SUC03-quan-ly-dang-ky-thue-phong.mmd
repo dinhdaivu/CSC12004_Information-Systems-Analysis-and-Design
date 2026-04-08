@@ -1,0 +1,64 @@
+sequenceDiagram
+    title SUC3: Quản lý đăng ký thuê phòng
+    autonumber
+    actor S as Nhân viên Sales
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Quản lý yêu cầu thuê)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, rooms, beds, viewing_appointments)
+
+    rect rgb(240, 248, 255)
+        Note over S, DB: Tiếp nhận yêu cầu thuê
+        S->>Web: Mở danh sách yêu cầu thuê
+        Web->>API: GET /api/v1/rental-requests<br/>(status=new/processing)
+        API->>DB: Query rental_requests
+        DB-->>API: Danh sách yêu cầu thuê
+        API-->>Web: Rental request list
+        Web-->>S: Hiển thị danh sách yêu cầu thuê
+        S->>Web: Chọn một yêu cầu thuê
+        Web->>API: GET /api/v1/rental-requests/{id}
+        API->>DB: Get rental request detail
+        DB-->>API: Chi tiết yêu cầu thuê
+        API-->>Web: Rental request detail
+    end
+
+    rect rgb(255, 250, 240)
+        Note over S, DB: Include SUC13 - Tra cứu phòng/giường phù hợp
+        Web->>API: GET /api/v1/rooms<br/>(filters from request)
+        API->>DB: Search available rooms/beds
+        DB-->>API: Available room/bed candidates
+        API-->>Web: Candidate list
+    end
+
+    alt A1 - Không còn phòng phù hợp
+        Web-->>S: Thông báo để tư vấn phòng khác hoặc kết thúc yêu cầu
+    else Có phòng phù hợp
+        rect rgb(240, 255, 240)
+            Note over S, DB: Include SUC14 - Sắp xếp lịch xem phòng
+            S->>Web: Chọn phòng/giường và thời gian xem phòng
+            Web->>API: POST /api/v1/viewing-appointments<br/>(rentalRequestId, roomId, scheduleTime)
+            API->>DB: Insert viewing_appointment
+            DB-->>API: Viewing appointment created
+            API-->>Web: Schedule info
+            Web-->>C: Gửi/hiển thị thông tin lịch hẹn
+        end
+
+        rect rgb(248, 248, 255)
+            Note over S, DB: Include SUC15 - Ghi nhận kết quả xem phòng
+            S->>Web: Nhập kết quả xem phòng
+            Web->>API: PATCH /api/v1/viewing-appointments/{id}/outcome<br/>(result)
+            API->>DB: Update viewing outcome
+            DB-->>API: Outcome updated
+            alt Khách đồng ý thuê
+                API->>DB: Update rental_request status=deposit_ready
+                DB-->>API: Status updated
+                API-->>Web: Ready for SUC4
+                Web-->>S: Tạo cơ sở để xử lý đặt cọc
+            else A2 - Khách không tham gia hoặc không đồng ý
+                API->>DB: Update rental_request status=not_continued/no_show
+                DB-->>API: Status updated
+                API-->>Web: Request closed or pending consultation
+                Web-->>S: Thông báo đã ghi nhận kết quả
+            end
+        end
+    end

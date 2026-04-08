@@ -1,0 +1,55 @@
+sequenceDiagram
+    title SUC20: Xem trạng thái yêu cầu thuê/đặt phòng
+    autonumber
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Danh sách yêu cầu của tôi)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, contracts, payments, checkout_requests)
+
+    rect rgb(240, 248, 255)
+        Note over C, DB: Hiển thị danh sách yêu cầu/đặt phòng của khách hàng
+        C->>Web: Mở màn hình danh sách yêu cầu/đặt phòng
+        Web->>API: GET /api/v1/my-bookings<br/>(customer=current, page=1)
+        API->>DB: Query customer's rental/deposit/contract/payment/checkout records
+        DB-->>API: Customer booking status list
+    end
+
+    alt A1 - Chưa có yêu cầu
+        API-->>Web: Empty list + 0 count
+        Web-->>C: Hiển thị trạng thái rỗng và gợi ý tra cứu phòng/giường
+    else Có yêu cầu
+        API-->>Web: Booking status list
+        Web-->>C: Hiển thị trạng thái thuê, đặt cọc, hợp đồng, thanh toán, trả phòng
+
+        rect rgb(255, 250, 240)
+            Note over C, DB: Lọc hoặc xem chi tiết một yêu cầu
+            C->>Web: Lọc hoặc chọn một yêu cầu để xem chi tiết
+            Web->>API: GET /api/v1/my-bookings/{id}
+            API->>DB: Check ownership and load booking detail
+        end
+
+        alt A2 - Yêu cầu không thuộc về khách hàng
+            DB-->>API: Ownership check failed
+            API-->>Web: 403 Forbidden
+            Web-->>C: Thông báo không có quyền truy cập
+        else Yêu cầu thuộc khách hàng
+            DB-->>API: Booking detail + allowed actions
+            API-->>Web: Booking detail + allowed actions
+            Web-->>C: Hiển thị chi tiết và hành động theo trạng thái
+
+            opt Khách hàng thực hiện hành động
+                C->>Web: Chọn xem thanh toán hoặc tiếp tục quy trình liên quan
+                Web->>API: POST /api/v1/my-bookings/{id}/actions<br/>(action)
+                API->>DB: Validate action by current status
+                alt A3 - Hành động không hợp lệ theo trạng thái
+                    DB-->>API: Invalid transition/action
+                    API-->>Web: 409 Invalid action
+                    Web-->>C: Không thực hiện thao tác và hiển thị lý do
+                else Hành động hợp lệ
+                    DB-->>API: Action accepted
+                    API-->>Web: Navigation/action result
+                    Web-->>C: Điều hướng hoặc xử lý hành động được phép
+                end
+            end
+        end
+    end

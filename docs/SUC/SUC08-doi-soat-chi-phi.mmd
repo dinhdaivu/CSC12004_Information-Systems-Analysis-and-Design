@@ -1,0 +1,46 @@
+sequenceDiagram
+    title SUC8: Đối soát chi phí
+    autonumber
+    actor A as Kế toán
+    participant Web as HomeStay Dorm Web<br/>(Đối soát chi phí)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, handovers, settlements, payments)
+
+    rect rgb(240, 248, 255)
+        Note over A, DB: Tải dữ liệu trả phòng để đối soát
+        A->>Web: Mở yêu cầu trả phòng cần đối soát
+        Web->>API: GET /api/v1/checkout-requests/{id}/settlement-input
+        API->>DB: Read contract, deposit, payments, handover state
+        DB-->>API: Checkout settlement input data
+    end
+
+    alt A1 - Thiếu dữ liệu
+        API-->>Web: Missing required data
+        Web-->>A: Thông báo lỗi và không thực hiện tiếp
+    else A2 - Dữ liệu bàn giao chưa đầy đủ
+        API-->>Web: Handover data incomplete
+        Web-->>A: Tạm dừng đối soát, yêu cầu cập nhật bàn giao
+    else Dữ liệu đầy đủ
+        API-->>Web: Settlement input data
+        Web-->>A: Hiển thị thông tin thuê
+        A->>Web: Kiểm tra thời gian thuê, tình trạng phòng và tiền cọc
+
+        rect rgb(255, 250, 240)
+            Note over A, DB: Include SUC9 - Tính khoản thu thêm/hoàn lại
+            Web->>API: POST /api/v1/costs/calculate<br/>(type=checkout, checkoutRequestId)
+            API->>DB: Read rent, deposit, handover deductions, paid payments
+            DB-->>API: Cost input data
+            API-->>Web: Calculated settlement result
+            Web-->>A: Hiển thị kết quả đối soát
+        end
+
+        rect rgb(240, 255, 240)
+            Note over A, DB: Lưu kết quả đối soát
+            A->>Web: Xác nhận kết quả đối soát
+            Web->>API: POST /api/v1/settlements<br/>(checkoutRequestId, amounts)
+            API->>DB: Insert/update settlement
+            DB-->>API: Settlement saved
+            API-->>Web: Settlement saved
+            Web-->>A: Thông báo đã lưu kết quả
+        end
+    end

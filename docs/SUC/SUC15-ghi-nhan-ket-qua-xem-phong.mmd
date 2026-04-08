@@ -1,0 +1,48 @@
+sequenceDiagram
+    title SUC15: Ghi nhận kết quả xem phòng
+    autonumber
+    actor S as Nhân viên Sales
+    participant Web as HomeStay Dorm Web<br/>(Kết quả xem phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(viewing_appointments, rental_requests, rooms, beds)
+
+    rect rgb(240, 248, 255)
+        Note over S, DB: Mở lịch xem phòng cần xử lý
+        S->>Web: Mở lịch xem phòng cần xử lý
+        Web->>API: GET /api/v1/viewing-appointments/{id}
+        API->>DB: Get appointment, room/bed, rental request
+        DB-->>API: Appointment detail
+        API-->>Web: Appointment detail
+        Web-->>S: Hiển thị lịch hẹn và phòng/giường đã xem
+    end
+
+    rect rgb(255, 250, 240)
+        Note over S, DB: Ghi nhận phản hồi và kết quả xem phòng
+        S->>Web: Nhập tình trạng buổi xem và phản hồi khách hàng
+        S->>Web: Chọn kết quả xem phòng
+        Web->>API: PATCH /api/v1/viewing-appointments/{id}/outcome<br/>(result, note)
+        API->>DB: Update viewing outcome
+        DB-->>API: Outcome updated
+    end
+
+    alt Khách đồng ý thuê
+        API->>DB: Update rental_request status=deposit_ready
+        DB-->>API: Rental request updated
+        API-->>Web: Continue to deposit
+        Web-->>S: Thông báo tiếp tục SUC4 - Quản lý đặt cọc
+    else Khách cần tư vấn thêm
+        API->>DB: Update rental_request status=consulting
+        DB-->>API: Rental request updated
+        API-->>Web: Request pending consultation
+        Web-->>S: Thông báo đã cập nhật trạng thái yêu cầu thuê
+    else A1 - Khách không đến xem phòng
+        API->>DB: Update appointment status=no_show
+        DB-->>API: Appointment updated
+        API-->>Web: No-show recorded
+        Web-->>S: Cho phép sắp lịch lại hoặc kết thúc yêu cầu
+    else A2 - Khách không đồng ý thuê
+        API->>DB: Update rental_request status=not_continued
+        DB-->>API: Rental request updated
+        API-->>Web: Request closed
+        Web-->>S: Thông báo yêu cầu thuê không tiếp tục
+    end

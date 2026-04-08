@@ -1,0 +1,63 @@
+sequenceDiagram
+    title SUC4: Quản lý đặt cọc
+    autonumber
+    actor S as Nhân viên Sales
+    actor A as Kế toán
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Quản lý đặt cọc)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, payments, rooms)
+
+    rect rgb(240, 248, 255)
+        Note over S, DB: Tạo yêu cầu đặt cọc
+        S->>Web: Tạo yêu cầu đặt cọc từ yêu cầu thuê
+        Web->>API: POST /api/v1/deposits<br/>(rentalRequestId, roomId, bedId)
+        API->>DB: Validate rental_request and room/bed availability
+        DB-->>API: Valid request + current room/bed status
+        API->>DB: Insert deposit_request(status=pending)
+        API->>DB: Update room/bed status=holding
+        DB-->>API: Deposit request created
+        API-->>Web: Deposit detail
+        Web-->>S: Hiển thị thông tin đặt cọc
+    end
+
+    rect rgb(255, 250, 240)
+        Note over A, DB: Include SUC9 - Tính và xác nhận số tiền cọc
+        A->>Web: Kiểm tra và nhập số tiền cọc
+        Web->>API: POST /api/v1/costs/calculate<br/>(type=deposit, depositId)
+        API->>DB: Read room price and rental information
+        DB-->>API: Cost input data
+        API-->>Web: Deposit amount suggestion
+        Web-->>A: Hiển thị số tiền cần xác nhận
+        A->>Web: Xác nhận số tiền cọc
+        Web->>API: PATCH /api/v1/deposits/{id}<br/>(amount)
+        API->>DB: Update deposit amount
+        DB-->>API: Amount updated
+    end
+
+    opt Quản lý cần theo dõi/xác nhận
+        API-->>Web: Deposit pending manager review
+        Web-->>M: Hiển thị yêu cầu đặt cọc cần xác nhận
+        M->>Web: Xác nhận xử lý đặt cọc
+        Web->>API: PATCH /api/v1/deposits/{id}/review
+        API->>DB: Update review status
+        DB-->>API: Review status updated
+    end
+
+    rect rgb(240, 255, 240)
+        Note over S, DB: Include SUC5 - Thanh toán đặt cọc
+        Web->>API: POST /api/v1/payments<br/>(depositId, amount, type=deposit)
+        API->>DB: Insert payment record
+        DB-->>API: Payment created
+    end
+
+    alt Thanh toán thành công
+        Web->>API: PATCH /api/v1/deposits/{id}/confirm
+        API->>DB: Update deposit status=paid and room status=deposited
+        DB-->>API: Deposit confirmed
+        API-->>Web: Deposit paid
+        Web-->>S: Thông báo đặt cọc thành công
+    else A1 - Thanh toán thất bại
+        API-->>Web: Payment failed
+        Web-->>S: Thông báo lỗi và cho phép thực hiện lại
+    end

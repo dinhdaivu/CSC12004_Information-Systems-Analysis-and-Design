@@ -1,0 +1,75 @@
+sequenceDiagram
+    title SUC11: Quản lý đăng ký trả phòng
+    autonumber
+    actor M as Quản lý
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Quản lý trả phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, settlements, payments, rooms, handovers)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Tiếp nhận yêu cầu trả phòng
+        M->>Web: Mở danh sách yêu cầu trả phòng
+        Web->>API: GET /api/v1/checkout-requests<br/>(status=requested/confirmed)
+        API->>DB: Query checkout_requests
+        DB-->>API: Checkout request list + count
+        API-->>Web: Checkout request list + count
+        Web-->>M: Hiển thị danh sách yêu cầu trả phòng
+        M->>Web: Chọn yêu cầu trả phòng
+        Web->>API: GET /api/v1/checkout-requests/{id}
+        API->>DB: Get checkout, contract, deposit, room, handover state
+        DB-->>API: Checkout detail
+        API-->>Web: Checkout detail
+        Web-->>M: Hiển thị thông tin xử lý trả phòng
+    end
+
+    rect rgb(255, 250, 240)
+        Note over M, DB: Include SUC8 - Đối soát chi phí
+        Web->>API: POST /api/v1/settlements/calculate<br/>(checkoutRequestId)
+        API->>DB: Read contract, deposit, payments, deductions
+        DB-->>API: Settlement input data
+        API->>DB: Insert/update settlement draft
+        DB-->>API: Settlement draft saved
+        API-->>Web: Settlement result<br/>(thu thêm hoặc hoàn lại)
+        Web-->>M: Hiển thị kết quả đối soát
+    end
+
+    opt Có phát sinh thanh toán hoặc hoàn tiền
+        rect rgb(240, 255, 240)
+            Note over M, DB: Extend SUC5 - Thanh toán/hoàn tiền
+            Web->>API: POST /api/v1/payments<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
+            API->>DB: Insert payment/refund record
+            DB-->>API: Payment/refund record created
+            API-->>Web: Payment/refund status
+        end
+    end
+
+    alt A1 - Thanh toán/hoàn tiền chưa hoàn tất
+        API-->>Web: Settlement payment pending
+        Web-->>M: Giữ trạng thái xử lý, chưa cho phép thanh lý hợp đồng
+    else A2 - Khách chưa bàn giao đủ chìa khóa/thẻ/tài sản
+        M->>Web: Ghi nhận thiếu chìa khóa/thẻ/tài sản
+        Web->>API: PATCH /api/v1/handovers/{id}<br/>(missingItems)
+        API->>DB: Update checkout handover record
+        DB-->>API: Handover updated
+        API-->>Web: Handover incomplete
+        Web-->>C: Yêu cầu hoàn tất bàn giao
+    else Đủ điều kiện hoàn tất trả phòng
+        rect rgb(248, 248, 255)
+            Note over M, DB: Thanh lý hợp đồng và cập nhật phòng/giường
+            M->>Web: Ký xác nhận biên bản trả phòng và thanh lý hợp đồng
+            Web->>API: PATCH /api/v1/contracts/{id}/terminate
+            API->>DB: Update contract status=terminated/completed
+            Web->>API: POST /api/v1/handovers<br/>(type=checkout, signed=true)
+            API->>DB: Insert/sign checkout handover
+            Web->>API: PATCH /api/v1/checkout-requests/{id}/complete
+            API->>DB: Update checkout status=completed and room/bed status=available
+            DB-->>API: Checkout completed
+            API-->>Web: Checkout complete
+            Web-->>M: Thông báo hoàn tất trả phòng
+            Web-->>C: Thông báo trả phòng hoàn tất
+        end
+    else A3 - Lỗi cập nhật trạng thái hợp đồng hoặc phòng
+        API-->>Web: Update status failed
+        Web-->>M: Thông báo lỗi, trả phòng chưa hoàn tất
+    end

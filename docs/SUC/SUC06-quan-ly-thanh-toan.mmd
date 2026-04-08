@@ -1,0 +1,46 @@
+sequenceDiagram
+    title SUC6: Quản lý thanh toán
+    autonumber
+    actor A as Kế toán
+    participant Web as HomeStay Dorm Web<br/>(Quản lý thanh toán)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(payments, deposits, contracts, settlements)
+
+    rect rgb(240, 248, 255)
+        Note over A, DB: Danh sách giao dịch thanh toán
+        A->>Web: Mở màn hình quản lý thanh toán
+        Web->>API: GET /api/v1/payments<br/>(status, type, dateRange, page)
+        API->>DB: Query payments with filters
+        DB-->>API: Payment list + count
+        API-->>Web: Payment list + count
+        Web-->>A: Hiển thị danh sách giao dịch
+    end
+
+    rect rgb(255, 250, 240)
+        Note over A, DB: Kiểm tra và đối chiếu giao dịch
+        A->>Web: Chọn giao dịch cần kiểm tra
+        Web->>API: GET /api/v1/payments/{id}
+        API->>DB: Get payment detail and related records
+        DB-->>API: Payment detail
+        API-->>Web: Payment detail
+        Web-->>A: Hiển thị chi tiết giao dịch
+        A->>Web: Xác nhận giao dịch
+        Web->>API: PATCH /api/v1/payments/{id}/confirm
+        API->>DB: Reconcile payment data
+    end
+
+    alt Giao dịch khớp
+        API->>DB: Update payment status=confirmed
+        DB-->>API: Transaction saved
+        API-->>Web: Payment confirmed
+        Web-->>A: Thông báo giao dịch đã xử lý
+    else A1 - Sai lệch giao dịch
+        DB-->>API: Mismatch detected
+        API-->>Web: Payment mismatch
+        Web-->>A: Thông báo sai lệch để kiểm tra lại
+    else A2 - Giao dịch bị hủy
+        API->>DB: Update payment status=cancelled
+        DB-->>API: Cancelled status saved
+        API-->>Web: Payment cancelled
+        Web-->>A: Thông báo giao dịch đã hủy
+    end

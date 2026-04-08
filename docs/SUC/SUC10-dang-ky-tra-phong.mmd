@@ -1,0 +1,30 @@
+sequenceDiagram
+    title SUC10: Đăng ký trả phòng
+    autonumber
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Đăng ký trả phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(contracts, checkout_requests, rooms)
+
+    rect rgb(240, 248, 255)
+        Note over C, DB: Tải thông tin thuê hiện tại
+        C->>Web: Chọn chức năng Đăng ký trả phòng
+        Web->>API: GET /api/v1/contracts<br/>(customer=current, status=active)
+        API->>DB: Query active contract by customer
+        DB-->>API: Active contract info
+    end
+
+    alt A1 - Không có hợp đồng thuê
+        API-->>Web: Empty active contract
+        Web-->>C: Thông báo không có hợp đồng thuê
+    else Có hợp đồng thuê
+        API-->>Web: Active contract detail
+        Web-->>C: Hiển thị thông tin thuê
+        C->>Web: Chọn trả phòng và xác nhận
+        Web->>API: POST /api/v1/checkout-requests<br/>(contractId, requestedDate)
+        API->>DB: Insert checkout_request(status=requested)
+        API->>DB: Update room/bed status=checkout_pending
+        DB-->>API: Checkout request created
+        API-->>Web: Checkout request detail
+        Web-->>C: Thông báo yêu cầu trả phòng được tạo
+    end

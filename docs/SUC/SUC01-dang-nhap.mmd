@@ -1,0 +1,37 @@
+sequenceDiagram
+    title SUC1: Đăng nhập
+    autonumber
+    actor U as Người dùng<br/>(Sales/Kế toán/Quản lý/Khách hàng)
+    participant Web as HomeStay Dorm Web<br/>(Màn hình đăng nhập)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant Auth as Supabase Auth<br/>(Dịch vụ xác thực)
+    participant DB as HomeStay Dorm DB<br/>(users)
+
+    rect rgb(240, 248, 255)
+        Note over U, DB: Đăng nhập vào hệ thống
+        U->>Web: Mở màn hình đăng nhập
+        Web-->>U: Hiển thị form username/password
+        U->>Web: Nhập username và password
+        Web->>API: POST /api/v1/auth/login<br/>(username, password)
+        API->>Auth: Xác thực thông tin đăng nhập
+        Auth-->>API: JWT + auth user id
+        API->>DB: GET user profile by auth_user_id
+        DB-->>API: Thông tin người dùng + vai trò
+        API-->>Web: Login success + JWT + profile
+        Web-->>U: Chuyển vào màn hình chính theo vai trò
+    end
+
+    alt A1 - Sai thông tin đăng nhập
+        Auth-->>API: Invalid credentials
+        API-->>Web: 401 Unauthorized
+        Web-->>U: Hiển thị lỗi và yêu cầu nhập lại
+    else A2 - Quên mật khẩu
+        U->>Web: Chọn Quên mật khẩu
+        Web-->>U: Hiển thị form nhập email
+        U->>Web: Nhập email khôi phục
+        Web->>API: POST /api/v1/auth/forgot-password<br/>(email)
+        API->>Auth: Gửi yêu cầu reset mật khẩu
+        Auth-->>U: Gửi link reset mật khẩu qua email
+        API-->>Web: Reset link requested
+        Web-->>U: Thông báo kiểm tra email
+    end

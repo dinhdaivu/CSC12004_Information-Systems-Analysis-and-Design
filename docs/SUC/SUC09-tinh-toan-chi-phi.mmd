@@ -1,0 +1,33 @@
+sequenceDiagram
+    title SUC9: Tính toán chi phí
+    autonumber
+    participant Caller as Use case gọi<br/>(SUC4/SUC7/SUC8/SUC11)
+    participant API as HomeStay Dorm API<br/>(Cost/Settlement service)
+    participant DB as HomeStay Dorm DB<br/>(rooms, contracts, payments, handovers, services)
+
+    rect rgb(240, 248, 255)
+        Note over Caller, DB: Nhận yêu cầu tính toán chi phí
+        Caller->>API: POST /api/v1/costs/calculate<br/>(type, relatedId)
+        API->>API: Xác định nghiệp vụ<br/>(deposit / contract / checkout)
+        API->>DB: Load price, rental period, deposit, payment, handover data
+        DB-->>API: Cost input data
+    end
+
+    alt A1 - Thiếu dữ liệu
+        API-->>Caller: 400 Missing cost input data
+    else A2 - Dữ liệu không hợp lệ
+        API-->>Caller: 422 Invalid cost input data
+    else Dữ liệu hợp lệ
+        rect rgb(255, 250, 240)
+            Note over API, DB: Tính chi phí theo nghiệp vụ
+            API->>API: Tính tiền cọc nếu type=deposit
+            API->>API: Tính tiền thuê nếu type=contract
+            API->>API: Tính chi phí phát sinh nếu type=checkout
+        end
+
+        alt A3 - Không có chi phí phát sinh
+            API-->>Caller: Cost result with basic amount only
+        else Có chi phí phát sinh
+            API-->>Caller: Cost result with basic amount + extra charges/deductions
+        end
+    end

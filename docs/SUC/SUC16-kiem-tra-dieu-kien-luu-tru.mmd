@@ -1,0 +1,38 @@
+sequenceDiagram
+    title SUC16: Kiểm tra điều kiện lưu trú
+    autonumber
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Kiểm tra lưu trú)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(users, deposit_requests, rental_requests, contracts)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Tải hồ sơ khách hàng cần kiểm tra
+        M->>Web: Mở hồ sơ khách hàng cần kiểm tra
+        Web->>API: GET /api/v1/lodging-eligibility/{customerId}<br/>(depositId)
+        API->>DB: Read identity profile, rental request, deposit status, selected room/bed
+        DB-->>API: Lodging profile data
+        API-->>Web: Lodging profile data
+        Web-->>M: Hiển thị thông tin cá nhân, giấy tờ và phòng/giường đăng ký
+    end
+
+    rect rgb(255, 250, 240)
+        Note over M, DB: Lưu kết quả kiểm tra điều kiện lưu trú
+        M->>Web: Kiểm tra hồ sơ và xác nhận kết quả
+        Web->>API: POST /api/v1/lodging-eligibility/check<br/>(customerId, depositId, result, note)
+        API->>DB: Store lodging eligibility result
+    end
+
+    alt Hồ sơ đủ điều kiện
+        DB-->>API: Eligibility saved as passed
+        API-->>Web: Passed
+        Web-->>M: Thông báo khách đủ điều kiện lập hợp đồng
+    else A1 - Thiếu giấy tờ hoặc thông tin
+        DB-->>API: Eligibility saved as missing_info
+        API-->>Web: Missing required profile data
+        Web-->>M: Thông báo thiếu hồ sơ, chưa cho phép lập hợp đồng
+    else A2 - Không đủ điều kiện lưu trú
+        DB-->>API: Eligibility saved as failed
+        API-->>Web: Failed
+        Web-->>M: Dừng luồng lập hợp đồng
+    end

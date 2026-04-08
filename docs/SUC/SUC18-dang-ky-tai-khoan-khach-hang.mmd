@@ -1,0 +1,42 @@
+sequenceDiagram
+    title SUC18: Đăng ký tài khoản khách hàng
+    autonumber
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Đăng ký tài khoản)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant Auth as Supabase Auth<br/>(Dịch vụ xác thực)
+    participant DB as HomeStay Dorm DB<br/>(users)
+
+    rect rgb(240, 248, 255)
+        Note over C, DB: Nhập thông tin đăng ký
+        C->>Web: Mở màn hình đăng ký tài khoản
+        Web-->>C: Hiển thị biểu mẫu họ tên, email, số điện thoại, mật khẩu
+        C->>Web: Nhập thông tin và gửi yêu cầu đăng ký
+        Web->>API: POST /api/v1/auth/register<br/>(fullName, email, phone, password)
+        API->>DB: Check duplicate email/phone in users
+        DB-->>API: Duplicate check result
+    end
+
+    alt A1 - Email hoặc số điện thoại đã tồn tại
+        API-->>Web: 409 Email/phone already exists
+        Web-->>C: Thông báo lỗi và gợi ý dùng thông tin khác hoặc đăng nhập
+    else A2 - Dữ liệu không hợp lệ
+        API-->>Web: 422 Invalid registration data
+        Web-->>C: Hiển thị lỗi dữ liệu, không tạo tài khoản
+    else Dữ liệu hợp lệ
+        rect rgb(255, 250, 240)
+            Note over API, DB: Tạo tài khoản xác thực và hồ sơ khách hàng
+            API->>Auth: Create auth user
+            alt A3 - Lỗi dịch vụ xác thực
+                Auth--xAPI: Auth service error
+                API-->>Web: Registration failed
+                Web-->>C: Thông báo đăng ký chưa thành công, thử lại sau
+            else Tạo tài khoản xác thực thành công
+                Auth-->>API: Auth user id
+                API->>DB: Insert users profile(role=customer)
+                DB-->>API: Customer profile created
+                API-->>Web: Registration success
+                Web-->>C: Thông báo đăng ký thành công và chuyển đến đăng nhập/trang chính
+            end
+        end
+    end

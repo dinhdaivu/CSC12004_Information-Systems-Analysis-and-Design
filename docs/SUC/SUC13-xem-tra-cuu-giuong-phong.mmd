@@ -1,0 +1,39 @@
+sequenceDiagram
+    title SUC13: Xem/tra cứu giường/phòng
+    autonumber
+    actor U as Người dùng<br/>(Khách hàng/Nhân viên Sales)
+    participant Web as HomeStay Dorm Web<br/>(Danh sách phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(branches, rooms, beds)
+
+    rect rgb(240, 248, 255)
+        Note over U, DB: Hiển thị danh sách phòng/giường
+        U->>Web: Chọn chức năng tra cứu phòng/giường
+        Web->>API: GET /api/v1/rooms<br/>(branch, type, capacity, price, status)
+        API->>DB: Query public room/bed inventory
+        DB-->>API: Room/bed list
+        API-->>Web: Room/bed list
+        Web-->>U: Hiển thị danh sách phòng
+    end
+
+    rect rgb(255, 250, 240)
+        Note over U, DB: Tìm kiếm và lọc kết quả
+        U->>Web: Nhập tiêu chí tìm kiếm
+        Web->>API: GET /api/v1/rooms<br/>(filters)
+        API->>DB: Filter rooms/beds by criteria
+        DB-->>API: Filtered list
+    end
+
+    alt Có kết quả
+        API-->>Web: Filtered room/bed list
+        Web-->>U: Hiển thị kết quả tra cứu
+        U->>Web: Chọn xem chi tiết phòng
+        Web->>API: GET /api/v1/rooms/{id}
+        API->>DB: Get room detail and bed availability
+        DB-->>API: Room detail
+        API-->>Web: Room detail
+        Web-->>U: Hiển thị chi tiết phòng
+    else A1 - Không có kết quả
+        API-->>Web: Empty list + 0 count
+        Web-->>U: Thông báo không có kết quả và cho phép tìm lại
+    end

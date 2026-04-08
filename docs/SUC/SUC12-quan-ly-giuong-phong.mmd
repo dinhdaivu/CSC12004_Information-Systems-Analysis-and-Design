@@ -1,0 +1,62 @@
+sequenceDiagram
+    title SUC12: Quản lý giường phòng
+    autonumber
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Quản lý giường/phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(branches, rooms, beds)
+
+    rect rgb(240, 248, 255)
+        Note over M, DB: Hiển thị danh sách giường/phòng
+        M->>Web: Mở chức năng quản lý giường/phòng
+        Web->>API: GET /api/v1/rooms<br/>(branch, status, page)
+        API->>DB: Query rooms and beds
+        DB-->>API: Room/bed list + count
+        API-->>Web: Room/bed list + count
+        Web-->>M: Hiển thị danh sách giường/phòng
+    end
+
+    rect rgb(255, 250, 240)
+        Note over M, DB: Xem chi tiết
+        M->>Web: Chọn một phòng/giường để xem
+        Web->>API: GET /api/v1/rooms/{id}
+        API->>DB: Get room detail with beds
+        DB-->>API: Room detail
+        API-->>Web: Room detail
+        Web-->>M: Hiển thị chi tiết
+    end
+
+    rect rgb(240, 255, 240)
+        Note over M, DB: Thêm hoặc sửa phòng/giường
+        M->>Web: Nhập thông tin mới hoặc chỉnh sửa thông tin
+        Web->>API: POST/PATCH /api/v1/rooms<br/>(room data)
+        API->>DB: Validate and insert/update room/bed data
+    end
+
+    alt A1 - Dữ liệu không hợp lệ
+        DB-->>API: Validation failed
+        API-->>Web: 422 Invalid room/bed data
+        Web-->>M: Thông báo lỗi và yêu cầu nhập lại
+    else Dữ liệu hợp lệ
+        DB-->>API: Room/bed saved
+        API-->>Web: Updated room/bed detail
+        Web-->>M: Hiển thị danh sách đã cập nhật
+    end
+
+    rect rgb(248, 248, 255)
+        Note over M, DB: Xóa phòng/giường
+        M->>Web: Yêu cầu xóa phòng/giường
+        Web->>API: DELETE /api/v1/rooms/{id}
+        API->>DB: Check active contracts/deposits/handovers
+    end
+
+    alt A2 - Không thể xóa do đang được sử dụng
+        DB-->>API: Room/bed is referenced by active records
+        API-->>Web: 409 Cannot delete
+        Web-->>M: Thông báo từ chối xóa
+    else Có thể xóa
+        API->>DB: Delete room/bed
+        DB-->>API: Deleted
+        API-->>Web: Delete success
+        Web-->>M: Hiển thị danh sách đã cập nhật
+    end

@@ -1,0 +1,45 @@
+sequenceDiagram
+    title SUC5: Thanh toán
+    autonumber
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Thanh toán)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant VietQR as VietQR<br/>(Cổng thanh toán)
+    participant DB as HomeStay Dorm DB<br/>(payments, deposit_requests, contracts)
+
+    rect rgb(240, 248, 255)
+        Note over C, DB: Khởi tạo giao dịch thanh toán
+        Web-->>C: Hiển thị thông tin thanh toán
+        C->>Web: Chọn phương thức thanh toán
+        Web->>API: POST /api/v1/payments<br/>(targetId, type, amount, method=vietqr)
+        API->>DB: Create payment(status=pending)
+        DB-->>API: Payment id
+        API->>VietQR: Create VietQR payment request
+        VietQR-->>API: QR/payment instruction
+        API-->>Web: Payment instruction + QR
+        Web-->>C: Hiển thị mã QR/thông tin thanh toán
+    end
+
+    rect rgb(255, 250, 240)
+        Note over C, DB: Xử lý kết quả giao dịch
+        C->>VietQR: Thực hiện thanh toán
+        VietQR-->>API: Payment callback/result
+        API->>DB: Update payment status
+    end
+
+    alt Thanh toán thành công
+        API->>DB: Mark related deposit/contract payment as paid
+        DB-->>API: Transaction updated
+        API-->>Web: Payment success
+        Web-->>C: Thông báo thanh toán thành công
+    else A1 - Thanh toán thất bại
+        DB-->>API: Payment failed stored
+        API-->>Web: Payment failed
+        Web-->>C: Hiển thị lỗi và cho phép thanh toán lại
+    else A2 - Timeout/lỗi kết nối VietQR
+        VietQR--xAPI: Timeout or connection error
+        API->>DB: Update payment status=cancelled/failed
+        DB-->>API: Status updated
+        API-->>Web: Payment timeout
+        Web-->>C: Thông báo lỗi, giao dịch bị hủy
+    end
