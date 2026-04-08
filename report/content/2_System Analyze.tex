@@ -938,3 +938,229 @@
 \end{tabularx}
 \caption{Đặc tả SUC17: Nhận phòng và bàn giao}
 \end{table}
+
+\vspace{1cm}
+
+% ============================================================
+% SUC18
+% ============================================================
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash\bfseries}m{3.5cm}|X|}
+    \hline
+    Use Case & {\centering\textbf{SUC18: Đăng ký tài khoản khách hàng}\par} \\
+    \hline
+    Mô tả & Khách hàng tạo tài khoản trên hệ thống để có thể đăng ký thuê phòng, theo dõi yêu cầu thuê và thực hiện các thao tác liên quan đến quá trình lưu trú. \\
+    \hline
+    Actor &
+    \begin{itemize}[leftmargin=*, nosep, label=\textbullet]
+        \vspace{0.1cm}
+        \item Khách hàng
+    \end{itemize} \\
+    \hline
+    Sự kiện kích hoạt & Khách hàng chọn chức năng đăng ký tài khoản trên website. \\
+    \hline
+    Tiền điều kiện & Khách hàng chưa có tài khoản hợp lệ trên hệ thống với cùng email hoặc số điện thoại. \\
+    \hline
+    Hậu điều kiện & Tài khoản khách hàng được tạo thành công; thông tin hồ sơ cơ bản được lưu và khách hàng có thể đăng nhập hệ thống. \\
+    \hline
+    Dòng chính &
+    \begin{enumerate}[leftmargin=*, nosep]
+        \vspace{0.1cm}
+        \item Khách hàng mở màn hình đăng ký tài khoản.
+        \item Hệ thống hiển thị biểu mẫu đăng ký gồm họ tên, email, số điện thoại và mật khẩu.
+        \item Khách hàng nhập thông tin và gửi yêu cầu đăng ký.
+        \item Hệ thống kiểm tra tính hợp lệ của dữ liệu và kiểm tra trùng email/số điện thoại.
+        \item Hệ thống tạo tài khoản xác thực và hồ sơ khách hàng.
+        \item Hệ thống thông báo đăng ký thành công và chuyển khách hàng đến màn hình đăng nhập hoặc trang chính.
+        \item Kết thúc.
+    \end{enumerate} \\
+    \hline
+    Dòng thay thế &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textbf{A1 -- Email hoặc số điện thoại đã tồn tại:} Hệ thống thông báo lỗi và yêu cầu khách hàng dùng thông tin khác hoặc đăng nhập.
+        \item \textbf{A2 -- Dữ liệu không hợp lệ:} Hệ thống hiển thị lỗi tương ứng và không tạo tài khoản.
+        \item \textbf{A3 -- Lỗi dịch vụ xác thực:} Hệ thống thông báo đăng ký chưa thành công và yêu cầu thử lại sau.
+    \end{itemize} \\
+    \hline
+    Use-Case liên quan &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textit{(liên quan)} \textbf{SUC1: Đăng nhập}.
+        \item Sau khi đăng ký và đăng nhập, khách hàng có thể thực hiện \textbf{SUC2: Đăng ký thuê phòng}.
+\end{itemize} \\
+    \hline
+\end{tabularx}
+\caption{Đặc tả SUC18: Đăng ký tài khoản khách hàng}
+\end{table}
+
+\vspace{1cm}
+
+% ============================================================
+% SUC19
+% ============================================================
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash\bfseries}m{3.5cm}|X|}
+    \hline
+    Use Case & {\centering\textbf{SUC19: Quản lý người dùng}\par} \\
+    \hline
+    Mô tả & Quản lý theo dõi, tra cứu và cập nhật thông tin người dùng trong hệ thống, bao gồm trạng thái tài khoản và vai trò sử dụng hệ thống. \\
+    \hline
+    Actor &
+    \begin{itemize}[leftmargin=*, nosep, label=\textbullet]
+        \vspace{0.1cm}
+        \item Quản lý
+    \end{itemize} \\
+    \hline
+    Sự kiện kích hoạt & Quản lý mở chức năng quản lý người dùng trong trang quản trị. \\
+    \hline
+    Tiền điều kiện & Quản lý đã đăng nhập và có quyền truy cập chức năng quản lý người dùng. \\
+    \hline
+    Hậu điều kiện & Danh sách người dùng được hiển thị; các thay đổi hợp lệ về thông tin, vai trò hoặc trạng thái tài khoản được lưu trên hệ thống. \\
+    \hline
+    Dòng chính &
+    \begin{enumerate}[leftmargin=*, nosep]
+        \vspace{0.1cm}
+        \item Quản lý mở màn hình quản lý người dùng.
+        \item Hệ thống hiển thị danh sách người dùng và các thông tin cơ bản.
+        \item Quản lý tìm kiếm hoặc lọc người dùng theo tên, email, số điện thoại, vai trò hoặc trạng thái.
+        \item Quản lý chọn một người dùng để xem chi tiết.
+        \item Quản lý cập nhật thông tin cho phép chỉnh sửa, vai trò hoặc trạng thái tài khoản.
+        \item Hệ thống kiểm tra quyền và tính hợp lệ của thay đổi.
+        \item Hệ thống lưu thay đổi và cập nhật lại danh sách người dùng.
+        \item Kết thúc.
+    \end{enumerate} \\
+    \hline
+    Dòng thay thế &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textbf{A1 -- Không đủ quyền:} Hệ thống từ chối thao tác và hiển thị thông báo lỗi quyền truy cập.
+        \item \textbf{A2 -- Vai trò hoặc trạng thái không hợp lệ:} Hệ thống không lưu thay đổi và yêu cầu kiểm tra lại dữ liệu.
+        \item \textbf{A3 -- Không tìm thấy người dùng:} Hệ thống thông báo không có kết quả phù hợp.
+    \end{itemize} \\
+    \hline
+    Use-Case liên quan &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textit{(liên quan)} \textbf{SUC1: Đăng nhập}.
+        \item \textit{(liên quan)} \textbf{SUC18: Đăng ký tài khoản khách hàng}.
+\end{itemize} \\
+    \hline
+\end{tabularx}
+\caption{Đặc tả SUC19: Quản lý người dùng}
+\end{table}
+
+\vspace{1cm}
+
+% ============================================================
+% SUC20
+% ============================================================
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash\bfseries}m{3.5cm}|X|}
+    \hline
+    Use Case & {\centering\textbf{SUC20: Xem trạng thái yêu cầu thuê/đặt phòng}\par} \\
+    \hline
+    Mô tả & Khách hàng xem danh sách các yêu cầu thuê phòng, đặt cọc, hợp đồng và yêu cầu trả phòng của mình để theo dõi trạng thái xử lý. \\
+    \hline
+    Actor &
+    \begin{itemize}[leftmargin=*, nosep, label=\textbullet]
+        \vspace{0.1cm}
+        \item Khách hàng
+    \end{itemize} \\
+    \hline
+    Sự kiện kích hoạt & Khách hàng mở màn hình danh sách yêu cầu/đặt phòng của mình. \\
+    \hline
+    Tiền điều kiện & Khách hàng đã đăng nhập và đã có hoặc có thể chưa có yêu cầu thuê phòng trên hệ thống. \\
+    \hline
+    Hậu điều kiện & Khách hàng nhìn thấy trạng thái các yêu cầu liên quan đến quá trình thuê và có thể mở chi tiết hoặc thực hiện hành động được phép theo trạng thái. \\
+    \hline
+    Dòng chính &
+    \begin{enumerate}[leftmargin=*, nosep]
+        \vspace{0.1cm}
+        \item Khách hàng mở màn hình danh sách yêu cầu/đặt phòng.
+        \item Hệ thống tải các yêu cầu thuộc về khách hàng hiện tại.
+        \item Hệ thống hiển thị trạng thái yêu cầu thuê, đặt cọc, hợp đồng, thanh toán và trả phòng nếu có.
+        \item Khách hàng lọc hoặc chọn một yêu cầu để xem chi tiết.
+        \item Hệ thống hiển thị chi tiết yêu cầu và các hành động được phép theo trạng thái hiện tại.
+        \item Khách hàng thực hiện hành động nếu cần, ví dụ xem chi tiết thanh toán hoặc tiếp tục quy trình liên quan.
+        \item Kết thúc.
+    \end{enumerate} \\
+    \hline
+    Dòng thay thế &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textbf{A1 -- Chưa có yêu cầu:} Hệ thống hiển thị trạng thái rỗng và gợi ý khách hàng tra cứu phòng/giường.
+        \item \textbf{A2 -- Yêu cầu không thuộc về khách hàng:} Hệ thống từ chối truy cập.
+        \item \textbf{A3 -- Hành động không hợp lệ theo trạng thái:} Hệ thống không thực hiện thao tác và hiển thị lý do.
+    \end{itemize} \\
+    \hline
+    Use-Case liên quan &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textit{(liên quan)} \textbf{SUC2: Đăng ký thuê phòng}.
+        \item \textit{(liên quan)} \textbf{SUC4: Quản lý đặt cọc}.
+        \item \textit{(liên quan)} \textbf{SUC10: Đăng ký trả phòng}.
+\end{itemize} \\
+    \hline
+\end{tabularx}
+\caption{Đặc tả SUC20: Xem trạng thái yêu cầu thuê/đặt phòng}
+\end{table}
+
+\vspace{1cm}
+
+% ============================================================
+% SUC21
+% ============================================================
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash\bfseries}m{3.5cm}|X|}
+    \hline
+    Use Case & {\centering\textbf{SUC21: Tổng quan quản trị}\par} \\
+    \hline
+    Mô tả & Quản lý xem màn hình tổng quan quản trị để nắm nhanh tình trạng vận hành hệ thống, bao gồm người dùng, phòng/giường, yêu cầu thuê, thanh toán và các tác vụ cần xử lý. \\
+    \hline
+    Actor &
+    \begin{itemize}[leftmargin=*, nosep, label=\textbullet]
+        \vspace{0.1cm}
+        \item Quản lý
+    \end{itemize} \\
+    \hline
+    Sự kiện kích hoạt & Quản lý mở trang tổng quan trong khu vực quản trị. \\
+    \hline
+    Tiền điều kiện & Quản lý đã đăng nhập và có quyền truy cập khu vực quản trị. \\
+    \hline
+    Hậu điều kiện & Các chỉ số và liên kết tác vụ quan trọng được hiển thị; quản lý có thể chuyển đến chức năng xử lý chi tiết. \\
+    \hline
+    Dòng chính &
+    \begin{enumerate}[leftmargin=*, nosep]
+        \vspace{0.1cm}
+        \item Quản lý mở trang tổng quan quản trị.
+        \item Hệ thống tải các số liệu tổng hợp về người dùng, phòng/giường, yêu cầu thuê, đặt cọc, thanh toán và trả phòng.
+        \item Hệ thống hiển thị các tác vụ hoặc hoạt động gần đây cần theo dõi.
+        \item Quản lý chọn một thẻ thống kê hoặc liên kết nhanh để chuyển đến chức năng liên quan.
+        \item Hệ thống điều hướng đến màn hình quản lý chi tiết tương ứng.
+        \item Kết thúc.
+    \end{enumerate} \\
+    \hline
+    Dòng thay thế &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textbf{A1 -- Không đủ quyền truy cập:} Hệ thống chuyển hướng về màn hình đăng nhập hoặc hiển thị thông báo không có quyền.
+        \item \textbf{A2 -- Không có dữ liệu thống kê:} Hệ thống hiển thị giá trị mặc định và trạng thái rỗng.
+        \item \textbf{A3 -- Lỗi tải dữ liệu:} Hệ thống hiển thị thông báo lỗi và cho phép tải lại.
+    \end{itemize} \\
+    \hline
+    Use-Case liên quan &
+    \begin{itemize}[leftmargin=*, nosep, label=-]
+        \vspace{0.1cm}
+        \item \textit{(liên quan)} \textbf{SUC6: Quản lý thanh toán}.
+        \item \textit{(liên quan)} \textbf{SUC12: Quản lý giường phòng}.
+        \item \textit{(liên quan)} \textbf{SUC19: Quản lý người dùng}.
+\end{itemize} \\
+    \hline
+\end{tabularx}
+\caption{Đặc tả SUC21: Tổng quan quản trị}
+\end{table}

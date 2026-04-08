@@ -44,6 +44,14 @@ flowchart TB
             SUC10(["SUC10<br/>Đăng ký trả phòng"]):::customer
             SUC12(["SUC12<br/>Quản lý giường phòng"]):::manager
         end
+
+        subgraph G4["Tài khoản và tổng quan"]
+            direction LR
+            SUC18(["SUC18<br/>Đăng ký tài khoản khách hàng"]):::customer
+            SUC19(["SUC19<br/>Quản lý người dùng"]):::manager
+            SUC20(["SUC20<br/>Xem trạng thái yêu cầu thuê/đặt phòng"]):::customer
+            SUC21(["SUC21<br/>Tổng quan quản trị"]):::manager
+        end
     end
 
     Sales --- SUC1
@@ -66,12 +74,16 @@ flowchart TB
     Manager --- SUC12
     Manager --- SUC16
     Manager --- SUC17
+    Manager --- SUC19
+    Manager --- SUC21
 
     Customer --- SUC1
     Customer --- SUC2
     Customer --- SUC5
     Customer --- SUC10
     Customer --- SUC13
+    Customer --- SUC18
+    Customer --- SUC20
 
     VietQR --- SUC5
 
