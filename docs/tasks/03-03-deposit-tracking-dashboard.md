@@ -40,7 +40,7 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 Deposit tracking flow:
 
 1. Staff/accountant opens /admin/payments.
-2. Frontend loads deposit requests and payment payments.
+2. Frontend loads deposit requests and payment records.
 3. Staff filters by status, branch, customer, date, or room.
 4. Staff reviews pending deposit details.
 5. Staff confirms received deposit or cancels request.

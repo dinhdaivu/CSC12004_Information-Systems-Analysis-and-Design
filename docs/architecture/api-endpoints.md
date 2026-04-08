@@ -118,7 +118,7 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 | --- | --- | --- | --- |
 | GET | `/payments` | staff, admin | List all payments |
 | GET | `/payments/:id` | Any | Get payment detail |
-| POST | `/payments` | staff, admin | Record a payment such as deposit, rent, fee, or refund |
+| POST | `/payments` | customer, staff, admin | Record a payment such as deposit, rent, fee, or refund |
 | PATCH | `/payments/:id/confirm` | staff, admin | Confirm and reconcile payment |
 
 ---

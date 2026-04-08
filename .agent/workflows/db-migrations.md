@@ -50,13 +50,19 @@ ALTER TABLE rooms ENABLE ROW LEVEL SECURITY;
 
 | Table | Key statuses |
 | --- | --- |
-| `users` | role: customer, staff, admin |
+| `users` | role: customer, sale, accountant, manager, admin |
 | `branches` | — |
-| `rooms` | available, reserved, occupied, maintenance |
-| `deposits` | pending, paid, refunded, forfeited |
-| `contracts` | draft, active, terminated, expired |
-| `payments` | type: deposit, rent, refund, penalty, utility |
-| `room_handovers` | type: checkin, checkout |
+| `rooms` | available, holding, deposited, occupied, checkout_pending, maintenance |
+| `beds` | available, holding, deposited, occupied, maintenance |
+| `rental_requests` | requested, reviewing, viewing_scheduled, accepted, rejected, cancelled, deposit_pending, completed |
+| `viewing_appointments` | scheduled, completed, cancelled, no_show |
+| `deposit_requests` | pending, paid, cancelled, expired, refunded |
+| `contracts` | active, terminated, completed |
+| `checkout_requests` | requested, confirmed, completed, cancelled |
+| `settlements` | draft, confirmed, paid, refunded, cancelled |
+| `handovers` | pending, completed, cancelled |
+| `payments` | type: rent, deposit, refund, fee |
+| `invoices` | unpaid, paid, cancelled |
 
 ### 2. Apply in Supabase Dashboard
 

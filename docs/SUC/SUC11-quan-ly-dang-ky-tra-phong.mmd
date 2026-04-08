@@ -37,7 +37,7 @@ sequenceDiagram
     opt Có phát sinh thanh toán hoặc hoàn tiền
         rect rgb(240, 255, 240)
             Note over M, DB: Extend SUC5 - Thanh toán/hoàn tiền
-            Web->>API: POST /api/payments<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
+            Web->>API: POST /api/payments<br/>(checkoutRequestId, settlementId, type=refund/fee)
             API->>DB: Insert payment/refund record
             DB-->>API: Payment/refund record created
             API-->>Web: Payment/refund status

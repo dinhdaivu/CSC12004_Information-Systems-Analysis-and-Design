@@ -577,6 +577,11 @@ CREATE POLICY deposit_requests_read ON public.deposit_requests
 FOR SELECT TO authenticated
 USING (customer_id = auth.uid() OR public.is_staff());
 
+DROP POLICY IF EXISTS deposit_requests_customer_insert ON public.deposit_requests;
+CREATE POLICY deposit_requests_customer_insert ON public.deposit_requests
+FOR INSERT TO authenticated
+WITH CHECK (customer_id = auth.uid() OR public.is_staff());
+
 DROP POLICY IF EXISTS deposit_requests_staff_manage ON public.deposit_requests;
 CREATE POLICY deposit_requests_staff_manage ON public.deposit_requests
 FOR ALL TO authenticated
@@ -664,6 +669,11 @@ CREATE POLICY payments_read ON public.payments
 FOR SELECT TO authenticated
 USING (user_id = auth.uid() OR public.is_staff());
 
+DROP POLICY IF EXISTS payments_customer_insert ON public.payments;
+CREATE POLICY payments_customer_insert ON public.payments
+FOR INSERT TO authenticated
+WITH CHECK (user_id = auth.uid() OR public.is_staff());
+
 DROP POLICY IF EXISTS payments_staff_manage ON public.payments;
 CREATE POLICY payments_staff_manage ON public.payments
 FOR ALL TO authenticated
@@ -719,17 +729,3 @@ CREATE POLICY invoice_items_staff_manage ON public.invoice_items
 FOR ALL TO authenticated
 USING (public.is_staff())
 WITH CHECK (public.is_staff());
-
--- ========================
--- SEED DATA
--- ========================
-
-INSERT INTO public.branches (name, address, description)
-VALUES
-    ('Tô Hiến Thành', 'Tô Hiến Thành, Quận 10, TP. Hồ Chí Minh', 'HomeStay Dorm branch used by the Figma homepage and room detail flows.'),
-    ('Trần Não', 'Trần Não, TP. Thủ Đức, TP. Hồ Chí Minh', 'HomeStay Dorm branch used by the Figma homepage flow.'),
-    ('Nguyễn Cửu Vân', 'Nguyễn Cửu Vân, Bình Thạnh, TP. Hồ Chí Minh', 'HomeStay Dorm branch used by the Figma homepage flow.')
-ON CONFLICT (name) DO UPDATE
-SET address = EXCLUDED.address,
-    description = EXCLUDED.description,
-    updated_at = now();

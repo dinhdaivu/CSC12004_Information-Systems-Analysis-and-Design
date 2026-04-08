@@ -11,8 +11,8 @@ Use the Supabase Dashboard SQL Editor unless the repo has been explicitly linked
 1. Open the team's Supabase project in the browser.
 2. Go to **SQL Editor**.
 3. Create a new query.
-4. Paste the full contents of `supabase/migrations/001_initial_schema.sql`.
-5. Run the query.
+4. Paste and run the full contents of `supabase/migrations/001_initial_schema.sql`.
+5. Paste and run `supabase/seed.sql` for demo branch, room, bed, and service data.
 6. Check **Table Editor** and confirm the core tables exist:
    - `users`
    - `branches`
@@ -35,6 +35,8 @@ Use the Supabase Dashboard SQL Editor unless the repo has been explicitly linked
 ## Important Warning
 
 If anyone already ran an older version of `scripts/CSDL_Script.sql` in the same Supabase project, do **not** run the new migration on top without checking first. The old script used conflicting enum definitions such as `room_status` and `deposit_status`.
+
+If `001_initial_schema.sql` was already applied before customer deposit/payment insert policies were added, run `supabase/migrations/002_allow_customer_deposit_payment_inserts.sql` as a follow-up migration.
 
 For a clean task-00-02 setup, use one of these options:
 
@@ -85,15 +87,16 @@ supabase/
 |-- README.md
 |-- seed.sql
 |-- migrations/
-|   `-- 001_initial_schema.sql
+|   |-- 001_initial_schema.sql
+|   `-- 002_allow_customer_deposit_payment_inserts.sql
 `-- policies/
     `-- README.md
 ```
 
 ## Schema Source Of Truth
 
-The current source of truth is `supabase/migrations/001_initial_schema.sql`.
+The current schema source of truth is the ordered SQL files in `supabase/migrations/`.
 
-The standalone classroom script `scripts/CSDL_Script.sql` is kept in sync with the Supabase migration so teammates can open either file, but the migration file is the canonical version.
+The standalone classroom script `scripts/CSDL_Script.sql` is kept in sync with the cumulative schema so teammates can open either file, but the migration files are canonical.
 
 For the table summary and status enum mapping, see `docs/architecture/database.md`.

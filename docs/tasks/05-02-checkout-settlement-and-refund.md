@@ -73,7 +73,7 @@ Checkout settlement flow:
 - [ ] Implement `POST /api/settlements/calculate`.
 - [ ] Implement `POST /api/settlements`.
 - [ ] Implement refund rules from `state-machine.md`.
-- [ ] Implement refund or extra-fee payment recording via `POST /api/payments`.
+- [ ] Implement refund or fee payment recording via `POST /api/payments`.
 - [ ] Implement checkout completion via `PATCH /api/checkout-requests/:id/complete`.
 - [ ] Implement handover and contract finalization with `POST /api/handovers`, `PATCH /api/handovers/:id/sign`, and `PATCH /api/contracts/:id/terminate` where applicable.
 - [ ] Update contract and room/bed statuses.
@@ -113,7 +113,7 @@ Implement `docs/tasks/05-02-checkout-settlement-and-refund.md`.
 - Add manager checkout processing route/component.
 - Add settlement calculator service with refund rules.
 - Implement checkout completion flow.
-- Record payment/refund payments.
+- Record refund or fee payment records.
 - Update contract and room statuses according to `state-machine.md`.
 - If backend is missing, create typed stubs with `// TODO: Implemented in task 05-02`.
 
@@ -131,6 +131,6 @@ Implement `docs/tasks/05-02-checkout-settlement-and-refund.md`.
 - [ ] Manager can process checkout requests.
 - [ ] Refund calculator implements 80/50/70/100 rules.
 - [ ] Deductions can be captured.
-- [ ] Payment/refund payment is recorded.
+- [ ] A payment/refund record is created.
 - [ ] Contract and room status transitions are correct.
 - [ ] Tests pass for changed code.

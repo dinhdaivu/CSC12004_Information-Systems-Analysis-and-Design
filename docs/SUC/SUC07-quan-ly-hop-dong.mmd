@@ -39,7 +39,7 @@ sequenceDiagram
             API->>DB: Validate contract data and create contract
             DB-->>API: Contract created
             alt Cần thu thêm tiền
-                Web->>API: POST /api/payments<br/>(contractId, amount, type=contract_fee)
+                Web->>API: POST /api/payments<br/>(contractId, amount, type=fee)
                 API->>DB: Insert payment record
                 DB-->>API: Payment created
             end
