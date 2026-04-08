@@ -4,13 +4,13 @@ sequenceDiagram
     actor C as Khách hàng
     participant Web as HomeStay Dorm Web<br/>(Danh sách yêu cầu của tôi)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, contracts, payments, checkout_requests)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, contracts, transactions, checkout_requests)
 
     rect rgb(240, 248, 255)
         Note over C, DB: Hiển thị danh sách yêu cầu/đặt phòng của khách hàng
         C->>Web: Mở màn hình danh sách yêu cầu/đặt phòng
         Web->>API: GET /api/v1/my-bookings<br/>(customer=current, page=1)
-        API->>DB: Query customer's rental/deposit/contract/payment/checkout records
+        API->>DB: Query customer's rental/deposit/contract/transaction/checkout records
         DB-->>API: Customer booking status list
     end
 

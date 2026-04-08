@@ -4,7 +4,7 @@ sequenceDiagram
     actor M as Quản lý
     participant Web as HomeStay Dorm Web<br/>(Tổng quan quản trị)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(users, rooms, beds, rental_requests, deposits, payments, checkout_requests)
+    participant DB as HomeStay Dorm DB<br/>(users, rooms, beds, rental_requests, deposits, transactions, checkout_requests)
 
     rect rgb(240, 248, 255)
         Note over M, DB: Mở trang tổng quan và kiểm tra quyền
@@ -20,7 +20,7 @@ sequenceDiagram
     else Có quyền truy cập
         rect rgb(255, 250, 240)
             Note over M, DB: Tải số liệu vận hành
-            API->>DB: Aggregate users, rooms/beds, rental requests, deposits, payments, checkout tasks
+            API->>DB: Aggregate users, rooms/beds, rental requests, deposits, transactions, checkout tasks
             DB-->>API: Dashboard metrics + recent activities
         end
 

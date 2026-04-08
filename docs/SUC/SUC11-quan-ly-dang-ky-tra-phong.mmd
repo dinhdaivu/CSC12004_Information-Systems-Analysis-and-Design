@@ -5,7 +5,7 @@ sequenceDiagram
     actor C as Khách hàng
     participant Web as HomeStay Dorm Web<br/>(Quản lý trả phòng)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, settlements, payments, rooms, handovers)
+    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, settlements, transactions, rooms, handovers)
 
     rect rgb(240, 248, 255)
         Note over M, DB: Tiếp nhận yêu cầu trả phòng
@@ -26,7 +26,7 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over M, DB: Include SUC8 - Đối soát chi phí
         Web->>API: POST /api/v1/settlements/calculate<br/>(checkoutRequestId)
-        API->>DB: Read contract, deposit, payments, deductions
+        API->>DB: Read contract, deposit, transactions, deductions
         DB-->>API: Settlement input data
         API->>DB: Insert/update settlement draft
         DB-->>API: Settlement draft saved
@@ -37,15 +37,15 @@ sequenceDiagram
     opt Có phát sinh thanh toán hoặc hoàn tiền
         rect rgb(240, 255, 240)
             Note over M, DB: Extend SUC5 - Thanh toán/hoàn tiền
-            Web->>API: POST /api/v1/payments<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
-            API->>DB: Insert payment/refund record
-            DB-->>API: Payment/refund record created
-            API-->>Web: Payment/refund status
+            Web->>API: POST /api/v1/transactions<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
+            API->>DB: Insert transaction/refund record
+            DB-->>API: Transaction/refund record created
+            API-->>Web: Transaction/refund status
         end
     end
 
     alt A1 - Thanh toán/hoàn tiền chưa hoàn tất
-        API-->>Web: Settlement payment pending
+        API-->>Web: Settlement transaction pending
         Web-->>M: Giữ trạng thái xử lý, chưa cho phép thanh lý hợp đồng
     else A2 - Khách chưa bàn giao đủ chìa khóa/thẻ/tài sản
         M->>Web: Ghi nhận thiếu chìa khóa/thẻ/tài sản

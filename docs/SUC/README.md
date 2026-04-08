@@ -10,7 +10,7 @@ Each diagram follows the same layered style:
 - `HomeStay Dorm DB`
 - External services where needed, such as `Supabase Auth` and `VietQR`
 
-Some API routes are inferred from the database tables and workflow docs where `docs/architecture/api-endpoints.md` does not yet list a dedicated endpoint.
+The API routes used in these diagrams are documented in `docs/architecture/api-endpoints.md`.
 
 | SUC | Diagram |
 | --- | --- |
