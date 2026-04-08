@@ -55,7 +55,7 @@ ALTER TABLE rooms ENABLE ROW LEVEL SECURITY;
 | `rooms` | available, reserved, occupied, maintenance |
 | `deposits` | pending, paid, refunded, forfeited |
 | `contracts` | draft, active, terminated, expired |
-| `transactions` | type: deposit, rent, refund, penalty, utility |
+| `payments` | type: deposit, rent, refund, penalty, utility |
 | `room_handovers` | type: checkin, checkout |
 
 ### 2. Apply in Supabase Dashboard

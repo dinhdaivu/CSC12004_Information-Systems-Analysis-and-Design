@@ -1,4 +1,3 @@
-// Payment model interfaces. The admin route still calls this area "transactions".
 export type PaymentType = 'rent' | 'deposit' | 'refund' | 'fee';
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
 export type PaymentMethod = 'cash' | 'transfer' | 'vietqr';
@@ -16,11 +15,11 @@ export interface Payment {
   vietqr_reference?: string;
   proof_image_url?: string;
   notes?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
-export interface CreatePaymentDTO {
+export interface CreatePaymentRequest {
   user_id: string;
   deposit_request_id?: string;
   contract_id?: string;
@@ -33,10 +32,9 @@ export interface CreatePaymentDTO {
 export interface PaymentFilter {
   type?: PaymentType;
   status?: PaymentStatus;
+  month?: number;
+  year?: number;
   page?: number;
   limit?: number;
 }
 
-export type Transaction = Payment;
-export type CreateTransactionDTO = CreatePaymentDTO;
-export type TransactionFilter = PaymentFilter;

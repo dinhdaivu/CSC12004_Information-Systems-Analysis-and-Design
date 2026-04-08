@@ -37,7 +37,7 @@ http://localhost:3000/api
 - Authentication
 - Rooms and branches
 - Rental requests and viewing appointments
-- Deposits, contracts, handovers, settlements, and transactions
+- Deposits, contracts, handovers, settlements, and payments
 - Customer booking status
 - Admin dashboard and user management
 

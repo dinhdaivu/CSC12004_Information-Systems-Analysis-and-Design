@@ -5,7 +5,7 @@ sequenceDiagram
     actor M as Quản lý
     participant Web as HomeStay Dorm Web<br/>(Quản lý hợp đồng)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(deposit_requests, contracts, rooms, transactions, handovers)
+    participant DB as HomeStay Dorm DB<br/>(deposit_requests, contracts, rooms, payments, handovers)
 
     rect rgb(240, 248, 255)
         Note over S, DB: Mở dữ liệu lập hợp đồng
@@ -39,14 +39,14 @@ sequenceDiagram
             API->>DB: Validate contract data and create contract
             DB-->>API: Contract created
             alt Cần thu thêm tiền
-                Web->>API: POST /api/transactions<br/>(contractId, amount, type=contract_fee)
-                API->>DB: Insert transaction record
-                DB-->>API: Transaction created
+                Web->>API: POST /api/payments<br/>(contractId, amount, type=contract_fee)
+                API->>DB: Insert payment record
+                DB-->>API: Payment created
             end
         end
 
         alt A1/A3 - Thông tin hợp đồng hoặc thanh toán không hợp lệ
-            API-->>Web: Validation/transaction error
+            API-->>Web: Validation/payment error
             Web-->>S: Thông báo lỗi, hợp đồng chưa được kích hoạt
         else Hợp đồng hợp lệ
             Web->>API: PATCH /api/contracts/{id}/sign

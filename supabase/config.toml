@@ -53,10 +53,10 @@ public = true
 [storage.buckets.room-images]
 public = true
 
-# transaction-proofs: private bucket for deposit/transaction proof images
+# payment-proofs: private bucket for deposit/payment proof images
 # Local: created on `supabase start`
 # Remote: run `supabase seed buckets --linked` after db push
-[storage.buckets.transaction-proofs]
+[storage.buckets.payment-proofs]
 public = false
 
 # contract-documents: private bucket for signed contract files

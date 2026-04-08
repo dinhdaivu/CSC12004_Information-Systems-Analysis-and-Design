@@ -1,35 +1,35 @@
 import { TestBed } from '@angular/core/testing';
-import { TransactionsComponent } from './transactions.component';
+import { PaymentsComponent } from './payments.component';
 
-describe('TransactionsComponent', () => {
-  let component: TransactionsComponent;
+describe('PaymentsComponent', () => {
+  let component: PaymentsComponent;
   let fixture: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransactionsComponent],
+      imports: [PaymentsComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TransactionsComponent);
+    fixture = TestBed.createComponent(PaymentsComponent);
     component = fixture.componentInstance;
   });
 
-  it('should create transactions view', () => {
+  it('should create payments view', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load transaction history', () => {
+  it('should load payment history', () => {
     fixture.detectChanges();
     expect(component).toBeDefined();
   });
 
-  it('should display transactions list', () => {
+  it('should display payments list', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled).toBeTruthy();
   });
 
-  it('should handle transaction details', () => {
+  it('should handle payment details', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance).toBeTruthy();
   });

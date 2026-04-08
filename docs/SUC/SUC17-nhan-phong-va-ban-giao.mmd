@@ -11,7 +11,7 @@ sequenceDiagram
         Note over M, DB: Mở hợp đồng cần bàn giao
         M->>Web: Mở hợp đồng cần bàn giao phòng
         Web->>API: GET /api/contracts/{id}
-        API->>DB: Read contract, room/bed, transaction and deposit status
+        API->>DB: Read contract, room/bed, payment and deposit status
         DB-->>API: Contract handover input data
     end
 

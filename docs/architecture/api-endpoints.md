@@ -116,10 +116,10 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/transactions` | staff, admin | List all transactions |
-| GET | `/transactions/:id` | Any | Get transaction detail |
-| POST | `/transactions` | staff, admin | Record a transaction such as deposit, rent, fee, or refund |
-| PATCH | `/transactions/:id/confirm` | staff, admin | Confirm and reconcile transaction |
+| GET | `/payments` | staff, admin | List all payments |
+| GET | `/payments/:id` | Any | Get payment detail |
+| POST | `/payments` | staff, admin | Record a payment such as deposit, rent, fee, or refund |
+| PATCH | `/payments/:id/confirm` | staff, admin | Confirm and reconcile payment |
 
 ---
 
@@ -156,7 +156,7 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/my-bookings` | customer | List current customer's rental, deposit, contract, transaction, and checkout statuses |
+| GET | `/my-bookings` | customer | List current customer's rental, deposit, contract, payment, and checkout statuses |
 | GET | `/my-bookings/:id` | customer | Get current customer's booking detail |
 | POST | `/my-bookings/:id/actions` | customer | Execute allowed action for the current booking status |
 

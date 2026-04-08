@@ -3,13 +3,13 @@ sequenceDiagram
     autonumber
     participant Caller as Use case gọi<br/>(SUC4/SUC7/SUC8/SUC11)
     participant API as HomeStay Dorm API<br/>(Cost/Settlement service)
-    participant DB as HomeStay Dorm DB<br/>(rooms, contracts, transactions, handovers, services)
+    participant DB as HomeStay Dorm DB<br/>(rooms, contracts, payments, handovers, services)
 
     rect rgb(240, 248, 255)
         Note over Caller, DB: Nhận yêu cầu tính toán chi phí
         Caller->>API: POST /api/costs/calculate<br/>(type, relatedId)
         API->>API: Xác định nghiệp vụ<br/>(deposit / contract / checkout)
-        API->>DB: Load price, rental period, deposit, transaction, handover data
+        API->>DB: Load price, rental period, deposit, payment, handover data
         DB-->>API: Cost input data
     end
 

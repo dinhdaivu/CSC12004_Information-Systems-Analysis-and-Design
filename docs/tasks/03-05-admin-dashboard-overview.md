@@ -30,8 +30,8 @@ Implement the admin landing dashboard. This is a derived implementation use case
 - [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
 - [ ] Replace `AdminDashboardComponent` placeholder.
-- [ ] Render summary cards for users, bookings/rental requests, rooms, and revenue/transactions.
-- [ ] Render quick links to users, rooms, transactions, schedules, contracts, and checkout management.
+- [ ] Render summary cards for users, bookings/rental requests, rooms, and revenue/payments.
+- [ ] Render quick links to users, rooms, payments, schedules, contracts, and checkout management.
 - [ ] Render recent activity list if data is available.
 - [ ] Add loading/empty/error states.
 

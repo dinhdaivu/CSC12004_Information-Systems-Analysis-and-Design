@@ -111,7 +111,7 @@ describe('AdminDashboardComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should navigate to transactions', () => {
+    it('should navigate to payments', () => {
       fixture.detectChanges();
       expect(component).toBeDefined();
     });

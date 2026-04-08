@@ -6,7 +6,7 @@ sequenceDiagram
     actor M as Quản lý
     participant Web as HomeStay Dorm Web<br/>(Quản lý đặt cọc)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, transactions, rooms)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, deposit_requests, payments, rooms)
 
     rect rgb(240, 248, 255)
         Note over S, DB: Tạo yêu cầu đặt cọc
@@ -46,9 +46,9 @@ sequenceDiagram
 
     rect rgb(240, 255, 240)
         Note over S, DB: Include SUC5 - Thanh toán đặt cọc
-        Web->>API: POST /api/transactions<br/>(depositId, amount, type=deposit)
-        API->>DB: Insert transaction record
-        DB-->>API: Transaction created
+        Web->>API: POST /api/payments<br/>(depositId, amount, type=deposit)
+        API->>DB: Insert payment record
+        DB-->>API: Payment created
     end
 
     alt Thanh toán thành công
@@ -58,6 +58,6 @@ sequenceDiagram
         API-->>Web: Deposit paid
         Web-->>S: Thông báo đặt cọc thành công
     else A1 - Thanh toán thất bại
-        API-->>Web: Transaction failed
+        API-->>Web: Payment failed
         Web-->>S: Thông báo lỗi và cho phép thực hiện lại
     end
