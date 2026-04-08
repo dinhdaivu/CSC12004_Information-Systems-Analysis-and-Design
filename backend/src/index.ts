@@ -42,9 +42,11 @@ app.use((req: express.Request, res: express.Response) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.warn(`✅ Server is running on http://localhost:${PORT}`);
-});
+// Start server outside tests so Supertest can import the app without hanging Jest.
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.warn(`Server is running on http://localhost:${PORT}`);
+  });
+}
 
 export default app;

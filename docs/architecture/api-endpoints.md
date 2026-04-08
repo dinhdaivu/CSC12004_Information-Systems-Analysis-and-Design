@@ -4,7 +4,7 @@ Base URL: `/api/v1`
 
 Auth: `Authorization: Bearer <JWT>` on all protected routes.
 
-Roles: `customer`, `staff`, `admin`
+Roles: `customer`, `sale`, `accountant`, `manager`, `admin`
 
 ---
 
@@ -26,8 +26,8 @@ Roles: `customer`, `staff`, `admin`
 | --- | --- | --- | --- |
 | GET | `/rooms` | Public | List available rooms (filterable by type, capacity, price) |
 | GET | `/rooms/:id` | Public | Get room detail |
-| POST | `/rooms` | admin, staff | Create new room |
-| PATCH | `/rooms/:id` | admin, staff | Update room info or status |
+| POST | `/rooms` | manager, admin | Create new room |
+| PATCH | `/rooms/:id` | manager, admin | Update room info or status |
 | DELETE | `/rooms/:id` | admin | Delete room |
 
 ---
@@ -38,8 +38,8 @@ Roles: `customer`, `staff`, `admin`
 | --- | --- | --- | --- |
 | GET | `/branches` | Public | List all branches |
 | GET | `/branches/:id` | Public | Get branch detail with rooms |
-| POST | `/branches` | admin | Create branch |
-| PATCH | `/branches/:id` | admin | Update branch |
+| POST | `/branches` | manager, admin | Create branch |
+| PATCH | `/branches/:id` | manager, admin | Update branch |
 
 ---
 
@@ -49,9 +49,9 @@ Roles: `customer`, `staff`, `admin`
 | --- | --- | --- | --- |
 | POST | `/deposits` | customer | Create deposit request (UC2-3) |
 | GET | `/deposits/:id` | Any | Get deposit detail |
-| GET | `/deposits` | staff, admin | List all deposits |
-| PATCH | `/deposits/:id/confirm` | staff, admin | Confirm deposit received (UC2-3) |
-| PATCH | `/deposits/:id/cancel` | staff, admin | Cancel deposit |
+| GET | `/deposits` | sale, accountant, manager, admin | List all deposits |
+| PATCH | `/deposits/:id/confirm` | accountant, manager, admin | Confirm deposit received (UC2-3) |
+| PATCH | `/deposits/:id/cancel` | sale, accountant, manager, admin | Cancel deposit |
 
 ---
 
@@ -59,11 +59,11 @@ Roles: `customer`, `staff`, `admin`
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/contracts` | staff, admin | Create draft contract (UC3-2) |
+| POST | `/contracts` | sale, manager, admin | Create contract (UC3-2) |
 | GET | `/contracts/:id` | Any | Get contract detail |
-| GET | `/contracts` | staff, admin | List all contracts |
-| PATCH | `/contracts/:id/sign` | staff, admin | Mark contract as signed (UC3-2) |
-| PATCH | `/contracts/:id/terminate` | staff, admin | Early termination (UC4-3) |
+| GET | `/contracts` | sale, accountant, manager, admin | List all contracts |
+| PATCH | `/contracts/:id/sign` | sale, manager, admin | Mark contract as signed (UC3-2) |
+| PATCH | `/contracts/:id/terminate` | manager, admin | Early termination (UC4-3) |
 
 ---
 
@@ -71,19 +71,19 @@ Roles: `customer`, `staff`, `admin`
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/handovers` | staff, admin | Create handover record (checkin or checkout) |
+| POST | `/handovers` | manager, admin | Create handover record (checkin or checkout) |
 | GET | `/handovers/:id` | Any | Get handover detail |
-| PATCH | `/handovers/:id/sign` | staff, admin | Manager signs handover report |
+| PATCH | `/handovers/:id/sign` | manager, admin | Manager signs handover report |
 
 ---
 
-## Transactions (UC4)
+## Payments (UC4)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/transactions` | staff, admin | List all transactions |
-| GET | `/transactions/:id` | Any | Get transaction detail |
-| POST | `/transactions` | staff, admin | Record a payment or refund |
+| GET | `/payments` | accountant, manager, admin | List all payments |
+| GET | `/payments/:id` | Any | Get payment detail |
+| POST | `/payments` | accountant, manager, admin | Record a payment or refund |
 
 ---
 
