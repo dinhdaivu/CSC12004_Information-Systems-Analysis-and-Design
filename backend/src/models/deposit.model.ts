@@ -1,19 +1,27 @@
 // Deposit model interfaces
+export type DepositStatus = 'pending' | 'paid' | 'cancelled' | 'expired' | 'refunded';
+
 export interface Deposit {
   id: string;
-  user_id: string;
+  rental_request_id?: string;
+  customer_id: string;
   room_id: string;
+  bed_id?: string;
   amount: number;
-  status: 'pending' | 'confirmed' | 'refunded' | 'cancelled';
-  payment_date?: Date;
+  due_at: Date;
+  paid_at?: Date;
   proof_image_url?: string;
+  status: DepositStatus;
   notes?: string;
   created_at: Date;
   updated_at: Date;
 }
 
 export interface CreateDepositDTO {
+  rental_request_id?: string;
+  customer_id: string;
   room_id: string;
+  bed_id?: string;
   amount: number;
 }
 
@@ -22,7 +30,7 @@ export interface ConfirmDepositDTO {
 }
 
 export interface DepositFilter {
-  status?: 'pending' | 'confirmed' | 'refunded' | 'cancelled';
+  status?: DepositStatus;
   page?: number;
   limit?: number;
 }

@@ -1,3 +1,6 @@
+export type AppRole = 'customer' | 'sale' | 'accountant' | 'manager' | 'admin';
+export type UserStatus = 'active' | 'inactive' | 'banned';
+
 export interface User {
   id: string;
   email: string;
@@ -7,8 +10,8 @@ export interface User {
   gender?: string;
   nationality?: string;
   avatar_url?: string;
-  role: 'user' | 'staff' | 'admin';
-  status: 'active' | 'inactive' | 'banned';
+  role: AppRole;
+  status: UserStatus;
   created_at: string;
   updated_at: string;
 }

@@ -32,7 +32,7 @@
 | 1 | Viewing Schedule - Approve | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=504-994) | `/admin` | UC1-2 / SUC3 | 🔲 | 🔲 | No dedicated schedule route/component |
 | 2 | Viewing Schedule - List View | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=506-936) | `/admin` | UC1-2 / SUC3 | 🔲 | 🔲 | No dedicated schedule route/component |
 | 3 | Room Management | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1591) | `/admin/rooms` | SUC12 | 🚧 | 🔲 | Admin rooms route exists, but placeholder only |
-| 4 | Deposit Tracking Dashboard | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1722) | `/admin/transactions` | SUC4 / SUC6 | 🚧 | 🔲 | Transactions route exists, but placeholder only |
+| 4 | Deposit Tracking Dashboard | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1722) | `/admin/payments` | SUC4 / SUC6 | 🚧 | 🔲 | Payments route exists, but placeholder only |
 
 ---
 

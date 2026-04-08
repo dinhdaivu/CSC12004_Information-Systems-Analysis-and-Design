@@ -27,8 +27,8 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 | --- | --- | --- | --- |
 | GET | `/rooms` | Public | List available rooms (filterable by type, capacity, price) |
 | GET | `/rooms/:id` | Public | Get room detail |
-| POST | `/rooms` | admin, staff | Create new room |
-| PATCH | `/rooms/:id` | admin, staff | Update room info or status |
+| POST | `/rooms` | manager, admin | Create new room |
+| PATCH | `/rooms/:id` | manager, admin | Update room info or status |
 | DELETE | `/rooms/:id` | admin | Delete room |
 
 ---
@@ -85,7 +85,7 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/contracts` | staff, admin | Create draft contract (UC3-2) |
+| POST | `/contracts` | sale, manager, admin | Create contract (UC3-2) |
 | GET | `/contracts/:id` | Any | Get contract detail |
 | GET | `/contracts` | staff, admin | List all contracts |
 | PATCH | `/contracts/:id/sign` | staff, admin | Mark contract as signed (UC3-2) |
@@ -106,20 +106,20 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/handovers` | staff, admin | Create handover record (checkin or checkout) |
+| POST | `/handovers` | manager, admin | Create handover record (checkin or checkout) |
 | GET | `/handovers/:id` | Any | Get handover detail |
-| PATCH | `/handovers/:id/sign` | staff, admin | Manager signs handover report |
+| PATCH | `/handovers/:id/sign` | manager, admin | Manager signs handover report |
 
 ---
 
-## Transactions (UC4)
+## Payments (UC4)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/transactions` | staff, admin | List all transactions |
-| GET | `/transactions/:id` | Any | Get transaction detail |
-| POST | `/transactions` | staff, admin | Record a transaction such as deposit, rent, fee, or refund |
-| PATCH | `/transactions/:id/confirm` | staff, admin | Confirm and reconcile transaction |
+| GET | `/payments` | staff, admin | List all payments |
+| GET | `/payments/:id` | Any | Get payment detail |
+| POST | `/payments` | customer, staff, admin | Record a payment such as deposit, rent, fee, or refund |
+| PATCH | `/payments/:id/confirm` | staff, admin | Confirm and reconcile payment |
 
 ---
 
@@ -156,7 +156,7 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| GET | `/my-bookings` | customer | List current customer's rental, deposit, contract, transaction, and checkout statuses |
+| GET | `/my-bookings` | customer | List current customer's rental, deposit, contract, payment, and checkout statuses |
 | GET | `/my-bookings/:id` | customer | Get current customer's booking detail |
 | POST | `/my-bookings/:id/actions` | customer | Execute allowed action for the current booking status |
 

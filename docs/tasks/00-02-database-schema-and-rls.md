@@ -7,13 +7,13 @@
 
 ## GitHub Issue
 
-- Link: TBD
+- Link: https://github.com/dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design/issues/8
 
 ---
 
 ## Overview
 
-Create the database foundation for the HomeStay Dorm implementation. The report and architecture docs identify customers, employees, rooms, beds, deposit requests, transactions, contracts, checkout requests, settlements, and handovers as core entities.
+Create the database foundation for the HomeStay Dorm implementation. The report and architecture docs identify customers, employees, rooms, beds, deposit requests, payments, contracts, checkout requests, settlements, and handovers as core entities.
 
 ---
 
@@ -24,7 +24,7 @@ Create the database foundation for the HomeStay Dorm implementation. The report 
 | `docs/Requirements.pdf` | Project database/storage design requirement |
 | `report/content/1_Business Analyze.tex` | ERD figure |
 | `report/content/2_System Analyze.tex` | SUC1-SUC21 data needs |
-| [Database Design](../architecture/database.md) | Current TODO |
+| [Database Design](../architecture/database.md) | Implemented schema summary |
 | [State Machine](../architecture/state-machine.md) | Status enums |
 
 ---
@@ -33,27 +33,27 @@ Create the database foundation for the HomeStay Dorm implementation. The report 
 
 ### Supabase / PostgreSQL
 
-- [ ] Define `users` or profile table aligned with auth.
-- [ ] Define `branches`.
-- [ ] Define `rooms`.
-- [ ] Define `beds`.
-- [ ] Define rental request / booking table.
-- [ ] Define `viewing_appointments`.
-- [ ] Define `deposit_requests`.
-- [ ] Define `transactions`.
-- [ ] Define `contracts`.
-- [ ] Define `handovers`.
-- [ ] Define `checkout_requests`.
-- [ ] Define `settlements`.
-- [ ] Add indexes for common filters: branch, status, customer, room, date.
-- [ ] Add RLS policies for customer, sales, accountant, manager/admin roles.
-- [ ] Add seed data for three Figma branches.
+- [x] Define `users` or profile table aligned with auth.
+- [x] Define `branches`.
+- [x] Define `rooms`.
+- [x] Define `beds`.
+- [x] Define rental request / booking table.
+- [x] Define `viewing_appointments`.
+- [x] Define `deposit_requests`.
+- [x] Define `payments`.
+- [x] Define `contracts`.
+- [x] Define `handovers`.
+- [x] Define `checkout_requests`.
+- [x] Define `settlements`.
+- [x] Add indexes for common filters: branch, status, customer, room, date.
+- [x] Add RLS policies for customer, sales, accountant, manager/admin roles.
+- [x] Add seed data for three Figma branches.
 
 ### Documentation
 
-- [ ] Populate `docs/architecture/database.md`.
-- [ ] Confirm status enum names match `docs/architecture/state-machine.md`.
-- [ ] Document any table/field intentionally deferred.
+- [x] Populate `docs/architecture/database.md`.
+- [x] Confirm status enum names match `docs/architecture/state-machine.md`.
+- [x] Document any table/field intentionally deferred.
 
 ### Tests
 
@@ -91,8 +91,13 @@ Implement `docs/tasks/00-02-database-schema-and-rls.md`.
 
 ## Completion Conditions
 
-- [ ] Core tables exist.
-- [ ] Status fields match the state-machine docs.
-- [ ] RLS policies exist for protected data.
-- [ ] Seed branch data exists.
-- [ ] `docs/architecture/database.md` is no longer TODO-only.
+- [x] Core tables exist.
+- [x] Status fields match the state-machine docs.
+- [x] RLS policies exist for protected data.
+- [x] Seed branch data exists.
+- [x] `docs/architecture/database.md` is no longer TODO-only.
+
+## Verification Notes
+
+- Static SQL checks passed: no duplicate `CREATE TABLE` names, no unresolved forward references between `public.*` tables, and the standalone `scripts/CSDL_Script.sql` matches the Supabase migration hash.
+- Supabase Cloud validation should follow `supabase/README.md`: run `supabase/migrations/001_initial_schema.sql` in the Dashboard SQL Editor, or link the repo with `supabase link --project-ref <project-ref>` before running `supabase db lint --linked`.

@@ -23,10 +23,10 @@
 -- - Staff can view contracts for their branch
 -- - Admins can view all contracts
 --
--- Transactions Table:
--- - Users can only view their own transactions
--- - Staff can view transactions for their branch
--- - Admins can view all transactions
+-- Payments Table:
+-- - Users can only view their own payments
+-- - Staff can view payments for their branch
+-- - Admins can view all payments
 
 -- TODO: Create individual policy files for each table
 -- TODO: Test policies with different user roles

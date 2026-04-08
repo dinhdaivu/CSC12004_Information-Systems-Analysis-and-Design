@@ -1,16 +1,18 @@
 // User model interfaces
+export type AppRole = 'customer' | 'sale' | 'accountant' | 'manager' | 'admin';
+export type UserStatus = 'active' | 'inactive' | 'banned';
+
 export interface User {
   id: string;
   email: string;
-  password_hash: string;
   full_name: string;
   phone_number?: string;
   identity_number?: string;
   gender?: string;
   nationality?: string;
   avatar_url?: string;
-  role: 'user' | 'staff' | 'admin';
-  status: 'active' | 'inactive' | 'banned';
+  role: AppRole;
+  status: UserStatus;
   created_at: Date;
   updated_at: Date;
 }
@@ -30,4 +32,7 @@ export interface UpdateUserDTO {
   phone_number?: string;
   avatar_url?: string;
   gender?: string;
+  nationality?: string;
+  role?: AppRole;
+  status?: UserStatus;
 }

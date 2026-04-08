@@ -3,7 +3,7 @@
 > **Implementation Rules**
 > 1. **Before implementation**: Check [frontend-status.md](../frontend-status.md), [api-endpoints.md](../architecture/api-endpoints.md), [database.md](../architecture/database.md), and [state-machine.md](../architecture/state-machine.md).
 > 2. **Stubs**: If a dependency is not implemented, create a typed stub and add `// TODO: Implemented in task 03-03`.
-> 3. **After implementation**: Update docs if deposit/transaction endpoint behavior or status transitions change.
+> 3. **After implementation**: Update docs if deposit/payment endpoint behavior or status transitions change.
 
 ## GitHub Issue
 
@@ -19,7 +19,7 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 
 | Screen | Figma Link | Angular Route |
 |--------|------------|---------------|
-| Deposit Tracking Dashboard | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1722) | `/admin/transactions` |
+| Deposit Tracking Dashboard | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1722) | `/admin/payments` |
 
 ---
 
@@ -28,9 +28,9 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 | Document | Section |
 |----------|---------|
 | [UC2](../UC/UC2.md) | Deposit and rental confirmation |
-| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Transactions |
+| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Payments |
 | [State Machine](../architecture/state-machine.md) | DepositStatus, RoomStatus |
-| [Software Layers](../architecture/layers.md) | TransactionController, DepositRequest, Transaction |
+| [Software Layers](../architecture/layers.md) | PaymentController, DepositRequest, Payment |
 
 ---
 
@@ -39,8 +39,8 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 ```text
 Deposit tracking flow:
 
-1. Staff/accountant opens /admin/transactions.
-2. Frontend loads deposit requests and payment transactions.
+1. Staff/accountant opens /admin/payments.
+2. Frontend loads deposit requests and payment records.
 3. Staff filters by status, branch, customer, date, or room.
 4. Staff reviews pending deposit details.
 5. Staff confirms received deposit or cancels request.
@@ -56,10 +56,10 @@ Deposit tracking flow:
 
 - [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace `TransactionsComponent` placeholder.
+- [ ] Replace `PaymentsComponent` placeholder.
 - [ ] Render deposit tracking dashboard title and summary.
 - [ ] Add filters for status/date/branch/customer.
-- [ ] Add deposit/transaction list or cards.
+- [ ] Add deposit/payment list or cards.
 - [ ] Add confirm/cancel actions.
 - [ ] Add loading/empty/error states.
 
@@ -69,16 +69,16 @@ Deposit tracking flow:
 - [ ] Implement `GET /api/deposits/:id`.
 - [ ] Implement `PATCH /api/deposits/:id/confirm`.
 - [ ] Implement `PATCH /api/deposits/:id/cancel`.
-- [ ] Implement `GET /api/transactions`.
+- [ ] Implement `GET /api/payments`.
 - [ ] Ensure confirm flow updates DepositStatus and RoomStatus consistently.
 
 ### Tests
 
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
-| Frontend | `frontend/src/app/features/admin/components/transactions/transactions.component.spec.ts` | Deposits/transactions service |
+| Frontend | `frontend/src/app/features/admin/components/payments/payments.component.spec.ts` | Deposits/payments service |
 | Backend | `backend/src/__tests__/deposits.spec.ts` | Supabase client |
-| Backend | `backend/src/__tests__/transactions.spec.ts` | Supabase client |
+| Backend | `backend/src/__tests__/payments.spec.ts` | Supabase client |
 
 | # | Test Case | Layer | Expected |
 |---|-----------|-------|----------|
@@ -103,10 +103,10 @@ Implement `docs/tasks/03-03-deposit-tracking-dashboard.md`.
 - Figma: Deposit Tracking Dashboard
 
 ## Implementation
-- Replace `TransactionsComponent` placeholder.
-- Add typed deposit and transaction service.
+- Replace `PaymentsComponent` placeholder.
+- Add typed deposit and payment service.
 - Implement filters and list/dashboard UI.
-- Wire `GET /api/deposits` and `GET /api/transactions`.
+- Wire `GET /api/deposits` and `GET /api/payments`.
 - Implement confirm/cancel actions if backend scope is included.
 - If backend is missing, create typed stubs with `// TODO: Implemented in task 03-03`.
 
@@ -124,11 +124,11 @@ Implement `docs/tasks/03-03-deposit-tracking-dashboard.md`.
 
 ## Completion Conditions
 
-- [ ] `/admin/transactions` no longer shows placeholder text.
+- [ ] `/admin/payments` no longer shows placeholder text.
 - [ ] Deposit dashboard summary and list render.
 - [ ] Filters work.
 - [ ] Confirm/cancel actions are implemented or clearly stubbed.
-- [ ] Deposit and transaction API or typed stub exists.
+- [ ] Deposit and payment API or typed stub exists.
 - [ ] Tests pass for changed code.
 
 ---

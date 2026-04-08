@@ -50,6 +50,7 @@ dist/
 
 # Supabase
 .supabase/
+supabase/.temp/
 
 # Misc
 .cache

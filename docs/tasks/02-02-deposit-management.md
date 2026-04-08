@@ -20,7 +20,7 @@ Implement deposit request creation and management after a customer agrees to ren
 | Screen/Area | Angular Route | Backend Task |
 |-------------|---------------|--------------|
 | Checkout payment | `/bookings/:id` | SUC4 / SUC5 |
-| Deposit tracking | `/admin/transactions` | SUC4 / SUC6 |
+| Deposit tracking | `/admin/payments` | SUC4 / SUC6 |
 
 ---
 
@@ -76,7 +76,7 @@ Deposit management flow:
 |-------|-----------|-------------|
 | Backend | `backend/src/__tests__/deposits.spec.ts` | Supabase client |
 | Backend | `backend/src/__tests__/deposit-expiration.spec.ts` | Scheduler/service layer |
-| Frontend | `frontend/src/app/features/admin/components/transactions/transactions.component.spec.ts` | Deposit service |
+| Frontend | `frontend/src/app/features/admin/components/payments/payments.component.spec.ts` | Deposit service |
 
 ---
 

@@ -1,12 +1,15 @@
+export type ContractStatus = 'active' | 'terminated' | 'completed';
+
 export interface Contract {
   id: string;
-  user_id: string;
+  customer_id: string;
   room_id: string;
-  deposit_id?: string;
+  bed_id?: string;
+  deposit_request_id?: string;
   start_date: string;
   end_date: string;
   monthly_price: number;
-  status: 'active' | 'terminated' | 'completed';
+  status: ContractStatus;
   contract_document_url?: string;
   notes?: string;
   created_at: string;
@@ -14,8 +17,10 @@ export interface Contract {
 }
 
 export interface CreateContractRequest {
-  deposit_id: string;
+  customer_id: string;
+  deposit_request_id?: string;
   room_id: string;
+  bed_id?: string;
   start_date: string;
   end_date: string;
   monthly_price: number;

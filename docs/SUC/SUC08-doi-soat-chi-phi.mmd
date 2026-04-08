@@ -4,13 +4,13 @@ sequenceDiagram
     actor A as Kế toán
     participant Web as HomeStay Dorm Web<br/>(Đối soát chi phí)
     participant API as HomeStay Dorm API<br/>(Backend)
-    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, handovers, settlements, transactions)
+    participant DB as HomeStay Dorm DB<br/>(checkout_requests, contracts, handovers, settlements, payments)
 
     rect rgb(240, 248, 255)
         Note over A, DB: Tải dữ liệu trả phòng để đối soát
         A->>Web: Mở yêu cầu trả phòng cần đối soát
         Web->>API: GET /api/checkout-requests/{id}/settlement-input
-        API->>DB: Read contract, deposit, transactions, handover state
+        API->>DB: Read contract, deposit, payments, handover state
         DB-->>API: Checkout settlement input data
     end
 
@@ -28,7 +28,7 @@ sequenceDiagram
         rect rgb(255, 250, 240)
             Note over A, DB: Include SUC9 - Tính khoản thu thêm/hoàn lại
             Web->>API: POST /api/costs/calculate<br/>(type=checkout, checkoutRequestId)
-            API->>DB: Read rent, deposit, handover deductions, completed transactions
+            API->>DB: Read rent, deposit, handover deductions, completed payments
             DB-->>API: Cost input data
             API-->>Web: Calculated settlement result
             Web-->>A: Hiển thị kết quả đối soát

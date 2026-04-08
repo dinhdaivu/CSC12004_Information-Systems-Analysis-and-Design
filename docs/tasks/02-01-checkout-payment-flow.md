@@ -31,9 +31,9 @@ Implement checkout and deposit payment screens for customer booking payment. The
 | Document | Section |
 |----------|---------|
 | [UC2](../UC/UC2.md) | Deposit and rental confirmation |
-| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Transactions |
+| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Payments |
 | [State Machine](../architecture/state-machine.md) | RoomStatus, DepositStatus |
-| [Software Layers](../architecture/layers.md) | TransactionView, TransactionController |
+| [Software Layers](../architecture/layers.md) | PaymentView, PaymentController |
 
 ---
 
@@ -67,14 +67,14 @@ Checkout/payment flow:
 - [ ] Implement voucher expired/error state.
 - [ ] Implement QR/payment modal state.
 - [ ] Implement payment success state.
-- [ ] Add typed `BookingTransactionService`.
+- [ ] Add typed `BookingPaymentService`.
 - [ ] Add loading/error states.
 
 ### Backend (Express/Supabase)
 
 - [ ] Implement `GET /api/deposits/:id` or booking detail equivalent.
 - [ ] Implement `POST /api/deposits` if deposit creation is part of the flow.
-- [ ] Implement payment/transaction creation via `POST /api/transactions`.
+- [ ] Implement payment creation via `POST /api/payments`.
 - [ ] Implement voucher validation endpoint only if voucher feature is retained.
 - [ ] Update deposit and room status after confirmed payment.
 
@@ -82,9 +82,9 @@ Checkout/payment flow:
 
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
-| Frontend | `frontend/src/app/features/bookings/components/booking-detail/booking-detail.component.spec.ts` | Transaction service |
+| Frontend | `frontend/src/app/features/bookings/components/booking-detail/booking-detail.component.spec.ts` | Payment service |
 | Backend | `backend/src/__tests__/deposits.spec.ts` | Supabase client |
-| Backend | `backend/src/__tests__/transactions.spec.ts` | Transaction provider/Supabase |
+| Backend | `backend/src/__tests__/payments.spec.ts` | Payment provider/Supabase |
 
 | # | Test Case | Layer | Expected |
 |---|-----------|-------|----------|
@@ -93,7 +93,7 @@ Checkout/payment flow:
 | 3 | Payment method select | Frontend | Selected method updates state |
 | 4 | QR modal opens | Frontend | QR/payment modal is visible |
 | 5 | Payment success | Frontend/Backend | Success state shown, deposit marked PAID |
-| 6 | Transaction record | Backend | Transaction is persisted |
+| 6 | Payment record | Backend | Payment is persisted |
 
 ---
 
@@ -122,7 +122,7 @@ Implement `docs/tasks/02-01-checkout-payment-flow.md`.
 
 ## Test Requirements
 - Frontend unit tests for each visual state.
-- Backend tests for deposit/transaction status updates if backend routes are implemented.
+- Backend tests for deposit/payment status updates if backend routes are implemented.
 
 --------------------------------------------------
 
@@ -135,7 +135,7 @@ Implement `docs/tasks/02-01-checkout-payment-flow.md`.
 - [ ] Voucher expired state is implemented.
 - [ ] QR/payment modal state is implemented.
 - [ ] Payment success state is implemented.
-- [ ] Transaction/deposit API or typed mock adapter exists.
+- [ ] Payment/deposit API or typed mock adapter exists.
 - [ ] Tests pass for changed code.
 
 ---
