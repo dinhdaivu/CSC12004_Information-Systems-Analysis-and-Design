@@ -12,6 +12,8 @@ Each diagram follows the same layered style:
 
 The API routes used in these diagrams are documented in `docs/architecture/api-endpoints.md`.
 
+Note: SUC diagrams use `{id}` as a generic placeholder for path parameters (for example, `/api/rooms/{id}`), while `docs/architecture/api-endpoints.md` may use the Express-style `:id` syntax (for example, `/api/rooms/:id`) for the same dynamic route segment.
+
 | SUC | Diagram |
 | --- | --- |
 | SUC1: Đăng nhập | [SUC01-dang-nhap.mmd](SUC01-dang-nhap.mmd) |

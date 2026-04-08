@@ -172,7 +172,7 @@ npm run dev
 
 Base URL: `http://localhost:3000/api`
 
-See [../docs/API_ENDPOINTS.md](../docs/API_ENDPOINTS.md) for complete API documentation.
+See [../docs/architecture/api-endpoints.md](../docs/architecture/api-endpoints.md) for complete API documentation.
 
 ## Dependencies
 

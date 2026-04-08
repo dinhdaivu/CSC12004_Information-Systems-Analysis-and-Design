@@ -60,6 +60,7 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
 | POST | `/viewing-appointments` | staff, admin | Create room viewing appointment |
+| GET | `/viewing-appointments` | staff, admin | List viewing appointments with filters such as month, branch, and status |
 | GET | `/viewing-appointments/:id` | staff, admin | Get viewing appointment detail |
 | PATCH | `/viewing-appointments/:id/cancel` | staff, admin | Cancel viewing appointment |
 | PATCH | `/viewing-appointments/:id/outcome` | staff, admin | Record viewing outcome |

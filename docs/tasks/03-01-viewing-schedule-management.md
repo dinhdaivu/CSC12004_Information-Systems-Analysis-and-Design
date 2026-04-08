@@ -66,6 +66,7 @@ Viewing schedule flow:
 ### Backend (Express/Supabase)
 
 - [ ] Add schedule/appointment model if not present.
+- [ ] Implement `GET /api/viewing-appointments` with month, branch, and status filters for calendar/list loading.
 - [ ] Implement `GET /api/viewing-appointments/:id` for appointment detail where needed.
 - [ ] Implement status updates with `PATCH /api/viewing-appointments/:id/outcome` and `PATCH /api/viewing-appointments/:id/cancel`.
 - [ ] Add role protection for staff/admin.
