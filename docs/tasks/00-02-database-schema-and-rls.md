@@ -7,7 +7,7 @@
 
 ## GitHub Issue
 
-- Link: TBD
+- Link: https://github.com/dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design/issues/8
 
 ---
 
@@ -100,4 +100,4 @@ Implement `docs/tasks/00-02-database-schema-and-rls.md`.
 ## Verification Notes
 
 - Static SQL checks passed: no duplicate `CREATE TABLE` names, no unresolved forward references between `public.*` tables, and the standalone `scripts/CSDL_Script.sql` matches the Supabase migration hash.
-- `supabase db lint --local` could not run because the local Supabase Postgres service was not listening on `127.0.0.1:54322`.
+- Supabase Cloud validation should follow `supabase/README.md`: run `supabase/migrations/001_initial_schema.sql` in the Dashboard SQL Editor, or link the repo with `supabase link --project-ref <project-ref>` before running `supabase db lint --linked`.
