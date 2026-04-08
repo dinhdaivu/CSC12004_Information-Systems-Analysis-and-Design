@@ -13,7 +13,7 @@
 
 ## Overview
 
-Implement admin user management. This is a derived implementation use case because the report lists roles and login, while the app and API docs already define admin user management through `/admin/users` and `/api/v1/users`.
+Implement admin user management. This is a derived implementation use case because the report lists roles and login, while the app and API docs already define admin user management through `/admin/users` and `/api/users`.
 
 ### System Use Case
 
@@ -47,10 +47,10 @@ Implement admin user management. This is a derived implementation use case becau
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/users`.
-- [ ] Implement `GET /api/v1/users/:id`.
-- [ ] Implement `PATCH /api/v1/users/:id`.
-- [ ] Implement `DELETE /api/v1/users/:id` or soft-delete/deactivate.
+- [ ] Implement `GET /api/users`.
+- [ ] Implement `GET /api/users/:id`.
+- [ ] Implement `PATCH /api/users/:id`.
+- [ ] Implement `DELETE /api/users/:id` or soft-delete/deactivate.
 - [ ] Enforce admin-only access.
 
 ### Tests

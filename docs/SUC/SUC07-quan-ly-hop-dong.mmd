@@ -1,0 +1,59 @@
+sequenceDiagram
+    title SUC7: Quản lý hợp đồng
+    autonumber
+    actor S as Nhân viên Sales
+    actor M as Quản lý
+    participant Web as HomeStay Dorm Web<br/>(Quản lý hợp đồng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(deposit_requests, contracts, rooms, transactions, handovers)
+
+    rect rgb(240, 248, 255)
+        Note over S, DB: Mở dữ liệu lập hợp đồng
+        S->>Web: Chọn tạo hợp đồng
+        Web->>API: GET /api/deposits/{id}
+        API->>DB: Get customer, room/bed, deposit, lodging profile
+        DB-->>API: Contract input data
+        API-->>Web: Customer + room + deposit detail
+        Web-->>S: Hiển thị thông tin lập hợp đồng
+    end
+
+    rect rgb(255, 250, 240)
+        Note over S, DB: Include SUC16 và SUC9
+        Web->>API: POST /api/lodging-eligibility/check<br/>(depositId/customerId)
+        API->>DB: Read lodging profile and deposit status
+        DB-->>API: Eligibility input data
+        API-->>Web: Eligibility result
+        Web->>API: POST /api/costs/calculate<br/>(type=contract, depositId)
+        API->>DB: Read price, start/end date, deposit amount
+        DB-->>API: Cost input data
+        API-->>Web: Initial contract fees
+    end
+
+    alt A2 - Khách hàng không đủ điều kiện lưu trú
+        Web-->>S: Không cho phép lập hợp đồng và ghi nhận kết quả kiểm tra
+    else Khách hàng đủ điều kiện
+        rect rgb(240, 255, 240)
+            Note over S, DB: Tạo hợp đồng và xử lý khoản thu khi ký nếu có
+            S->>Web: Nhập thông tin hợp đồng
+            Web->>API: POST /api/contracts<br/>(depositId, terms, fees)
+            API->>DB: Validate contract data and create contract
+            DB-->>API: Contract created
+            alt Cần thu thêm tiền
+                Web->>API: POST /api/transactions<br/>(contractId, amount, type=contract_fee)
+                API->>DB: Insert transaction record
+                DB-->>API: Transaction created
+            end
+        end
+
+        alt A1/A3 - Thông tin hợp đồng hoặc thanh toán không hợp lệ
+            API-->>Web: Validation/transaction error
+            Web-->>S: Thông báo lỗi, hợp đồng chưa được kích hoạt
+        else Hợp đồng hợp lệ
+            Web->>API: PATCH /api/contracts/{id}/sign
+            API->>DB: Mark contract active/signed
+            DB-->>API: Contract activated
+            API-->>Web: Contract ready for handover
+            Web-->>M: Chuyển thông tin để thực hiện SUC17
+            Web-->>S: Thông báo hợp đồng sẵn sàng bàn giao
+        end
+    end

@@ -31,7 +31,7 @@ Implement manager/accountant checkout processing: inspect returned room, reconci
 | `report/content/2_System Analyze.tex` | SUC8, SUC9, SUC11 |
 | [UC4](../UC/UC4.md) | Checkout and refund |
 | [State Machine](../architecture/state-machine.md) | CheckoutStatus, ContractStatus, RoomStatus |
-| [API Endpoints](../architecture/api-endpoints.md) | Transactions, Contracts, Handovers |
+| [API Endpoints](../architecture/api-endpoints.md) | Check-out Requests, Settlements, Transactions, Contracts, Handovers |
 
 ---
 
@@ -67,11 +67,15 @@ Checkout settlement flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement checkout request list/detail endpoints.
-- [ ] Implement settlement calculation service.
+- [ ] Implement `GET /api/checkout-requests`.
+- [ ] Implement `GET /api/checkout-requests/:id`.
+- [ ] Implement `GET /api/checkout-requests/:id/settlement-input`.
+- [ ] Implement `POST /api/settlements/calculate`.
+- [ ] Implement `POST /api/settlements`.
 - [ ] Implement refund rules from `state-machine.md`.
-- [ ] Implement payment/refund transaction recording.
-- [ ] Implement checkout completion endpoint.
+- [ ] Implement refund or extra-fee transaction recording via `POST /api/transactions`.
+- [ ] Implement checkout completion via `PATCH /api/checkout-requests/:id/complete`.
+- [ ] Implement handover and contract finalization with `POST /api/handovers`, `PATCH /api/handovers/:id/sign`, and `PATCH /api/contracts/:id/terminate` where applicable.
 - [ ] Update contract and room/bed statuses.
 
 ### Refund Rules
@@ -130,4 +134,3 @@ Implement `docs/tasks/05-02-checkout-settlement-and-refund.md`.
 - [ ] Payment/refund transaction is recorded.
 - [ ] Contract and room status transitions are correct.
 - [ ] Tests pass for changed code.
-

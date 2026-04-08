@@ -24,21 +24,22 @@ The system will use a Client-Server architecture with:
 
 ---
 
-## API Endpoints Documentation - TODO
+## API Endpoints Documentation
 
-Complete API endpoints specification pending implementation.
+The planned API endpoint specification is maintained in [architecture/api-endpoints.md](./architecture/api-endpoints.md). Use that file as the source of truth for backend API paths used by tasks and SUC sequence diagrams.
 
 ### Base URL
 ```
-http://localhost:3000/api/v1
+http://localhost:3000/api
 ```
 
-### Pending Endpoint Categories
-- [ ] Authentication endpoints (register, login, logout)
-- [ ] Room management endpoints (list, create, update, delete)
-- [ ] Booking endpoints (create, list, update, cancel)
-- [ ] Payment endpoints (deposit, transaction)
-- [ ] User management endpoints (profile, settings)
+### Endpoint Categories
+- Authentication
+- Rooms and branches
+- Rental requests and viewing appointments
+- Deposits, contracts, handovers, settlements, and transactions
+- Customer booking status
+- Admin dashboard and user management
 
 ### Pending Items
 - [ ] Create request/response examples for each endpoint

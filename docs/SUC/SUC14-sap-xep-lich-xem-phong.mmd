@@ -1,0 +1,47 @@
+sequenceDiagram
+    title SUC14: Sắp xếp lịch xem phòng
+    autonumber
+    actor S as Nhân viên Sales
+    actor C as Khách hàng
+    participant Web as HomeStay Dorm Web<br/>(Sắp lịch xem phòng)
+    participant API as HomeStay Dorm API<br/>(Backend)
+    participant DB as HomeStay Dorm DB<br/>(rental_requests, rooms, beds, viewing_appointments)
+
+    rect rgb(240, 248, 255)
+        Note over S, DB: Mở yêu cầu thuê cần sắp lịch
+        S->>Web: Mở yêu cầu thuê cần sắp lịch
+        Web->>API: GET /api/rental-requests/{id}
+        API->>DB: Get customer, request, selected room/bed
+        DB-->>API: Rental request detail
+        API-->>Web: Rental request detail
+        Web->>API: GET /api/rooms<br/>(available=true, requestFilters)
+        API->>DB: Search available rooms/beds and time slots
+        DB-->>API: Room/bed candidates + available slots
+        API-->>Web: Candidate room/bed and slot data
+        Web-->>S: Hiển thị khách hàng, phòng/giường và khung giờ
+    end
+
+    alt A1 - Không còn khung giờ phù hợp
+        Web-->>S: Thông báo để chọn thời gian khác hoặc tạm hoãn
+    else Có khung giờ phù hợp
+        rect rgb(255, 250, 240)
+            Note over S, DB: Tạo lịch xem phòng
+            S-->>C: Trao đổi thời gian xem phòng phù hợp
+            C-->>S: Xác nhận thời gian xem phòng
+            S->>Web: Chọn thời gian xem phòng
+            Web->>API: POST /api/viewing-appointments<br/>(rentalRequestId, roomId, bedId, scheduledAt)
+            API->>DB: Insert viewing_appointment
+            DB-->>API: Viewing appointment created
+            API-->>Web: Schedule info
+            Web-->>C: Gửi/hiển thị thông tin lịch hẹn
+        end
+
+        opt A2 - Khách hàng hủy lịch hẹn
+            C->>Web: Hủy lịch hẹn
+            Web->>API: PATCH /api/viewing-appointments/{id}/cancel
+            API->>DB: Update appointment status=cancelled
+            DB-->>API: Appointment cancelled
+            API-->>Web: Cancel success
+            Web-->>S: Thông báo lịch đã hủy
+        end
+    end

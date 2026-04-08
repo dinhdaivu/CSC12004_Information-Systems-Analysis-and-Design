@@ -64,10 +64,10 @@ Contract flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/v1/contracts`.
-- [ ] Implement `GET /api/v1/contracts`.
-- [ ] Implement `GET /api/v1/contracts/:id`.
-- [ ] Implement `PATCH /api/v1/contracts/:id/sign`.
+- [ ] Implement `POST /api/contracts`.
+- [ ] Implement `GET /api/contracts`.
+- [ ] Implement `GET /api/contracts/:id`.
+- [ ] Implement `PATCH /api/contracts/:id/sign`.
 - [ ] Persist eligibility check result.
 - [ ] Block contract activation when eligibility fails.
 

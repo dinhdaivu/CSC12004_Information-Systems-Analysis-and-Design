@@ -194,7 +194,7 @@ Edit `frontend/src/environments/environment.ts` for development:
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api/v1',
+  apiUrl: 'http://localhost:3000/api',
   supabaseUrl: 'https://your-project.supabase.co',
   supabaseAnonKey: 'your_anon_key_here'
 };
@@ -205,7 +205,7 @@ Edit `frontend/src/environments/environment.prod.ts` for production:
 ```typescript
 export const environment = {
   production: true,
-  apiUrl: 'https://api.your-domain.com/api/v1',
+  apiUrl: 'https://api.your-domain.com/api',
   supabaseUrl: 'https://your-project.supabase.co',
   supabaseAnonKey: 'your_anon_key_here'
 };

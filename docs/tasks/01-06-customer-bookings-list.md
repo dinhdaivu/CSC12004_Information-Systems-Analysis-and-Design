@@ -37,7 +37,9 @@ Implement the `/bookings` customer list screen. This is a derived implementation
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement customer-scoped booking/request list endpoint.
+- [ ] Implement `GET /api/my-bookings` for the customer-scoped booking/request list.
+- [ ] Implement `GET /api/my-bookings/:id` for detail navigation.
+- [ ] Implement `POST /api/my-bookings/:id/actions` for allowed customer actions.
 - [ ] Enforce that customers only see their own records.
 - [ ] Support status filtering.
 
@@ -45,8 +47,8 @@ Implement the `/bookings` customer list screen. This is a derived implementation
 
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
-| Frontend | `frontend/src/app/features/bookings/components/bookings-list/bookings-list.component.spec.ts` | Bookings service |
-| Backend | `backend/src/__tests__/bookings.spec.ts` | Supabase client |
+| Frontend | `frontend/src/app/features/bookings/components/bookings-list/bookings-list.component.spec.ts` | My bookings service |
+| Backend | `backend/src/__tests__/my-bookings.spec.ts` | Supabase client |
 
 ---
 

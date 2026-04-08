@@ -66,10 +66,10 @@ Admin room management flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/rooms` with filters.
-- [ ] Implement `POST /api/v1/rooms`.
-- [ ] Implement `PATCH /api/v1/rooms/:id`.
-- [ ] Implement `DELETE /api/v1/rooms/:id`.
+- [ ] Implement `GET /api/rooms` with filters.
+- [ ] Implement `POST /api/rooms`.
+- [ ] Implement `PATCH /api/rooms/:id`.
+- [ ] Implement `DELETE /api/rooms/:id`.
 - [ ] Add bed-level endpoints if room/bed management requires separate updates.
 - [ ] Enforce admin/staff permissions.
 
@@ -105,7 +105,7 @@ Implement `docs/tasks/03-02-admin-room-management.md`.
 - Replace `RoomsManagementComponent` placeholder.
 - Add typed room and bed management models.
 - Implement search and filter UI.
-- Use `GET /api/v1/rooms` with filter params.
+- Use `GET /api/rooms` with filter params.
 - If create/edit/delete are included, implement the documented room endpoints and role checks.
 - If backend is missing, create a typed stub service with `// TODO: Implemented in task 03-02`.
 
