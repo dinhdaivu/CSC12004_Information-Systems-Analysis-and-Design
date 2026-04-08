@@ -33,7 +33,7 @@ Implement checkout and deposit payment screens for customer booking payment. The
 | [UC2](../UC/UC2.md) | Deposit and rental confirmation |
 | [API Endpoints](../architecture/api-endpoints.md) | Deposits, Transactions |
 | [State Machine](../architecture/state-machine.md) | RoomStatus, DepositStatus |
-| [Software Layers](../architecture/layers.md) | PaymentView, PaymentController |
+| [Software Layers](../architecture/layers.md) | TransactionView, TransactionController |
 
 ---
 
@@ -67,14 +67,14 @@ Checkout/payment flow:
 - [ ] Implement voucher expired/error state.
 - [ ] Implement QR/payment modal state.
 - [ ] Implement payment success state.
-- [ ] Add typed `BookingPaymentService`.
+- [ ] Add typed `BookingTransactionService`.
 - [ ] Add loading/error states.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/v1/deposits/:id` or booking detail equivalent.
-- [ ] Implement `POST /api/v1/deposits` if deposit creation is part of the flow.
-- [ ] Implement payment/transaction creation via `POST /api/v1/transactions`.
+- [ ] Implement `GET /api/deposits/:id` or booking detail equivalent.
+- [ ] Implement `POST /api/deposits` if deposit creation is part of the flow.
+- [ ] Implement payment/transaction creation via `POST /api/transactions`.
 - [ ] Implement voucher validation endpoint only if voucher feature is retained.
 - [ ] Update deposit and room status after confirmed payment.
 
@@ -82,9 +82,9 @@ Checkout/payment flow:
 
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
-| Frontend | `frontend/src/app/features/bookings/components/booking-detail/booking-detail.component.spec.ts` | Payment service |
+| Frontend | `frontend/src/app/features/bookings/components/booking-detail/booking-detail.component.spec.ts` | Transaction service |
 | Backend | `backend/src/__tests__/deposits.spec.ts` | Supabase client |
-| Backend | `backend/src/__tests__/transactions.spec.ts` | Payment provider/Supabase |
+| Backend | `backend/src/__tests__/transactions.spec.ts` | Transaction provider/Supabase |
 
 | # | Test Case | Layer | Expected |
 |---|-----------|-------|----------|
@@ -135,7 +135,7 @@ Implement `docs/tasks/02-01-checkout-payment-flow.md`.
 - [ ] Voucher expired state is implemented.
 - [ ] QR/payment modal state is implemented.
 - [ ] Payment success state is implemented.
-- [ ] Payment/deposit API or typed mock adapter exists.
+- [ ] Transaction/deposit API or typed mock adapter exists.
 - [ ] Tests pass for changed code.
 
 ---

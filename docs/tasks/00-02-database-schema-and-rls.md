@@ -13,7 +13,7 @@
 
 ## Overview
 
-Create the database foundation for the HomeStay Dorm implementation. The report and architecture docs identify customers, employees, rooms, beds, deposit requests, payments, contracts, checkout requests, settlements, and handovers as core entities.
+Create the database foundation for the HomeStay Dorm implementation. The report and architecture docs identify customers, employees, rooms, beds, deposit requests, transactions, contracts, checkout requests, settlements, and handovers as core entities.
 
 ---
 
@@ -40,7 +40,7 @@ Create the database foundation for the HomeStay Dorm implementation. The report 
 - [ ] Define rental request / booking table.
 - [ ] Define `viewing_appointments`.
 - [ ] Define `deposit_requests`.
-- [ ] Define `payments` or `transactions`.
+- [ ] Define `transactions`.
 - [ ] Define `contracts`.
 - [ ] Define `handovers`.
 - [ ] Define `checkout_requests`.

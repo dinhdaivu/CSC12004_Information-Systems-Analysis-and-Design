@@ -10,13 +10,13 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over M, DB: Tiếp nhận yêu cầu trả phòng
         M->>Web: Mở danh sách yêu cầu trả phòng
-        Web->>API: GET /api/v1/checkout-requests<br/>(status=requested/confirmed)
+        Web->>API: GET /api/checkout-requests<br/>(status=requested/confirmed)
         API->>DB: Query checkout_requests
         DB-->>API: Checkout request list + count
         API-->>Web: Checkout request list + count
         Web-->>M: Hiển thị danh sách yêu cầu trả phòng
         M->>Web: Chọn yêu cầu trả phòng
-        Web->>API: GET /api/v1/checkout-requests/{id}
+        Web->>API: GET /api/checkout-requests/{id}
         API->>DB: Get checkout, contract, deposit, room, handover state
         DB-->>API: Checkout detail
         API-->>Web: Checkout detail
@@ -25,7 +25,7 @@ sequenceDiagram
 
     rect rgb(255, 250, 240)
         Note over M, DB: Include SUC8 - Đối soát chi phí
-        Web->>API: POST /api/v1/settlements/calculate<br/>(checkoutRequestId)
+        Web->>API: POST /api/settlements/calculate<br/>(checkoutRequestId)
         API->>DB: Read contract, deposit, transactions, deductions
         DB-->>API: Settlement input data
         API->>DB: Insert/update settlement draft
@@ -37,7 +37,7 @@ sequenceDiagram
     opt Có phát sinh thanh toán hoặc hoàn tiền
         rect rgb(240, 255, 240)
             Note over M, DB: Extend SUC5 - Thanh toán/hoàn tiền
-            Web->>API: POST /api/v1/transactions<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
+            Web->>API: POST /api/transactions<br/>(checkoutRequestId, settlementId, type=refund/extra_fee)
             API->>DB: Insert transaction/refund record
             DB-->>API: Transaction/refund record created
             API-->>Web: Transaction/refund status
@@ -49,7 +49,7 @@ sequenceDiagram
         Web-->>M: Giữ trạng thái xử lý, chưa cho phép thanh lý hợp đồng
     else A2 - Khách chưa bàn giao đủ chìa khóa/thẻ/tài sản
         M->>Web: Ghi nhận thiếu chìa khóa/thẻ/tài sản
-        Web->>API: PATCH /api/v1/handovers/{id}<br/>(missingItems)
+        Web->>API: PATCH /api/handovers/{id}<br/>(missingItems)
         API->>DB: Update checkout handover record
         DB-->>API: Handover updated
         API-->>Web: Handover incomplete
@@ -58,11 +58,11 @@ sequenceDiagram
         rect rgb(248, 248, 255)
             Note over M, DB: Thanh lý hợp đồng và cập nhật phòng/giường
             M->>Web: Ký xác nhận biên bản trả phòng và thanh lý hợp đồng
-            Web->>API: PATCH /api/v1/contracts/{id}/terminate
+            Web->>API: PATCH /api/contracts/{id}/terminate
             API->>DB: Update contract status=terminated/completed
-            Web->>API: POST /api/v1/handovers<br/>(type=checkout, signed=true)
+            Web->>API: POST /api/handovers<br/>(type=checkout, signed=true)
             API->>DB: Insert/sign checkout handover
-            Web->>API: PATCH /api/v1/checkout-requests/{id}/complete
+            Web->>API: PATCH /api/checkout-requests/{id}/complete
             API->>DB: Update checkout status=completed and room/bed status=available
             DB-->>API: Checkout completed
             API-->>Web: Checkout complete

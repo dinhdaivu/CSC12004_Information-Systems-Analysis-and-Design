@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over M, DB: Kiểm tra quyền và hiển thị danh sách người dùng
         M->>Web: Mở màn hình quản lý người dùng
-        Web->>API: GET /api/v1/users<br/>(keyword, role, status, page)
+        Web->>API: GET /api/users<br/>(keyword, role, status, page)
         API->>DB: Check manager/admin permission
     end
 
@@ -26,7 +26,7 @@ sequenceDiagram
         rect rgb(255, 250, 240)
             Note over M, DB: Tìm kiếm/lọc và xem chi tiết người dùng
             M->>Web: Tìm kiếm hoặc lọc người dùng
-            Web->>API: GET /api/v1/users<br/>(keyword, role, status, page=1)
+            Web->>API: GET /api/users<br/>(keyword, role, status, page=1)
             API->>DB: Search users by filters
             DB-->>API: Search result
         end
@@ -38,7 +38,7 @@ sequenceDiagram
             API-->>Web: Filtered user list
             Web-->>M: Hiển thị kết quả lọc
             M->>Web: Chọn người dùng để xem chi tiết
-            Web->>API: GET /api/v1/users/{id}
+            Web->>API: GET /api/users/{id}
             API->>DB: Get user detail
             DB-->>API: User detail
             API-->>Web: User detail
@@ -47,7 +47,7 @@ sequenceDiagram
             rect rgb(240, 255, 240)
                 Note over M, DB: Cập nhật thông tin, vai trò hoặc trạng thái
                 M->>Web: Cập nhật thông tin/vai trò/trạng thái
-                Web->>API: PATCH /api/v1/users/{id}<br/>(profile, role, status)
+                Web->>API: PATCH /api/users/{id}<br/>(profile, role, status)
                 API->>DB: Validate role/status and update user
             end
 

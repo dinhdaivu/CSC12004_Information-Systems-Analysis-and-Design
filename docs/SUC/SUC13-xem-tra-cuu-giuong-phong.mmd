@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over U, DB: Hiển thị danh sách phòng/giường
         U->>Web: Chọn chức năng tra cứu phòng/giường
-        Web->>API: GET /api/v1/rooms<br/>(branch, type, capacity, price, status)
+        Web->>API: GET /api/rooms<br/>(branch, type, capacity, price, status)
         API->>DB: Query public room/bed inventory
         DB-->>API: Room/bed list
         API-->>Web: Room/bed list
@@ -19,7 +19,7 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over U, DB: Tìm kiếm và lọc kết quả
         U->>Web: Nhập tiêu chí tìm kiếm
-        Web->>API: GET /api/v1/rooms<br/>(filters)
+        Web->>API: GET /api/rooms<br/>(filters)
         API->>DB: Filter rooms/beds by criteria
         DB-->>API: Filtered list
     end
@@ -28,7 +28,7 @@ sequenceDiagram
         API-->>Web: Filtered room/bed list
         Web-->>U: Hiển thị kết quả tra cứu
         U->>Web: Chọn xem chi tiết phòng
-        Web->>API: GET /api/v1/rooms/{id}
+        Web->>API: GET /api/rooms/{id}
         API->>DB: Get room detail and bed availability
         DB-->>API: Room detail
         API-->>Web: Room detail

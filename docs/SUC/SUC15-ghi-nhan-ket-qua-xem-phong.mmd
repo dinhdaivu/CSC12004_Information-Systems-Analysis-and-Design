@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over S, DB: Mở lịch xem phòng cần xử lý
         S->>Web: Mở lịch xem phòng cần xử lý
-        Web->>API: GET /api/v1/viewing-appointments/{id}
+        Web->>API: GET /api/viewing-appointments/{id}
         API->>DB: Get appointment, room/bed, rental request
         DB-->>API: Appointment detail
         API-->>Web: Appointment detail
@@ -20,7 +20,7 @@ sequenceDiagram
         Note over S, DB: Ghi nhận phản hồi và kết quả xem phòng
         S->>Web: Nhập tình trạng buổi xem và phản hồi khách hàng
         S->>Web: Chọn kết quả xem phòng
-        Web->>API: PATCH /api/v1/viewing-appointments/{id}/outcome<br/>(result, note)
+        Web->>API: PATCH /api/viewing-appointments/{id}/outcome<br/>(result, note)
         API->>DB: Update viewing outcome
         DB-->>API: Outcome updated
     end

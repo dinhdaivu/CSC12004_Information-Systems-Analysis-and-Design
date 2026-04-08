@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over M, DB: Hiển thị danh sách giường/phòng
         M->>Web: Mở chức năng quản lý giường/phòng
-        Web->>API: GET /api/v1/rooms<br/>(branch, status, page)
+        Web->>API: GET /api/rooms<br/>(branch, status, page)
         API->>DB: Query rooms and beds
         DB-->>API: Room/bed list + count
         API-->>Web: Room/bed list + count
@@ -19,7 +19,7 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over M, DB: Xem chi tiết
         M->>Web: Chọn một phòng/giường để xem
-        Web->>API: GET /api/v1/rooms/{id}
+        Web->>API: GET /api/rooms/{id}
         API->>DB: Get room detail with beds
         DB-->>API: Room detail
         API-->>Web: Room detail
@@ -29,7 +29,7 @@ sequenceDiagram
     rect rgb(240, 255, 240)
         Note over M, DB: Thêm hoặc sửa phòng/giường
         M->>Web: Nhập thông tin mới hoặc chỉnh sửa thông tin
-        Web->>API: POST/PATCH /api/v1/rooms<br/>(room data)
+        Web->>API: POST/PATCH /api/rooms<br/>(room data)
         API->>DB: Validate and insert/update room/bed data
     end
 
@@ -46,7 +46,7 @@ sequenceDiagram
     rect rgb(248, 248, 255)
         Note over M, DB: Xóa phòng/giường
         M->>Web: Yêu cầu xóa phòng/giường
-        Web->>API: DELETE /api/v1/rooms/{id}
+        Web->>API: DELETE /api/rooms/{id}
         API->>DB: Check active contracts/deposits/handovers
     end
 

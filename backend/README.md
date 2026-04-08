@@ -170,7 +170,7 @@ npm run dev
 
 ## API Routes
 
-Base URL: `http://localhost:3000/api/v1`
+Base URL: `http://localhost:3000/api`
 
 See [../docs/API_ENDPOINTS.md](../docs/API_ENDPOINTS.md) for complete API documentation.
 

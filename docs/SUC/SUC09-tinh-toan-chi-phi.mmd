@@ -7,7 +7,7 @@ sequenceDiagram
 
     rect rgb(240, 248, 255)
         Note over Caller, DB: Nhận yêu cầu tính toán chi phí
-        Caller->>API: POST /api/v1/costs/calculate<br/>(type, relatedId)
+        Caller->>API: POST /api/costs/calculate<br/>(type, relatedId)
         API->>API: Xác định nghiệp vụ<br/>(deposit / contract / checkout)
         API->>DB: Load price, rental period, deposit, transaction, handover data
         DB-->>API: Cost input data

@@ -8,7 +8,7 @@ The system follows 3 complementary patterns: **3-Layer Architecture** (deploymen
 graph TB
     subgraph Presentation ["Presentation Layer (View / Boundary)"]
         BV[BookingView]
-        PV[PaymentView]
+        TV[TransactionView]
         CV[ContractView]
         COV[CheckoutView]
         RV[RoomView]
@@ -16,7 +16,7 @@ graph TB
 
     subgraph Business ["Business Logic Layer (Controller / Control)"]
         BC[BookingController]
-        PC[PaymentController]
+        TC[TransactionController]
         CC[ContractController]
         COC[CheckoutController]
         RC[RefundCalculator]
@@ -29,14 +29,14 @@ graph TB
         RO[Room]
         BE[Bed]
         DR[DepositRequest]
-        PA[Payment]
+        TR[Transaction]
         CO[Contract]
         CR[CheckoutRequest]
         SE[Settlement]
     end
 
     BV --> BC
-    PV --> PC
+    TV --> TC
     CV --> CC
     COV --> COC
     RV --> BC
@@ -45,8 +45,8 @@ graph TB
     BC --> RO
     BC --> BE
     BC --> DR
-    PC --> PA
-    PC --> DR
+    TC --> TR
+    TC --> DR
     CC --> CO
     CC --> DR
     COC --> CR
@@ -63,7 +63,7 @@ graph TB
 | Class | Responsibility |
 | --- | --- |
 | `BookingView` | Room search, deposit request UI |
-| `PaymentView` | Payment confirmation UI |
+| `TransactionView` | Payment confirmation and transaction status UI |
 | `ContractView` | Contract display and signing UI |
 | `CheckoutView` | Check-out request and settlement UI |
 | `RoomView` | Room listing and detail UI |
@@ -81,7 +81,7 @@ graph TB
 | Class | Responsibility |
 | --- | --- |
 | `BookingController` | Validates room availability, creates DepositRequest, sets Room = HOLDING |
-| `PaymentController` | Confirms payment, updates DepositRequest = PAID, Room = DEPOSITED |
+| `TransactionController` | Confirms transactions, updates DepositRequest = PAID, Room = DEPOSITED |
 | `ContractController` | Checks lodging conditions (UC3-1), creates Contract, handles 80% refund on fail |
 | `CheckoutController` | Receives CheckoutRequest (UC4-1), triggers Settlement calculation |
 | `RefundCalculator` | Applies refund rules (50/70/80/100%) and deductions to produce Settlement |
@@ -104,7 +104,7 @@ graph TB
 | `Room` | id, branch_id, room_number, room_type, capacity, price, **status** |
 | `Bed` | id, room_id, bed_number, status |
 | `DepositRequest` | id, customer_id, room_id, amount, **status**, expires_at |
-| `Payment` | id, deposit_request_id, contract_id, amount, type, payment_method |
+| `Transaction` | id, deposit_request_id, contract_id, amount, type, payment_method |
 | `Contract` | id, customer_id, room_id, start_date, end_date, monthly_rent, **status** |
 | `CheckoutRequest` | id, contract_id, customer_id, requested_at, **status** |
 | `Settlement` | id, checkout_request_id, deposit_refund_amount, deductions, net_amount |

@@ -12,7 +12,7 @@ sequenceDiagram
         C->>Web: Mở màn hình đăng ký tài khoản
         Web-->>C: Hiển thị biểu mẫu họ tên, email, số điện thoại, mật khẩu
         C->>Web: Nhập thông tin và gửi yêu cầu đăng ký
-        Web->>API: POST /api/v1/auth/register<br/>(fullName, email, phone, password)
+        Web->>API: POST /api/auth/register<br/>(fullName, email, phone, password)
         API->>DB: Check duplicate email/phone in users
         DB-->>API: Duplicate check result
     end

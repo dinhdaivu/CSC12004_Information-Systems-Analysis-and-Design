@@ -11,7 +11,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over S, DB: Tạo yêu cầu đặt cọc
         S->>Web: Tạo yêu cầu đặt cọc từ yêu cầu thuê
-        Web->>API: POST /api/v1/deposits<br/>(rentalRequestId, roomId, bedId)
+        Web->>API: POST /api/deposits<br/>(rentalRequestId, roomId, bedId)
         API->>DB: Validate rental_request and room/bed availability
         DB-->>API: Valid request + current room/bed status
         API->>DB: Insert deposit_request(status=pending)
@@ -24,13 +24,13 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over A, DB: Include SUC9 - Tính và xác nhận số tiền cọc
         A->>Web: Kiểm tra và nhập số tiền cọc
-        Web->>API: POST /api/v1/costs/calculate<br/>(type=deposit, depositId)
+        Web->>API: POST /api/costs/calculate<br/>(type=deposit, depositId)
         API->>DB: Read room price and rental information
         DB-->>API: Cost input data
         API-->>Web: Deposit amount suggestion
         Web-->>A: Hiển thị số tiền cần xác nhận
         A->>Web: Xác nhận số tiền cọc
-        Web->>API: PATCH /api/v1/deposits/{id}<br/>(amount)
+        Web->>API: PATCH /api/deposits/{id}<br/>(amount)
         API->>DB: Update deposit amount
         DB-->>API: Amount updated
     end
@@ -39,20 +39,20 @@ sequenceDiagram
         API-->>Web: Deposit pending manager review
         Web-->>M: Hiển thị yêu cầu đặt cọc cần xác nhận
         M->>Web: Xác nhận xử lý đặt cọc
-        Web->>API: PATCH /api/v1/deposits/{id}/review
+        Web->>API: PATCH /api/deposits/{id}/review
         API->>DB: Update review status
         DB-->>API: Review status updated
     end
 
     rect rgb(240, 255, 240)
         Note over S, DB: Include SUC5 - Thanh toán đặt cọc
-        Web->>API: POST /api/v1/transactions<br/>(depositId, amount, type=deposit)
+        Web->>API: POST /api/transactions<br/>(depositId, amount, type=deposit)
         API->>DB: Insert transaction record
         DB-->>API: Transaction created
     end
 
     alt Thanh toán thành công
-        Web->>API: PATCH /api/v1/deposits/{id}/confirm
+        Web->>API: PATCH /api/deposits/{id}/confirm
         API->>DB: Update deposit status=paid and room status=deposited
         DB-->>API: Deposit confirmed
         API-->>Web: Deposit paid

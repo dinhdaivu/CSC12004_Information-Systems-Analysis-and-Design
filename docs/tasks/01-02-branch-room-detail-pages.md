@@ -69,8 +69,8 @@ Branch detail flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement or verify `GET /api/v1/rooms/:id`.
-- [ ] Implement or verify `GET /api/v1/branches/:id`.
+- [ ] Implement or verify `GET /api/rooms/:id`.
+- [ ] Implement or verify `GET /api/branches/:id`.
 - [ ] Include branch facilities, room facilities, policies, images, and available beds/rooms.
 
 ### Tests
@@ -104,7 +104,7 @@ Implement `docs/tasks/01-02-branch-room-detail-pages.md`.
 ## Implementation
 - Replace `RoomDetailComponent` placeholder.
 - Add typed models for branch detail, facility sections, and room availability.
-- Use route param `id` and load via `GET /api/v1/rooms/:id` or `GET /api/v1/branches/:id`.
+- Use route param `id` and load via `GET /api/rooms/:id` or `GET /api/branches/:id`.
 - If API is missing, add a typed stub with `// TODO: Implemented in task 01-02`.
 - Implement contact CTA behavior.
 

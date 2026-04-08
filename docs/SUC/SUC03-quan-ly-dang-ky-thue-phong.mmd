@@ -10,13 +10,13 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over S, DB: Tiếp nhận yêu cầu thuê
         S->>Web: Mở danh sách yêu cầu thuê
-        Web->>API: GET /api/v1/rental-requests<br/>(status=new/processing)
+        Web->>API: GET /api/rental-requests<br/>(status=new/processing)
         API->>DB: Query rental_requests
         DB-->>API: Danh sách yêu cầu thuê
         API-->>Web: Rental request list
         Web-->>S: Hiển thị danh sách yêu cầu thuê
         S->>Web: Chọn một yêu cầu thuê
-        Web->>API: GET /api/v1/rental-requests/{id}
+        Web->>API: GET /api/rental-requests/{id}
         API->>DB: Get rental request detail
         DB-->>API: Chi tiết yêu cầu thuê
         API-->>Web: Rental request detail
@@ -24,7 +24,7 @@ sequenceDiagram
 
     rect rgb(255, 250, 240)
         Note over S, DB: Include SUC13 - Tra cứu phòng/giường phù hợp
-        Web->>API: GET /api/v1/rooms<br/>(filters from request)
+        Web->>API: GET /api/rooms<br/>(filters from request)
         API->>DB: Search available rooms/beds
         DB-->>API: Available room/bed candidates
         API-->>Web: Candidate list
@@ -36,7 +36,7 @@ sequenceDiagram
         rect rgb(240, 255, 240)
             Note over S, DB: Include SUC14 - Sắp xếp lịch xem phòng
             S->>Web: Chọn phòng/giường và thời gian xem phòng
-            Web->>API: POST /api/v1/viewing-appointments<br/>(rentalRequestId, roomId, scheduleTime)
+            Web->>API: POST /api/viewing-appointments<br/>(rentalRequestId, roomId, scheduleTime)
             API->>DB: Insert viewing_appointment
             DB-->>API: Viewing appointment created
             API-->>Web: Schedule info
@@ -46,7 +46,7 @@ sequenceDiagram
         rect rgb(248, 248, 255)
             Note over S, DB: Include SUC15 - Ghi nhận kết quả xem phòng
             S->>Web: Nhập kết quả xem phòng
-            Web->>API: PATCH /api/v1/viewing-appointments/{id}/outcome<br/>(result)
+            Web->>API: PATCH /api/viewing-appointments/{id}/outcome<br/>(result)
             API->>DB: Update viewing outcome
             DB-->>API: Outcome updated
             alt Khách đồng ý thuê

@@ -29,7 +29,7 @@ Implement staff/admin viewing schedule management. The feature supports calendar
 | Document | Section |
 |----------|---------|
 | [UC1](../UC/UC1.md) | Record registration and schedule room viewing |
-| [API Endpoints](../architecture/api-endpoints.md) | Add schedule endpoints if missing |
+| [API Endpoints](../architecture/api-endpoints.md) | Viewing Appointments |
 | [Software Layers](../architecture/layers.md) | SchedulerController |
 
 ---
@@ -66,8 +66,8 @@ Viewing schedule flow:
 ### Backend (Express/Supabase)
 
 - [ ] Add schedule/appointment model if not present.
-- [ ] Implement `GET /api/v1/schedules` or `GET /api/v1/viewing-appointments`.
-- [ ] Implement status updates such as `PATCH /api/v1/schedules/:id/approve`.
+- [ ] Implement `GET /api/viewing-appointments/:id` for appointment detail where needed.
+- [ ] Implement status updates with `PATCH /api/viewing-appointments/:id/outcome` and `PATCH /api/viewing-appointments/:id/cancel`.
 - [ ] Add role protection for staff/admin.
 
 ### Tests
@@ -75,7 +75,7 @@ Viewing schedule flow:
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
 | Frontend | `frontend/src/app/features/admin/components/viewing-schedule/viewing-schedule.component.spec.ts` | Schedule service |
-| Backend | `backend/src/__tests__/schedules.spec.ts` | Supabase client |
+| Backend | `backend/src/__tests__/viewing-appointments.spec.ts` | Supabase client |
 
 | # | Test Case | Layer | Expected |
 |---|-----------|-------|----------|
@@ -118,7 +118,7 @@ Implement `docs/tasks/03-01-viewing-schedule-management.md`.
 - [ ] Admin schedule route exists.
 - [ ] Viewing schedule UI is no longer missing.
 - [ ] List view and approval state are implemented.
-- [ ] Schedule API or typed stub exists.
+- [ ] Viewing appointment API or typed stub exists.
 - [ ] Role restriction is documented or implemented.
 - [ ] Tests pass for changed code.
 

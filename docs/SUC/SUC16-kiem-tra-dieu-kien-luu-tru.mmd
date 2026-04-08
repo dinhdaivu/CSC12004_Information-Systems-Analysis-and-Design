@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over M, DB: Tải hồ sơ khách hàng cần kiểm tra
         M->>Web: Mở hồ sơ khách hàng cần kiểm tra
-        Web->>API: GET /api/v1/lodging-eligibility/{customerId}<br/>(depositId)
+        Web->>API: GET /api/lodging-eligibility/{customerId}<br/>(depositId)
         API->>DB: Read identity profile, rental request, deposit status, selected room/bed
         DB-->>API: Lodging profile data
         API-->>Web: Lodging profile data
@@ -19,7 +19,7 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over M, DB: Lưu kết quả kiểm tra điều kiện lưu trú
         M->>Web: Kiểm tra hồ sơ và xác nhận kết quả
-        Web->>API: POST /api/v1/lodging-eligibility/check<br/>(customerId, depositId, result, note)
+        Web->>API: POST /api/lodging-eligibility/check<br/>(customerId, depositId, result, note)
         API->>DB: Store lodging eligibility result
     end
 

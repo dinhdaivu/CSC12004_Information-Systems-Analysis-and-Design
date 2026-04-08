@@ -10,7 +10,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over M, DB: Mở hợp đồng cần bàn giao
         M->>Web: Mở hợp đồng cần bàn giao phòng
-        Web->>API: GET /api/v1/contracts/{id}
+        Web->>API: GET /api/contracts/{id}
         API->>DB: Read contract, room/bed, transaction and deposit status
         DB-->>API: Contract handover input data
     end
@@ -23,7 +23,7 @@ sequenceDiagram
         Web-->>M: Hiển thị hợp đồng, phòng/giường và tài sản
         M-->>C: Kiểm tra thực tế tình trạng phòng/giường trước khi bàn giao
         M->>Web: Nhập/xác nhận biên bản bàn giao tài sản
-        Web->>API: POST /api/v1/handovers<br/>(type=checkin, contractId, items)
+        Web->>API: POST /api/handovers<br/>(type=checkin, contractId, items)
         API->>DB: Validate handover items
 
         alt A2 - Dữ liệu bàn giao chưa đầy đủ
@@ -35,7 +35,7 @@ sequenceDiagram
             DB-->>API: Handover created
             M-->>C: Bàn giao chìa khóa/thẻ và hướng dẫn lưu trú
             M->>Web: Xác nhận đã bàn giao cho khách hàng
-            Web->>API: PATCH /api/v1/handovers/{id}/sign
+            Web->>API: PATCH /api/handovers/{id}/sign
             API->>DB: Sign handover, update room/bed status=occupied
             API->>DB: Update contract check-in state
             DB-->>API: Handover completed

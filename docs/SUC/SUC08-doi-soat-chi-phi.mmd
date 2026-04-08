@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over A, DB: Tải dữ liệu trả phòng để đối soát
         A->>Web: Mở yêu cầu trả phòng cần đối soát
-        Web->>API: GET /api/v1/checkout-requests/{id}/settlement-input
+        Web->>API: GET /api/checkout-requests/{id}/settlement-input
         API->>DB: Read contract, deposit, transactions, handover state
         DB-->>API: Checkout settlement input data
     end
@@ -27,7 +27,7 @@ sequenceDiagram
 
         rect rgb(255, 250, 240)
             Note over A, DB: Include SUC9 - Tính khoản thu thêm/hoàn lại
-            Web->>API: POST /api/v1/costs/calculate<br/>(type=checkout, checkoutRequestId)
+            Web->>API: POST /api/costs/calculate<br/>(type=checkout, checkoutRequestId)
             API->>DB: Read rent, deposit, handover deductions, completed transactions
             DB-->>API: Cost input data
             API-->>Web: Calculated settlement result
@@ -37,7 +37,7 @@ sequenceDiagram
         rect rgb(240, 255, 240)
             Note over A, DB: Lưu kết quả đối soát
             A->>Web: Xác nhận kết quả đối soát
-            Web->>API: POST /api/v1/settlements<br/>(checkoutRequestId, amounts)
+            Web->>API: POST /api/settlements<br/>(checkoutRequestId, amounts)
             API->>DB: Insert/update settlement
             DB-->>API: Settlement saved
             API-->>Web: Settlement saved

@@ -1,6 +1,6 @@
 # API Endpoints
 
-Base URL: `/api/v1`
+Base URL: `/api`
 
 Auth: `Authorization: Bearer <JWT>` on all protected routes.
 

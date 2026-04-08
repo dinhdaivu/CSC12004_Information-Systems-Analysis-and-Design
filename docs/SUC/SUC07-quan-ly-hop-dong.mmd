@@ -10,7 +10,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over S, DB: Mở dữ liệu lập hợp đồng
         S->>Web: Chọn tạo hợp đồng
-        Web->>API: GET /api/v1/deposits/{id}
+        Web->>API: GET /api/deposits/{id}
         API->>DB: Get customer, room/bed, deposit, lodging profile
         DB-->>API: Contract input data
         API-->>Web: Customer + room + deposit detail
@@ -19,11 +19,11 @@ sequenceDiagram
 
     rect rgb(255, 250, 240)
         Note over S, DB: Include SUC16 và SUC9
-        Web->>API: POST /api/v1/lodging-eligibility/check<br/>(depositId/customerId)
+        Web->>API: POST /api/lodging-eligibility/check<br/>(depositId/customerId)
         API->>DB: Read lodging profile and deposit status
         DB-->>API: Eligibility input data
         API-->>Web: Eligibility result
-        Web->>API: POST /api/v1/costs/calculate<br/>(type=contract, depositId)
+        Web->>API: POST /api/costs/calculate<br/>(type=contract, depositId)
         API->>DB: Read price, start/end date, deposit amount
         DB-->>API: Cost input data
         API-->>Web: Initial contract fees
@@ -35,11 +35,11 @@ sequenceDiagram
         rect rgb(240, 255, 240)
             Note over S, DB: Tạo hợp đồng và xử lý khoản thu khi ký nếu có
             S->>Web: Nhập thông tin hợp đồng
-            Web->>API: POST /api/v1/contracts<br/>(depositId, terms, fees)
+            Web->>API: POST /api/contracts<br/>(depositId, terms, fees)
             API->>DB: Validate contract data and create contract
             DB-->>API: Contract created
             alt Cần thu thêm tiền
-                Web->>API: POST /api/v1/transactions<br/>(contractId, amount, type=contract_fee)
+                Web->>API: POST /api/transactions<br/>(contractId, amount, type=contract_fee)
                 API->>DB: Insert transaction record
                 DB-->>API: Transaction created
             end
@@ -49,7 +49,7 @@ sequenceDiagram
             API-->>Web: Validation/transaction error
             Web-->>S: Thông báo lỗi, hợp đồng chưa được kích hoạt
         else Hợp đồng hợp lệ
-            Web->>API: PATCH /api/v1/contracts/{id}/sign
+            Web->>API: PATCH /api/contracts/{id}/sign
             API->>DB: Mark contract active/signed
             DB-->>API: Contract activated
             API-->>Web: Contract ready for handover

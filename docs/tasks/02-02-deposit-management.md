@@ -63,11 +63,11 @@ Deposit management flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/v1/deposits`.
-- [ ] Implement `GET /api/v1/deposits`.
-- [ ] Implement `GET /api/v1/deposits/:id`.
-- [ ] Implement `PATCH /api/v1/deposits/:id/confirm`.
-- [ ] Implement `PATCH /api/v1/deposits/:id/cancel`.
+- [ ] Implement `POST /api/deposits`.
+- [ ] Implement `GET /api/deposits`.
+- [ ] Implement `GET /api/deposits/:id`.
+- [ ] Implement `PATCH /api/deposits/:id/confirm`.
+- [ ] Implement `PATCH /api/deposits/:id/cancel`.
 - [ ] Implement expiration job for pending deposits older than 24 hours.
 
 ### Tests

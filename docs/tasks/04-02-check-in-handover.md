@@ -63,9 +63,9 @@ Check-in handover flow:
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/v1/handovers`.
-- [ ] Implement `GET /api/v1/handovers/:id`.
-- [ ] Implement `PATCH /api/v1/handovers/:id/sign`.
+- [ ] Implement `POST /api/handovers`.
+- [ ] Implement `GET /api/handovers/:id`.
+- [ ] Implement `PATCH /api/handovers/:id/sign`.
 - [ ] Update room/bed status to `OCCUPIED` after successful check-in handover.
 
 ### Tests

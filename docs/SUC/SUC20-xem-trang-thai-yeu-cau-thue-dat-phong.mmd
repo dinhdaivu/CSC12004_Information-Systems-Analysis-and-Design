@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over C, DB: Hiển thị danh sách yêu cầu/đặt phòng của khách hàng
         C->>Web: Mở màn hình danh sách yêu cầu/đặt phòng
-        Web->>API: GET /api/v1/my-bookings<br/>(customer=current, page=1)
+        Web->>API: GET /api/my-bookings<br/>(customer=current, page=1)
         API->>DB: Query customer's rental/deposit/contract/transaction/checkout records
         DB-->>API: Customer booking status list
     end
@@ -24,7 +24,7 @@ sequenceDiagram
         rect rgb(255, 250, 240)
             Note over C, DB: Lọc hoặc xem chi tiết một yêu cầu
             C->>Web: Lọc hoặc chọn một yêu cầu để xem chi tiết
-            Web->>API: GET /api/v1/my-bookings/{id}
+            Web->>API: GET /api/my-bookings/{id}
             API->>DB: Check ownership and load booking detail
         end
 
@@ -39,7 +39,7 @@ sequenceDiagram
 
             opt Khách hàng thực hiện hành động
                 C->>Web: Chọn xem thanh toán hoặc tiếp tục quy trình liên quan
-                Web->>API: POST /api/v1/my-bookings/{id}/actions<br/>(action)
+                Web->>API: POST /api/my-bookings/{id}/actions<br/>(action)
                 API->>DB: Validate action by current status
                 alt A3 - Hành động không hợp lệ theo trạng thái
                     DB-->>API: Invalid transition/action

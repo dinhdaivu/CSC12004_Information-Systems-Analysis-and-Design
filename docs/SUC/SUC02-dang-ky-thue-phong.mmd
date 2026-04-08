@@ -9,13 +9,13 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over C, DB: Hiển thị và tra cứu phòng/giường
         C->>Web: Chọn Đăng ký thuê phòng
-        Web->>API: GET /api/v1/rooms<br/>(branch, price, capacity, status=available)
+        Web->>API: GET /api/rooms<br/>(branch, price, capacity, status=available)
         API->>DB: Search available rooms/beds
         DB-->>API: Danh sách phòng/giường phù hợp
         API-->>Web: Room/bed list
         Web-->>C: Hiển thị danh sách phòng
         C->>Web: Nhập tiêu chí tra cứu
-        Web->>API: GET /api/v1/rooms<br/>(filters)
+        Web->>API: GET /api/rooms<br/>(filters)
         API->>DB: Filter rooms/beds by criteria
         DB-->>API: Kết quả tra cứu
         API-->>Web: Filtered room/bed list
@@ -26,7 +26,7 @@ sequenceDiagram
             Note over C, DB: Tạo yêu cầu thuê phòng
             Web-->>C: Hiển thị kết quả và chi tiết phòng
             C->>Web: Chọn phòng/giường và nhập thông tin thuê
-            Web->>API: POST /api/v1/rental-requests<br/>(roomId, bedId, rentalInfo)
+            Web->>API: POST /api/rental-requests<br/>(roomId, bedId, rentalInfo)
             API->>DB: Insert rental_request
             DB-->>API: Rental request created
             API-->>Web: Created rental request

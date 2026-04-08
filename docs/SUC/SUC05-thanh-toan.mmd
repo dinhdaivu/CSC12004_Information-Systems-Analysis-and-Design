@@ -11,7 +11,7 @@ sequenceDiagram
         Note over C, DB: Khởi tạo giao dịch thanh toán
         Web-->>C: Hiển thị thông tin thanh toán
         C->>Web: Chọn phương thức thanh toán
-        Web->>API: POST /api/v1/transactions<br/>(targetId, type, amount, method=vietqr)
+        Web->>API: POST /api/transactions<br/>(targetId, type, amount, method=vietqr)
         API->>DB: Create transaction(status=pending)
         DB-->>API: Transaction id
         API->>VietQR: Create VietQR transaction request

@@ -10,11 +10,11 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over S, DB: Mở yêu cầu thuê cần sắp lịch
         S->>Web: Mở yêu cầu thuê cần sắp lịch
-        Web->>API: GET /api/v1/rental-requests/{id}
+        Web->>API: GET /api/rental-requests/{id}
         API->>DB: Get customer, request, selected room/bed
         DB-->>API: Rental request detail
         API-->>Web: Rental request detail
-        Web->>API: GET /api/v1/rooms<br/>(available=true, requestFilters)
+        Web->>API: GET /api/rooms<br/>(available=true, requestFilters)
         API->>DB: Search available rooms/beds and time slots
         DB-->>API: Room/bed candidates + available slots
         API-->>Web: Candidate room/bed and slot data
@@ -29,7 +29,7 @@ sequenceDiagram
             S-->>C: Trao đổi thời gian xem phòng phù hợp
             C-->>S: Xác nhận thời gian xem phòng
             S->>Web: Chọn thời gian xem phòng
-            Web->>API: POST /api/v1/viewing-appointments<br/>(rentalRequestId, roomId, bedId, scheduledAt)
+            Web->>API: POST /api/viewing-appointments<br/>(rentalRequestId, roomId, bedId, scheduledAt)
             API->>DB: Insert viewing_appointment
             DB-->>API: Viewing appointment created
             API-->>Web: Schedule info
@@ -38,7 +38,7 @@ sequenceDiagram
 
         opt A2 - Khách hàng hủy lịch hẹn
             C->>Web: Hủy lịch hẹn
-            Web->>API: PATCH /api/v1/viewing-appointments/{id}/cancel
+            Web->>API: PATCH /api/viewing-appointments/{id}/cancel
             API->>DB: Update appointment status=cancelled
             DB-->>API: Appointment cancelled
             API-->>Web: Cancel success

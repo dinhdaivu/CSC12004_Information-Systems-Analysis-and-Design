@@ -9,7 +9,7 @@ sequenceDiagram
     rect rgb(240, 248, 255)
         Note over A, DB: Danh sách giao dịch thanh toán
         A->>Web: Mở màn hình quản lý thanh toán
-        Web->>API: GET /api/v1/transactions<br/>(status, type, dateRange, page)
+        Web->>API: GET /api/transactions<br/>(status, type, dateRange, page)
         API->>DB: Query transactions with filters
         DB-->>API: Transaction list + count
         API-->>Web: Transaction list + count
@@ -19,13 +19,13 @@ sequenceDiagram
     rect rgb(255, 250, 240)
         Note over A, DB: Kiểm tra và đối chiếu giao dịch
         A->>Web: Chọn giao dịch cần kiểm tra
-        Web->>API: GET /api/v1/transactions/{id}
+        Web->>API: GET /api/transactions/{id}
         API->>DB: Get transaction detail and related records
         DB-->>API: Transaction detail
         API-->>Web: Transaction detail
         Web-->>A: Hiển thị chi tiết giao dịch
         A->>Web: Xác nhận giao dịch
-        Web->>API: PATCH /api/v1/transactions/{id}/confirm
+        Web->>API: PATCH /api/transactions/{id}/confirm
         API->>DB: Reconcile transaction data
     end
 
