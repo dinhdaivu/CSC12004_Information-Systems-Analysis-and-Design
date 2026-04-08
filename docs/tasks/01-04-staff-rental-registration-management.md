@@ -53,6 +53,8 @@ Staff rental registration flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Add `/admin/rental-requests` route or extend admin dashboard.
 - [ ] Add request list and request detail views.
 - [ ] Add room/bed matching action.

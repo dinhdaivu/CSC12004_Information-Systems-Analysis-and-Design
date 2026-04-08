@@ -54,6 +54,7 @@ These use cases were added to `report/content/2_System Analyze.tex` as implement
 |------|------|
 | Database schema, status fields, RLS policies | [00-02 Database Schema and RLS Foundation](./00-02-database-schema-and-rls.md) |
 | Shared public/admin layout, navigation, role-aware route shell | [00-03 App Shell Layout and Navigation](./00-03-app-shell-layout-and-navigation.md) |
+| English/Vietnamese frontend localization | [00-05 Frontend i18n and Vietnamese Localization](./00-05-frontend-i18n-localization.md) |
 
 ## Business Flow Coverage
 
@@ -63,3 +64,4 @@ These use cases were added to `report/content/2_System Analyze.tex` as implement
 | UC2 - Deposit and rental confirmation | 02-01, 02-02, 03-03 |
 | UC3 - Check-in, contract, handover | 04-01, 04-02 |
 | UC4 - Checkout and deposit refund | 05-01, 05-02 |
+| Supporting account/admin/status/i18n flows | 00-04, 00-05, 01-06, 03-04, 03-05 |

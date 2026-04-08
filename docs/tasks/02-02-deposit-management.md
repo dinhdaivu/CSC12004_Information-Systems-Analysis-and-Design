@@ -54,6 +54,8 @@ Deposit management flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Add deposit request state into booking/registration UI.
 - [ ] Add deposit amount display and payment deadline.
 - [ ] Add staff/accountant actions for confirm/cancel.

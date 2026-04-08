@@ -9,6 +9,7 @@ This folder breaks down the CSC12004 HomeStay Dorm requirements, report use case
 | 00-02 | [Database Schema and RLS Foundation](./00-02-database-schema-and-rls.md) | Core entities, status enums, Supabase policies |
 | 00-03 | [App Shell Layout and Navigation](./00-03-app-shell-layout-and-navigation.md) | Shared navigation, layouts, role-aware shell |
 | 00-04 | [Customer Registration](./00-04-customer-registration.md) | Derived SUC18; customer account creation |
+| 00-05 | [Frontend i18n and Vietnamese Localization](./00-05-frontend-i18n-localization.md) | English/Vietnamese translation coverage for frontend screens |
 | 01-01 | [Customer Homepage / Branch Discovery](./01-01-customer-homepage-branch-discovery.md) | SUC13; Figma homepage branch variants |
 | 01-02 | [Branch Room Detail Pages](./01-02-branch-room-detail-pages.md) | SUC13; Figma detail screens |
 | 01-03 | [Customer Rental Request](./01-03-customer-rental-request.md) | SUC2 |
@@ -38,3 +39,7 @@ This folder breaks down the CSC12004 HomeStay Dorm requirements, report use case
 - [Architecture layers](../architecture/layers.md)
 - [Database design](../architecture/database.md)
 - [State machine](../architecture/state-machine.md)
+
+## Global Frontend Rule
+
+Every frontend task that adds or changes user-facing copy must use the existing `ngx-translate` i18n setup and update both `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`. Backend enum/status values should stay stable and be mapped to localized labels in the UI.

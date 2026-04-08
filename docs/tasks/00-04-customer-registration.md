@@ -52,6 +52,8 @@ Customer registration flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Replace `RegisterComponent` placeholder with real registration form.
 - [ ] Add validation for name, email, phone, password, and confirmation.
 - [ ] Wire submit to `AuthService.register()`.

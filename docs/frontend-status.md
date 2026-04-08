@@ -40,3 +40,4 @@
 
 - Frontend feature components currently render placeholder text such as `Dashboard component works!`, `Room detail component works!`, and similar scaffold messages.
 - Backend code currently exposes `/api/health`; the richer API endpoints are documented as planned in `docs/architecture/api-endpoints.md`, but are not wired into frontend feature screens yet.
+- The app already has English/Vietnamese i18n support through `@ngx-translate/core`, `LanguageService`, `LanguageSwitcherComponent`, and `frontend/src/assets/i18n/{en,vi}.json`; every implemented screen should use translation keys instead of hard-coded user-facing copy.

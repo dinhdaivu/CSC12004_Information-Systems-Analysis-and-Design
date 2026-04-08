@@ -52,6 +52,8 @@ Customer checkout request flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Add checkout request route/component.
 - [ ] Display active contract and room/bed information.
 - [ ] Add checkout date and notes form.

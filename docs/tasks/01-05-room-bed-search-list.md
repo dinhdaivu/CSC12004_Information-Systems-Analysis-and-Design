@@ -37,6 +37,8 @@ Implement the `/rooms` list/search screen for SUC13. This route is distinct from
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Replace `RoomsListComponent` placeholder.
 - [ ] Render room/bed cards or table.
 - [ ] Add filters for branch, availability, room type, capacity, and price.

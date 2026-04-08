@@ -54,6 +54,8 @@ Deposit tracking flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Replace `TransactionsComponent` placeholder.
 - [ ] Render deposit tracking dashboard title and summary.
 - [ ] Add filters for status/date/branch/customer.

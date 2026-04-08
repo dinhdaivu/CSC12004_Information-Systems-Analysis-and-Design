@@ -54,6 +54,8 @@ Customer rental request flow:
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Replace `NewBookingComponent` placeholder with rental request form.
 - [ ] Pre-fill selected room/branch when arriving from detail page.
 - [ ] Capture expected move-in date, rental duration, number of tenants, gender/room preferences, budget, and notes.

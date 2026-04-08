@@ -24,6 +24,7 @@ Create the shared frontend shell used by customer and admin screens: logo, langu
 | [Frontend Status](../frontend-status.md) | All Figma route mappings |
 | `report/diagrams/system_usecase_diagram.mmd` | Actor-specific access |
 | [Software Layers](../architecture/layers.md) | Presentation layer |
+| [Frontend i18n](./00-05-frontend-i18n-localization.md) | English/Vietnamese language support |
 
 ---
 
@@ -31,10 +32,13 @@ Create the shared frontend shell used by customer and admin screens: logo, langu
 
 ### Frontend (Angular)
 
+- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+
 - [ ] Create shared public layout for customer screens.
 - [ ] Create shared admin layout with sidebar navigation.
 - [ ] Add route metadata for customer/staff/accountant/manager/admin access.
 - [ ] Wire language switcher into the Figma-style navigation.
+- [ ] Keep the existing `LanguageService` and `LanguageSwitcherComponent` behavior for English/Vietnamese switching.
 - [ ] Add profile menu placeholder or real profile/logout actions.
 - [ ] Ensure child pages do not duplicate the same shell markup.
 
@@ -61,6 +65,7 @@ Implement `docs/tasks/00-03-app-shell-layout-and-navigation.md`.
 ## Implementation
 - Create shared public and admin layout components.
 - Add route metadata/guards for roles.
+- Preserve the existing `ngx-translate` language switcher and keep navigation labels localized in both English and Vietnamese.
 - Keep layout reusable across dashboard, rooms, bookings, admin rooms, schedules, deposits, contracts, and checkout screens.
 - If profile data is not ready, create a typed stub with `// TODO: Implemented in task 00-03`.
 
@@ -80,4 +85,3 @@ Implement `docs/tasks/00-03-app-shell-layout-and-navigation.md`.
 - [ ] Role-based links are represented.
 - [ ] Language switcher remains usable.
 - [ ] Tests pass for changed code.
-
