@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project Documentation
+    url: https://github.com/dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design/blob/main/docs/README.md
+    about: Check docs, task specs, API endpoints, and database notes before opening an issue.
+  - name: Supabase Setup Guide
+    url: https://github.com/dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design/blob/main/supabase/README.md
+    about: Check database setup, migrations, and seed instructions.

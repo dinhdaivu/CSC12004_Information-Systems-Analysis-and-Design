@@ -1,28 +1,82 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: '[Bug] '
+about: Report a reproducible bug in frontend, backend, database, docs, or workflow
+title: "[Bug] "
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
-### Describe the Bug
-<!-- Describe the bug encountered concisely. -->
+## Summary
 
-### Steps to reproduce
-<!-- Describe how one can reproduce the issue - this is very important. Please use an ordered list. -->
+<!-- Briefly describe the bug in 1-3 sentences. -->
 
-### The current *bug* behavior?
-<!-- Describe what actually happens. -->
+## Affected Area
 
-### The expected behavior?
-<!-- Describe what you should see instead. -->
+<!-- Mark all that apply. -->
 
-### OS, Browser
+- [ ] Frontend (`frontend/`)
+- [ ] Backend (`backend/`)
+- [ ] Database / Supabase (`supabase/`, `scripts/`)
+- [ ] Documentation (`docs/`)
+- [ ] CI/CD / GitHub Actions (`.github/workflows/`)
 
-### Relevant logs and/or screenshots
-<!-- Paste any relevant logs - please use code blocks (```) to format console output, 
-logs, and code as it's tough to read otherwise. -->
+## Related References
 
-### Possible fixes
-<!-- If you can, link to the line of code that might be responsible for the problem. -->
+<!-- Add links or paths if known. -->
+
+- Task doc: `docs/tasks/...`
+- Use case / SUC: `docs/UC/...` or `docs/SUC/...`
+- API doc: `docs/architecture/api-endpoints.md`
+- Database doc: `docs/architecture/database.md`
+
+## Environment
+
+- Branch:
+- Commit / PR:
+- OS:
+- Browser:
+- Node.js:
+- npm:
+- Supabase setup: local / linked cloud / not applicable
+
+## Steps To Reproduce
+
+1.
+2.
+3.
+
+## Actual Behavior
+
+<!-- What happened? -->
+
+## Expected Behavior
+
+<!-- What should have happened? -->
+
+## Impact
+
+<!-- Why does this matter? -->
+
+- Severity: low / medium / high
+- Affected users/roles:
+- Blocks development or release: yes / no
+
+## Evidence
+
+<!-- Paste logs, stack traces, screenshots, screen recordings, or SQL errors. -->
+
+```text
+Paste logs here
+```
+
+## Suspected Cause
+
+<!-- Optional: note files, routes, queries, or workflows that may be involved. -->
+
+## Acceptance Criteria
+
+- [ ] Root cause is identified
+- [ ] Bug is reproducible locally or clearly evidenced
+- [ ] Fix does not break related flows
+- [ ] Relevant docs are updated if behavior or API changes
+- [ ] Relevant tests are added or updated
