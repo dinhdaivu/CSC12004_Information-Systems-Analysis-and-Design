@@ -8,6 +8,16 @@
 
 ---
 
+## Auth Screens
+
+| # | Screen | Angular Route | Backend Task | UI | API | Notes |
+|---|--------|---------------|--------------|----|----|-------|
+| 1 | Login | `/auth/login` | SUC1 | ✅ | ✅ | Login form now calls `/api/auth/login`, stores session, and redirects by role |
+| 2 | Forgot password | `/auth/forgot-password` | SUC1 alt flow | ✅ | ✅ | Reset form now calls `/api/auth/forgot-password` |
+| 3 | Register | `/auth/register` | Derived SUC18 / task 00-04 | 🚧 | 🔲 | Route remains available, but full customer registration is tracked in task 00-04 |
+
+---
+
 ## Customer / Resident Screens
 
 | # | Figma Screen | Figma Link | Angular Route | Backend Task | UI | API | Notes |

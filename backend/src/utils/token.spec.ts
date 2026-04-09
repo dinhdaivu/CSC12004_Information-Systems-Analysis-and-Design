@@ -1,4 +1,5 @@
 import { TokenUtils } from '@utils/token';
+import type { AuthTokenPayload } from '@utils/token';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
@@ -9,7 +10,7 @@ describe('TokenUtils', () => {
   const mockPassword = 'password123';
   const mockHash = '$2b$10$hashedpassword';
   const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
-  const mockPayload = { id: '1', email: 'test@example.com', role: 'user' };
+  const mockPayload: AuthTokenPayload = { id: '1', email: 'test@example.com', role: 'customer' };
 
   beforeEach(() => {
     jest.clearAllMocks();

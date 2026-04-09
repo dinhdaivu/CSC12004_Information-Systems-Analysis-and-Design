@@ -6,7 +6,7 @@ export interface ApiResponse<T> {
   error?: {
     code: string;
     message: string;
-    details?: any[];
+    details?: unknown[];
   };
 }
 
@@ -36,7 +36,7 @@ export class ApiResponseBuilder {
     };
   }
 
-  static error(code: string, message: string, details?: any[]): ApiResponse<any> {
+  static error(code: string, message: string, details?: unknown[]): ApiResponse<never> {
     return {
       success: false,
       error: {

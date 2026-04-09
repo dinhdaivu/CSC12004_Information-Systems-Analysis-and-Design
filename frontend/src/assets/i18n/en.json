@@ -7,5 +7,41 @@
     "LANGUAGE": "Language",
     "ENGLISH": "English",
     "VIETNAMESE": "Vietnamese"
+  },
+  "AUTH": {
+    "FIELDS": {
+      "EMAIL": "Email",
+      "EMAIL_PLACEHOLDER": "Enter your email",
+      "PASSWORD": "Password",
+      "PASSWORD_PLACEHOLDER": "Enter your password"
+    },
+    "VALIDATION": {
+      "EMAIL": "Please enter a valid email address.",
+      "PASSWORD": "Password must be at least 6 characters."
+    },
+    "LOGIN": {
+      "TITLE": "Sign in",
+      "SUBTITLE": "Access your HomeStay Dorm account.",
+      "SUBMIT": "Sign in",
+      "SUBMITTING": "Signing in...",
+      "FORGOT_PASSWORD": "Forgot password?",
+      "REGISTER": "Create account",
+      "ERROR": "Unable to sign in. Please try again."
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Reset password",
+      "SUBTITLE": "Enter your email and we will send a password reset link.",
+      "SUBMIT": "Send reset link",
+      "SUBMITTING": "Sending...",
+      "BACK_TO_LOGIN": "Back to sign in",
+      "SUCCESS": "Password reset email sent successfully.",
+      "ERROR": "Unable to request a password reset."
+    },
+    "REGISTER": {
+      "TITLE": "Create account",
+      "SUBTITLE": "Customer registration is tracked separately from the sign-in task.",
+      "INFO": "Registration will be available in the dedicated customer registration implementation.",
+      "LOGIN_ACTION": "Back to sign in"
+    }
   }
 }

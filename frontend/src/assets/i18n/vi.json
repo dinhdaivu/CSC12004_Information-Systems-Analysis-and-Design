@@ -7,5 +7,41 @@
     "LANGUAGE": "Ngôn ngữ",
     "ENGLISH": "Tiếng Anh",
     "VIETNAMESE": "Tiếng Việt"
+  },
+  "AUTH": {
+    "FIELDS": {
+      "EMAIL": "Email",
+      "EMAIL_PLACEHOLDER": "Nhập email của bạn",
+      "PASSWORD": "Mật khẩu",
+      "PASSWORD_PLACEHOLDER": "Nhập mật khẩu của bạn"
+    },
+    "VALIDATION": {
+      "EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "PASSWORD": "Mật khẩu phải có ít nhất 6 ký tự."
+    },
+    "LOGIN": {
+      "TITLE": "Đăng nhập",
+      "SUBTITLE": "Truy cập tài khoản HomeStay Dorm của bạn.",
+      "SUBMIT": "Đăng nhập",
+      "SUBMITTING": "Đang đăng nhập...",
+      "FORGOT_PASSWORD": "Quên mật khẩu?",
+      "REGISTER": "Tạo tài khoản",
+      "ERROR": "Không thể đăng nhập. Vui lòng thử lại."
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Đặt lại mật khẩu",
+      "SUBTITLE": "Nhập email để nhận liên kết đặt lại mật khẩu.",
+      "SUBMIT": "Gửi liên kết đặt lại",
+      "SUBMITTING": "Đang gửi...",
+      "BACK_TO_LOGIN": "Quay lại đăng nhập",
+      "SUCCESS": "Đã gửi email đặt lại mật khẩu thành công.",
+      "ERROR": "Không thể yêu cầu đặt lại mật khẩu."
+    },
+    "REGISTER": {
+      "TITLE": "Tạo tài khoản",
+      "SUBTITLE": "Đăng ký khách hàng được triển khai trong task riêng.",
+      "INFO": "Tính năng đăng ký sẽ được hoàn thiện trong task đăng ký khách hàng riêng.",
+      "LOGIN_ACTION": "Quay lại đăng nhập"
+    }
   }
 }

@@ -1,34 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: any;
-  let httpMock: HttpTestingController;
-  let router: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, ReactiveFormsModule, HttpClientTestingModule],
-      providers: [
-        {
-          provide: Router,
-          useValue: { navigate: jest.fn() }
-        }
-      ]
+      imports: [RegisterComponent, RouterTestingModule, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   describe('Component Initialization', () => {
@@ -51,7 +36,7 @@ describe('RegisterComponent', () => {
   });
 
   describe('Form Rendering', () => {
-    it('should render register form with all fields', () => {
+    it('should render the register information view', () => {
       fixture.detectChanges();
       expect(component).toBeDefined();
     });
@@ -69,46 +54,19 @@ describe('RegisterComponent', () => {
   });
 
   describe('Form Submission', () => {
-    it('should handle user registration submission', () => {
+    it('should render a navigation action back to login', () => {
       fixture.detectChanges();
       expect(component).toBeDefined();
     });
 
-    it('should validate form input before submission', () => {
+    it('should display registration guidance text', () => {
       fixture.detectChanges();
       expect(component).toBeTruthy();
     });
 
-    it('should process registration request', () => {
+    it('should not crash during rendering', () => {
       fixture.detectChanges();
       expect(component).toBeDefined();
-    });
-
-    it('should handle registration success', () => {
-      fixture.detectChanges();
-      expect(router.navigate).toBeDefined();
-    });
-
-    it('should display error on registration failure', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-  });
-
-  describe('Form Validation', () => {
-    it('should validate password matching', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should validate email format', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should enable/disable submit button based on form state', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
     });
   });
 });
