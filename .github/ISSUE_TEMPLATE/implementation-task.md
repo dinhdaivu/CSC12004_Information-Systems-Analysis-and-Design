@@ -1,6 +1,6 @@
 ---
 name: Implementation task
-about: Track implementation of a specific task doc in docs/tasks
+about: Create an issue for implementing a task in docs/tasks
 title: "[Task] "
 labels: task
 assignees: ""
@@ -9,65 +9,58 @@ assignees: ""
 ## Task Reference
 
 - Task doc: `docs/tasks/...`
-- Issue / report section:
 - Related SUC / UC:
+- Related issue / PR:
+
+---
 
 ## Overview
 
-<!-- Summarize what needs to be implemented. -->
+<!-- Summarize the task in 2-5 sentences. -->
 
-## Scope Checklist
+## References
+
+- `docs/tasks/...`
+- `docs/architecture/api-endpoints.md`
+- `docs/architecture/database.md`
+- `docs/SUC/...`
+- Other:
+
+---
+
+## Scope
 
 ### Frontend
 
-- [ ] Route / page / component
-- [ ] Services / models
-- [ ] i18n strings
-- [ ] Form validation / UI states
+- [ ] Add or update UI as needed
+- [ ] Add or update models/services as needed
+- [ ] Add or update i18n strings as needed
 
 ### Backend
 
-- [ ] Route / controller
-- [ ] Service / business logic
-- [ ] Auth / role guard
-- [ ] Response / error handling
+- [ ] Add or update API/controller/service as needed
+- [ ] Add or update auth/role checks as needed
 
 ### Database / Supabase
 
-- [ ] Migration needed
-- [ ] RLS / policy updates
-- [ ] Seed data needed
-- [ ] Storage / auth config needed
+- [ ] Add or update migration/RLS/seed as needed
 
 ### Documentation
 
-- [ ] API docs
-- [ ] Database docs
-- [ ] SUC / sequence diagrams
-- [ ] Task doc completion notes
+- [ ] Keep related docs in sync if behavior or structure changes
 
-### Testing
+### Tests
 
-- [ ] Frontend tests
-- [ ] Backend tests
-- [ ] Manual verification
+- [ ] Add or update relevant frontend/backend tests
 
-## Source Of Truth Check
+---
 
-<!-- Confirm the implementation agrees with these docs. -->
+## Implementation Notes
 
-- [ ] `docs/architecture/api-endpoints.md`
-- [ ] `docs/architecture/database.md`
-- [ ] Relevant `docs/tasks/...`
-- [ ] Relevant `docs/SUC/...`
+<!-- Optional notes, assumptions, or constraints. -->
 
-## Acceptance Criteria
+## Completion Conditions
 
-- [ ] Main flow works end to end
-- [ ] Related role/permission behavior works
-- [ ] Relevant docs stay in sync
-- [ ] Tests or verification evidence are included
-
-## Notes
-
-<!-- Extra implementation notes, assumptions, or open questions. -->
+- [ ] Main flow works as described in the task doc
+- [ ] Related docs remain consistent
+- [ ] Tests or verification are included
