@@ -27,6 +27,7 @@ app.get('/api/health', (req, res) => {
 // TODO: Add routes here
 app.use('/api/branches', branchRoutes);
 // Error handling middleware
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
   res.status(err.status || 500).json({

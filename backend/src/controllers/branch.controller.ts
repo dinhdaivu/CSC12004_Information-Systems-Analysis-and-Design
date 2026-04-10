@@ -11,6 +11,7 @@ export const getBranches = async (req: Request, res: Response) => {
     if (error) throw error;
 
     // Map dữ liệu từ Database (snake_case) sang Frontend Model (camelCase)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mappedBranches = branches.map((b: any) => ({
       id: b.id,
       name: b.name,
@@ -22,8 +23,9 @@ export const getBranches = async (req: Request, res: Response) => {
     }));
 
     res.status(200).json(mappedBranches);
-  } catch (error: any) {
-    console.error('Lỗi khi lấy branches từ Supabase:', error);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Lỗi khi lấy dữ liệu:', err.message);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -62,8 +64,9 @@ export const getBranchById = async (req: Request, res: Response) => {
     };
 
     res.status(200).json(mappedBranch);
-  } catch (error: any) {
-    console.error(`Lỗi khi lấy branch ${req.params.id}:`, error);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Lỗi khi lấy dữ liệu:', err.message);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-};
+}
