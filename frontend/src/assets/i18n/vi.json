@@ -7,5 +7,13 @@
     "LANGUAGE": "Ngôn ngữ",
     "ENGLISH": "Tiếng Anh",
     "VIETNAMESE": "Tiếng Việt"
+  },
+  "DASHBOARD": {
+    "TITLE": "Khám phá các chi nhánh HomeStay Dorm",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm theo tên chi nhánh hoặc địa chỉ...",
+    "VIEW_MORE": "Xem chi tiết",
+    "ROOMS_AVAILABLE": "phòng trống",
+    "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với tìm kiếm của bạn.",
+    "CONTACT_US": "Liên hệ ngay"
   }
 }

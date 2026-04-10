@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import branchRoutes from './routes/branch.routes';
 
 dotenv.config();
 
@@ -24,9 +25,9 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 // TODO: Add routes here
-
+app.use('/api/branches', branchRoutes);
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
@@ -48,5 +49,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.warn(`Server is running on http://localhost:${PORT}`);
   });
 }
+
+
 
 export default app;
