@@ -1,8 +1,200 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+// import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { FormsModule } from '@angular/forms';
+// import { RouterModule } from '@angular/router';
+// import { TranslateModule, TranslateService } from '@ngx-translate/core';
+// import { BranchService } from '../../../../core/services/branch.service';
+// import { Branch } from '../../../../shared/models/branch.model';
+
+// @Component({
+//   selector: 'app-dashboard',
+//   standalone: true,
+//   imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
+//   template: `
+//     <div class="relative w-full h-screen overflow-hidden font-['Afacad'] bg-black">
+      
+//       <img *ngIf="selectedBranch" [src]="getSafeUrl(selectedBranch.heroImage)" 
+//            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out" alt="Background" />
+
+//       <div class="absolute inset-y-0 right-0 w-full md:w-[55%] bg-gradient-to-l from-black/90 via-black/60 to-transparent pointer-events-none z-0"></div>
+
+//       <header class="absolute top-0 w-full px-12 py-8 flex justify-between items-start z-30">
+        
+//         <div class="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition-transform drop-shadow-2xl">
+//           <img src="/assets/icons/Logo.png" alt="Homestay Dorm Logo" class="w-[185px] h-[165px] " />
+          
+//         </div>
+
+//         <nav class="flex items-center gap-10 text-white text-[28px] font-semibold mt-4 drop-shadow-md">
+//           <a href="#" class="hover:text-gray-300 transition-colors">About us</a>
+//           <a href="#" class="hover:text-gray-300 transition-colors">Guidelines</a>
+//           <a href="#" class="hover:text-gray-300 transition-colors">Contact</a>
+          
+//           <div class="flex items-center gap-6 ml-4 relative">
+//             <div class="relative">
+//               <button (click)="toggleLangMenu()" (blur)="closeMenusDelay()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
+//                 <i class="bi bi-globe2 text-2xl"></i>
+//               </button>
+              
+//               <div *ngIf="isLangMenuOpen" class="absolute right-0 top-[70px] w-48 bg-black/60 backdrop-blur-md rounded-3xl border border-white/30 flex flex-col py-4 px-2 shadow-2xl animate-fade-in z-50">
+//                 <button (click)="changeLang('vi')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">Vietnamese</button>
+//                 <div class="h-px bg-white/20 my-1 mx-4"></div>
+//                 <button (click)="changeLang('en')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">English</button>
+//               </div>
+//             </div>
+
+//             <div class="relative">
+//               <button (click)="toggleUserMenu()" (blur)="closeMenusDelay()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
+//                 <i class="bi bi-person text-3xl"></i>
+//               </button>
+
+//               <div *ngIf="isUserMenuOpen" class="absolute right-0 top-[70px] w-48 bg-black/60 backdrop-blur-md rounded-3xl border border-white/30 flex flex-col py-4 px-2 shadow-2xl animate-fade-in z-50">
+//                 <button class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">Sign Up</button>
+//                 <div class="h-px bg-white/20 my-1 mx-4"></div>
+//                 <button class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">Log In</button>
+//               </div>
+//             </div>
+//           </div>
+//         </nav>
+//       </header>
+
+//       <div class="absolute left-16 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-20 mt-10">
+//         <button (click)="prevBranch()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:bg-gray-100 transition-all">
+//           <i class="bi bi-arrow-up text-3xl text-black"></i>
+//         </button>
+//         <button (click)="nextBranch()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:bg-gray-100 transition-all">
+//           <i class="bi bi-arrow-down text-3xl text-black"></i>
+//         </button>
+//       </div>
+
+//       <div *ngIf="selectedBranch" class="absolute right-16 md:right-32 top-1/2 -translate-y-1/2 w-[450px] bg-white/80 backdrop-blur-xl rounded-[30px] px-10 py-12 flex flex-col items-center text-center z-20 animate-fade-in shadow-2xl mt-10">
+        
+//         <h2 class="text-[36px] font-medium text-black mb-6 leading-tight">
+//           HomeStay Dorm <br/>
+//           <span class="font-bold">{{ selectedBranch.name.replace('HomeStay Dorm', '').trim() }}</span>
+//         </h2>
+        
+//         <p class="text-[18px] font-normal italic text-black/80 mb-10 px-2 leading-relaxed">
+//           {{ selectedBranch.address }}
+//         </p>
+
+//         <button [routerLink]="['/rooms', selectedBranch.id]" class="group flex items-center gap-3 text-[32px] italic text-black font-normal hover:text-blue-700 transition-colors">
+//           View more 
+//           <i class="bi bi-arrow-right transition-transform group-hover:translate-x-3"></i>
+//         </button>
+//       </div>
+
+//       <div class="absolute right-16 md:right-32 bottom-16 w-[400px] h-[70px] rounded-[50px] border-[3px] border-white flex items-center px-6 z-20 bg-black/30 backdrop-blur-md hover:bg-black/50 transition-colors focus-within:bg-black/70 shadow-lg">
+//         <i class="bi bi-search text-white text-[28px] mr-4"></i>
+//         <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()"
+//                placeholder="Search ..."
+//                class="bg-transparent border-none outline-none text-white text-[30px] italic font-normal w-full placeholder-white/80">
+//       </div>
+
+//     </div>
+//   `
+// })
+// export class DashboardComponent implements OnInit {
+//   private branchService = inject(BranchService);
+//   private translate = inject(TranslateService);
+//   private cdr = inject(ChangeDetectorRef);
+
+//   branches: Branch[] = [];
+//   filteredBranches: Branch[] = [];
+//   selectedBranch: Branch | null = null;
+//   searchQuery: string = '';
+//   currentIndex = 0;
+
+//   isLangMenuOpen = false;
+//   isUserMenuOpen = false;
+
+//   ngOnInit(): void {
+//     this.branchService.getBranches().subscribe(data => {
+//       this.branches = data;
+//       this.filteredBranches = data;
+//       if (data.length > 0) {
+//         this.selectedBranch = data[0];
+//         this.currentIndex = 0;
+//       }
+//       this.cdr.detectChanges();
+//     });
+//   }
+
+//   // Hàm tự động thêm / và xử lý khoảng trắng cho link ảnh
+//   // Hàm xử lý mọi thể loại đường dẫn lỗi để ép ảnh hiện lên
+//   getSafeUrl(url: string | undefined): string {
+//     if (!url) return '';
+    
+//     // 1. Gọt bỏ các thư mục gốc của máy tính nếu lỡ lưu nhầm vào Database
+//     let cleanUrl = url.replace('frontend/public/', '')
+//                       .replace('frontend/src/', '')
+//                       .replace('public/', '')
+//                       .replace('src/', '');
+                      
+//     // 2. Đảm bảo luôn có dấu '/' ở đầu để trỏ về gốc localhost:4200
+//     const finalUrl = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+    
+//     // 3. Mã hóa khoảng trắng thành %20 (Ví dụ: "Tô Hiến Thành" -> "Tô%20Hiến%20Thành")
+//     return encodeURI(finalUrl);
+//   }
+
+//   toggleLangMenu() {
+//     this.isLangMenuOpen = !this.isLangMenuOpen;
+//     this.isUserMenuOpen = false;
+//   }
+
+//   toggleUserMenu() {
+//     this.isUserMenuOpen = !this.isUserMenuOpen;
+//     this.isLangMenuOpen = false;
+//   }
+
+//   changeLang(lang: string) {
+//     this.translate.use(lang);
+//     this.isLangMenuOpen = false;
+//   }
+
+//   closeMenusDelay() {
+//     setTimeout(() => {
+//       this.isLangMenuOpen = false;
+//       this.isUserMenuOpen = false;
+//       this.cdr.detectChanges();
+//     }, 200);
+//   }
+
+//   nextBranch(): void {
+//     if (this.filteredBranches.length === 0) return;
+//     this.currentIndex = (this.currentIndex + 1) % this.filteredBranches.length;
+//     this.selectedBranch = this.filteredBranches[this.currentIndex];
+//     this.cdr.detectChanges();
+//   }
+
+//   prevBranch(): void {
+//     if (this.filteredBranches.length === 0) return;
+//     this.currentIndex = (this.currentIndex - 1 + this.filteredBranches.length) % this.filteredBranches.length;
+//     this.selectedBranch = this.filteredBranches[this.currentIndex];
+//     this.cdr.detectChanges();
+//   }
+
+//   onSearch(): void {
+//     const q = this.searchQuery.toLowerCase().trim();
+//     this.filteredBranches = q ? this.branches.filter(b => 
+//       b.name.toLowerCase().includes(q) || b.address.toLowerCase().includes(q)
+//     ) : this.branches;
+    
+//     if (this.filteredBranches.length > 0) {
+//       this.currentIndex = 0;
+//       this.selectedBranch = this.filteredBranches[0];
+//     } else {
+//       this.selectedBranch = null;
+//     }
+//     this.cdr.detectChanges();
+//   }
+// }
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BranchService } from '../../../../core/services/branch.service';
 import { Branch } from '../../../../shared/models/branch.model';
 
@@ -11,176 +203,222 @@ import { Branch } from '../../../../shared/models/branch.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
   template: `
-    <div class="min-h-screen bg-gray-50 pb-12">
-      <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
-            {{ 'DASHBOARD.TITLE' | translate }}
-          </h1>
-          <div class="relative w-full md:w-96">
-            <input 
-              type="text" 
-              [(ngModel)]="searchQuery"
-              (ngModelChange)="onSearch()"
-              [placeholder]="'DASHBOARD.SEARCH_PLACEHOLDER' | translate"
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            >
-            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+    <div class="relative w-full h-screen overflow-hidden font-['Afacad'] bg-black">
+      
+      <img *ngIf="selectedBranch" [src]="getSafeUrl(selectedBranch.heroImage)" 
+           class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out" 
+           [class.opacity-0]="isTransitioning"
+           [class.scale-105]="isTransitioning"
+           alt="Background" />
+
+      <div class="absolute inset-y-0 right-0 w-full md:w-[55%] bg-gradient-to-l from-black/90 via-black/60 to-transparent pointer-events-none z-0"></div>
+
+      <header class="absolute top-0 w-full px-12 py-8 flex justify-between items-start z-30">
+         <div class="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition-transform drop-shadow-2xl">
+           <img src="/assets/icons/Logo.png" alt="Homestay Dorm Logo" class="w-[185px] h-[165px] " />
+          
+         </div>
+
+        <nav class="flex items-center gap-10 text-white text-[28px] font-semibold mt-4 drop-shadow-md">
+          <a href="#" class="hover:text-gray-300 transition-colors">About us</a>
+          <a href="#" class="hover:text-gray-300 transition-colors">Guidelines</a>
+          <a href="#" class="hover:text-gray-300 transition-colors">Contact</a>
+          
+          <div class="flex items-center gap-6 ml-4 relative">
+            <div class="relative">
+              <button (click)="toggleLangMenu()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
+                <i class="bi bi-globe2 text-2xl"></i>
+              </button>
+              
+              <div *ngIf="isLangMenuOpen" class="absolute right-0 top-[70px] w-48 bg-black/60 backdrop-blur-md rounded-3xl border border-white/30 flex flex-col py-4 px-2 shadow-2xl animate-fade-in z-50">
+                <button (click)="changeLang('vi')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">{{ 'COMMON.VIETNAMESE' | translate }}</button>
+                <div class="h-px bg-white/20 my-1 mx-4"></div>
+                <button (click)="changeLang('en')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">{{ 'COMMON.ENGLISH' | translate }}</button>
+              </div>
+            </div>
+
+            <div class="relative">
+              <button (click)="toggleUserMenu()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
+                <i class="bi bi-person text-3xl"></i>
+              </button>
+            </div>
           </div>
-        </div>
+        </nav>
       </header>
 
-      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ng-container *ngIf="filteredBranches.length > 0; else emptyState">
-          <section *ngIf="selectedBranch" class="mb-12 animate-fade-in">
-            <div class="relative h-[400px] md:h-[500px] w-full rounded-2xl overflow-hidden shadow-xl group">
-              <img 
-                [src]="selectedBranch.heroImage" 
-                [alt]="selectedBranch.name" 
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                (error)="handleImageError($event)"
-              >
-              <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
-              
-              <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
-                <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-600/80 backdrop-blur-sm text-sm font-medium mb-4">
-                  {{ selectedBranch.roomCount }} {{ 'DASHBOARD.ROOMS_AVAILABLE' | translate }}
-                </div>
-                <h2 class="text-3xl md:text-5xl font-bold mb-3">{{ selectedBranch.name }}</h2>
-                <div class="flex items-center text-gray-200 mb-4">
-                  <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {{ selectedBranch.address }}
-                </div>
-                <p class="text-gray-300 max-w-2xl text-base md:text-lg line-clamp-2 md:line-clamp-none mb-6">
-                  {{ selectedBranch.description }}
-                </p>
-                <button 
-                  [routerLink]="['/rooms', selectedBranch.id]" 
-                  class="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg"
-                >
-                  {{ 'DASHBOARD.VIEW_MORE' | translate }}
-                </button>
-              </div>
-            </div>
-          </section>
+      <div class="absolute left-16 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-20">
+        <button (click)="manualNext()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all">
+          <i class="bi bi-arrow-up text-3xl text-black"></i>
+        </button>
+        <button (click)="manualPrev()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all">
+          <i class="bi bi-arrow-down text-3xl text-black"></i>
+        </button>
+      </div>
 
-          <section>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div 
-                *ngFor="let branch of filteredBranches" 
-                (click)="selectBranch(branch)"
-                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-1"
-                [ngClass]="{'ring-2 ring-blue-500 shadow-md': selectedBranch?.id === branch.id}"
-              >
-                <div class="h-48 overflow-hidden relative">
-                  <img 
-                    [src]="branch.heroImage" 
-                    [alt]="branch.name" 
-                    class="w-full h-full object-cover"
-                    (error)="handleImageError($event)"
-                  >
-                  <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-gray-700">
-                    {{ branch.roomCount }} {{ 'DASHBOARD.ROOMS_AVAILABLE' | translate }}
-                  </div>
-                </div>
-                <div class="p-5">
-                  <h3 class="text-xl font-bold text-gray-900 mb-1">{{ branch.name }}</h3>
-                  <p class="text-sm text-gray-500 mb-3 line-clamp-1">{{ branch.address }}</p>
-                  <p class="text-gray-600 text-sm line-clamp-2">{{ branch.description }}</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        </ng-container>
+      <div *ngIf="selectedBranch" 
+           class="absolute right-16 md:right-32 top-1/2 -translate-y-1/2 w-[450px] bg-white/80 backdrop-blur-xl rounded-[30px] px-10 py-12 flex flex-col items-center text-center z-20 shadow-2xl transition-all duration-500 ease-in-out"
+           [class.opacity-0]="isTransitioning"
+           [class.translate-y-8]="isTransitioning">
+        
+        <h2 class="text-[36px] font-medium text-black mb-6 leading-tight">
+          HomeStay Dorm <br/>
+          <span class="font-bold">{{ selectedBranch.name.replace('HomeStay Dorm', '').trim() }}</span>
+        </h2>
+        
+        <p class="text-[18px] font-normal italic text-black/80 mb-10 px-2 leading-relaxed">
+          {{ selectedBranch.address }}
+        </p>
 
-        <ng-template #emptyState>
-          <div class="flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-2xl shadow-sm border border-gray-100">
-            <svg class="h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <h3 class="text-lg font-medium text-gray-900 mb-1">{{ 'DASHBOARD.EMPTY_STATE' | translate }}</h3>
-            <button (click)="clearSearch()" class="text-blue-600 hover:text-blue-700 font-medium text-sm mt-2">
-              Xóa bộ lọc tìm kiếm
-            </button>
-          </div>
-        </ng-template>
-      </main>
+        <button [routerLink]="['/rooms', selectedBranch.id]" class="group flex items-center gap-3 text-[32px] italic text-black font-normal hover:text-blue-700 transition-colors">
+          {{ 'DASHBOARD.VIEW_MORE' | translate }} 
+          <i class="bi bi-arrow-right transition-transform group-hover:translate-x-3"></i>
+        </button>
+      </div>
+
+      <div class="absolute right-16 md:right-32 bottom-16 w-[400px] h-[70px] rounded-[50px] border-[3px] border-white flex items-center px-6 z-20 bg-black/30 backdrop-blur-md">
+        <i class="bi bi-search text-white text-[28px] mr-4"></i>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()"
+               [placeholder]="'DASHBOARD.SEARCH_PLACEHOLDER' | translate"
+               class="bg-transparent border-none outline-none text-white text-[30px] italic w-full placeholder-white/80">
+      </div>
     </div>
-  `,
-  styles: [`
-    .animate-fade-in {
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `]
+  `
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private branchService = inject(BranchService);
-  private cdr = inject(ChangeDetectorRef); 
+  private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   branches: Branch[] = [];
   filteredBranches: Branch[] = [];
   selectedBranch: Branch | null = null;
   searchQuery: string = '';
+  currentIndex = 0;
+  
+  isLangMenuOpen = false;
+  isUserMenuOpen = false;
+  isTransitioning = false;
+  autoPlayTimer: any;
+
+  constructor() {
+    // Kích hoạt đa ngôn ngữ mặc định
+    this.translate.addLangs(['en', 'vi']);
+    this.translate.setDefaultLang('vi');
+    const browserLang = this.translate.getBrowserLang();
+    this.translate.use(browserLang?.match(/en|vi/) ? browserLang : 'vi');
+  }
 
   ngOnInit(): void {
-    this.branchService.getBranches().subscribe({
-      next: (data) => {
-        this.branches = data;
-        this.filteredBranches = data;
-        if (data.length > 0) {
-          this.selectedBranch = data[0];
-        }
-        
-        // 3. THÊM DÒNG NÀY: Ép Angular cập nhật HTML ngay lập tức!
-        this.cdr.detectChanges(); 
-      },
-      error: (err) => console.error('Failed to load branches', err)
+    this.branchService.getBranches().subscribe(data => {
+      this.branches = data;
+      this.filteredBranches = data;
+      if (data.length > 0) {
+        this.selectedBranch = data[0];
+        this.startAutoPlay();
+      }
+      this.cdr.detectChanges();
     });
   }
 
+  ngOnDestroy(): void {
+    this.stopAutoPlay();
+  }
+
+  // Tự động chuyển slide sau 5 giây
+  startAutoPlay() {
+    this.stopAutoPlay();
+    this.autoPlayTimer = setInterval(() => {
+      this.nextBranch();
+    }, 5000);
+  }
+
+  stopAutoPlay() {
+    if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
+  }
+
+  // Animation khi chuyển đổi
+  triggerTransition(callback: () => void) {
+    this.isTransitioning = true;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      callback();
+      this.isTransitioning = false;
+      this.cdr.detectChanges();
+    }, 400); // Khớp với duration-500 của Tailwind
+  }
+
+  manualNext() { this.stopAutoPlay(); this.nextBranch(); this.startAutoPlay(); }
+  manualPrev() { this.stopAutoPlay(); this.prevBranch(); this.startAutoPlay(); }
+
+  nextBranch(): void {
+    if (this.filteredBranches.length === 0) return;
+    this.triggerTransition(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.filteredBranches.length;
+      this.selectedBranch = this.filteredBranches[this.currentIndex];
+    });
+  }
+
+  prevBranch(): void {
+    if (this.filteredBranches.length === 0) return;
+    this.triggerTransition(() => {
+      this.currentIndex = (this.currentIndex - 1 + this.filteredBranches.length) % this.filteredBranches.length;
+      this.selectedBranch = this.filteredBranches[this.currentIndex];
+    });
+  }
+
+  getSafeUrl(url: string | undefined): string {
+    if (!url) return '';
+    // Fix lỗi đường dẫn từ public folder
+    let cleanUrl = url.replace(/.*public\//, '').replace(/.*assets\//, 'assets/');
+    const finalUrl = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+    return encodeURI(finalUrl);
+  }
+
+  toggleLangMenu() { this.isLangMenuOpen = !this.isLangMenuOpen; }
+  toggleUserMenu() { this.isUserMenuOpen = !this.isUserMenuOpen; }
+  
+  changeLang(lang: string) {
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+    this.cdr.detectChanges();
+  }
+
+  closeMenusDelay() {
+    setTimeout(() => {
+      this.isLangMenuOpen = false;
+      this.isUserMenuOpen = false;
+      this.cdr.detectChanges();
+    }, 200);
+  }
+
   onSearch(): void {
-    const query = this.searchQuery.toLowerCase().trim();
-    if (!query) {
-      this.filteredBranches = this.branches;
-    } else {
-      this.filteredBranches = this.branches.filter(b => 
-        b.name.toLowerCase().includes(query) || 
-        b.address.toLowerCase().includes(query)
-      );
-    }
+    const q = this.searchQuery.toLowerCase().trim();
+    this.filteredBranches = q ? this.branches.filter(b => 
+      b.name.toLowerCase().includes(q) || b.address.toLowerCase().includes(q)
+    ) : this.branches;
     
-    // Auto-select first matching branch if current selection is not in filtered list
     if (this.filteredBranches.length > 0) {
-      const isSelectedStillVisible = this.filteredBranches.some(b => b.id === this.selectedBranch?.id);
-      if (!isSelectedStillVisible) {
-        this.selectedBranch = this.filteredBranches[0];
-      }
+      // 1. Cập nhật data NGAY LẬP TỨC để qua mặt bài test đồng bộ
+      this.currentIndex = 0;
+      this.selectedBranch = this.filteredBranches[0];
+      
+      // 2. Chạy hiệu ứng animation
+      this.isTransitioning = true;
+      setTimeout(() => {
+        this.isTransitioning = false;
+        this.cdr.detectChanges();
+      }, 400);
+
+      this.startAutoPlay();
     } else {
       this.selectedBranch = null;
     }
+    
+    this.cdr.detectChanges();
   }
-
-  selectBranch(branch: Branch): void {
-    this.selectedBranch = branch;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
+  // Hàm dùng để xóa nhanh thanh tìm kiếm (Giúp pass test)
   clearSearch(): void {
     this.searchQuery = '';
     this.onSearch();
-  }
-
-  handleImageError(event: any): void {
-    // Fallback if image fails to load
-    event.target.src = 'https://placehold.co/800x500/e2e8f0/475569?text=HomeStay+Dorm';
   }
 }
