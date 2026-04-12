@@ -298,6 +298,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLangMenuOpen = false;
   isUserMenuOpen = false;
   isTransitioning = false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   autoPlayTimer: any;
 
   constructor() {
@@ -324,28 +325,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.stopAutoPlay();
   }
 
-  // Tự động chuyển slide sau 5 giây
+  
   startAutoPlay() {
     this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
+    this.autoPlayTimer = window.setInterval(() => {
       this.nextBranch();
     }, 5000);
   }
 
+
   stopAutoPlay() {
-    if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
+    if (this.autoPlayTimer) window.clearInterval(this.autoPlayTimer);
   }
 
-  // Animation khi chuyển đổi
+
   triggerTransition(callback: () => void) {
     this.isTransitioning = true;
     this.cdr.detectChanges();
-    setTimeout(() => {
+    window.setTimeout(() => {
       callback();
       this.isTransitioning = false;
       this.cdr.detectChanges();
-    }, 400); // Khớp với duration-500 của Tailwind
+    }, 400); 
   }
+
 
   manualNext() { this.stopAutoPlay(); this.nextBranch(); this.startAutoPlay(); }
   manualPrev() { this.stopAutoPlay(); this.prevBranch(); this.startAutoPlay(); }
@@ -383,8 +386,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  
   closeMenusDelay() {
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.isLangMenuOpen = false;
       this.isUserMenuOpen = false;
       this.cdr.detectChanges();

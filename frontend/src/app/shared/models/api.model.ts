@@ -5,6 +5,7 @@ export interface ApiResponse<T> {
   error?: {
     code: string;
     message: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     details?: any[];
   };
 }
