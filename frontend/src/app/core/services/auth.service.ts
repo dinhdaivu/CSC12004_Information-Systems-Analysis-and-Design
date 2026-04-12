@@ -8,8 +8,12 @@ import type {
   AuthResponse,
   ForgotPasswordRequest,
   LoginRequest,
+  RegisterRequest,
+  RegisterResult,
+  ResetPasswordWithCodeRequest,
   UpdateProfileRequest,
   User,
+  VerifyEmailRequest,
 } from '@shared/models/auth.model';
 
 @Injectable({
@@ -22,6 +26,7 @@ export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'auth_token';
   private readonly userKey = 'auth_user';
+  private readonly pendingRegistrationEmailKey = 'pending_registration_email';
   private readonly currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
 
   readonly currentUser$ = this.currentUserSubject.asObservable();
@@ -36,6 +41,49 @@ export class AuthService {
 
   forgotPassword(payload: ForgotPasswordRequest): Observable<void> {
     return this.http.post(`${this.apiUrl}/forgot-password`, payload).pipe(
+      map(() => void 0)
+    );
+  }
+
+  register(payload: RegisterRequest): Observable<RegisterResult> {
+    return this.http.post<{ data: RegisterResult }>(`${this.apiUrl}/register`, payload).pipe(
+      map((response) => response.data),
+      tap((result) => {
+        sessionStorage.setItem(this.pendingRegistrationEmailKey, result.email);
+      })
+    );
+  }
+
+  getPendingRegistrationEmail(): string | null {
+    return sessionStorage.getItem(this.pendingRegistrationEmailKey);
+  }
+
+  clearPendingRegistrationEmail(): void {
+    sessionStorage.removeItem(this.pendingRegistrationEmailKey);
+  }
+
+  resendVerificationCode(email: string): Observable<void> {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    return this.http.post(`${this.apiUrl}/resend-verification`, { email: normalizedEmail }).pipe(
+      map(() => void 0),
+      tap(() => {
+        sessionStorage.setItem(this.pendingRegistrationEmailKey, normalizedEmail);
+      })
+    );
+  }
+
+  verifyRegistrationCode(payload: VerifyEmailRequest): Observable<void> {
+    return this.http.post(`${this.apiUrl}/verify-email`, payload).pipe(
+      map(() => void 0),
+      tap(() => {
+        this.clearPendingRegistrationEmail();
+      })
+    );
+  }
+
+  resetPasswordWithCode(payload: ResetPasswordWithCodeRequest): Observable<void> {
+    return this.http.post(`${this.apiUrl}/reset-password/verify`, payload).pipe(
       map(() => void 0)
     );
   }

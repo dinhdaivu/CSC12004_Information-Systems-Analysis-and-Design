@@ -1,5 +1,5 @@
 import { supabase, supabaseServiceRole } from '@config/supabase';
-import { ForbiddenError, InternalServerError, NotFoundError, UnauthorizedError, ValidationError } from '@utils/errors';
+import { ConflictError, ForbiddenError, InternalServerError, NotFoundError, UnauthorizedError, ValidationError } from '@utils/errors';
 import { TokenUtils } from '@utils/token';
 import type { AppRole, UpdateUserDTO, User, UserStatus } from '@models/user.model';
 
@@ -15,6 +15,24 @@ type LoginInput = {
 
 type ForgotPasswordInput = {
   email: string;
+};
+
+type RegisterInput = {
+  email: string;
+  password: string;
+  confirm_password: string;
+};
+
+type VerifyEmailInput = {
+  email: string;
+  code: string;
+};
+
+type ResetPasswordInput = {
+  email: string;
+  code: string;
+  password: string;
+  confirm_password: string;
 };
 
 type UserRow = {
@@ -33,6 +51,51 @@ type UserRow = {
 };
 
 export class AuthService {
+  static async register(input: RegisterInput): Promise<{ email: string }> {
+    const email = input.email.trim().toLowerCase();
+    const password = input.password.trim();
+    const confirmPassword = input.confirm_password.trim();
+
+    if (!email || !password || !confirmPassword) {
+      throw new ValidationError('Email, password, and password confirmation are required');
+    }
+
+    if (password.length < 6) {
+      throw new ValidationError('Password must be at least 6 characters');
+    }
+
+    if (password !== confirmPassword) {
+      throw new ValidationError('Passwords do not match');
+    }
+
+    this.ensureSupabaseClients();
+
+    const { data, error } = await supabase!.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      if (this.isDuplicateEmailError(error.message)) {
+        throw new ConflictError('An account with this email already exists');
+      }
+
+      throw new InternalServerError(error.message || 'Failed to register account');
+    }
+
+    if (!data.user) {
+      throw new InternalServerError('Failed to register account');
+    }
+
+    if (Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      throw new ConflictError('An account with this email already exists');
+    }
+
+    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+
+    return { email };
+  }
+
   static async login(input: LoginInput): Promise<AuthenticatedProfile> {
     const email = input.email.trim().toLowerCase();
     const password = input.password.trim();
@@ -73,13 +136,94 @@ export class AuthService {
 
     this.ensureSupabaseClient();
 
-    const { error } = await supabase!.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:4200'}/auth/login`,
-    });
+    const { error } = await supabase!.auth.resetPasswordForEmail(email);
 
     if (error) {
       throw new InternalServerError(error.message || 'Failed to request password reset');
     }
+  }
+
+  static async verifyEmail(input: VerifyEmailInput): Promise<void> {
+    const email = input.email.trim().toLowerCase();
+    const code = input.code.trim();
+
+    if (!email || !code) {
+      throw new ValidationError('Email and verification code are required');
+    }
+
+    this.ensureSupabaseClients();
+
+    const { data, error } = await supabase!.auth.verifyOtp({
+      email,
+      token: code,
+      type: 'email',
+    });
+
+    if (error || !data.user) {
+      throw new UnauthorizedError('Invalid or expired verification code');
+    }
+
+    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+  }
+
+  static async resendVerification(input: ForgotPasswordInput): Promise<void> {
+    const email = input.email.trim().toLowerCase();
+
+    if (!email) {
+      throw new ValidationError('Email is required');
+    }
+
+    this.ensureSupabaseClient();
+
+    const { error } = await supabase!.auth.resend({
+      type: 'signup',
+      email,
+    });
+
+    if (error) {
+      throw new InternalServerError(error.message || 'Failed to resend verification code');
+    }
+  }
+
+  static async resetPasswordWithCode(input: ResetPasswordInput): Promise<void> {
+    const email = input.email.trim().toLowerCase();
+    const code = input.code.trim();
+    const password = input.password.trim();
+    const confirmPassword = input.confirm_password.trim();
+
+    if (!email || !code || !password || !confirmPassword) {
+      throw new ValidationError('Email, verification code, and password are required');
+    }
+
+    if (password.length < 6) {
+      throw new ValidationError('Password must be at least 6 characters');
+    }
+
+    if (password !== confirmPassword) {
+      throw new ValidationError('Passwords do not match');
+    }
+
+    this.ensureSupabaseClients();
+
+    const { data, error } = await supabase!.auth.verifyOtp({
+      email,
+      token: code,
+      type: 'recovery',
+    });
+
+    if (error || !data.user) {
+      throw new UnauthorizedError('Invalid or expired recovery code');
+    }
+
+    const { error: updateError } = await supabaseServiceRole!.auth.admin.updateUserById(data.user.id, {
+      password,
+    });
+
+    if (updateError) {
+      throw new InternalServerError(updateError.message || 'Failed to update password');
+    }
+
+    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
   }
 
   static async getCurrentUser(userId: string): Promise<User> {
@@ -206,5 +350,10 @@ export class AuthService {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
     };
+  }
+
+  private static isDuplicateEmailError(message: string | undefined): boolean {
+    const normalized = (message || '').toLowerCase();
+    return normalized.includes('already registered') || normalized.includes('already exists');
   }
 }

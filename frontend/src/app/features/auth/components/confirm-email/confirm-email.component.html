@@ -1,0 +1,61 @@
+<section class="confirm-shell">
+  <div class="confirm-page">
+    <div class="confirm-page__visual"></div>
+
+    <div class="confirm-page__panel">
+      <div class="confirm-page__language">
+        <app-language-switcher></app-language-switcher>
+      </div>
+
+      <div class="confirm-page__content">
+        <header class="confirm-page__header">
+          <h1 class="confirm-page__title">{{ 'AUTH.CONFIRM_EMAIL.TITLE' | translate }}</h1>
+          <p class="confirm-page__subtitle">{{ 'AUTH.CONFIRM_EMAIL.SUBTITLE' | translate }}</p>
+        </header>
+
+        <p class="confirm-page__description">
+          {{ 'AUTH.CONFIRM_EMAIL.DESCRIPTION' | translate }}
+        </p>
+
+        <form class="confirm-form" [formGroup]="form" (ngSubmit)="submit()">
+          <div class="confirm-form__code-grid" formArrayName="code">
+            <input
+              *ngFor="let control of codeControls.controls; let index = index"
+              #codeInput
+              class="confirm-form__code-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              autocomplete="one-time-code"
+              [formControlName]="index"
+              (input)="onDigitInput(index, $event)"
+              (keydown)="onKeyDown(index, $event)"
+            />
+          </div>
+
+          <p class="confirm-form__message confirm-form__message--error" *ngIf="submitted && form.invalid">
+            {{ 'AUTH.CONFIRM_EMAIL.VALIDATION' | translate }}
+          </p>
+
+          <p class="confirm-form__message confirm-form__message--error" *ngIf="errorMessage">{{ errorMessage }}</p>
+          <p class="confirm-form__message confirm-form__message--success" *ngIf="successMessage">{{ successMessage }}</p>
+
+          <button type="submit" class="confirm-form__submit" [disabled]="isSubmitting">
+            {{ (isSubmitting ? 'AUTH.CONFIRM_EMAIL.SUBMITTING' : 'AUTH.CONFIRM_EMAIL.SUBMIT') | translate }}
+          </button>
+        </form>
+
+        <p class="confirm-page__resend">
+          <span>{{ 'AUTH.CONFIRM_EMAIL.RESEND_PROMPT' | translate }}</span>
+          <button type="button" (click)="resendCode()" [disabled]="isResending">
+            {{ (isResending ? 'AUTH.CONFIRM_EMAIL.RESENDING' : 'AUTH.CONFIRM_EMAIL.RESEND_ACTION') | translate }}
+          </button>
+        </p>
+
+        <button type="button" class="confirm-page__login-link" *ngIf="successMessage" (click)="goToLogin()">
+          {{ 'AUTH.CONFIRM_EMAIL.LOGIN_ACTION' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

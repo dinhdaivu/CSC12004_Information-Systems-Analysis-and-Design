@@ -10,38 +10,68 @@
   },
   "AUTH": {
     "FIELDS": {
-      "EMAIL": "Email",
+      "EMAIL": "Email Address",
       "EMAIL_PLACEHOLDER": "Enter your email",
       "PASSWORD": "Password",
       "PASSWORD_PLACEHOLDER": "Enter your password"
     },
     "VALIDATION": {
       "EMAIL": "Please enter a valid email address.",
-      "PASSWORD": "Password must be at least 6 characters."
+      "PASSWORD": "Password must be at least 6 characters.",
+      "PASSWORD_MATCH": "Passwords do not match."
     },
     "LOGIN": {
-      "TITLE": "Sign in",
-      "SUBTITLE": "Access your HomeStay Dorm account.",
-      "SUBMIT": "Sign in",
-      "SUBMITTING": "Signing in...",
-      "FORGOT_PASSWORD": "Forgot password?",
-      "REGISTER": "Create account",
+      "TITLE": "LOG IN",
+      "SUBTITLE": "Welcome Back!",
+      "SUBMIT": "Log In",
+      "SUBMITTING": "Logging in...",
+      "FORGOT_PASSWORD": "Forgot Password?",
+      "REGISTER": "Sign Up",
+      "NEW_USER_PROMPT": "New to HomeStay Dorm?",
+      "RESET_ERROR": "Unable to start password recovery. Please try again.",
       "ERROR": "Unable to sign in. Please try again."
     },
-    "FORGOT_PASSWORD": {
-      "TITLE": "Reset password",
-      "SUBTITLE": "Enter your email and we will send a password reset link.",
-      "SUBMIT": "Send reset link",
-      "SUBMITTING": "Sending...",
-      "BACK_TO_LOGIN": "Back to sign in",
-      "SUCCESS": "Password reset email sent successfully.",
-      "ERROR": "Unable to request a password reset."
-    },
     "REGISTER": {
-      "TITLE": "Create account",
-      "SUBTITLE": "Customer registration is tracked separately from the sign-in task.",
-      "INFO": "Registration will be available in the dedicated customer registration implementation.",
-      "LOGIN_ACTION": "Back to sign in"
+      "TITLE": "SIGN UP",
+      "SUBTITLE": "Join HomeStay Dorm Community",
+      "CONFIRM_PASSWORD": "Confirm Password",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your password",
+      "TOGGLE_PASSWORD": "Toggle password visibility",
+      "TOGGLE_CONFIRM_PASSWORD": "Toggle confirm password visibility",
+      "SUBMIT": "Create Account",
+      "SUBMITTING": "Creating account...",
+      "HAS_ACCOUNT": "Already have an account?",
+      "LOGIN_ACTION": "Log In",
+      "ERROR": "Unable to create account. Please try again."
+    },
+    "CONFIRM_EMAIL": {
+      "TITLE": "CONFIRM EMAIL",
+      "SUBTITLE": "Verify Your Email",
+      "DESCRIPTION": "We have sent a 6-digit verification code to your email. Enter the code below to activate your account.",
+      "VALIDATION": "Please enter the full 6-digit verification code.",
+      "SUBMIT": "Verify & Activate",
+      "SUBMITTING": "Verifying...",
+      "SUCCESS": "Email verified successfully. You can sign in now.",
+      "ERROR": "Unable to verify the code. Please try again.",
+      "RESEND_PROMPT": "Didn't receive the code?",
+      "RESEND_ACTION": "Resend Code",
+      "RESENDING": "Resending...",
+      "RESEND_SUCCESS": "A new verification code has been sent.",
+      "LOGIN_ACTION": "Back to Log In"
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "RESET PASSWORD",
+      "SUBTITLE": "Recover Your Account",
+      "DESCRIPTION": "We sent a 6-digit recovery code to your email. Enter the code below and choose a new password.",
+      "VALIDATION": "Please enter the full 6-digit code and a valid new password.",
+      "SUBMIT": "Verify & Update Password",
+      "SUBMITTING": "Updating password...",
+      "SUCCESS": "Password updated successfully. You can sign in now.",
+      "ERROR": "Unable to reset your password. Please try again.",
+      "RESEND_PROMPT": "Didn't receive the code?",
+      "RESEND_ACTION": "Resend Code",
+      "RESENDING": "Resending...",
+      "RESEND_SUCCESS": "A new recovery code has been sent."
     }
   }
 }

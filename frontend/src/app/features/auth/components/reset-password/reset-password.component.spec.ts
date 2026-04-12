@@ -1,0 +1,105 @@
+import { TestBed } from '@angular/core/testing';
+import { ResetPasswordComponent } from './reset-password.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { of, throwError } from 'rxjs';
+import { AuthService } from '@core/services/auth.service';
+
+describe('ResetPasswordComponent', () => {
+  let authService: {
+    resetPasswordWithCode: jest.Mock;
+    forgotPassword: jest.Mock;
+  };
+  let router: { navigate: jest.Mock };
+
+  beforeEach(async () => {
+    authService = {
+      resetPasswordWithCode: jest.fn(),
+      forgotPassword: jest.fn(),
+    };
+    router = {
+      navigate: jest.fn().mockResolvedValue(true),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [ResetPasswordComponent, ReactiveFormsModule, RouterTestingModule, TranslateModule.forRoot()],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParamMap: new Map([['email', 'recover@example.com']]),
+            },
+          },
+        },
+      ],
+    }).compileComponents();
+  });
+
+  it('should create the component', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeTruthy();
+  });
+
+  it('should render six verification inputs', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelectorAll('.reset-form__code-input')).toHaveLength(6);
+  });
+
+  it('should submit a recovery code and new password', () => {
+    authService.resetPasswordWithCode.mockReturnValue(of(void 0));
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    ['1', '2', '3', '4', '5', '6'].forEach((digit, index) => {
+      component.codeControls.at(index).setValue(digit);
+    });
+    component.form.controls.password.setValue('secret123');
+    component.form.controls.confirm_password.setValue('secret123');
+
+    component.submit();
+
+    expect(authService.resetPasswordWithCode).toHaveBeenCalledWith({
+      email: 'recover@example.com',
+      code: '123456',
+      password: 'secret123',
+      confirm_password: 'secret123',
+    });
+  });
+
+  it('should resend the recovery code', () => {
+    authService.forgotPassword.mockReturnValue(of(void 0));
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.resendCode();
+
+    expect(authService.forgotPassword).toHaveBeenCalledWith({ email: 'recover@example.com' });
+  });
+
+  it('should surface recovery errors', () => {
+    authService.resetPasswordWithCode.mockReturnValue(throwError(() => new Error('Bad code')));
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    ['1', '2', '3', '4', '5', '6'].forEach((digit, index) => {
+      component.codeControls.at(index).setValue(digit);
+    });
+    component.form.controls.password.setValue('secret123');
+    component.form.controls.confirm_password.setValue('secret123');
+
+    component.submit();
+
+    expect(component.errorMessage).toBe('Bad code');
+  });
+});

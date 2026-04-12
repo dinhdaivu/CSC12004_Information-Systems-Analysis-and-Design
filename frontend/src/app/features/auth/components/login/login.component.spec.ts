@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
@@ -12,12 +13,14 @@ describe('LoginComponent', () => {
   let authService: {
     login: jest.Mock;
     navigateAfterLogin: jest.Mock;
+    forgotPassword: jest.Mock;
   };
 
   beforeEach(async () => {
     authService = {
       login: jest.fn(),
       navigateAfterLogin: jest.fn(),
+      forgotPassword: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -93,5 +96,24 @@ describe('LoginComponent', () => {
     component.submit();
 
     expect(component.errorMessage).toBe('Invalid email or password');
+  });
+
+  it('should trigger password recovery and route to the recovery page', () => {
+    authService.forgotPassword.mockReturnValue(of(void 0));
+
+    fixture.detectChanges();
+    component.form.controls.email.setValue('user@example.com');
+
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.requestPasswordReset();
+
+    expect(authService.forgotPassword).toHaveBeenCalledWith({ email: 'user@example.com' });
+    expect(navigateSpy).toHaveBeenCalledWith(['/reset-password'], {
+      queryParams: {
+        email: 'user@example.com',
+      },
+    });
   });
 });

@@ -40,8 +40,8 @@ describe('Auth Guards', () => {
 
     const result = TestBed.runInInjectionContext(() => authGuard({} as never, {} as never));
 
-    expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/auth/login']);
-    expect(result).toEqual({ commands: ['/auth/login'] });
+    expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/login']);
+    expect(result).toEqual({ commands: ['/login'] });
   });
 
   it('should allow users with matching roles through roleGuard', () => {

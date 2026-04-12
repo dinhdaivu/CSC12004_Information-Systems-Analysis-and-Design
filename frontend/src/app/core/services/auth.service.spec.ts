@@ -10,6 +10,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -30,6 +31,7 @@ describe('AuthService', () => {
   afterEach(() => {
     httpMock.verify();
     localStorage.clear();
+    sessionStorage.clear();
   });
 
   it('should store token and user after login', () => {
@@ -87,5 +89,65 @@ describe('AuthService', () => {
     expect(service.getDefaultRouteForRole('customer')).toBe('/bookings');
     expect(service.getDefaultRouteForRole('sale')).toBe('/admin');
     expect(service.getDefaultRouteForRole('admin')).toBe('/admin');
+  });
+
+  it('should store pending registration email when registering', () => {
+    service.register({
+      email: 'NEWUSER@EXAMPLE.COM',
+      password: 'secret123',
+      confirm_password: 'secret123',
+    }).subscribe((result) => {
+      expect(result.email).toBe('newuser@example.com');
+    });
+
+    const request = httpMock.expectOne('http://localhost:3000/api/auth/register');
+    expect(request.request.method).toBe('POST');
+    request.flush({
+      success: true,
+      data: {
+        email: 'newuser@example.com',
+      },
+    });
+
+    expect(service.getPendingRegistrationEmail()).toBe('newuser@example.com');
+  });
+
+  it('should verify registration code and clear the pending email', () => {
+    sessionStorage.setItem('pending_registration_email', 'newuser@example.com');
+
+    service.verifyRegistrationCode({
+      email: 'newuser@example.com',
+      code: '123456',
+    }).subscribe();
+
+    const request = httpMock.expectOne('http://localhost:3000/api/auth/verify-email');
+    expect(request.request.method).toBe('POST');
+    request.flush({ success: true, data: null });
+
+    expect(service.getPendingRegistrationEmail()).toBeNull();
+  });
+
+  it('should resend verification code and keep the normalized email', () => {
+    service.resendVerificationCode('NEWUSER@EXAMPLE.COM').subscribe();
+
+    const request = httpMock.expectOne('http://localhost:3000/api/auth/resend-verification');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ email: 'newuser@example.com' });
+    request.flush({ success: true, data: null });
+
+    expect(service.getPendingRegistrationEmail()).toBe('newuser@example.com');
+  });
+
+  it('should send a reset password verification request', () => {
+    service.resetPasswordWithCode({
+      email: 'newuser@example.com',
+      code: '123456',
+      password: 'secret123',
+      confirm_password: 'secret123',
+    }).subscribe();
+
+    const request = httpMock.expectOne('http://localhost:3000/api/auth/reset-password/verify');
+    expect(request.request.method).toBe('POST');
+    request.flush({ success: true, data: null });
   });
 });

@@ -37,8 +37,23 @@ export interface ForgotPasswordRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
-  full_name: string;
-  phone_number?: string;
+  confirm_password: string;
+}
+
+export interface RegisterResult {
+  email: string;
+}
+
+export interface VerifyEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordWithCodeRequest {
+  email: string;
+  code: string;
+  password: string;
+  confirm_password: string;
 }
 
 export interface UpdateProfileRequest {

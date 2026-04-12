@@ -10,38 +10,68 @@
   },
   "AUTH": {
     "FIELDS": {
-      "EMAIL": "Email",
+      "EMAIL": "Địa chỉ email",
       "EMAIL_PLACEHOLDER": "Nhập email của bạn",
       "PASSWORD": "Mật khẩu",
       "PASSWORD_PLACEHOLDER": "Nhập mật khẩu của bạn"
     },
     "VALIDATION": {
       "EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
-      "PASSWORD": "Mật khẩu phải có ít nhất 6 ký tự."
+      "PASSWORD": "Mật khẩu phải có ít nhất 6 ký tự.",
+      "PASSWORD_MATCH": "Mật khẩu xác nhận không khớp."
     },
     "LOGIN": {
-      "TITLE": "Đăng nhập",
-      "SUBTITLE": "Truy cập tài khoản HomeStay Dorm của bạn.",
+      "TITLE": "ĐĂNG NHẬP",
+      "SUBTITLE": "Chào mừng quay trở lại!",
       "SUBMIT": "Đăng nhập",
       "SUBMITTING": "Đang đăng nhập...",
       "FORGOT_PASSWORD": "Quên mật khẩu?",
-      "REGISTER": "Tạo tài khoản",
+      "REGISTER": "Đăng ký",
+      "NEW_USER_PROMPT": "Mới đến HomeStay Dorm?",
+      "RESET_ERROR": "Không thể bắt đầu quy trình khôi phục mật khẩu. Vui lòng thử lại.",
       "ERROR": "Không thể đăng nhập. Vui lòng thử lại."
     },
-    "FORGOT_PASSWORD": {
-      "TITLE": "Đặt lại mật khẩu",
-      "SUBTITLE": "Nhập email để nhận liên kết đặt lại mật khẩu.",
-      "SUBMIT": "Gửi liên kết đặt lại",
-      "SUBMITTING": "Đang gửi...",
-      "BACK_TO_LOGIN": "Quay lại đăng nhập",
-      "SUCCESS": "Đã gửi email đặt lại mật khẩu thành công.",
-      "ERROR": "Không thể yêu cầu đặt lại mật khẩu."
-    },
     "REGISTER": {
-      "TITLE": "Tạo tài khoản",
-      "SUBTITLE": "Đăng ký khách hàng được triển khai trong task riêng.",
-      "INFO": "Tính năng đăng ký sẽ được hoàn thiện trong task đăng ký khách hàng riêng.",
+      "TITLE": "ĐĂNG KÝ",
+      "SUBTITLE": "Gia nhập cộng đồng HomeStay Dorm",
+      "CONFIRM_PASSWORD": "Xác nhận mật khẩu",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Nhập lại mật khẩu",
+      "TOGGLE_PASSWORD": "Hiện hoặc ẩn mật khẩu",
+      "TOGGLE_CONFIRM_PASSWORD": "Hiện hoặc ẩn mật khẩu xác nhận",
+      "SUBMIT": "Tạo tài khoản",
+      "SUBMITTING": "Đang tạo tài khoản...",
+      "HAS_ACCOUNT": "Đã có tài khoản?",
+      "LOGIN_ACTION": "Đăng nhập",
+      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại."
+    },
+    "CONFIRM_EMAIL": {
+      "TITLE": "XÁC NHẬN EMAIL",
+      "SUBTITLE": "Xác minh email của bạn",
+      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh 6 chữ số đến email của bạn. Nhập mã bên dưới để kích hoạt tài khoản.",
+      "VALIDATION": "Vui lòng nhập đầy đủ mã xác minh 6 chữ số.",
+      "SUBMIT": "Xác minh & kích hoạt",
+      "SUBMITTING": "Đang xác minh...",
+      "SUCCESS": "Xác minh email thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "ERROR": "Không thể xác minh mã. Vui lòng thử lại.",
+      "RESEND_PROMPT": "Chưa nhận được mã?",
+      "RESEND_ACTION": "Gửi lại mã",
+      "RESENDING": "Đang gửi lại...",
+      "RESEND_SUCCESS": "Mã xác minh mới đã được gửi.",
       "LOGIN_ACTION": "Quay lại đăng nhập"
+    },
+    "RESET_PASSWORD": {
+      "TITLE": "ĐẶT LẠI MẬT KHẨU",
+      "SUBTITLE": "Khôi phục tài khoản",
+      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục 6 chữ số đến email của bạn. Nhập mã bên dưới và chọn mật khẩu mới.",
+      "VALIDATION": "Vui lòng nhập đầy đủ mã 6 chữ số và mật khẩu mới hợp lệ.",
+      "SUBMIT": "Xác minh & cập nhật mật khẩu",
+      "SUBMITTING": "Đang cập nhật mật khẩu...",
+      "SUCCESS": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "ERROR": "Không thể đặt lại mật khẩu. Vui lòng thử lại.",
+      "RESEND_PROMPT": "Chưa nhận được mã?",
+      "RESEND_ACTION": "Gửi lại mã",
+      "RESENDING": "Đang gửi lại...",
+      "RESEND_SUCCESS": "Mã khôi phục mới đã được gửi."
     }
   }
 }
