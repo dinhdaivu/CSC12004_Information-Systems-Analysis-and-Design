@@ -408,7 +408,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       
       // 2. Chạy hiệu ứng animation
       this.isTransitioning = true;
-      setTimeout(() => {
+      
+      // SỬA Ở ĐÂY: Thêm chữ window. vào trước setTimeout
+      window.setTimeout(() => {
         this.isTransitioning = false;
         this.cdr.detectChanges();
       }, 400);
