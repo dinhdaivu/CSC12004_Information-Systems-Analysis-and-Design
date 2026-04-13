@@ -73,5 +73,13 @@
       "RESENDING": "Resending...",
       "RESEND_SUCCESS": "A new recovery code has been sent."
     }
+  },
+  "DASHBOARD": {
+    "TITLE": "Discover HomeStay Dorm Branches",
+    "SEARCH_PLACEHOLDER": "Search by branch name or address...",
+    "VIEW_MORE": "View more",
+    "ROOMS_AVAILABLE": "rooms available",
+    "EMPTY_STATE": "No matching branches found.",
+    "CONTACT_US": "Contact Us Now"
   }
 }

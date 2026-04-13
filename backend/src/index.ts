@@ -3,8 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import authRoutes from '@routes/auth.routes';
-import { AppError } from '@utils/errors';
+import branchRoutes from '@routes/branch.routes';
 import { ApiResponseBuilder } from '@models/api.model';
+import { AppError } from '@utils/errors';
 
 dotenv.config();
 
@@ -27,10 +28,12 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/branches', branchRoutes);
 
 // Error handling middleware
-app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  void _next;
+app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  void req;
+  void next;
 
   if (err instanceof Error) {
     console.error(err.stack ?? err.message);
@@ -48,6 +51,7 @@ app.use((err: unknown, req: express.Request, res: express.Response, _next: expre
 
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
+  void req;
   res.status(404).json(ApiResponseBuilder.error('NOT_FOUND', 'Route not found'));
 });
 
