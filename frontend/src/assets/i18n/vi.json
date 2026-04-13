@@ -1,85 +1,85 @@
 {
   "APP": {
-    "TITLE": "Ky tuc xa HomeStay",
-    "WELCOME": "Chao mung den voi Ky tuc xa HomeStay"
+    "TITLE": "Ký túc xá HomeStay",
+    "WELCOME": "Chào mừng bạn đến với Ký túc xá HomeStay"
   },
   "COMMON": {
-    "LANGUAGE": "Ngon ngu",
-    "ENGLISH": "Tieng Anh",
-    "VIETNAMESE": "Tieng Viet"
+    "LANGUAGE": "Ngôn ngữ",
+    "ENGLISH": "Tiếng Anh",
+    "VIETNAMESE": "Tiếng Việt"
   },
   "AUTH": {
     "FIELDS": {
-      "EMAIL": "Dia chi email",
-      "EMAIL_PLACEHOLDER": "Nhap email cua ban",
-      "PASSWORD": "Mat khau",
-      "PASSWORD_PLACEHOLDER": "Nhap mat khau cua ban"
+      "EMAIL": "Địa chỉ email",
+      "EMAIL_PLACEHOLDER": "Nhập email của bạn",
+      "PASSWORD": "Mật khẩu",
+      "PASSWORD_PLACEHOLDER": "Nhập mật khẩu của bạn"
     },
     "VALIDATION": {
-      "EMAIL": "Vui long nhap dia chi email hop le.",
-      "PASSWORD": "Mat khau phai co it nhat 6 ky tu.",
-      "PASSWORD_MATCH": "Mat khau xac nhan khong khop."
+      "EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "PASSWORD": "Mật khẩu phải có ít nhất 6 ký tự.",
+      "PASSWORD_MATCH": "Mật khẩu xác nhận không khớp."
     },
     "LOGIN": {
-      "TITLE": "DANG NHAP",
-      "SUBTITLE": "Chao mung quay tro lai!",
-      "SUBMIT": "Dang nhap",
-      "SUBMITTING": "Dang dang nhap...",
-      "FORGOT_PASSWORD": "Quen mat khau?",
-      "REGISTER": "Dang ky",
-      "NEW_USER_PROMPT": "Moi den HomeStay Dorm?",
-      "RESET_ERROR": "Khong the bat dau quy trinh khoi phuc mat khau. Vui long thu lai.",
-      "ERROR": "Khong the dang nhap. Vui long thu lai."
+      "TITLE": "ĐĂNG NHẬP",
+      "SUBTITLE": "Chào mừng quay trở lại!",
+      "SUBMIT": "Đăng nhập",
+      "SUBMITTING": "Đang đăng nhập...",
+      "FORGOT_PASSWORD": "Quên mật khẩu?",
+      "REGISTER": "Đăng ký",
+      "NEW_USER_PROMPT": "Lần đầu đến với HomeStay Dorm?",
+      "RESET_ERROR": "Không thể bắt đầu quy trình khôi phục mật khẩu. Vui lòng thử lại.",
+      "ERROR": "Không thể đăng nhập. Vui lòng thử lại."
     },
     "REGISTER": {
-      "TITLE": "DANG KY",
-      "SUBTITLE": "Gia nhap cong dong HomeStay Dorm",
-      "CONFIRM_PASSWORD": "Xac nhan mat khau",
-      "CONFIRM_PASSWORD_PLACEHOLDER": "Nhap lai mat khau",
-      "TOGGLE_PASSWORD": "Hien hoac an mat khau",
-      "TOGGLE_CONFIRM_PASSWORD": "Hien hoac an mat khau xac nhan",
-      "SUBMIT": "Tao tai khoan",
-      "SUBMITTING": "Dang tao tai khoan...",
-      "HAS_ACCOUNT": "Da co tai khoan?",
-      "LOGIN_ACTION": "Dang nhap",
-      "ERROR": "Khong the tao tai khoan. Vui long thu lai."
+      "TITLE": "ĐĂNG KÝ",
+      "SUBTITLE": "Tham gia cộng đồng HomeStay Dorm",
+      "CONFIRM_PASSWORD": "Xác nhận mật khẩu",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Nhập lại mật khẩu",
+      "TOGGLE_PASSWORD": "Hiện hoặc ẩn mật khẩu",
+      "TOGGLE_CONFIRM_PASSWORD": "Hiện hoặc ẩn mật khẩu xác nhận",
+      "SUBMIT": "Tạo tài khoản",
+      "SUBMITTING": "Đang tạo tài khoản...",
+      "HAS_ACCOUNT": "Đã có tài khoản?",
+      "LOGIN_ACTION": "Đăng nhập",
+      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại."
     },
     "CONFIRM_EMAIL": {
-      "TITLE": "XAC NHAN EMAIL",
-      "SUBTITLE": "Xac minh email cua ban",
-      "DESCRIPTION": "Chung toi da gui ma xac minh 6 chu so den email cua ban.\nNhap ma ben duoi de kich hoat tai khoan.",
-      "VALIDATION": "Vui long nhap day du ma xac minh 6 chu so.",
-      "SUBMIT": "Xac minh va kich hoat",
-      "SUBMITTING": "Dang xac minh...",
-      "SUCCESS": "Xac minh email thanh cong. Ban co the dang nhap ngay bay gio.",
-      "ERROR": "Khong the xac minh ma. Vui long thu lai.",
-      "RESEND_PROMPT": "Chua nhan duoc ma?",
-      "RESEND_ACTION": "Gui lai ma",
-      "RESENDING": "Dang gui lai...",
-      "RESEND_SUCCESS": "Ma xac minh moi da duoc gui.",
-      "LOGIN_ACTION": "Quay lai dang nhap"
+      "TITLE": "XÁC NHẬN EMAIL",
+      "SUBTITLE": "Xác minh địa chỉ email của bạn",
+      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh gồm 6 chữ số đến email của bạn.\nHãy nhập mã bên dưới để kích hoạt tài khoản.",
+      "VALIDATION": "Vui lòng nhập đầy đủ mã xác minh gồm 6 chữ số.",
+      "SUBMIT": "Xác minh & kích hoạt",
+      "SUBMITTING": "Đang xác minh...",
+      "SUCCESS": "Xác minh email thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "ERROR": "Không thể xác minh mã. Vui lòng thử lại.",
+      "RESEND_PROMPT": "Chưa nhận được mã?",
+      "RESEND_ACTION": "Gửi lại mã",
+      "RESENDING": "Đang gửi lại...",
+      "RESEND_SUCCESS": "Mã xác minh mới đã được gửi.",
+      "LOGIN_ACTION": "Quay lại đăng nhập"
     },
     "RESET_PASSWORD": {
-      "TITLE": "DAT LAI MAT KHAU",
-      "SUBTITLE": "Khoi phuc tai khoan",
-      "DESCRIPTION": "Chung toi da gui ma khoi phuc 6 chu so den email cua ban.\nNhap ma ben duoi va chon mat khau moi.",
-      "VALIDATION": "Vui long nhap day du ma 6 chu so va mat khau moi hop le.",
-      "SUBMIT": "Xac minh va cap nhat mat khau",
-      "SUBMITTING": "Dang cap nhat mat khau...",
-      "SUCCESS": "Dat lai mat khau thanh cong. Ban co the dang nhap ngay bay gio.",
-      "ERROR": "Khong the dat lai mat khau. Vui long thu lai.",
-      "RESEND_PROMPT": "Chua nhan duoc ma?",
-      "RESEND_ACTION": "Gui lai ma",
-      "RESENDING": "Dang gui lai...",
-      "RESEND_SUCCESS": "Ma khoi phuc moi da duoc gui."
+      "TITLE": "ĐẶT LẠI MẬT KHẨU",
+      "SUBTITLE": "Khôi phục tài khoản",
+      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục gồm 6 chữ số đến email của bạn.\nHãy nhập mã bên dưới và đặt mật khẩu mới.",
+      "VALIDATION": "Vui lòng nhập đầy đủ mã gồm 6 chữ số và mật khẩu mới hợp lệ.",
+      "SUBMIT": "Xác minh & cập nhật mật khẩu",
+      "SUBMITTING": "Đang cập nhật mật khẩu...",
+      "SUCCESS": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "ERROR": "Không thể đặt lại mật khẩu. Vui lòng thử lại.",
+      "RESEND_PROMPT": "Chưa nhận được mã?",
+      "RESEND_ACTION": "Gửi lại mã",
+      "RESENDING": "Đang gửi lại...",
+      "RESEND_SUCCESS": "Mã khôi phục mới đã được gửi."
     }
   },
   "DASHBOARD": {
-    "TITLE": "Kham pha cac chi nhanh HomeStay Dorm",
-    "SEARCH_PLACEHOLDER": "Tim kiem theo ten chi nhanh hoac dia chi...",
-    "VIEW_MORE": "Xem chi tiet",
-    "ROOMS_AVAILABLE": "phong trong",
-    "EMPTY_STATE": "Khong tim thay chi nhanh nao phu hop voi tim kiem cua ban.",
-    "CONTACT_US": "Lien he ngay"
+    "TITLE": "Khám phá các chi nhánh HomeStay Dorm",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm theo tên chi nhánh hoặc địa chỉ...",
+    "VIEW_MORE": "Xem chi tiết",
+    "ROOMS_AVAILABLE": "phòng trống",
+    "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
+    "CONTACT_US": "Liên hệ với chúng tôi"
   }
 }
