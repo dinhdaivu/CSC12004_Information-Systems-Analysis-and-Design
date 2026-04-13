@@ -87,6 +87,18 @@ describe('Auth Middleware', () => {
 
       expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
+
+    it('should pass through explicit auth errors from verifyToken', async () => {
+      req.headers = { authorization: 'Bearer expired-token' };
+      const authError = new UnauthorizedError('Token expired');
+      (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {
+        throw authError;
+      });
+
+      await authMiddleware(req as AuthRequest, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(authError);
+    });
   });
 
   describe('roleMiddleware', () => {

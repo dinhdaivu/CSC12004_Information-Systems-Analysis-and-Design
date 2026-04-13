@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -7,7 +7,7 @@ import { TranslateLoader, TranslateModule, TranslationObject } from '@ngx-transl
 import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
-// import { authInterceptor } from '@core/interceptors/auth.interceptor';
+import { authInterceptor } from '@core/interceptors/auth.interceptor';
 // import { errorInterceptor } from '@core/interceptors/error.interceptor';
 
 export function httpLoaderFactory(http: HttpClient): TranslateLoader {
@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      // withInterceptors([authInterceptor, errorInterceptor])
+      withInterceptors([authInterceptor])
     ),
     importProvidersFrom(
       TranslateModule.forRoot({

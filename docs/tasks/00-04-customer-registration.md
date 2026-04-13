@@ -13,7 +13,7 @@
 
 ## Overview
 
-Implement customer account registration. This use case is tracked in the report as SUC18 because the frontend already has `/auth/register` and customers need accounts before submitting rental requests, deposits, contracts, and checkout requests.
+Implement customer account registration. This use case is tracked in the report as SUC18 because the frontend already has `/register` and customers need accounts before submitting rental requests, deposits, contracts, and checkout requests.
 
 ### System Use Case
 
@@ -38,12 +38,13 @@ Implement customer account registration. This use case is tracked in the report 
 ```text
 Customer registration flow:
 
-1. Customer opens /auth/register.
-2. Customer enters name, email, phone, password, and required profile fields.
+1. Customer opens /register.
+2. Customer enters email, password, and password confirmation.
 3. Frontend validates required fields and password confirmation.
-4. Backend creates auth user and customer profile.
-5. System returns session/token or asks customer to log in.
-6. Customer can continue to room search and rental request flow.
+4. Backend creates the Supabase auth user and returns the pending email.
+5. Frontend stores the pending email and redirects to /confirm-email immediately after signup succeeds.
+6. Backend creates or loads the application profile when the signup code is verified or on the first successful login.
+7. Customer can continue to room search and rental request flow after verification.
 ```
 
 ---
@@ -55,33 +56,33 @@ Customer registration flow:
 - [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
 - [ ] Replace `RegisterComponent` placeholder with real registration form.
-- [ ] Add validation for name, email, phone, password, and confirmation.
+- [ ] Add validation for email, password, and confirmation.
 - [ ] Wire submit to `AuthService.register()`.
 - [ ] Show loading, success, and error states.
-- [ ] Redirect after registration according to final auth behavior.
+- [ ] Redirect after registration to `/confirm-email`.
 
 ### Backend (Express/Supabase)
 
 - [ ] Implement `POST /api/auth/register`.
 - [ ] Create auth user through Supabase Auth or the chosen auth provider.
-- [ ] Create customer profile record.
-- [ ] Reject duplicate email/phone when required.
-- [ ] Return typed response with user/session or next-step message.
+- [ ] Return typed response with the pending email for the verification step.
+- [ ] Defer application profile creation until verification/login to keep registration responsive.
+- [ ] Reject duplicate email when required.
 
 ### Tests
 
 | Layer | Test File | Mock Target |
 |-------|-----------|-------------|
 | Frontend | `frontend/src/app/features/auth/components/register/register.component.spec.ts` | AuthService |
-| Backend | `backend/src/__tests__/auth-register.spec.ts` | Supabase Auth / profile repository |
+| Backend | `backend/src/__tests__/auth.spec.ts` | Supabase Auth / profile repository |
 
 | # | Test Case | Layer | Expected |
 |---|-----------|-------|----------|
-| 1 | Valid registration | Frontend/Backend | Customer account/profile is created |
+| 1 | Valid registration | Frontend/Backend | Pending email is returned and the confirm-email step can continue |
 | 2 | Invalid email | Frontend | Validation error is shown |
 | 3 | Password mismatch | Frontend | Validation error is shown |
 | 4 | Duplicate email | Backend | Conflict/error response is returned |
-| 5 | Missing required profile field | Backend | Validation error is returned |
+| 5 | Signup verification | Backend | Profile/session is created after code verification |
 
 ---
 
@@ -94,13 +95,14 @@ Implement `docs/tasks/00-04-customer-registration.md`.
 ## References
 - Related report use case: `report/content/2_System Analyze.tex` SUC1 Login
 - API: `docs/architecture/api-endpoints.md`
-- Current route: `/auth/register`
+- Current route: `/register`
 
 ## Implementation
 - Replace `RegisterComponent` placeholder.
 - Add typed register payload and response models.
 - Implement or wire `POST /api/auth/register`.
-- Create customer profile after auth user creation.
+- Return the pending email immediately after auth signup succeeds.
+- Create or load the customer profile during signup verification/login.
 - If backend is not ready, create a typed frontend stub with `// TODO: Implemented in task 00-04`.
 
 ## Test Requirements
@@ -114,11 +116,11 @@ Implement `docs/tasks/00-04-customer-registration.md`.
 
 ## Completion Conditions
 
-- [ ] `/auth/register` no longer shows placeholder text.
-- [ ] Customer can submit registration form.
-- [ ] Customer profile is created with auth account.
-- [ ] Duplicate/invalid registration is handled.
-- [ ] Tests pass for changed code.
+- [x] `/register` no longer shows placeholder text.
+- [x] Customer can submit registration form.
+- [x] Registration redirects to `/confirm-email` with the pending email.
+- [x] Duplicate/invalid registration is handled.
+- [x] Tests pass for changed code.
 
 ---
 

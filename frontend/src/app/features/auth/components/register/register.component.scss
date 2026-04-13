@@ -1,0 +1,284 @@
+:host {
+  display: block;
+}
+
+.register-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #fef4df;
+}
+
+.register-page {
+  position: relative;
+  width: 100vw;
+  min-height: 100dvh;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 47.5% 52.5%;
+  background: #fef4df;
+  overflow: hidden;
+}
+
+.register-page__visual {
+  min-height: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0%, rgba(254, 244, 223, 0) 66%, rgba(254, 244, 223, 0.9) 100%),
+    url('/assets/pictures/Sign Up Page.png') left center / cover no-repeat;
+}
+
+.register-page__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 8.5% 10.5% 8% 9%;
+  background: #fef4df;
+}
+
+.register-page__panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -18%;
+  width: 22%;
+  background: linear-gradient(90deg, rgba(254, 244, 223, 0) 0%, #fef4df 82%);
+  pointer-events: none;
+}
+
+.register-page__language {
+  position: absolute;
+  top: 5%;
+  right: 6%;
+  z-index: 1;
+}
+
+.register-page__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 31rem;
+  color: #264893;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-page__header {
+  width: 100%;
+  margin-bottom: 16%;
+  text-align: center;
+}
+
+.register-page__title {
+  font-family: 'Big Shoulders Text', sans-serif;
+  font-size: clamp(3rem, 4.6vw, 4.45rem);
+  font-weight: 900;
+  line-height: 0.92;
+  color: #264893;
+}
+
+.register-page__subtitle {
+  margin-top: 0.4rem;
+  font-family: 'Big Shoulders Text', sans-serif;
+  font-size: clamp(1.25rem, 2vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #264893;
+}
+
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register-form__field {
+  display: block;
+}
+
+.register-form__label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-family: 'Afacad', sans-serif;
+  font-size: clamp(1rem, 1.35vw, 1.55rem);
+  line-height: 1.2;
+  color: #264893;
+}
+
+.register-form__input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 2px solid #264893;
+}
+
+.register-form__input-wrap input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3rem 0;
+  border: 0;
+  background: transparent;
+  font-family: 'Afacad', sans-serif;
+  font-size: clamp(1rem, 1.35vw, 1.55rem);
+  line-height: 1.35;
+  color: #264893;
+  outline: none;
+}
+
+.register-form__input-wrap input::selection {
+  background: rgba(38, 72, 147, 0.16);
+  color: #264893;
+}
+
+.register-form__input-wrap input:-webkit-autofill,
+.register-form__input-wrap input:-webkit-autofill:hover,
+.register-form__input-wrap input:-webkit-autofill:focus,
+.register-form__input-wrap input:-webkit-autofill:active {
+  -webkit-text-fill-color: #264893;
+  -webkit-box-shadow: 0 0 0 1000px #fef4df inset;
+  box-shadow: 0 0 0 1000px #fef4df inset;
+  caret-color: #264893;
+}
+
+.register-form__input-wrap input::placeholder {
+  color: rgba(38, 72, 147, 0.58);
+}
+
+.register-form__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #264893;
+  cursor: pointer;
+}
+
+.register-form__icon-button img {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.register-form__message {
+  min-height: 0.8rem;
+  font-family: 'Afacad', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.register-form__message--error {
+  color: #b42318;
+}
+
+.register-form__submit {
+  margin-top: 1.4rem;
+  width: min(100%, 19rem);
+  min-height: 3rem;
+  align-self: center;
+  border: 0;
+  border-radius: 999px;
+  background: #264893;
+  font-family: 'Afacad', sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #fef4df;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.register-form__submit:hover:not(:disabled) {
+  background: #1f3d7d;
+  transform: translateY(-1px);
+}
+
+.register-form__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.register-page__login {
+  margin-top: 0.8rem;
+  text-align: center;
+  font-family: 'Afacad', sans-serif;
+  font-size: clamp(0.72rem, 0.95vw, 1rem);
+  color: #264893;
+}
+
+.register-page__login a {
+  margin-left: 0.25rem;
+  font-weight: 700;
+  color: #264893;
+  text-decoration: none;
+}
+
+.register-page__login a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+  .register-page {
+    width: 100%;
+    min-height: 100dvh;
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .register-page__visual {
+    display: none;
+  }
+
+  .register-page__panel::before {
+    display: none;
+  }
+
+  .register-page__panel {
+    min-height: 100dvh;
+    padding: 6rem 1.5rem 2rem;
+  }
+
+  .register-page__language {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .register-page__content {
+    max-width: none;
+    align-items: stretch;
+  }
+
+  .register-page__header {
+    margin-bottom: 2.5rem;
+    text-align: left;
+  }
+
+  .register-form__submit {
+    width: 100%;
+    max-width: 24rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .register-shell {
+    padding: 0;
+  }
+
+  .register-page {
+    width: 100%;
+    min-height: 100dvh;
+  }
+
+  .register-page__panel {
+    padding: 5.5rem 1.25rem 1.75rem;
+  }
+}

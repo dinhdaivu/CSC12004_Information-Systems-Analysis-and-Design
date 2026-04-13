@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import angular from '@angular-eslint/eslint-plugin';
 import angularTemplate from '@angular-eslint/eslint-plugin-template';
+import angularTemplateParser from '@angular-eslint/template-parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 
@@ -28,7 +29,9 @@ export default [
     plugins: {
       '@typescript-eslint': tsPlugin,
       '@angular-eslint': angular,
+      '@angular-eslint/template': angularTemplate,
     },
+    processor: angularTemplate.processors?.['extract-inline-html'],
     rules: {
       ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
@@ -55,7 +58,7 @@ export default [
   {
     files: ['**/*.html'],
     languageOptions: {
-      parser: angularTemplate.parser,
+      parser: angularTemplateParser,
     },
     plugins: {
       '@angular-eslint/template': angularTemplate,

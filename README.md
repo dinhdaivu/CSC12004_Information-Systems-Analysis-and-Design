@@ -50,6 +50,12 @@ HomeStay Dorm is a private dormitory (ký túc xá) management system covering t
 | Testing          | Jest (Backend), Jasmine (Frontend)                     |
 | CI/CD            | GitHub Actions                                         |
 
+## Current Auth Flow
+
+- Customers register on `/register` with email and password.
+- The frontend calls `POST /api/auth/register` and redirects to `/confirm-email` as soon as the signup request succeeds.
+- Email verification calls `POST /api/auth/verify-email`, which creates or loads the application profile and returns the signed session payload.
+
 ---
 
 ## Project Structure

@@ -19,11 +19,10 @@ export interface User {
 export interface AuthResponse {
   success: boolean;
   data: {
-    id: string;
-    email: string;
     token: string;
-    role: string;
+    user: User;
   };
+  message?: string;
 }
 
 export interface LoginRequest {
@@ -31,9 +30,36 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;
-  full_name: string;
+  confirm_password: string;
+}
+
+export interface RegisterResult {
+  email: string;
+}
+
+export interface VerifyEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordWithCodeRequest {
+  email: string;
+  code: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface UpdateProfileRequest {
+  full_name?: string;
   phone_number?: string;
+  avatar_url?: string;
+  gender?: string;
+  nationality?: string;
 }

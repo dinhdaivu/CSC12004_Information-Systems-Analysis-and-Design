@@ -1,114 +1,105 @@
 import { TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { of, throwError } from 'rxjs';
+import { AuthService } from '@core/services/auth.service';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: any;
-  let httpMock: HttpTestingController;
-  let router: any;
+  let authService: { register: jest.Mock };
+  let router: Router;
 
   beforeEach(async () => {
+    authService = {
+      register: jest.fn(),
+    };
+
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, ReactiveFormsModule, HttpClientTestingModule],
+      imports: [RegisterComponent, ReactiveFormsModule, RouterTestingModule, TranslateModule.forRoot()],
       providers: [
-        {
-          provide: Router,
-          useValue: { navigate: jest.fn() }
-        }
-      ]
+        { provide: AuthService, useValue: authService },
+      ],
     }).compileComponents();
+
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
-  describe('Component Initialization', () => {
-    it('should create the component', () => {
-      expect(component).toBeTruthy();
-    });
-
-    it('should be a standalone component', () => {
-      expect(RegisterComponent).toBeDefined();
-    });
-
-    it('should initialize without errors', () => {
-      expect(() => fixture.detectChanges()).not.toThrow();
-    });
-
-    it('should have proper component instance', () => {
-      fixture.detectChanges();
-      expect(fixture.componentInstance).toEqual(component);
-    });
+  it('should render the register form inputs', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('input[type="email"]')).toBeTruthy();
+    expect(compiled.querySelector('#register-password')).toBeTruthy();
+    expect(compiled.querySelector('#register-confirm-password')).toBeTruthy();
   });
 
-  describe('Form Rendering', () => {
-    it('should render register form with all fields', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
+  it('should not submit invalid form values', () => {
+    fixture.detectChanges();
 
-    it('should display form inputs', () => {
-      fixture.detectChanges();
-      const compiled = fixture.nativeElement;
-      expect(compiled).toBeTruthy();
-    });
+    component.submit();
 
-    it('should have valid template structure', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+    expect(authService.register).not.toHaveBeenCalled();
   });
 
-  describe('Form Submission', () => {
-    it('should handle user registration submission', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
+  it('should show a mismatch error when passwords do not match', () => {
+    fixture.detectChanges();
+    component.form.setValue({
+      email: 'user@example.com',
+      password: 'secret123',
+      confirm_password: 'secret456',
     });
 
-    it('should validate form input before submission', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+    component.submit();
+
+    expect(component.form.hasError('passwordMismatch')).toBe(true);
+    expect(authService.register).not.toHaveBeenCalled();
+  });
+
+  it('should submit and navigate to confirm email page', () => {
+    authService.register.mockReturnValue(of({ email: 'user@example.com' }));
+
+    fixture.detectChanges();
+    component.form.setValue({
+      email: 'user@example.com',
+      password: 'secret123',
+      confirm_password: 'secret123',
     });
 
-    it('should process registration request', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
+    component.submit();
 
-    it('should handle registration success', () => {
-      fixture.detectChanges();
-      expect(router.navigate).toBeDefined();
+    expect(authService.register).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      password: 'secret123',
+      confirm_password: 'secret123',
     });
-
-    it('should display error on registration failure', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith(['/confirm-email'], {
+      queryParams: { email: 'user@example.com' },
     });
   });
 
-  describe('Form Validation', () => {
-    it('should validate password matching', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+  it('should surface register errors', () => {
+    authService.register.mockReturnValue(throwError(() => new Error('Register failed')));
+
+    fixture.detectChanges();
+    component.form.setValue({
+      email: 'user@example.com',
+      password: 'secret123',
+      confirm_password: 'secret123',
     });
 
-    it('should validate email format', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
+    component.submit();
 
-    it('should enable/disable submit button based on form state', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+    expect(component.errorMessage).toBe('Register failed');
   });
 });

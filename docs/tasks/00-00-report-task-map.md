@@ -43,7 +43,7 @@ These use cases were added to `report/content/2_System Analyze.tex` as implement
 
 | SUC | Use Case | Primary Task | Reason |
 |-----|----------|--------------|--------|
-| SUC18 | Customer registration | [00-04 Customer Registration](./00-04-customer-registration.md) | The app has `/auth/register`, and customers need accounts before rental/deposit/checkout flows |
+| SUC18 | Customer registration | [00-04 Customer Registration](./00-04-customer-registration.md) | The app has `/register` and `/confirm-email`, and customers need accounts before rental/deposit/checkout flows |
 | SUC19 | Admin user management | [03-04 Admin User Management](./03-04-admin-user-management.md) | The app has `/admin/users`, and API docs define `/users` admin endpoints |
 | SUC20 | Customer booking/request status list | [01-06 Customer Bookings and Rental Request List](./01-06-customer-bookings-list.md) | The app has `/bookings`, and customers need to view request/deposit/booking status |
 | SUC21 | Admin dashboard overview | [03-05 Admin Dashboard Overview](./03-05-admin-dashboard-overview.md) | The app has `/admin`, and tests expect admin stats/navigation/recent activity |

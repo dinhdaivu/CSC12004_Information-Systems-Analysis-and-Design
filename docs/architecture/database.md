@@ -6,6 +6,8 @@
 
 The schema uses Supabase PostgreSQL with UUID primary keys, `created_at` / `updated_at` timestamps, row-level security, and role-aware access policies. Supabase Auth owns login credentials through `auth.users`; the application profile is stored in `public.users`.
 
+The current auth flow intentionally keeps initial registration lightweight: `POST /api/auth/register` creates the Supabase auth user and returns the pending email immediately, while the `public.users` profile row is created or loaded during signup verification or the first successful login.
+
 ## Core Tables
 
 | Table | Purpose |

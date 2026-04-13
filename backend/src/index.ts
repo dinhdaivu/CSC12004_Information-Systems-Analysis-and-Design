@@ -2,7 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import branchRoutes from './routes/branch.routes';
+import authRoutes from '@routes/auth.routes';
+import branchRoutes from '@routes/branch.routes';
+import { ApiResponseBuilder } from '@models/api.model';
+import { AppError } from '@utils/errors';
 
 dotenv.config();
 
@@ -24,24 +27,32 @@ app.get('/api/health', (req, res) => {
 });
 
 // Routes
-// TODO: Add routes here
+app.use('/api/auth', authRoutes);
 app.use('/api/branches', branchRoutes);
+
 // Error handling middleware
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
-    status: err.status || 500,
-  });
+app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  void req;
+  void next;
+
+  if (err instanceof Error) {
+    console.error(err.stack ?? err.message);
+  } else {
+    console.error(err);
+  }
+
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json(ApiResponseBuilder.error(err.code, err.message, err.details));
+    return;
+  }
+
+  res.status(500).json(ApiResponseBuilder.error('INTERNAL_SERVER_ERROR', 'Internal Server Error'));
 });
 
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
-  res.status(404).json({
-    message: 'Route not found',
-    status: 404,
-  });
+  void req;
+  res.status(404).json(ApiResponseBuilder.error('NOT_FOUND', 'Route not found'));
 });
 
 // Start server outside tests so Supertest can import the app without hanging Jest.
@@ -50,7 +61,5 @@ if (process.env.NODE_ENV !== 'test') {
     console.warn(`Server is running on http://localhost:${PORT}`);
   });
 }
-
-
 
 export default app;

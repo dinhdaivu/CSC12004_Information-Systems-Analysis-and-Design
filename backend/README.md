@@ -174,6 +174,12 @@ Base URL: `http://localhost:3000/api`
 
 See [../docs/architecture/api-endpoints.md](../docs/architecture/api-endpoints.md) for complete API documentation.
 
+Current auth flow notes:
+
+- `POST /api/auth/register` returns the pending email as soon as Supabase signup succeeds so the frontend can redirect quickly to `/confirm-email`.
+- `POST /api/auth/verify-email` verifies the signup code, creates or loads the `public.users` profile row, and returns the signed JWT plus user payload.
+- `POST /api/auth/resend-verification` resends the signup code without requiring an authenticated session.
+
 ## Dependencies
 
 - Express.js 5.2.1

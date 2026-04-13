@@ -1,33 +1,60 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { supabase } from '@config/supabase';
+
+type BranchWithRooms = {
+  id: string;
+  name: string;
+  address: string;
+  description: string;
+  hero_image_url?: string | null;
+  rooms?: Array<{ id: string | number }> | null;
+};
+
+const DEFAULT_BRANCH_HERO_IMAGE = 'assets/pictures/Homepage To Hien Thanh.png';
+
+function getSupabaseClient() {
+  if (!supabase) {
+    throw new Error('Supabase client is not configured');
+  }
+
+  return supabase;
+}
+
+function mapBranch(branch: BranchWithRooms) {
+  return {
+    id: branch.id,
+    name: branch.name,
+    address: branch.address,
+    description: branch.description,
+    heroImage: branch.hero_image_url || DEFAULT_BRANCH_HERO_IMAGE,
+    roomCount: branch.rooms?.length ?? 0,
+  };
+}
 
 export const getBranches = async (req: Request, res: Response) => {
+  void req;
+
   try {
-    const { data: branches, error } = await supabase.from('branches').select('*, rooms(id)');
-    if (error) throw error;
+    const client = getSupabaseClient();
+    const { data: branches, error } = await client.from('branches').select('*, rooms(id)');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mappedBranches = branches.map((b: any) => ({
-      id: b.id,
-      name: b.name,
-      address: b.address,
-      description: b.description,
-      heroImage: b.hero_image_url || 'assets/pictures/Homepage Tô Hiến Thành.png',
-      roomCount: b.rooms ? b.rooms.length : 0
-    }));
+    if (error) {
+      throw error;
+    }
 
-    res.status(200).json(mappedBranches);
+    res.status(200).json((branches ?? []).map((branch) => mapBranch(branch as BranchWithRooms)));
   } catch (error) {
     const err = error as Error;
-    console.error('Lỗi khi lấy danh sách:', err.message);
+    console.error('Failed to fetch branches:', err.message);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 export const getBranchById = async (req: Request, res: Response) => {
   try {
+    const client = getSupabaseClient();
     const { id } = req.params;
-    const { data: branch, error } = await supabase
+    const { data: branch, error } = await client
       .from('branches')
       .select('*, rooms(id)')
       .eq('id', id)
@@ -35,25 +62,20 @@ export const getBranchById = async (req: Request, res: Response) => {
 
     if (error) {
       if (error.code === 'PGRST116') {
-         return res.status(404).json({ message: 'Branch not found' });
+        return res.status(404).json({ message: 'Branch not found' });
       }
+
       throw error;
     }
 
-    const mappedBranch = {
-      id: branch.id,
-      name: branch.name,
-      address: branch.address,
-      description: branch.description,
-      heroImage: branch.hero_image_url || 'assets/pictures/Homepage Tô Hiến Thành.png',
-      roomCount: branch.rooms ? branch.rooms.length : 0
-    };
+    if (!branch) {
+      return res.status(404).json({ message: 'Branch not found' });
+    }
 
-    res.status(200).json(mappedBranch);
+    res.status(200).json(mapBranch(branch as BranchWithRooms));
   } catch (error) {
     const err = error as Error;
-    // Fix Log Injection: Tách biến id ra khỏi chuỗi log
-    console.error('Lỗi khi lấy chi nhánh bằng ID:', { branchId: req.params.id, error: err.message });
+    console.error('Failed to fetch branch by id:', { branchId: req.params.id, error: err.message });
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
