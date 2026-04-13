@@ -86,6 +86,23 @@ describe('ResetPasswordComponent', () => {
     expect(authService.forgotPassword).toHaveBeenCalledWith({ email: 'recover@example.com' });
   });
 
+  it('should paste all six digits across the recovery code inputs', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const preventDefault = jest.fn();
+    component.onCodePaste(0, {
+      clipboardData: {
+        getData: () => '123456',
+      },
+      preventDefault,
+    } as unknown as ClipboardEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(component.codeControls.value.join('')).toBe('123456');
+  });
+
   it('should surface recovery errors', () => {
     authService.resetPasswordWithCode.mockReturnValue(throwError(() => new Error('Bad code')));
     const fixture = TestBed.createComponent(ResetPasswordComponent);

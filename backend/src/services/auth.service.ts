@@ -55,6 +55,7 @@ export class AuthService {
     const email = input.email.trim().toLowerCase();
     const password = input.password.trim();
     const confirmPassword = input.confirm_password.trim();
+    const maskedEmail = this.maskEmail(email);
 
     if (!email || !password || !confirmPassword) {
       throw new ValidationError('Email, password, and password confirmation are required');
@@ -68,7 +69,13 @@ export class AuthService {
       throw new ValidationError('Passwords do not match');
     }
 
-    this.ensureSupabaseClients();
+    this.ensureSupabaseClient();
+
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[AuthService.register] Attempting signup', {
+        email: maskedEmail,
+      });
+    }
 
     const { data, error } = await supabase!.auth.signUp({
       email,
@@ -76,6 +83,25 @@ export class AuthService {
     });
 
     if (error) {
+      if (process.env.NODE_ENV !== 'test') {
+        const debugError = error as {
+          name?: string;
+          message?: string;
+          code?: string;
+          status?: number;
+          cause?: unknown;
+        };
+
+        console.error('[AuthService.register] Supabase signup failed', {
+          email: maskedEmail,
+          name: debugError.name,
+          message: debugError.message,
+          code: debugError.code,
+          status: debugError.status,
+          cause: debugError.cause,
+        });
+      }
+
       if (this.isDuplicateEmailError(error.message)) {
         throw new ConflictError('An account with this email already exists');
       }
@@ -84,6 +110,13 @@ export class AuthService {
     }
 
     if (!data.user) {
+      if (process.env.NODE_ENV !== 'test') {
+        console.error('[AuthService.register] Signup returned no user', {
+          email: maskedEmail,
+          hasSession: Boolean(data.session),
+        });
+      }
+
       throw new InternalServerError('Failed to register account');
     }
 
@@ -91,7 +124,13 @@ export class AuthService {
       throw new ConflictError('An account with this email already exists');
     }
 
-    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[AuthService.register] Signup completed', {
+        email: maskedEmail,
+        userId: data.user.id,
+        confirmationEmailDispatchedBySupabase: true,
+      });
+    }
 
     return { email };
   }
@@ -143,7 +182,7 @@ export class AuthService {
     }
   }
 
-  static async verifyEmail(input: VerifyEmailInput): Promise<void> {
+  static async verifyEmail(input: VerifyEmailInput): Promise<AuthenticatedProfile> {
     const email = input.email.trim().toLowerCase();
     const code = input.code.trim();
 
@@ -156,14 +195,21 @@ export class AuthService {
     const { data, error } = await supabase!.auth.verifyOtp({
       email,
       token: code,
-      type: 'email',
+      type: 'signup',
     });
 
     if (error || !data.user) {
       throw new UnauthorizedError('Invalid or expired verification code');
     }
 
-    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+    const user = await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+    const token = TokenUtils.generateToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return { token, user };
   }
 
   static async resendVerification(input: ForgotPasswordInput): Promise<void> {
@@ -222,8 +268,6 @@ export class AuthService {
     if (updateError) {
       throw new InternalServerError(updateError.message || 'Failed to update password');
     }
-
-    await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
   }
 
   static async getCurrentUser(userId: string): Promise<User> {
@@ -355,5 +399,16 @@ export class AuthService {
   private static isDuplicateEmailError(message: string | undefined): boolean {
     const normalized = (message || '').toLowerCase();
     return normalized.includes('already registered') || normalized.includes('already exists');
+  }
+
+  private static maskEmail(email: string): string {
+    const [localPart, domain] = email.split('@');
+
+    if (!localPart || !domain) {
+      return email;
+    }
+
+    const visiblePrefix = localPart.slice(0, 2);
+    return `${visiblePrefix}${'*'.repeat(Math.max(localPart.length - 2, 1))}@${domain}`;
   }
 }

@@ -112,19 +112,38 @@ describe('AuthService', () => {
     expect(service.getPendingRegistrationEmail()).toBe('newuser@example.com');
   });
 
-  it('should verify registration code and clear the pending email', () => {
+  it('should verify registration code, store the session, and clear the pending email', () => {
     sessionStorage.setItem('pending_registration_email', 'newuser@example.com');
+    const user: User = {
+      id: 'user-2',
+      email: 'newuser@example.com',
+      full_name: 'New User',
+      role: 'customer',
+      status: 'active',
+      created_at: '2026-04-09T00:00:00.000Z',
+      updated_at: '2026-04-09T00:00:00.000Z',
+    };
 
     service.verifyRegistrationCode({
       email: 'newuser@example.com',
       code: '123456',
-    }).subscribe();
+    }).subscribe((result) => {
+      expect(result).toEqual(user);
+    });
 
     const request = httpMock.expectOne('http://localhost:3000/api/auth/verify-email');
     expect(request.request.method).toBe('POST');
-    request.flush({ success: true, data: null });
+    request.flush({
+      success: true,
+      data: {
+        token: 'signed-jwt',
+        user,
+      },
+    });
 
     expect(service.getPendingRegistrationEmail()).toBeNull();
+    expect(service.getToken()).toBe('signed-jwt');
+    expect(service.getCurrentUser()).toEqual(user);
   });
 
   it('should resend verification code and keep the normalized email', () => {

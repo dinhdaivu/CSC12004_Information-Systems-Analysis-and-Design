@@ -12,9 +12,12 @@ Roles: `customer`, `staff` (Sales/Kế toán), `admin` (Quản lý)
 
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| POST | `/auth/register` | Public | Register new customer account |
+| POST | `/auth/register` | Public | Register new customer account and return the pending email for the confirmation step |
 | POST | `/auth/login` | Public | Login, returns JWT |
 | POST | `/auth/forgot-password` | Public | Request password reset email |
+| POST | `/auth/verify-email` | Public | Verify signup code, create/load the application profile, and return JWT |
+| POST | `/auth/resend-verification` | Public | Resend the signup verification code |
+| POST | `/auth/reset-password/verify` | Public | Verify recovery code and update password |
 | POST | `/auth/logout` | Any | Logout |
 | GET | `/auth/me` | Any | Get current user profile |
 | PATCH | `/auth/me` | Any | Update current user profile |

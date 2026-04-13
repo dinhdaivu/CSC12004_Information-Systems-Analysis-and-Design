@@ -121,24 +121,6 @@ describe('Auth Routes', () => {
       error: null,
     });
 
-    fromSelectMaybeSingle.mockResolvedValue({
-      data: null,
-      error: null,
-    });
-
-    fromInsertSingle.mockResolvedValue({
-      data: {
-        id: 'user-2',
-        email: 'new@example.com',
-        full_name: 'new',
-        role: 'customer',
-        status: 'active',
-        created_at: '2026-04-09T00:00:00.000Z',
-        updated_at: '2026-04-09T00:00:00.000Z',
-      },
-      error: null,
-    });
-
     const response = await request(app).post('/api/auth/register').send({
       email: 'new@example.com',
       password: 'secret123',
@@ -152,6 +134,8 @@ describe('Auth Routes', () => {
       email: 'new@example.com',
       password: 'secret123',
     });
+    expect(fromSelectMaybeSingle).not.toHaveBeenCalled();
+    expect(fromInsertSingle).not.toHaveBeenCalled();
   });
 
   it('should reject duplicate registration emails', async () => {
@@ -261,10 +245,12 @@ describe('Auth Routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
+    expect(response.body.data.token).toBe('signed-jwt');
+    expect(response.body.data.user.email).toBe('verify@example.com');
     expect(verifyOtp).toHaveBeenCalledWith({
       email: 'verify@example.com',
       token: '123456',
-      type: 'email',
+      type: 'signup',
     });
   });
 
@@ -299,19 +285,6 @@ describe('Auth Routes', () => {
     updateUserById.mockResolvedValue({
       data: {
         id: 'user-4',
-      },
-      error: null,
-    });
-
-    fromSelectMaybeSingle.mockResolvedValue({
-      data: {
-        id: 'user-4',
-        email: 'recover@example.com',
-        full_name: 'recover',
-        role: 'customer',
-        status: 'active',
-        created_at: '2026-04-09T00:00:00.000Z',
-        updated_at: '2026-04-09T00:00:00.000Z',
       },
       error: null,
     });

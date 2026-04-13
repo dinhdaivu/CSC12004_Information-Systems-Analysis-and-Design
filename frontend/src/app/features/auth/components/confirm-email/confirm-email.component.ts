@@ -46,10 +46,16 @@ export class ConfirmEmailComponent {
 
   onDigitInput(index: number, event: Event): void {
     const input = event.target as HTMLInputElement;
-    const sanitized = input.value.replace(/\D/g, '').slice(-1);
+    const sanitized = input.value.replace(/\D/g, '');
+
+    if (sanitized.length > 1) {
+      this.fillCodeFrom(index, sanitized);
+      return;
+    }
+
     this.codeControls.at(index).setValue(sanitized);
 
-    if (sanitized && index < this.codeControls.length - 1) {
+    if (sanitized.length === 1 && index < this.codeControls.length - 1) {
       this.focusInput(index + 1);
     }
   }
@@ -58,6 +64,17 @@ export class ConfirmEmailComponent {
     if (event.key === 'Backspace' && !this.codeControls.at(index).value && index > 0) {
       this.focusInput(index - 1);
     }
+  }
+
+  onCodePaste(index: number, event: ClipboardEvent): void {
+    const pastedValue = event.clipboardData?.getData('text')?.replace(/\D/g, '') ?? '';
+
+    if (!pastedValue) {
+      return;
+    }
+
+    event.preventDefault();
+    this.fillCodeFrom(index, pastedValue);
   }
 
   submit(): void {
@@ -80,7 +97,7 @@ export class ConfirmEmailComponent {
       })
     ).subscribe({
       next: () => {
-        this.successMessage = this.translateService.instant('AUTH.CONFIRM_EMAIL.SUCCESS');
+        void this.router.navigate(['/dashboard']);
       },
       error: (error: { message?: string; error?: { error?: { message?: string } } }) => {
         this.errorMessage =
@@ -118,5 +135,16 @@ export class ConfirmEmailComponent {
     const target = this.codeInputs?.get(index)?.nativeElement;
     target?.focus();
     target?.select();
+  }
+
+  private fillCodeFrom(startIndex: number, value: string): void {
+    const digits = value.replace(/\D/g, '').slice(0, this.codeControls.length - startIndex).split('');
+
+    digits.forEach((digit, offset) => {
+      this.codeControls.at(startIndex + offset).setValue(digit);
+    });
+
+    const nextIndex = Math.min(startIndex + digits.length, this.codeControls.length - 1);
+    this.focusInput(nextIndex);
   }
 }

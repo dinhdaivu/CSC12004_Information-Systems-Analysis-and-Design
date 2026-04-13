@@ -70,8 +70,16 @@ describe('ConfirmEmailComponent', () => {
     expect(authService.verifyRegistrationCode).not.toHaveBeenCalled();
   });
 
-  it('should submit the full verification code in signup mode', async () => {
-    authService.verifyRegistrationCode.mockReturnValue(of(void 0));
+  it('should submit the full verification code in signup mode and redirect to dashboard', async () => {
+    authService.verifyRegistrationCode.mockReturnValue(of({
+      id: 'user-1',
+      email: 'signup@example.com',
+      full_name: 'Signup User',
+      role: 'customer',
+      status: 'active',
+      created_at: '2026-04-09T00:00:00.000Z',
+      updated_at: '2026-04-09T00:00:00.000Z',
+    }));
     const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
     fixture.detectChanges();
 
@@ -85,6 +93,7 @@ describe('ConfirmEmailComponent', () => {
       email: 'signup@example.com',
       code: '123456',
     });
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should resend the verification code in signup mode', async () => {
@@ -95,6 +104,22 @@ describe('ConfirmEmailComponent', () => {
     component.resendCode();
 
     expect(authService.resendVerificationCode).toHaveBeenCalledWith('signup@example.com');
+  });
+
+  it('should paste all six digits across the verification inputs', async () => {
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+
+    const preventDefault = jest.fn();
+    component.onCodePaste(0, {
+      clipboardData: {
+        getData: () => '123456',
+      },
+      preventDefault,
+    } as unknown as ClipboardEvent);
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(component.codeControls.value.join('')).toBe('123456');
   });
 
   it('should surface verification errors', async () => {

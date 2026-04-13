@@ -244,6 +244,14 @@
     padding: 6rem 1.5rem 2rem;
   }
 
+  .register-page__language {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .register-page__content {
     max-width: none;
     align-items: stretch;

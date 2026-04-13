@@ -47,7 +47,7 @@
     "CONFIRM_EMAIL": {
       "TITLE": "XÁC NHẬN EMAIL",
       "SUBTITLE": "Xác minh email của bạn",
-      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh 6 chữ số đến email của bạn. Nhập mã bên dưới để kích hoạt tài khoản.",
+      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh 6 chữ số đến email của bạn.\nNhập mã bên dưới để kích hoạt tài khoản.",
       "VALIDATION": "Vui lòng nhập đầy đủ mã xác minh 6 chữ số.",
       "SUBMIT": "Xác minh & kích hoạt",
       "SUBMITTING": "Đang xác minh...",
@@ -62,7 +62,7 @@
     "RESET_PASSWORD": {
       "TITLE": "ĐẶT LẠI MẬT KHẨU",
       "SUBTITLE": "Khôi phục tài khoản",
-      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục 6 chữ số đến email của bạn. Nhập mã bên dưới và chọn mật khẩu mới.",
+      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục 6 chữ số đến email của bạn.\nNhập mã bên dưới và chọn mật khẩu mới.",
       "VALIDATION": "Vui lòng nhập đầy đủ mã 6 chữ số và mật khẩu mới hợp lệ.",
       "SUBMIT": "Xác minh & cập nhật mật khẩu",
       "SUBMITTING": "Đang cập nhật mật khẩu...",

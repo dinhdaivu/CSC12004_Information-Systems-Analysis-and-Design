@@ -1,6 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { catchError, of } from 'rxjs';
+import { AuthService } from '@core/services/auth.service';
 import { LanguageService } from '@core/i18n/language.service';
 import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher.component';
 
@@ -29,6 +31,7 @@ import { LanguageSwitcherComponent } from '@shared/components/language-switcher/
   styles: []
 })
 export class AppComponent implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly languageService = inject(LanguageService);
   private readonly router = inject(Router);
 
@@ -36,6 +39,17 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.languageService.initializeLanguage();
+
+    if (!this.authService.getToken()) {
+      return;
+    }
+
+    this.authService.loadCurrentUser().pipe(
+      catchError(() => {
+        this.authService.clearSession();
+        return of(null);
+      })
+    ).subscribe();
   }
 
   isFullscreenAuthRoute(): boolean {

@@ -41,6 +41,8 @@ http://localhost:3000/api
 - Customer booking status
 - Admin dashboard and user management
 
+The current authentication set includes registration, signup verification, verification resend, password recovery, login/logout, and current-user profile endpoints.
+
 ### Pending Items
 - [ ] Create request/response examples for each endpoint
 - [ ] Document error codes and messages

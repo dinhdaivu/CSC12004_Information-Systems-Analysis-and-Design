@@ -21,9 +21,10 @@ Customer registration is split into [00-04 Customer Registration](./00-04-custom
 
 | Screen | Angular Route | Backend Task |
 |--------|---------------|--------------|
-| Login | `/auth/login` | SUC1 |
-| Register | `/auth/register` | Derived SUC18; see task 00-04 |
-| Forgot password | `/auth/forgot-password` | SUC1 alternative flow |
+| Login | `/login` | SUC1 |
+| Register | `/register` | Derived SUC18; see task 00-04 |
+| Confirm email | `/confirm-email` | SUC18 signup verification |
+| Reset password | `/reset-password` | SUC1 alternative flow |
 
 ---
 
@@ -42,13 +43,15 @@ Customer registration is split into [00-04 Customer Registration](./00-04-custom
 ```text
 Auth flow:
 
-1. User opens /auth/login.
+1. User opens /login.
 2. User enters credentials.
 3. Backend verifies credentials and returns JWT/session.
 4. Frontend stores token through AuthService.
 5. Frontend redirects user based on role.
 6. User can logout and clear the session.
 7. Forgot-password flow accepts email and triggers reset.
+8. Signup flow continues through /confirm-email after `/api/auth/register` returns the pending email.
+9. Password recovery continues through /reset-password.
 ```
 
 ---
@@ -59,9 +62,9 @@ Auth flow:
 
 - [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace login and forgot-password placeholders with real forms.
+- [ ] Replace login, confirm-email, and reset-password placeholders with real forms.
 - [ ] Add validation and error messages.
-- [ ] Wire `AuthService` to login/logout/current-user/reset APIs.
+- [ ] Wire `AuthService` to login/logout/current-user/reset/verification APIs.
 - [ ] Add role-based redirect after login.
 - [ ] Add auth guard for protected routes.
 
@@ -71,7 +74,7 @@ Auth flow:
 - [ ] Implement `POST /api/auth/logout`.
 - [ ] Implement `GET /api/auth/me`.
 - [ ] Implement `PATCH /api/auth/me`.
-- [ ] Implement reset-password entry point if Supabase Auth is used.
+- [ ] Implement signup verification, resend-verification, and reset-password entry points if Supabase Auth is used.
 
 ### Tests
 
@@ -93,8 +96,8 @@ Implement `docs/tasks/00-01-auth-and-session-management.md`.
 - API: `docs/architecture/api-endpoints.md`
 
 ## Implementation
-- Replace login and forgot-password placeholder components.
-- Add typed login/reset/current-user payloads.
+- Replace login, confirm-email, and reset-password placeholder components.
+- Add typed login/reset/current-user/verification payloads.
 - Wire AuthService to backend auth endpoints.
 - Add role-based redirect and protected-route guard.
 - If backend auth is missing, create typed frontend stubs with `// TODO: Implemented in task 00-01`.
@@ -110,9 +113,9 @@ Implement `docs/tasks/00-01-auth-and-session-management.md`.
 
 ## Completion Conditions
 
-- [ ] Auth pages no longer show placeholder text.
-- [ ] Login stores token/session.
-- [ ] Logout clears token/session.
-- [ ] `/auth/me` or equivalent current-user flow exists.
-- [ ] Protected routes require authentication.
-- [ ] Tests pass for changed code.
+- [x] Auth pages no longer show placeholder text.
+- [x] Login stores token/session.
+- [x] Logout clears token/session.
+- [x] `/auth/me` or equivalent current-user flow exists.
+- [x] Protected routes require authentication.
+- [x] Tests pass for changed code.

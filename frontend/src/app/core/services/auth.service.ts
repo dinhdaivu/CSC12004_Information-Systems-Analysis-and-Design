@@ -73,9 +73,11 @@ export class AuthService {
     );
   }
 
-  verifyRegistrationCode(payload: VerifyEmailRequest): Observable<void> {
-    return this.http.post(`${this.apiUrl}/verify-email`, payload).pipe(
-      map(() => void 0),
+  verifyRegistrationCode(payload: VerifyEmailRequest): Observable<User> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/verify-email`, payload).pipe(
+      map((response) => response.data),
+      tap(({ token, user }) => this.setSession(token, user)),
+      map(({ user }) => user),
       tap(() => {
         this.clearPendingRegistrationEmail();
       })

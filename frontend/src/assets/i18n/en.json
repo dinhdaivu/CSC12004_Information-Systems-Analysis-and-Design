@@ -47,7 +47,7 @@
     "CONFIRM_EMAIL": {
       "TITLE": "CONFIRM EMAIL",
       "SUBTITLE": "Verify Your Email",
-      "DESCRIPTION": "We have sent a 6-digit verification code to your email. Enter the code below to activate your account.",
+      "DESCRIPTION": "We have sent a 6-digit verification code to your email.\nEnter the code below to activate your account.",
       "VALIDATION": "Please enter the full 6-digit verification code.",
       "SUBMIT": "Verify & Activate",
       "SUBMITTING": "Verifying...",
@@ -62,7 +62,7 @@
     "RESET_PASSWORD": {
       "TITLE": "RESET PASSWORD",
       "SUBTITLE": "Recover Your Account",
-      "DESCRIPTION": "We sent a 6-digit recovery code to your email. Enter the code below and choose a new password.",
+      "DESCRIPTION": "We sent a 6-digit recovery code to your email.\nEnter the code below and choose a new password.",
       "VALIDATION": "Please enter the full 6-digit code and a valid new password.",
       "SUBMIT": "Verify & Update Password",
       "SUBMITTING": "Updating password...",

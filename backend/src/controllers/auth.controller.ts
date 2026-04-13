@@ -33,8 +33,8 @@ export class AuthController {
 
   static async verifyEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await AuthService.verifyEmail(req.body);
-      res.status(200).json(ApiResponseBuilder.success(null, 'Email verified successfully'));
+      const session = await AuthService.verifyEmail(req.body);
+      res.status(200).json(ApiResponseBuilder.success(session, 'Email verified successfully'));
     } catch (error) {
       next(error);
     }

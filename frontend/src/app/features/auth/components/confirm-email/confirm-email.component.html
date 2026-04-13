@@ -29,6 +29,7 @@
               autocomplete="one-time-code"
               [formControlName]="index"
               (input)="onDigitInput(index, $event)"
+              (paste)="onCodePaste(index, $event)"
               (keydown)="onKeyDown(index, $event)"
             />
           </div>
