@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractControl, FormArray, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -25,7 +25,7 @@ const matchingPasswordValidator = (control: AbstractControl): ValidationErrors |
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
@@ -56,6 +56,14 @@ export class ResetPasswordComponent {
 
   get codeControls(): FormArray {
     return this.form.controls.code;
+  }
+
+  ngOnInit(): void {
+    if (this.email) {
+      return;
+    }
+
+    void this.router.navigate(['/login']);
   }
 
   togglePasswordVisibility(field: 'password' | 'confirm_password'): void {
@@ -109,6 +117,11 @@ export class ResetPasswordComponent {
       return;
     }
 
+    if (!this.email) {
+      void this.router.navigate(['/login']);
+      return;
+    }
+
     this.isSubmitting = true;
 
     this.authService.resetPasswordWithCode({
@@ -136,6 +149,12 @@ export class ResetPasswordComponent {
   resendCode(): void {
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.email) {
+      void this.router.navigate(['/login']);
+      return;
+    }
+
     this.isResending = true;
 
     this.authService.forgotPassword({ email: this.email }).pipe(

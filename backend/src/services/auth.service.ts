@@ -203,6 +203,11 @@ export class AuthService {
     }
 
     const user = await this.getOrCreateProfile(data.user.id, data.user.email ?? email);
+
+    if (user.status !== 'active') {
+      throw new ForbiddenError('Account is not active');
+    }
+
     const token = TokenUtils.generateToken({
       id: user.id,
       email: user.email,

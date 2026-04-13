@@ -1,4 +1,4 @@
- import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';

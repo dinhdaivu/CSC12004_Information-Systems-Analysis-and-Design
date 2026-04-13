@@ -13,6 +13,7 @@ describe('ResetPasswordComponent', () => {
     forgotPassword: jest.Mock;
   };
   let router: { navigate: jest.Mock };
+  let queryEntries: Array<[string, string]>;
 
   beforeEach(async () => {
     authService = {
@@ -22,6 +23,7 @@ describe('ResetPasswordComponent', () => {
     router = {
       navigate: jest.fn().mockResolvedValue(true),
     };
+    queryEntries = [['email', 'recover@example.com']];
 
     await TestBed.configureTestingModule({
       imports: [ResetPasswordComponent, ReactiveFormsModule, RouterTestingModule, TranslateModule.forRoot()],
@@ -32,7 +34,7 @@ describe('ResetPasswordComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              queryParamMap: new Map([['email', 'recover@example.com']]),
+              queryParamMap: new Map(queryEntries),
             },
           },
         },
@@ -51,6 +53,32 @@ describe('ResetPasswordComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelectorAll('.reset-form__code-input')).toHaveLength(6);
+  });
+
+  it('should redirect to login when email is missing', async () => {
+    TestBed.resetTestingModule();
+    queryEntries = [];
+
+    await TestBed.configureTestingModule({
+      imports: [ResetPasswordComponent, ReactiveFormsModule, RouterTestingModule, TranslateModule.forRoot()],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParamMap: new Map(queryEntries),
+            },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should submit a recovery code and new password', () => {
@@ -84,6 +112,36 @@ describe('ResetPasswordComponent', () => {
     component.resendCode();
 
     expect(authService.forgotPassword).toHaveBeenCalledWith({ email: 'recover@example.com' });
+  });
+
+  it('should not resend the recovery code without an email', async () => {
+    TestBed.resetTestingModule();
+
+    await TestBed.configureTestingModule({
+      imports: [ResetPasswordComponent, ReactiveFormsModule, RouterTestingModule, TranslateModule.forRoot()],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParamMap: new Map(),
+            },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    jest.clearAllMocks();
+
+    component.resendCode();
+
+    expect(authService.forgotPassword).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should paste all six digits across the recovery code inputs', () => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -14,7 +14,7 @@ import { LanguageSwitcherComponent } from '@shared/components/language-switcher/
   templateUrl: './confirm-email.component.html',
   styleUrls: ['./confirm-email.component.scss']
 })
-export class ConfirmEmailComponent {
+export class ConfirmEmailComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
@@ -39,6 +39,14 @@ export class ConfirmEmailComponent {
       Array.from({ length: 6 }, () => this.formBuilder.control('', [Validators.required, Validators.pattern(/^\d$/)]))
     ),
   });
+
+  ngOnInit(): void {
+    if (this.email) {
+      return;
+    }
+
+    void this.router.navigate(['/register']);
+  }
 
   get codeControls(): FormArray {
     return this.form.controls.code;
@@ -86,6 +94,11 @@ export class ConfirmEmailComponent {
       return;
     }
 
+    if (!this.email) {
+      void this.router.navigate(['/register']);
+      return;
+    }
+
     this.isSubmitting = true;
 
     this.authService.verifyRegistrationCode({
@@ -111,6 +124,12 @@ export class ConfirmEmailComponent {
   resendCode(): void {
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (!this.email) {
+      void this.router.navigate(['/register']);
+      return;
+    }
+
     this.isResending = true;
 
     this.authService.resendVerificationCode(this.email).pipe(

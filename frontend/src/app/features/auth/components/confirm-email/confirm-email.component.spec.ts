@@ -54,6 +54,15 @@ describe('ConfirmEmailComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should redirect to register when no email context is available', async () => {
+    authService.getPendingRegistrationEmail.mockReturnValue('');
+    const { fixture } = await createComponent([]);
+
+    fixture.detectChanges();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/register']);
+  });
+
   it('should render six verification inputs', async () => {
     const { fixture } = await createComponent([['email', 'signup@example.com']]);
     fixture.detectChanges();
@@ -104,6 +113,18 @@ describe('ConfirmEmailComponent', () => {
     component.resendCode();
 
     expect(authService.resendVerificationCode).toHaveBeenCalledWith('signup@example.com');
+  });
+
+  it('should not resend the verification code without an email', async () => {
+    authService.getPendingRegistrationEmail.mockReturnValue('');
+    const { fixture, component } = await createComponent([]);
+    fixture.detectChanges();
+    jest.clearAllMocks();
+
+    component.resendCode();
+
+    expect(authService.resendVerificationCode).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/register']);
   });
 
   it('should paste all six digits across the verification inputs', async () => {
