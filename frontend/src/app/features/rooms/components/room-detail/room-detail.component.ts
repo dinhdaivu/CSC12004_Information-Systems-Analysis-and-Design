@@ -286,7 +286,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   activeRoomType: RoomType = 'twin';
   activeRoomIndex = 0;
   
-  private autoPlayTimer: any;
+  private autoPlayTimer: ReturnType<typeof setInterval> | undefined;
 
   // Giữ lại khung mảng dữ liệu với Key dịch thuật để đảm bảo cấu trúc HTML render không lỗi
   // Khi API load xong, data này sẽ bị thay thế bằng data từ API
@@ -370,6 +370,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.branchDetail = null;
 
     this.branchService.getBranchById(id).subscribe({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       next: (data) => {
         this.branchDetail = data;
         
@@ -407,7 +408,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.isTransitioning = true;
     this.cdr.detectChanges(); 
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       callback();
       this.isTransitioning = false;
       this.cdr.detectChanges(); 
@@ -416,7 +417,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   startAutoPlay() {
     this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
+    this.autoPlayTimer = window.setInterval(() => {
       this.triggerTransition(() => {
         this.activeSharedIndex = (this.activeSharedIndex + 1) % this.sharedFacilitiesList.length;
         const maxRoomImgs = this.roomData[this.activeRoomType].images.length;
@@ -426,7 +427,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   stopAutoPlay() {
-    if (this.autoPlayTimer) { clearInterval(this.autoPlayTimer); }
+    if (this.autoPlayTimer) { window.clearInterval(this.autoPlayTimer); }
   }
 
   setSharedIndex(index: number) {
@@ -485,6 +486,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   onContactAction(): void { 
     const branchName = this.branchDetail?.name || '';
     const alertMsg = this.translate.instant('ROOM_DETAIL.CONTACT_ACTION', { name: branchName });
-    alert(alertMsg ? alertMsg : `Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: ${branchName}`); 
+    window.alert(alertMsg ? alertMsg : `Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: ${branchName}`); 
   }
 }

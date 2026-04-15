@@ -37,5 +37,5 @@ export interface BranchDetail {
   sharedFacilities?: SharedFacility[];
   roomFacilities?: Record<RoomType, RoomData>;
   availability?: RoomAvailability;
-  policies?: any;
+  policies?: unknown;
 }

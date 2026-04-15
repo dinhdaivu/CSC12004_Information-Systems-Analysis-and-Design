@@ -34,7 +34,7 @@ export class BranchService {
     }
     return this.http.get<BranchDetail>(`${this.apiUrl}/${id}`).pipe(
       tap(data => this.branchCache.set(id, data)),
-      catchError(error => throwError(() => new Error('Không thể tải thông tin chi nhánh.')))
+      catchError(() => throwError(() => new Error('Không thể tải thông tin chi nhánh.')))
     );
   }
 }
