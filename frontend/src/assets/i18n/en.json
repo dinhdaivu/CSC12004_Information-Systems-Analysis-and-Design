@@ -103,6 +103,7 @@
     "EMAIL": "Email",
     "OFFICE_HOURS": "Office Hours",
     "CONTACT_US": "Contact Us Now",
+    "CONTACT_ACTION": "Your contact request has been sent to the branch management: {{name}}",
     "ROOM_FACILITIES_TITLE": "Room Facilities",
     "SHARED_COMMUNITY_TITLE": "Shared Community Facilities",
     "TWIN_ROOM": "STANDARD TWIN ROOM",
