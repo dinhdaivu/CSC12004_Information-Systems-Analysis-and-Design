@@ -6,7 +6,12 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "ENGLISH": "English",
-    "VIETNAMESE": "Vietnamese"
+    "VIETNAMESE": "Vietnamese",
+    "LOADING": "Loading branch data...",
+    "ERROR": "An error occurred",
+    "FETCH_ERROR": "Unable to load branch information. Please try again.",
+    "RETRY": "Try Again",
+    "NO_DATA": "No data available"
   },
   "AUTH": {
     "FIELDS": {
@@ -42,7 +47,9 @@
       "SUBMITTING": "Creating account...",
       "HAS_ACCOUNT": "Already have an account?",
       "LOGIN_ACTION": "Log In",
-      "ERROR": "Unable to create account. Please try again."
+      "ERROR": "Unable to create account. Please try again.",
+      "SIGN_UP": "Sign Up",
+      "LOG_IN": "Log In"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "CONFIRM EMAIL",
@@ -81,5 +88,58 @@
     "ROOMS_AVAILABLE": "rooms available",
     "EMPTY_STATE": "No matching branches found.",
     "CONTACT_US": "Contact Us Now"
+  },
+  "NAV": {
+    "GUIDELINES": "Guidelines",
+    "ABOUT_US": "About us",
+    "CONTACT": "Contact"
+  },
+  "ROOM_DETAIL": {
+    "FOOTER_SLOGAN": "Nurturing Your Journey, Building Your Home.",
+    "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. All Rights Reserved.",
+    "CONTACT_INFO": "Contact Information",
+    "HEADQUARTERS": "Headquarters",
+    "PHONE": "Phone",
+    "EMAIL": "Email",
+    "OFFICE_HOURS": "Office Hours",
+    "CONTACT_US": "Contact Us Now",
+    "ROOM_FACILITIES_TITLE": "Room Facilities",
+    "SHARED_COMMUNITY_TITLE": "Shared Community Facilities",
+    "TWIN_ROOM": "STANDARD TWIN ROOM",
+    "QUAD_ROOM": "COMMUNITY QUAD ROOM",
+    "CAPACITY": "Capacity",
+    "AMENITIES": "In-room Amenities",
+    "BRANCH": "BRANCH",
+    "BRANCH_TITLE": "{{name}} BRANCH",
+    "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City (District 2)",
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nestled in a more peaceful and modern area, the Trần Não Branch offers a professional environment. It is ideal for individuals seeking a quieter stay with quick access to the emerging tech and business hubs in Thu Duc City.",
+    "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Nguyễn Cửu Vân, Bình Thạnh District",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "The Nguyễn Cửu Vân Branch offers a unique living experience in the vibrant Binh Thanh District. Its proximity to District 1 makes it a highly sought-after location.",
+    "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Tô Hiến Thành, District 10",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Experience urban living at its finest in the heart of District 10. The Tô Hiến Thành Branch provides convenient access to universities and shopping areas.",
+    "POLICY_INTRO": "To ensure transparency, we follow a standardized financial and legal framework across all branches:",
+    "POLICY_RENT": "Monthly Rent",
+    "POLICY_RENT_DESC": "Clearly listed per bed or per full-room based on your selection.",
+    "POLICY_DEPOSIT": "Security Deposit",
+    "POLICY_DEPOSIT_DESC": "Calculated as (02 months' rent) × (Number of beds).",
+    "POLICY_CONFIRM": "24-Hour Confirmation",
+    "POLICY_CONFIRM_DESC": "Once a reservation is made, you have exactly 24 hours to upload your payment proof (receipt/screenshot) to your profile to secure your spot.",
+    "POLICY_REFUND": "Standardized Refund Policy",
+    "POLICY_REFUND_100": "100% Refund: Completion of the full contract term.",
+    "POLICY_REFUND_70": "70% Refund: Stays exceeding 06 months but ending before the contract term.",
+    "POLICY_REFUND_50": "50% Refund: Stays under 06 months.",
+    "POLICY_REFUND_80": "80% Refund: Cancellations made after depositing but before signing the formal contract.",
+    "TWIN_CAPACITY": "Maximum 02 residents.",
+    "TWIN_AMENITIES": "Individual bed with premium mattress, desk and chair, personal wardrobe, private locker, dedicated power outlets, air conditioning, and organized shoe storage.",
+    "QUAD_CAPACITY": "Maximum 04 residents.",
+    "QUAD_AMENITIES": "Bunk beds with privacy curtains, premium mattress, individual study desks, secure lockers, air conditioning, and spacious shared areas for group activities.",
+    "DINING_HALL": "DINING HALL",
+    "DINING_DESC": "A clean and modern space with refrigerators, microwaves, and dining sets for communal meals.",
+    "LIVING_LOUNGE": "LIVING LOUNGE",
+    "LIVING_DESC": "A comfortable social zone for relaxing, meeting friends, or group study sessions.",
+    "LAUNDRY_ZONE": "LAUNDRY ZONE",
+    "LAUNDRY_DESC": "On-site modern washing and drying machines available for all residents.",
+    "ADDRESS_FOOTER": "227 Nguyen Van Cu Street, Ward 4, District 5, HCMC.",
+    "OFFICE_TIME": "Mon - Sat | 08:00 AM - 06:00 PM."
   }
 }
