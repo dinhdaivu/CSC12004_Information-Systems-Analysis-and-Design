@@ -60,7 +60,9 @@
       "SUBMITTING": "Đang tạo tài khoản...",
       "HAS_ACCOUNT": "Đã có tài khoản?",
       "LOGIN_ACTION": "Đăng nhập",
-      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại."
+      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại.",
+      "SIGN_UP": "Đăng ký",
+      "LOG_IN": "Đăng nhập"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "XÁC NHẬN EMAIL",

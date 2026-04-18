@@ -60,7 +60,9 @@
       "SUBMITTING": "Creating account...",
       "HAS_ACCOUNT": "Already have an account?",
       "LOGIN_ACTION": "Log In",
-      "ERROR": "Unable to create account. Please try again."
+      "ERROR": "Unable to create account. Please try again.",
+      "SIGN_UP": "Sign Up",
+      "LOG_IN": "Log In"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "CONFIRM EMAIL",
