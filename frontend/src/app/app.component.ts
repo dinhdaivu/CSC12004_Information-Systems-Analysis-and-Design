@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { AuthService } from '@core/services/auth.service';
 import { LanguageService } from '@core/i18n/language.service';
-
 @Component({
   selector: 'app-root',
   standalone: true,
