@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import authRoutes from '@routes/auth.routes';
 import branchRoutes from '@routes/branch.routes';
+import rentalRequestRoutes from './routes/rental-request.routes';
 import { ApiResponseBuilder } from '@models/api.model';
 import { AppError } from '@utils/errors';
 
@@ -29,6 +30,7 @@ app.get('/api/health', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/branches', branchRoutes);
+app.use('/api/rental-requests', rentalRequestRoutes);
 
 // Error handling middleware
 app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -6,7 +6,25 @@
   "COMMON": {
     "LANGUAGE": "Ngôn ngữ",
     "ENGLISH": "Tiếng Anh",
-    "VIETNAMESE": "Tiếng Việt"
+    "VIETNAMESE": "Tiếng Việt",
+    "ABOUT_US": "Về chúng tôi",
+    "GUIDELINES": "Hướng dẫn",
+    "CONTACT": "Liên hệ",
+    "PROFILE": "Hồ sơ",
+    "BOOKING": "Đặt phòng",
+    "CONTRACT": "Hợp đồng"
+  },
+  "CONTACT_INFO": {
+    "TITLE": "Thông tin liên hệ",
+    "HEADQUARTERS": "Trụ sở chính: ",
+    "ADDRESS_1": "227 Nguyễn Văn Cừ, Phường 4, ",
+    "ADDRESS_2": "Quận 5, TP.HCM.",
+    "PHONE_LABEL": "Điện thoại: ",
+    "PHONE": "(08) 18.276.266.",
+    "EMAIL_LABEL": "Email:",
+    "EMAIL": " contact@homestaydorm.vn",
+    "HOURS_LABEL": "Giờ làm việc:",
+    "HOURS": " T2 - T7 | 08:00 AM - 06:00 PM."
   },
   "AUTH": {
     "FIELDS": {
@@ -81,5 +99,33 @@
     "ROOMS_AVAILABLE": "phòng trống",
     "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
     "CONTACT_US": "Liên hệ với chúng tôi"
+  },
+  "BOOKING": {
+    "TITLE": "Phiếu Đăng Ký Thuê Phòng",
+    "SUBTITLE": "Vui lòng cung cấp thông tin và sở thích để chúng tôi tìm cho bạn chỗ ở phù hợp nhất.",
+    "BRANCH_SELECTION": "Chọn Chi Nhánh",
+    "ROOM_CATEGORY": "Loại Phòng",
+    "MOVE_IN_DATE": "Ngày Dự Kiến Chuyển Vào",
+    "OCCUPANTS": "Số Lượng Người Ở",
+    "DURATION": "Thời Hạn Hợp Đồng",
+    "RENTAL_TYPE": "Hình Thức Thuê",
+    "UPLOAD_ID": "Tải Lên Ảnh CCCD/CMND",
+    "BROWSE": "Chọn tệp",
+    "SUBMIT": "Gửi Yêu Cầu",
+    "SUCCESS": "Yêu cầu thuê phòng của bạn đã được gửi thành công!",
+    "ERROR": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "SHARED_FULL": "Giường ghép / Nguyên phòng",
+    "NEXT": "Tiếp theo",
+    "VIEWING_TITLE": "Lịch Hẹn Xem Phòng",
+    "VIEWING_SUBTITLE": "Xem lại chi tiết lịch hẹn của bạn và gặp nhân viên tư vấn để trực tiếp tham quan cơ sở vật chất.",
+    "CONFIRM_ATTENDANCE": "Xác Nhận Tham Gia",
+    "DATE": "Ngày",
+    "TIME": "Thời gian",
+    "TIME_VALUE": "9 SA",
+    "LOCATION": "Địa điểm",
+    "ROOM_INTEREST": "Phòng Quan Tâm",
+    "ROOM_TWIN": "Phòng Đôi (2)",
+    "ROOM_QUAD": "Phòng Bốn (4)",
+    "PROCESSING": "* Yêu cầu của bạn đang được xử lý"
   }
 }

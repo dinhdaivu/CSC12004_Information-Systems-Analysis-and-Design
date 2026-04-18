@@ -6,7 +6,25 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "ENGLISH": "English",
-    "VIETNAMESE": "Vietnamese"
+    "VIETNAMESE": "Vietnamese",
+    "ABOUT_US": "About us",
+    "GUIDELINES": "Guidelines",
+    "CONTACT": "Contact",
+    "PROFILE": "Profile",
+    "BOOKING": "Booking",
+    "CONTRACT": "Contract"
+  },
+  "CONTACT_INFO": {
+    "TITLE": "Contact Information",
+    "HEADQUARTERS": "Headquarters: ",
+    "ADDRESS_1": "227 Nguyen Van Cu Street, Ward 4, ",
+    "ADDRESS_2": "District 5, HCMC.",
+    "PHONE_LABEL": "Phone: ",
+    "PHONE": "(08) 18.276.266.",
+    "EMAIL_LABEL": "Email:",
+    "EMAIL": " contact@homestaydorm.vn",
+    "HOURS_LABEL": "Office Hours:",
+    "HOURS": " Mon - Sat | 08:00 AM - 06:00 PM."
   },
   "AUTH": {
     "FIELDS": {
@@ -81,5 +99,33 @@
     "ROOMS_AVAILABLE": "rooms available",
     "EMPTY_STATE": "No matching branches found.",
     "CONTACT_US": "Contact Us Now"
+  },
+  "BOOKING": {
+    "TITLE": "Rental Registration Form",
+    "SUBTITLE": "Provide your details and preferences to help us find your perfect stay.",
+    "BRANCH_SELECTION": "Branch Selection",
+    "ROOM_CATEGORY": "Room Category",
+    "MOVE_IN_DATE": "Move-in Date",
+    "OCCUPANTS": "Number of Occupants",
+    "DURATION": "Contract Duration",
+    "RENTAL_TYPE": "Rental Type",
+    "UPLOAD_ID": "Upload Your ID Photo",
+    "BROWSE": "Browse",
+    "SUBMIT": "Submit",
+    "SUCCESS": "Your rental request has been submitted successfully!",
+    "ERROR": "An error occurred. Please try again.",
+    "SHARED_FULL": "Shared bed / Full room",
+    "NEXT": "Next",
+    "VIEWING_TITLE": "My Viewing Appointment",
+    "VIEWING_SUBTITLE": "Review your scheduled tour details and meet our sales representative to explore the facilities in person.",
+    "CONFIRM_ATTENDANCE": "Confirm Attendance",
+    "DATE": "Date",
+    "TIME": "Time",
+    "TIME_VALUE": "9AM",
+    "LOCATION": "Location",
+    "ROOM_INTEREST": "Room Interest",
+    "ROOM_TWIN": "Twin Room (2)",
+    "ROOM_QUAD": "Quad Room (4)",
+    "PROCESSING": "* Your request is being processed"
   }
 }
