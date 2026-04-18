@@ -15,10 +15,11 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+router.use(apiLimiter);
 // Yêu cầu xác thực cho tất cả endpoints
 router.use(authMiddleware);
 
-router.post('/', apiLimiter, createRentalRequest);
-router.get('/my-requests', apiLimiter, getMyRentalRequests);
+router.post('/', createRentalRequest);
+router.get('/my-requests', getMyRentalRequests);
 
 export default router;
