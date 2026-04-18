@@ -6,7 +6,12 @@
   "COMMON": {
     "LANGUAGE": "Ngôn ngữ",
     "ENGLISH": "Tiếng Anh",
-    "VIETNAMESE": "Tiếng Việt"
+    "VIETNAMESE": "Tiếng Việt",
+    "LOADING": "Đang tải dữ liệu chi nhánh...",
+    "ERROR": "Đã xảy ra lỗi",
+    "FETCH_ERROR": "Không thể tải thông tin chi nhánh. Vui lòng thử lại.",
+    "RETRY": "Thử lại",
+    "NO_DATA": "Không có dữ liệu."
   },
   "AUTH": {
     "FIELDS": {
@@ -42,7 +47,9 @@
       "SUBMITTING": "Đang tạo tài khoản...",
       "HAS_ACCOUNT": "Đã có tài khoản?",
       "LOGIN_ACTION": "Đăng nhập",
-      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại."
+      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại.",
+      "SIGN_UP": "Đăng ký",
+      "LOG_IN": "Đăng nhập"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "XÁC NHẬN EMAIL",
@@ -81,5 +88,59 @@
     "ROOMS_AVAILABLE": "phòng trống",
     "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
     "CONTACT_US": "Liên hệ với chúng tôi"
+  },
+  "NAV": {
+    "GUIDELINES": "Hướng dẫn",
+    "ABOUT_US": "Về chúng tôi",
+    "CONTACT": "Liên hệ"
+  },
+  "ROOM_DETAIL": {
+    "FOOTER_SLOGAN": "Nuôi dưỡng Hành trình, Xây dựng Tổ ấm.",
+    "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. Mọi quyền được bảo lưu.",
+    "CONTACT_INFO": "Thông tin Liên hệ",
+    "HEADQUARTERS": "Trụ sở chính",
+    "PHONE": "Số điện thoại",
+    "EMAIL": "Email",
+    "OFFICE_HOURS": "Giờ làm việc",
+    "CONTACT_US": "Liên hệ ngay",
+    "CONTACT_ACTION": "Yêu cầu liên hệ của bạn đã được gửi đến ban quản lý chi nhánh: {{name}}",
+    "ROOM_FACILITIES_TITLE": "Tiện ích Phòng",
+    "SHARED_COMMUNITY_TITLE": "Tiện ích Sinh hoạt Chung",
+    "TWIN_ROOM": "PHÒNG ĐÔI TIÊU CHUẨN",
+    "QUAD_ROOM": "PHÒNG TẬP THỂ 4 NGƯỜI",
+    "CAPACITY": "Sức chứa",
+    "AMENITIES": "Tiện nghi trong phòng",
+    "BRANCH": "CHI NHÁNH",
+    "BRANCH_TITLE": "CHI NHÁNH {{name}}",
+    "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quốc Hương, Thảo Điền, TP Thủ Đức (Quận 2)",
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nằm trong một khu vực yên bình và hiện đại hơn, Chi nhánh Trần Não mang đến một môi trường chuyên nghiệp. Nơi đây lý tưởng cho những cá nhân đang tìm kiếm một nơi lưu trú yên tĩnh với khả năng tiếp cận nhanh chóng đến các trung tâm công nghệ và kinh doanh tại Thành phố Thủ Đức.",
+    "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Nguyễn Cửu Vân, Quận Bình Thạnh",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Chi nhánh Nguyễn Cửu Vân mang đến trải nghiệm sống độc đáo tại Quận Bình Thạnh sôi động. Vị trí gần Quận 1 giúp nơi đây trở thành lựa chọn lý tưởng.",
+    "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Tô Hiến Thành, Quận 10",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Trải nghiệm cuộc sống đô thị ngay trung tâm Quận 10. Chi nhánh Tô Hiến Thành mang đến sự tiện lợi cho sinh viên và người đi làm trẻ.",
+    "POLICY_INTRO": "Để đảm bảo tính minh bạch, chúng tôi tuân theo khung pháp lý và tài chính tiêu chuẩn trên toàn hệ thống:",
+    "POLICY_RENT": "Tiền thuê hàng tháng",
+    "POLICY_RENT_DESC": "Được niêm yết rõ ràng theo từng giường hoặc theo phòng tùy chọn.",
+    "POLICY_DEPOSIT": "Tiền đặt cọc",
+    "POLICY_DEPOSIT_DESC": "Được tính bằng (02 tháng tiền thuê) × (Số lượng giường).",
+    "POLICY_CONFIRM": "Xác nhận trong 24h",
+    "POLICY_CONFIRM_DESC": "Sau khi đặt chỗ, bạn có 24 giờ để tải minh chứng thanh toán lên trang cá nhân để giữ chỗ.",
+    "POLICY_REFUND": "Chính sách hoàn tiền tiêu chuẩn",
+    "POLICY_REFUND_100": "Hoàn 100%: Hoàn thành đầy đủ thời hạn hợp đồng.",
+    "POLICY_REFUND_70": "Hoàn 70%: Lưu trú trên 06 tháng nhưng kết thúc trước hạn hợp đồng.",
+    "POLICY_REFUND_50": "Hoàn 50%: Lưu trú dưới 06 tháng.",
+    "POLICY_REFUND_80": "Hoàn 80%: Hủy sau khi đặt cọc nhưng trước khi ký hợp đồng chính thức.",
+    "TWIN_CAPACITY": "Tối đa 02 cư dân.",
+    "TWIN_AMENITIES": "Giường cá nhân với nệm cao cấp, bàn ghế làm việc, tủ quần áo cá nhân, tủ khóa riêng, ổ cắm điện chuyên dụng, máy lạnh và tủ để giày gọn gàng.",
+    "QUAD_CAPACITY": "Tối đa 04 cư dân.",
+    "QUAD_AMENITIES": "Giường tầng có rèm che, nệm cao cấp, bàn học cá nhân, tủ khóa an toàn, máy lạnh và khu vực sinh hoạt chung rộng rãi cho các hoạt động nhóm.",
+    "DINING_HALL": "PHÒNG ĂN",
+    "DINING_DESC": "Không gian sạch sẽ, hiện đại với tủ lạnh, lò vi sóng và bộ bàn ăn phục vụ các bữa ăn chung.",
+    "LIVING_LOUNGE": "KHU VỰC SINH HOẠT",
+    "LIVING_DESC": "Không gian thoải mái để thư giãn, gặp gỡ bạn bè hoặc học nhóm.",
+    "LAUNDRY_ZONE": "KHU VỰC GIẶT ỦI",
+    "LAUNDRY_DESC": "Được trang bị máy giặt và sấy hiện đại có sẵn cho tất cả cư dân.",
+    "ADDRESS_FOOTER": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM.",
+    "OFFICE_TIME": "Thứ 2 - Thứ 7 | 08:00 - 18:00."
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
-import { Branch } from '../../shared/models/branch.model';
+import { Observable, catchError, of, tap, throwError } from 'rxjs';
+import { Branch, BranchDetail } from '../../shared/models/branch.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -9,24 +9,32 @@ import { environment } from '../../../environments/environment';
 })
 export class BranchService {
   private http = inject(HttpClient);
-  // URL gọi đến backend (http://localhost:3000/api)
   private apiUrl = `${environment.apiUrl}/branches`; 
 
+  private branchCache = new Map<string, BranchDetail>();
+  private branchesSummaryCache: Branch[] | null = null;
+
   getBranches(): Observable<Branch[]> {
+    if (this.branchesSummaryCache) {
+      return of(this.branchesSummaryCache);
+    }
     return this.http.get<Branch[]>(this.apiUrl).pipe(
+      tap(data => this.branchesSummaryCache = data),
       catchError(error => {
-        console.error('Lỗi khi lấy danh sách chi nhánh:', error);
-        return of([]); // Trả về mảng rỗng nếu lỗi
+        console.error('Lỗi lấy danh sách chi nhánh:', error);
+        return of([]);
       })
     );
   }
 
-  getBranchById(id: string): Observable<Branch | undefined> {
-    return this.http.get<Branch>(`${this.apiUrl}/${id}`).pipe(
-      catchError(error => {
-        console.error(`Lỗi khi lấy chi nhánh ${id}:`, error);
-        return of(undefined);
-      })
+  // TODO: Implemented in task 01-02
+  getBranchById(id: string): Observable<BranchDetail> {
+    if (this.branchCache.has(id)) {
+      return of(this.branchCache.get(id)!);
+    }
+    return this.http.get<BranchDetail>(`${this.apiUrl}/${id}`).pipe(
+      tap(data => this.branchCache.set(id, data)),
+      catchError(() => throwError(() => new Error('Không thể tải thông tin chi nhánh.')))
     );
   }
 }
