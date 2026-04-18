@@ -1,10 +1,11 @@
-export interface RentalRequestPayload {
-  room_id?: string | null;
+export interface RentalPayload {
   expected_move_in_date: string;
   rental_duration_months: number;
   people_count: number;
-  budget_max?: number;
-  note?: string;
+  preferred_room_type: string;
+  note: string;
+  branch_id?: string;
+  room_id?: string;
 }
 
 export interface RentalRequestResponse {

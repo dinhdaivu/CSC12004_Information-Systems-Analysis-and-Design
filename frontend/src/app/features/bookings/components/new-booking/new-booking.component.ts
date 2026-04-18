@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { BranchService } from '@core/services/branch.service'; 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { RentalPayload } from '@shared/models/rental-request.model';
 
 @Component({
   selector: 'app-new-booking',
@@ -42,7 +43,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
       <div (click)="navigate('/profile')" style="width: 126px; height: 62px; left: 191px; top: 331px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.PROFILE' | translate }}</div>
       <img style="width: 35px; height: 35px; left: 132px; top: 345px; position: absolute; pointer-events: none;" src="assets/icons/Group 22.png" />
       
-      <div (click)="navigate('/bookings')" style="width: 140px; height: 61px; left: 191px; top: 424px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.BOOKING' | translate }}</div>
+      <div (click)="navigate('/bookings')" style="width: 126px; height: 61px; left: 191px; top: 424px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.BOOKING' | translate }}</div>
       <img style="width: 37px; height: 35px; left: 131px; top: 438px; position: absolute; pointer-events: none;" src="assets/icons/Group 23.png" />
       
       <div (click)="navigate('/contracts')" style="width: 126px; height: 62px; left: 188px; top: 527px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.CONTRACT' | translate }}</div>
@@ -86,14 +87,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           <div data-property-1="Default" style="width: 680px; height: 30px; left: 593px; top: 572px; position: absolute">
             <div style="width: 174px; height: 30px; left: 0px; top: 0px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'BOOKING.ROOM_CATEGORY' | translate }}</div>
             
-            <div (click)="selectRoom('Twin Room (2)')" style="width: 116px; height: 30px; left: 225px; top: 0px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'BOOKING.ROOM_TWIN' | translate }}</div>
+            <div (click)="selectRoom('Twin Room (2)')" style="width: 116px; height: 30px; left: 225px; top: 0px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">Twin Room (2)</div>
             <div (click)="selectRoom('Twin Room (2)')" [style.background]="bookingForm.get('room_category')?.value === 'Twin Room (2)' ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; left: 190px; top: 5px; position: absolute; border-radius: 9999px; cursor: pointer; transition: 0.3s;"></div>
             
-            <div (click)="selectRoom('Quad Room (4)')" style="width: 141px; height: 30px; left: 399px; top: 0px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'BOOKING.ROOM_QUAD' | translate }}</div>
+            <div (click)="selectRoom('Quad Room (4)')" style="width: 141px; height: 30px; left: 399px; top: 0px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">Quad Room (4)</div>
             <div (click)="selectRoom('Quad Room (4)')" [style.background]="bookingForm.get('room_category')?.value === 'Quad Room (4)' ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; left: 364px; top: 5px; position: absolute; border-radius: 9999px; cursor: pointer; transition: 0.3s;"></div>
           </div>
 
-          <div style="width: 220px; height: 30px; left: 888px; top: 644px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'BOOKING.MOVE_IN_DATE' | translate }}</div>
+          <div style="width: 192px; height: 30px; left: 888px; top: 644px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'BOOKING.MOVE_IN_DATE' | translate }}</div>
           <input type="date" formControlName="expected_move_in_date" style="width: 247px; height: 50px; left: 887px; top: 674px; position: absolute; background: #D9D9D9; border-radius: 10px; border: none; padding: 0 22px; color: black; font-size: 20px; font-family: Afacad; outline: none; z-index: 10;">
           
           <div style="width: 248px; height: 30px; left: 593px; top: 644px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'BOOKING.OCCUPANTS' | translate }}</div>
@@ -148,7 +149,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
         
         <div style="width: 133px; height: 30px; left: 791px; top: 703px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'BOOKING.ROOM_INTEREST' | translate }}</div>
         <div style="width: 678px; height: 42px; left: 924px; top: 697px; position: absolute; background: #D9D9D9; border-radius: 10px"></div>
-        <div style="width: 381px; height: 30px; left: 960px; top: 703px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #747474; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bookingForm.get('room_category')?.value | translate }}</div>
+        <div style="width: 381px; height: 30px; left: 960px; top: 703px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #747474; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bookingForm.get('room_category')?.value }}</div>
 
         <div *ngIf="isSubmitting" style="position: absolute; left: 855px; top: 810px; width: 600px; height: 50px;">
           <div style="width: 100%; height: 100%; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 600; word-wrap: break-word">{{ 'BOOKING.PROCESSING' | translate }}</div>
@@ -223,14 +224,14 @@ export class NewBookingComponent implements OnInit {
 
     // Gọi API lấy Branch ID
     this.branchService.getBranches().subscribe({
-      next: (branches: any[]) => {
+      next: (branches: { id: string; name: string }[]) => {
         branches.forEach(b => {
           if (b.name.includes('Tô Hiến Thành')) this.branchIdMap['Tô Hiến Thành'] = b.id;
           if (b.name.includes('Trần Não')) this.branchIdMap['Trần Não'] = b.id;
           if (b.name.includes('Nguyễn Cửu Vân')) this.branchIdMap['Nguyễn Cửu Vân'] = b.id;
         });
       },
-      error: (err) => console.error('Failed to load branches', err)
+      error: (err: unknown) => console.error('Failed to load branches', err)
     });
 
     this.route.queryParams.subscribe(params => {
@@ -272,8 +273,9 @@ export class NewBookingComponent implements OnInit {
   }
 
   // Tương tác File Upload
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file: File | undefined = target.files?.[0];
     if (file) {
       this.selectedFile = file;
       this.selectedFileName = file.name;
@@ -296,7 +298,7 @@ export class NewBookingComponent implements OnInit {
     const selectedBranchName = formValues.branch;
     const mappedBranchId = this.branchIdMap[selectedBranchName];
     
-    const payload: any = {
+    const payload: RentalPayload = {
       expected_move_in_date: formValues.expected_move_in_date,
       rental_duration_months: Number(formValues.rental_duration_months),
       people_count: Number(formValues.people_count),
@@ -312,10 +314,10 @@ export class NewBookingComponent implements OnInit {
       payload.room_id = this.preSelectedRoomId;
     }
 
-    this.rentalRequestService.createRentalRequest(payload).subscribe({
+    this.rentalRequestService.createRentalRequest(payload as any).subscribe({
       next: () => {
         this.isSubmitting = false;
-        alert('Attendance Confirmed! Thank you.');
+        window.alert('Attendance Confirmed! Thank you.');
         
         // Reset form và quay lại trang 1
         this.bookingForm.reset({ 
@@ -329,7 +331,7 @@ export class NewBookingComponent implements OnInit {
         this.currentPage = 1;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isSubmitting = false;
         this.errorMessage = '* ' + (err.error?.message || 'Error occurred. Please try again.');
         this.cdr.detectChanges();

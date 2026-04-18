@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@shared/models/api.model';
-import { RentalRequestPayload, RentalRequestResponse } from '@shared/models/rental-request.model';
+import { RentalPayload, RentalRequestResponse } from '@shared/models/rental-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class RentalRequestService {
 
   constructor(private http: HttpClient) {}
 
-  createRentalRequest(payload: RentalRequestPayload): Observable<ApiResponse<RentalRequestResponse>> {
+  createRentalRequest(payload: RentalPayload): Observable<ApiResponse<RentalRequestResponse>> {
     return this.http.post<ApiResponse<RentalRequestResponse>>(this.apiUrl, payload);
   }
 }
