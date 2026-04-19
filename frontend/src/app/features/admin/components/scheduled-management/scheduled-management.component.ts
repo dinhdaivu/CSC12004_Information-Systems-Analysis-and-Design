@@ -8,6 +8,10 @@ import {
   type ViewingAppointmentStatus,
 } from "@core/services/viewing-appointments.service";
 import type { Branch } from "@shared/models/branch.model";
+import {
+  ViewingApprovalModalComponent,
+  type ViewingApprovalModalAppointment,
+} from "../viewing-approval-modal/viewing-approval-modal.component";
 import { BehaviorSubject, Subject, combineLatest, of } from "rxjs";
 import {
   catchError,
@@ -49,7 +53,7 @@ type AppointmentFilters = {
 @Component({
   selector: "app-scheduled-management",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ViewingApprovalModalComponent],
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
       <aside
@@ -364,7 +368,14 @@ type AppointmentFilters = {
                 <div class="space-y-3">
                   <article
                     *ngFor="let appointment of filteredAppointments"
-                    class="flex items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4 shadow-md"
+                    class="flex cursor-pointer items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4 shadow-md transition hover:bg-slate-100"
+                    role="button"
+                    tabindex="0"
+                    (click)="openApprovalModal(appointment)"
+                    (keydown.enter)="openApprovalModal(appointment)"
+                    (keydown.space)="
+                      $event.preventDefault(); openApprovalModal(appointment)
+                    "
                   >
                     <div class="flex min-w-0 items-center gap-3">
                       <span
@@ -504,6 +515,14 @@ type AppointmentFilters = {
           </div>
         </main>
       </div>
+
+      <app-viewing-approval-modal
+        *ngIf="selectedAppointment"
+        [appointment]="selectedAppointment"
+        (close)="closeApprovalModal()"
+        (approve)="handleApprove($event)"
+        (decline)="handleDecline($event)"
+      ></app-viewing-approval-modal>
     </div>
   `,
 })
@@ -686,6 +705,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
   viewMode: ScheduleViewMode = "calendar";
   selectedDate = "2026-03-14";
+  selectedAppointment: ViewingApprovalModalAppointment | null = null;
   readonly todayIsoDate = this.formatIsoDate(new Date());
 
   constructor() {
@@ -850,6 +870,35 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     this.selectedDate = cell.isoDate;
   }
 
+  openApprovalModal(appointment: ViewingScheduleItem): void {
+    this.selectedAppointment = {
+      id: appointment.id,
+      customerName: appointment.customer,
+      date: this.formatDateForModal(appointment.date),
+      time: this.formatTimeShort(appointment.time),
+      location: appointment.branch,
+      roomInterest: "Twin Room",
+    };
+  }
+
+  closeApprovalModal(): void {
+    this.selectedAppointment = null;
+  }
+
+  handleApprove(updatedAppointment: ViewingAppointmentRecord): void {
+    this.replaceAppointmentInList(updatedAppointment);
+    this.appointmentsCache.clear();
+    alert("Appointment approved");
+    this.closeApprovalModal();
+  }
+
+  handleDecline(updatedAppointment: ViewingAppointmentRecord): void {
+    this.replaceAppointmentInList(updatedAppointment);
+    this.appointmentsCache.clear();
+    alert("Appointment rejected");
+    this.closeApprovalModal();
+  }
+
   private setupAppointmentsStream(): void {
     combineLatest([
       this.monthFilter$,
@@ -988,6 +1037,16 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     };
   }
 
+  private replaceAppointmentInList(
+    updatedAppointment: ViewingAppointmentRecord,
+  ): void {
+    const nextItem = this.mapApiRecordToScheduleItem(updatedAppointment);
+    this.appointments = this.appointments.map((item) =>
+      item.id === updatedAppointment.id ? nextItem : item,
+    );
+    this.rebuildCalendar();
+  }
+
   private buildCalendarCells(year: number, monthIndex: number): CalendarCell[] {
     const firstDayOfMonth = new Date(Date.UTC(year, monthIndex, 1));
     const startOffset = (firstDayOfMonth.getUTCDay() + 6) % 7;
@@ -1020,5 +1079,14 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
   private formatIsoDate(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  private formatDateForModal(date: string): string {
+    const [year, month, day] = date.split("-");
+    if (!year || !month || !day) {
+      return date;
+    }
+
+    return `${day}-${month}-${year}`;
   }
 }

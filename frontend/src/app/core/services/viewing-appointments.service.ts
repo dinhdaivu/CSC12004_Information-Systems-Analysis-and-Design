@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { environment } from "@environments/environment";
 
 export type ViewingAppointmentStatus = "pending" | "scheduled" | "cancelled";
@@ -44,6 +45,19 @@ export type FetchViewingAppointmentsParams = {
   status?: ViewingAppointmentStatus;
 };
 
+export type UpdateOutcomeParams = {
+  token: string;
+  appointmentId: string;
+  status: "scheduled" | "cancelled";
+  resultNote: string;
+};
+
+type UpdateOutcomeResponse = {
+  success: boolean;
+  data: ViewingAppointmentRecord;
+  message: string;
+};
+
 @Injectable({
   providedIn: "root",
 })
@@ -80,5 +94,27 @@ export class ViewingAppointmentsService {
       params: httpParams,
       headers,
     });
+  }
+
+  updateOutcome(
+    params: UpdateOutcomeParams,
+  ): Observable<ViewingAppointmentRecord> {
+    const { token, appointmentId, status, resultNote } = params;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+
+    return this.http
+      .patch<UpdateOutcomeResponse>(
+        `${this.apiUrl}/${appointmentId}/outcome`,
+        {
+          status,
+          resultNote,
+        },
+        { headers },
+      )
+      .pipe(map((response) => response.data));
   }
 }
