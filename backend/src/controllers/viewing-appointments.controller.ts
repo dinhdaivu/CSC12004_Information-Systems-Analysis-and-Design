@@ -25,16 +25,16 @@ export class ViewingAppointmentsController {
   }
 
   private static isAuthorized(req: AuthRequest, res: Response): boolean {
-    // if (
-    //   typeof req.user?.role === "string" &&
-    //   ALLOWED_ROLES.includes(req.user.role as (typeof ALLOWED_ROLES)[number])
-    // ) {
-    //   return true;
-    // }
+    if (
+      typeof req.user?.role === "string" &&
+      ALLOWED_ROLES.includes(req.user.role as (typeof ALLOWED_ROLES)[number])
+    ) {
+      return true;
+    }
 
-    // res.status(403).json({ message: "Forbidden" });
-    // return false;
-    return true;
+    res.status(403).json({ message: "Forbidden" });
+    return false;
+    // return true;
   }
 
   static async getAppointments(req: AuthRequest, res: Response): Promise<void> {
