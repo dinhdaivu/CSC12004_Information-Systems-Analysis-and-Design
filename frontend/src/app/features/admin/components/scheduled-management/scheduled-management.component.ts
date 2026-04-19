@@ -8,13 +8,12 @@ import {
   type ViewingAppointmentStatus,
 } from "@core/services/viewing-appointments.service";
 import type { Branch } from "@shared/models/branch.model";
-import { BehaviorSubject, Subject, of } from "rxjs";
+import { BehaviorSubject, Subject, combineLatest, of } from "rxjs";
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
   finalize,
-  map,
   switchMap,
   takeUntil,
   tap,
@@ -515,12 +514,11 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   );
   private readonly authToken = localStorage.getItem("auth_token") ?? "";
   private readonly destroy$ = new Subject<void>();
-  private readonly filters$ = new BehaviorSubject<AppointmentFilters>({
-    month: "2026-03",
-    branch: null,
-    status: null,
-    page: 1,
-  });
+  private readonly monthFilter$ = new BehaviorSubject<string>("2026-03");
+  private readonly branchFilter$ = new BehaviorSubject<string | null>(null);
+  private readonly statusFilter$ =
+    new BehaviorSubject<ViewingScheduleStatus | null>(null);
+  private readonly pageFilter$ = new BehaviorSubject<number>(1);
   private readonly appointmentsCache = new Map<
     string,
     ViewingAppointmentsResponse
@@ -701,7 +699,6 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     });
 
     this.setupAppointmentsStream();
-    this.loadAppointments();
   }
 
   ngOnDestroy(): void {
@@ -741,7 +738,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     this.selectedBranchId = branchId;
     this.currentPage = 1;
     this.isBranchDropdownOpen = false;
-    this.loadAppointments();
+    this.branchFilter$.next(branchId);
+    this.pageFilter$.next(1);
   }
 
   isStatusSelected(status: ViewingScheduleStatus): boolean {
@@ -755,7 +753,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
     this.selectedStatus = status;
     this.currentPage = 1;
-    this.loadAppointments();
+    this.statusFilter$.next(status);
+    this.pageFilter$.next(1);
   }
 
   goToPrevPage(): void {
@@ -764,7 +763,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     }
 
     this.currentPage -= 1;
-    this.loadAppointments();
+    this.pageFilter$.next(this.currentPage);
   }
 
   goToNextPage(): void {
@@ -773,7 +772,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     }
 
     this.currentPage += 1;
-    this.loadAppointments();
+    this.pageFilter$.next(this.currentPage);
   }
 
   prevMonth(): void {
@@ -786,7 +785,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
     this.currentPage = 1;
     this.rebuildCalendar();
-    this.loadAppointments();
+    this.monthFilter$.next(this.monthQueryParam);
+    this.pageFilter$.next(1);
   }
 
   nextMonth(): void {
@@ -799,7 +799,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
     this.currentPage = 1;
     this.rebuildCalendar();
-    this.loadAppointments();
+    this.monthFilter$.next(this.monthQueryParam);
+    this.pageFilter$.next(1);
   }
 
   formatListDate(date: string, time: string): string {
@@ -849,30 +850,38 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     this.selectedDate = cell.isoDate;
   }
 
-  private loadAppointments(): void {
-    if (!this.authToken) {
-      this.errorMessage = "Missing auth token. Please sign in again.";
-      this.appointments = [];
-      this.totalPages = 1;
-      this.rebuildCalendar();
-      return;
-    }
-
-    this.filters$.next(this.buildCurrentFilters());
-  }
-
   private setupAppointmentsStream(): void {
-    this.filters$
+    combineLatest([
+      this.monthFilter$,
+      this.branchFilter$,
+      this.statusFilter$,
+      this.pageFilter$,
+    ])
       .pipe(
         debounceTime(300),
         distinctUntilChanged(
           (prev, curr) =>
-            prev.month === curr.month &&
-            prev.branch === curr.branch &&
-            prev.status === curr.status &&
-            prev.page === curr.page,
+            prev[0] === curr[0] &&
+            prev[1] === curr[1] &&
+            prev[2] === curr[2] &&
+            prev[3] === curr[3],
         ),
-        switchMap((filters) => {
+        switchMap(([month, branch, status, page]) => {
+          if (!this.authToken) {
+            this.errorMessage = "Missing auth token. Please sign in again.";
+            this.appointments = [];
+            this.totalPages = 1;
+            this.rebuildCalendar();
+            return of(null);
+          }
+
+          const filters: AppointmentFilters = {
+            month,
+            branch,
+            status,
+            page,
+          };
+
           const cacheKey = this.getCacheKey(filters);
           const cached = this.appointmentsCache.get(cacheKey);
 
@@ -886,10 +895,10 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
           return this.viewingAppointmentsService
             .fetchViewingAppointments({
               token: this.authToken,
-              month: filters.month,
-              branch: filters.branch ?? undefined,
-              status: filters.status ?? undefined,
-              page: filters.page,
+              month,
+              branch: branch ?? undefined,
+              status: status ?? undefined,
+              page,
               limit: this.pageLimit,
             })
             .pipe(
