@@ -1,4 +1,4 @@
-import { Response } from "express";
+import type { Response } from "express";
 import { ApiResponseBuilder } from "@models/api.model";
 import type { ViewingAppointmentStatus } from "@models/viewing-appointment.model";
 import { ViewingAppointmentsService } from "@services/viewing-appointments.service";
@@ -11,8 +11,6 @@ const VALID_STATUSES: ViewingAppointmentStatus[] = [
   "cancelled",
 ];
 
-const ALLOWED_ROLES = ["accountant", "manager", "sale", "admin"] as const;
-
 export class ViewingAppointmentsController {
   private static getIdParam(req: AuthRequest): string {
     const rawId = req.params.id;
@@ -24,24 +22,7 @@ export class ViewingAppointmentsController {
     return rawId;
   }
 
-  private static isAuthorized(req: AuthRequest, res: Response): boolean {
-    if (
-      typeof req.user?.role === "string" &&
-      ALLOWED_ROLES.includes(req.user.role as (typeof ALLOWED_ROLES)[number])
-    ) {
-      return true;
-    }
-
-    res.status(403).json({ message: "Forbidden" });
-    return false;
-    // return true;
-  }
-
   static async getAppointments(req: AuthRequest, res: Response): Promise<void> {
-    if (!this.isAuthorized(req, res)) {
-      return;
-    }
-
     const month =
       typeof req.query.month === "string" ? req.query.month : undefined;
     const branchId =
@@ -85,10 +66,6 @@ export class ViewingAppointmentsController {
     req: AuthRequest,
     res: Response,
   ): Promise<void> {
-    if (!this.isAuthorized(req, res)) {
-      return;
-    }
-
     const appointment = await ViewingAppointmentsService.createAppointment({
       rentalRequestId: req.body.rentalRequestId as string,
       customerId: req.body.customerId as string,
@@ -111,20 +88,12 @@ export class ViewingAppointmentsController {
     req: AuthRequest,
     res: Response,
   ): Promise<void> {
-    if (!this.isAuthorized(req, res)) {
-      return;
-    }
-
     const id = this.getIdParam(req);
     const appointment = await ViewingAppointmentsService.getById(id);
     res.status(200).json(ApiResponseBuilder.success(appointment));
   }
 
   static async updateOutcome(req: AuthRequest, res: Response): Promise<void> {
-    if (!this.isAuthorized(req, res)) {
-      return;
-    }
-
     const status = req.body.status as ViewingAppointmentStatus | undefined;
     const resultNote = req.body.resultNote as string | undefined;
 
@@ -147,10 +116,6 @@ export class ViewingAppointmentsController {
     req: AuthRequest,
     res: Response,
   ): Promise<void> {
-    if (!this.isAuthorized(req, res)) {
-      return;
-    }
-
     const id = this.getIdParam(req);
     const cancelled = await ViewingAppointmentsService.cancelAppointment(id);
     res
