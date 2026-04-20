@@ -4,8 +4,8 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import authRoutes from "@routes/auth.routes";
 import branchRoutes from "@routes/branch.routes";
-
 import roomRoutes from "@routes/room.routes";
+import viewingAppointmentsRoutes from "@routes/viewing-appointments.routes";
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
 
@@ -32,6 +32,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/branches", branchRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/viewing-appointments", viewingAppointmentsRoutes);
 
 // Error handling middleware
 app.use(
