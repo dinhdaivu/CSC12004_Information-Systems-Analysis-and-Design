@@ -12,6 +12,7 @@ import {
   ViewingApprovalModalComponent,
   type ViewingApprovalModalAppointment,
 } from "../viewing-approval-modal/viewing-approval-modal.component";
+import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { BehaviorSubject, Subject, combineLatest, of } from "rxjs";
 import {
   catchError,
@@ -53,61 +54,10 @@ type AppointmentFilters = {
 @Component({
   selector: "app-scheduled-management",
   standalone: true,
-  imports: [CommonModule, ViewingApprovalModalComponent],
+  imports: [CommonModule, ViewingApprovalModalComponent, AdminSidebarComponent],
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
-      <aside
-        class="fixed inset-y-0 left-0 z-20 w-64 bg-[#12346d] text-white shadow-2xl"
-      >
-        <div class="flex h-full flex-col p-6">
-          <div class="mb-8 flex items-center gap-3">
-            <img
-              src="/assets/icons/Logo.png"
-              alt="HomeStay Dorm Logo"
-              class="h-12 w-12 rounded-full bg-white/90 p-1"
-            />
-            <div>
-              <p class="text-sm uppercase tracking-[0.2em] text-white/75">
-                HomeStay
-              </p>
-              <h1 class="text-lg font-semibold leading-tight">HOMESTAY DORM</h1>
-            </div>
-          </div>
-
-          <nav class="space-y-2 text-base font-medium">
-            <button
-              type="button"
-              class="w-full rounded-xl px-4 py-3 text-left text-white/80 transition hover:bg-white/10 hover:text-white"
-            >
-              Inquiries
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-xl bg-white text-[#12346d] px-4 py-3 text-left font-semibold shadow"
-            >
-              Schedules
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-xl px-4 py-3 text-left text-white/80 transition hover:bg-white/10 hover:text-white"
-            >
-              Rooms
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-xl px-4 py-3 text-left text-white/80 transition hover:bg-white/10 hover:text-white"
-            >
-              Reservations
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-xl px-4 py-3 text-left text-white/80 transition hover:bg-white/10 hover:text-white"
-            >
-              Contracts
-            </button>
-          </nav>
-        </div>
-      </aside>
+      <app-admin-sidebar></app-admin-sidebar>
 
       <div class="ml-0 flex min-h-screen flex-col md:ml-64">
         <main class="flex-1 px-6 py-6">
