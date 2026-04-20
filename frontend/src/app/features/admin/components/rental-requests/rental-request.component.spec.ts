@@ -3,7 +3,7 @@ import { RentalRequestsComponent } from './rental-request.component';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('RentalRequestsComponent', () => {
   let component: RentalRequestsComponent;
