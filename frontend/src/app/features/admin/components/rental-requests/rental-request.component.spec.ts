@@ -101,7 +101,7 @@ describe('RentalRequestsComponent', () => {
     tick(); // Đợi Observable resolve
 
     expect(mockRentalService.updateRentalRequestStatus).toHaveBeenCalledWith('uuid-001', { status: 'viewing_scheduled' });
-    expect(window.alert).toHaveBeenCalledWith('Cập nhật trạng thái thành công: viewing_scheduled');
+    expect(window.alert).toHaveBeenCalledWith('Cập nhật thành công: viewing_scheduled');
     
     // Đảm bảo đã load lại data và quay về màn hình 1, reset form
     expect(mockRentalService.getAllRentalRequests).toHaveBeenCalledTimes(2); // 1 lần ở init, 1 lần sau khi update
