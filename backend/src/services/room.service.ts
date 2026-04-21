@@ -115,54 +115,93 @@ function normalizeSearchText(value: string): string {
   return value.trim().toLowerCase();
 }
 
+function isFetchFailedError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return /fetch failed/i.test(error.message);
+}
+
 export class RoomService {
   static async getRooms(filters: RoomFilters): Promise<RoomWithBeds[]> {
     const client = getSupabaseClient();
 
-    let query = client
-      .from("rooms")
-      .select(
-        `
-          id,
-          branch_id,
-          room_number,
-          room_type,
-          max_capacity,
-          price_per_month,
-          amenities,
-          images_url,
-          status,
-          created_at,
-          updated_at,
-          branches(id, name, address),
-          beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
-        `,
-      )
-      .order("room_number", { ascending: true });
+    const buildQuery = () => {
+      let query = client
+        .from("rooms")
+        .select(
+          `
+            id,
+            branch_id,
+            room_number,
+            room_type,
+            max_capacity,
+            price_per_month,
+            amenities,
+            images_url,
+            status,
+            created_at,
+            updated_at,
+            branches(id, name, address),
+            beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
+          `,
+        )
+        .order("room_number", { ascending: true });
 
-    if (filters.branch_id) {
-      query = query.eq("branch_id", filters.branch_id);
+      if (filters.branch_id) {
+        query = query.eq("branch_id", filters.branch_id);
+      }
+
+      if (filters.room_status) {
+        query = query.eq("status", filters.room_status);
+      }
+
+      if (filters.room_type) {
+        query = query.eq("room_type", filters.room_type);
+      }
+
+      if (filters.bed_status) {
+        query = query.eq("beds.status", filters.bed_status);
+      }
+
+      return query;
+    };
+
+    let data: unknown;
+    let error: { message?: string } | null = null;
+
+    try {
+      const result = await buildQuery();
+      data = result.data;
+      error = result.error;
+    } catch (firstError) {
+      if (isFetchFailedError(firstError)) {
+        try {
+          const retryResult = await buildQuery();
+          data = retryResult.data;
+          error = retryResult.error;
+        } catch (retryError) {
+          const message =
+            retryError instanceof Error ? retryError.message : "Unknown error";
+          throw new InternalServerError(
+            `Failed to fetch rooms: ${message}. Please verify Supabase connectivity and environment variables.`,
+          );
+        }
+      } else {
+        const message =
+          firstError instanceof Error ? firstError.message : "Unknown error";
+        throw new InternalServerError(`Failed to fetch rooms: ${message}`);
+      }
     }
-
-    if (filters.room_status) {
-      query = query.eq("status", filters.room_status);
-    }
-
-    if (filters.room_type) {
-      query = query.eq("room_type", filters.room_type);
-    }
-
-    if (filters.bed_status) {
-      query = query.eq("beds.status", filters.bed_status);
-    }
-
-    const { data, error } = await query;
 
     if (error) {
       throw new InternalServerError(`Failed to fetch rooms: ${error.message}`);
     }
 
-    const mappedRooms = (data ?? []).map((room) => mapRoom(room as RoomRow));
+    const mappedRooms = ((data as RoomRow[] | null) ?? []).map((room) =>
+      mapRoom(room),
+    );
 
     if (!filters.search) {
       return mappedRooms;

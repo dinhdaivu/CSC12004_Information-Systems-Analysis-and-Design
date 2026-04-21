@@ -13,12 +13,13 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const REQUEST_BODY_LIMIT = process.env.REQUEST_BODY_LIMIT ?? "25mb";
 
 // Middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: REQUEST_BODY_LIMIT }));
+app.use(express.urlencoded({ extended: true, limit: REQUEST_BODY_LIMIT }));
 
 // Health check route
 app.get("/api/health", (req, res) => {
@@ -55,6 +56,23 @@ app.use(
       res
         .status(err.statusCode)
         .json(ApiResponseBuilder.error(err.code, err.message, err.details));
+      return;
+    }
+
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "type" in err &&
+      (err as { type?: string }).type === "entity.too.large"
+    ) {
+      res
+        .status(413)
+        .json(
+          ApiResponseBuilder.error(
+            "PAYLOAD_TOO_LARGE",
+            `Request body is too large. Current limit is ${REQUEST_BODY_LIMIT}.`,
+          ),
+        );
       return;
     }
 

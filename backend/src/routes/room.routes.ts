@@ -8,6 +8,13 @@ router.get("/", RoomController.getRooms);
 router.get("/:id", RoomController.getRoomById);
 
 router.post(
+  "/upload-image",
+  authMiddleware,
+  roleMiddleware(["manager", "admin"]),
+  RoomController.uploadRoomImage,
+);
+
+router.post(
   "/",
   authMiddleware,
   roleMiddleware(["manager", "admin"]),

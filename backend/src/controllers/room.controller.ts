@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import cloudinary from "@config/cloudinary";
 import { ApiResponseBuilder } from "@models/api.model";
 import {
   BedStatus,
@@ -81,10 +82,29 @@ function validateBedStatus(value?: string): BedStatus | undefined {
   return value as BedStatus;
 }
 
+function mapCapacityToRoomType(capacity: number): string {
+  if (capacity === 2) {
+    return "twin";
+  }
+
+  if (capacity === 4) {
+    return "quad";
+  }
+
+  if (capacity === 6) {
+    return "hexa";
+  }
+
+  if (capacity === 8) {
+    return "octa";
+  }
+
+  throw new ValidationError("max_capacity only supports 2, 4, 6, or 8");
+}
+
 function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
   const branch_id = parseStringQueryParam(body.branch_id);
   const room_number = parseStringQueryParam(body.room_number);
-  const room_type = parseStringQueryParam(body.room_type);
   const max_capacity = parseNumber(body.max_capacity, "max_capacity");
   const price_per_month = parseNumber(body.price_per_month, "price_per_month");
 
@@ -100,6 +120,8 @@ function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
     throw new ValidationError("max_capacity must be greater than 0");
   }
 
+  const room_type = mapCapacityToRoomType(max_capacity);
+
   if (price_per_month < 0) {
     throw new ValidationError(
       "price_per_month must be greater than or equal to 0",
@@ -114,8 +136,6 @@ function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
     ? body.images_url.filter((item): item is string => typeof item === "string")
     : undefined;
 
-  const status = validateRoomStatus(parseStringQueryParam(body.status));
-
   return {
     branch_id,
     room_number,
@@ -124,7 +144,7 @@ function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
     price_per_month,
     amenities,
     images_url,
-    status,
+    status: "available",
   };
 }
 
@@ -191,7 +211,61 @@ function validateUpdatePayload(body: Record<string, unknown>): UpdateRoomDTO {
   return payload;
 }
 
+type UploadRoomImagePayload = {
+  file_data: string;
+  file_name?: string;
+};
+
+function parseUploadPayload(
+  body: Record<string, unknown>,
+): UploadRoomImagePayload {
+  const fileData = parseStringQueryParam(body.file_data);
+  const fileName = parseStringQueryParam(body.file_name);
+
+  if (!fileData) {
+    throw new ValidationError("file_data is required");
+  }
+
+  return {
+    file_data: fileData,
+    file_name: fileName,
+  };
+}
+
+function sanitizePublicId(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/[^a-z0-9-_]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60);
+}
+
 export class RoomController {
+  static async uploadRoomImage(req: Request, res: Response): Promise<void> {
+    const body = req.body as Record<string, unknown>;
+    const payload = parseUploadPayload(body);
+
+    const uploadResult = await cloudinary.uploader.upload(payload.file_data, {
+      folder: "homestay-dorm/rooms",
+      resource_type: "image",
+      public_id: payload.file_name
+        ? `room-${Date.now()}-${sanitizePublicId(payload.file_name)}`
+        : undefined,
+    });
+
+    res.status(200).json(
+      ApiResponseBuilder.success(
+        {
+          image_url: uploadResult.secure_url,
+          public_id: uploadResult.public_id,
+        },
+        "Room image uploaded successfully",
+      ),
+    );
+  }
+
   static async getRooms(req: Request, res: Response): Promise<void> {
     const query = req.query as Record<string, unknown>;
 
