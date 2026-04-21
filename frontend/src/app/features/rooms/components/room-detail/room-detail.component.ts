@@ -202,7 +202,7 @@ import { BranchService } from '../../../../core/services/branch.service';
         <div style="left: 0px; width: 1920px; top: 384px; position: absolute; text-align: center; color: #264893; font-size: 96px; font-family: 'Big Shoulders Text'; font-weight: 900; text-transform: uppercase;">
           {{ 'ROOM_DETAIL.BRANCH_TITLE' | translate:{ name: branchDetail.name } }}
         </div>
-        <!-- ADDRESS -->
+        
         <div style="left: 0px; width: 1920px; top: 550px; position: absolute; text-align: center; color: #264893; font-size: 56px; font-family: 'Big Shoulders Text'; font-weight: 700;">  
           {{ ('ROOM_DETAIL.ADDRESS_' + branchDetail.id) | translate }}
         </div>

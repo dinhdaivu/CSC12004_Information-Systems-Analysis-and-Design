@@ -12,7 +12,11 @@
     "CONTACT": "Contact",
     "PROFILE": "Profile",
     "BOOKING": "Booking",
-    "CONTRACT": "Contract"
+    "CONTRACT": "Contract",
+    "LOGOUT": "Logout",
+    "LOADING": "Loading...",
+    "RETRY": "Retry",
+    "FETCH_ERROR": "Failed to load data. Please try again."
   },
   "CONTACT_INFO": {
     "TITLE": "Contact Information",
@@ -38,6 +42,8 @@
       "PASSWORD": "Password must be at least 6 characters.",
       "PASSWORD_MATCH": "Passwords do not match."
     },
+    "SIGN_UP": "Sign Up",
+    "LOG_IN": "Log In",
     "LOGIN": {
       "TITLE": "LOG IN",
       "SUBTITLE": "Welcome Back!",
@@ -102,6 +108,63 @@
     "EMPTY_STATE": "No matching branches found.",
     "CONTACT_US": "Contact Us Now"
   },
+  "NAV": {
+    "GUIDELINES": "Guidelines",
+    "ABOUT_US": "About us",
+    "CONTACT": "Contact"
+  },
+  "ROOM_DETAIL": {
+    "FOOTER_SLOGAN": "Your comfort, our priority.",
+    "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. All rights reserved.",
+    "CONTACT_INFO": "Contact Information",
+    "HEADQUARTERS": "Headquarters",
+    "ADDRESS_FOOTER": "227 Nguyen Van Cu Street, Ward 4, District 5, HCMC.",
+    "PHONE": "Phone",
+    "EMAIL": "Email",
+    "OFFICE_HOURS": "Office Hours",
+    "OFFICE_TIME": "Mon - Sat | 08:00 AM - 06:00 PM",
+    "CONTACT_US": "Contact Us",
+    "POLICY_INTRO": "Please review our booking policies:",
+    "POLICY_RENT": "Rent Payment",
+    "POLICY_RENT_DESC": "Rent must be paid within the first 5 days of the month.",
+    "POLICY_DEPOSIT": "Deposit",
+    "POLICY_DEPOSIT_DESC": "A deposit equivalent to 1 month's rent is required.",
+    "POLICY_CONFIRM": "Booking Confirmation",
+    "POLICY_CONFIRM_DESC": "Bookings are confirmed only after the deposit is received.",
+    "POLICY_REFUND": "Refund Policy",
+    "POLICY_REFUND_100": "100% refund if cancelled 14 days before move-in.",
+    "POLICY_REFUND_70": "70% refund if cancelled 7-13 days before move-in.",
+    "POLICY_REFUND_50": "50% refund if cancelled 3-6 days before move-in.",
+    "POLICY_REFUND_80": "No refund if cancelled less than 3 days before move-in.",
+    "TWIN_ROOM": "Twin Room (2)",
+    "QUAD_ROOM": "Quad Room (4)",
+    "CAPACITY": "Capacity:",
+    "AMENITIES": "Amenities:",
+    "ROOM_FACILITIES_TITLE": "Room Facilities",
+    "SHARED_COMMUNITY_TITLE": "Shared Community Spaces",
+    "BRANCH_TITLE": "{{name}} Branch",
+    "DINING_HALL": "DINING HALL",
+    "DINING_DESC": "Spacious and clean dining area for everyone.",
+    "LIVING_LOUNGE": "LIVING LOUNGE",
+    "LIVING_DESC": "Comfortable lounge for relaxation and socializing.",
+    "LAUNDRY_ZONE": "LAUNDRY ZONE",
+    "LAUNDRY_DESC": "Modern washing and drying machines available 24/7.",
+    "TWIN_CAPACITY": "2 Persons",
+    "TWIN_AMENITIES": "2 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
+    "QUAD_CAPACITY": "4 Persons",
+    "QUAD_AMENITIES": "4 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
+    "CONTACT_ACTION": "Contact request successfully sent to the management of: {{name}}",
+    "ADDRESS_DEFAULT": "123 Default Street, Default Ward, HCMC.",
+    "DESC_DEFAULT": "A great place to stay.",
+    "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyen Cuu Van Street, Ward 17, Binh Thanh District, HCMC",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "The Nguyễn Cửu Vân Branch offers a unique living experience in the vibrant Binh Thanh District. Its proximity to District 1 makes it a highly sought-after location for those who want to be close to the city center while enjoying a cozy dormitory atmosphere.",
+    
+    "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 To Hien Thanh Street, Ward 13, District 10, HCMC",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Experience urban living at its finest in the heart of District 10. Our Tô Hiến Thành Branch is strategically located near major universities and vibrant shopping hubs, making it the ideal home for students who value convenience and a lively neighborhood.",
+    
+    "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City (District 2)",
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nestled in a more peaceful and modern area, the Trần Não Branch offers a professional environment with spacious surroundings. This branch is perfect for young professionals and students who prefer a balance between focused work and community life."
+  },
   "BOOKING": {
     "TITLE": "Rental Registration Form",
     "SUBTITLE": "Provide your details and preferences to help us find your perfect stay.",
@@ -129,5 +192,67 @@
     "ROOM_TWIN": "Twin Room (2)",
     "ROOM_QUAD": "Quad Room (4)",
     "PROCESSING": "* Your request is being processed"
+  },
+  "ADMIN_RENTAL": {
+    "TITLE": "Rental Inquiries Management",
+    "SUBTITLE": "Manage and process all incoming room requests from potential residents across all branches.",
+    "SEARCH_PLACEHOLDER": "Search ...",
+    "FILTER": "Filter",
+    "TABLE": {
+      "GUESS_ID": "Guess ID",
+      "GUESS_NAME": "Guess Name",
+      "GENDER": "Gender",
+      "BRANCH": "Branch",
+      "ROOM_CATEGORY": "Room Category",
+      "REQUEST_DATE": "Request Date",
+      "STATUS": "Status",
+      "DETAIL": "Detail"
+    },
+    "PROFILE": {
+      "TITLE": "Guest Inquiry Profile",
+      "SUBTITLE": "Review core residency requirements and identification to prepare for the direct consultation.",
+      "CORE_REQS": "Core Rental Requirements",
+      "TARGET_BRANCH": "Target Branch",
+      "ROOM_CATEGORY": "Room Category",
+      "RENTAL_TYPE": "Rental Type",
+      "MOVE_IN_DATE": "Expected Move-in Date",
+      "OCCUPANCY": "Occupancy",
+      "PERSONS": "Persons",
+      "CONTACT_INFO": "Contact Information",
+      "FULL_NAME": "Full Name",
+      "GENDER": "Gender",
+      "PHONE": "Phone Number",
+      "EMAIL": "Email Address",
+      "ID_NUMBER": "Identity Card Number",
+      "RETURN": "Return",
+      "REVIEW_QUALIFY": "Review & Qualify",
+      "BACK": "< Back"
+    },
+    "VERIFICATION": {
+      "TITLE": "Lead Eligibility Verification",
+      "SUBTITLE": "Confirm that the guest's profile and documentation meet the dormitory’s residency standards.",
+      "CHECKLIST_TITLE": "Mandatory Checklist",
+      "CHECK_1": "Name and ID number match the registration details.",
+      "CHECK_2": "Guest gender matches the designated room/zone.",
+      "CHECK_3": "Number of occupants does not exceed the capacity for the selected room type.",
+      "RESULTS_TITLE": "Verification Results",
+      "REVIEWER_NOTE": "Reviewer’s Note",
+      "NOTE_PLACEHOLDER": "Enter your review notes here...",
+      "REQ_MORE_INFO": "Request More Info",
+      "REJECT_LEAD": "Reject Lead",
+      "APPROVE_PROCEED": "Approve & Proceed"
+    },
+    "SIDEBAR": {
+      "INQUIRIES": "Inquiries",
+      "SCHEDULES": "Schedules",
+      "ROOMS": "Rooms",
+      "RESERVATIONS": "Reservations",
+      "CONTRACTS": "Contracts"
+    },
+    "ALERTS": {
+      "FETCH_ERROR": "Error loading data from API: ",
+      "UPDATE_SUCCESS": "Successfully updated status to: ",
+      "UPDATE_ERROR": "Error updating status from API: "
+    }
   }
 }

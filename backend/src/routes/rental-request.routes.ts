@@ -1,7 +1,14 @@
 import { Router } from 'express';
-import { createRentalRequest, getMyRentalRequests } from '@controllers/rental-request.controller';
-import { authMiddleware } from '@middleware/auth.middleware';
+import { 
+  createRentalRequest, 
+  getMyRentalRequests,
+  getAllRentalRequests,
+  getRentalRequestById,
+  updateRentalRequestStatus
+} from '../controllers/rental-request.controller'; 
+import { authMiddleware } from '../middleware/auth.middleware'; 
 import rateLimit from 'express-rate-limit';
+
 const router = Router();
 
 const apiLimiter = rateLimit({
@@ -11,15 +18,26 @@ const apiLimiter = rateLimit({
     success: false,
     message: 'Too many requests from this IP, please try again after 15 minutes.'
   },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  standardHeaders: true, 
+  legacyHeaders: false, 
 });
 
-router.use(apiLimiter);
 // Yêu cầu xác thực cho tất cả endpoints
 router.use(authMiddleware);
 
-router.post('/', createRentalRequest);
+// ==========================================
+// Routes cho Customer
+// ==========================================
+// Gắn limiter CHỈ cho phương thức POST (tạo mới)
+router.post('/', apiLimiter, createRentalRequest);
 router.get('/my-requests', getMyRentalRequests);
+
+// ==========================================
+// Routes cho Staff/Admin (Task 01-04)
+// TODO: Nên thêm middleware kiểm tra role (vd: checkRole(['STAFF'])) ở đây
+// ==========================================
+router.get('/', getAllRentalRequests);
+router.get('/:id', getRentalRequestById);
+router.patch('/:id/status', updateRentalRequestStatus);
 
 export default router;

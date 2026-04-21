@@ -134,3 +134,139 @@ describe('Rental Request Routes (Task 01-03)', () => {
     });
   });
 });
+
+// =========================================================================
+// [BỔ SUNG] BLOCK TEST DÀNH RIÊNG CHO STAFF (TASK 01-04) - KHÔNG CHẠM VÀO CODE CŨ
+// =========================================================================
+describe('Staff Rental Request Routes (Task 01-04)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('GET /api/rental-requests', () => {
+    it('should return all rental requests for staff', async () => {
+      (TokenUtils.verifyToken as jest.Mock).mockReturnValue({
+        id: 'staff-123',
+        role: 'sale'
+      });
+
+      const mockOrder = jest.fn().mockResolvedValue({
+        data: [{ id: 'req-1', status: 'requested' }, { id: 'req-2', status: 'reviewing' }],
+        error: null
+      });
+
+      (supabase!.from as jest.Mock).mockImplementation(() => ({
+        select: jest.fn().mockReturnValue({
+          order: mockOrder
+        })
+      }));
+
+      const res = await request(app)
+        .get('/api/rental-requests')
+        .set('Authorization', 'Bearer valid-staff-token');
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveLength(2);
+      expect(supabase!.from).toHaveBeenCalledWith('rental_requests');
+    });
+  });
+
+  describe('GET /api/rental-requests/:id', () => {
+    it('should return detail of a specific rental request', async () => {
+      (TokenUtils.verifyToken as jest.Mock).mockReturnValue({
+        id: 'staff-123',
+        role: 'sale'
+      });
+
+      const mockSingle = jest.fn().mockResolvedValue({
+        data: { id: 'req-1', status: 'requested' },
+        error: null
+      });
+
+      const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
+
+      (supabase!.from as jest.Mock).mockImplementation(() => ({
+        select: jest.fn().mockReturnValue({
+          eq: mockEq
+        })
+      }));
+
+      const res = await request(app)
+        .get('/api/rental-requests/req-1')
+        .set('Authorization', 'Bearer valid-staff-token');
+
+      expect(res.status).toBe(200);
+      expect(mockEq).toHaveBeenCalledWith('id', 'req-1');
+      expect(res.body.data.id).toBe('req-1');
+    });
+  });
+
+  describe('PATCH /api/rental-requests/:id/status', () => {
+    it('should update status and map viewing_result (AGREED -> deposit_pending)', async () => {
+      (TokenUtils.verifyToken as jest.Mock).mockReturnValue({
+        id: 'staff-123',
+        role: 'sale'
+      });
+
+      const mockSingle = jest.fn().mockResolvedValue({
+        data: { id: 'req-1', status: 'deposit_pending' },
+        error: null
+      });
+      const mockSelect = jest.fn().mockReturnValue({ single: mockSingle });
+      const mockEq = jest.fn().mockReturnValue({ select: mockSelect });
+      const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+
+      (supabase!.from as jest.Mock).mockImplementation(() => ({
+        update: mockUpdate
+      }));
+
+      const res = await request(app)
+        .patch('/api/rental-requests/req-1/status')
+        .set('Authorization', 'Bearer valid-staff-token')
+        .send({
+          viewing_result: 'agreed'
+        });
+
+      expect(res.status).toBe(200);
+      
+      // Đảm bảo Controller đã map viewing_result "agreed" thành status "deposit_pending"
+      expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({
+        status: 'deposit_pending'
+      }));
+      expect(mockEq).toHaveBeenCalledWith('id', 'req-1');
+    });
+
+    it('should map REJECTED viewing result correctly', async () => {
+      (TokenUtils.verifyToken as jest.Mock).mockReturnValue({
+        id: 'staff-123',
+        role: 'sale'
+      });
+
+      const mockSingle = jest.fn().mockResolvedValue({ 
+        data: { id: 'req-1', status: 'rejected' }, 
+        error: null 
+      });
+      const mockSelect = jest.fn().mockReturnValue({ single: mockSingle });
+      const mockEq = jest.fn().mockReturnValue({ select: mockSelect });
+      const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+
+      (supabase!.from as jest.Mock).mockImplementation(() => ({
+        update: mockUpdate
+      }));
+
+      // ĐÃ XÓA mockReq Ở ĐÂY VÌ SUPERTEST ĐÃ LO VIỆC GỬI REQUEST
+
+      const res = await request(app)
+        .patch('/api/rental-requests/req-1/status')
+        .set('Authorization', 'Bearer valid-staff-token')
+        .send({
+          viewing_result: 'not_interested'
+        });
+
+      expect(res.status).toBe(200);
+      expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({
+        status: 'rejected'
+      }));
+    });
+  });
+});
