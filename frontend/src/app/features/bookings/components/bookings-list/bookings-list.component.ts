@@ -174,7 +174,7 @@ export class BookingsListComponent implements OnInit {
       } else {
         this.router.navigate(['/auth/login']);
       }
-    } catch (_e) {
+    } catch {
       this.router.navigate(['/auth/login']);
     }
     this.isUserMenuOpen = false;

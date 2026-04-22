@@ -52,7 +52,7 @@ export class MyBookingService {
           query = query.eq('status', 'deposit_pending');
           break;
         }
-        default:
+        default: {
           // Nếu truyền một status hoàn toàn không hợp lệ, chặn lỗi văng từ Postgres 
           // bằng cách lấy những ENUM hợp lệ hoặc query một ID không tồn tại
           const validEnums = ['requested', 'reviewing', 'viewing_scheduled', 'accepted', 'rejected', 'cancelled', 'deposit_pending', 'completed'];
@@ -63,6 +63,7 @@ export class MyBookingService {
             query = query.is('id', null);
           }
           break;
+        }
       }
     }
 
