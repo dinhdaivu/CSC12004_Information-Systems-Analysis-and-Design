@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
@@ -13,7 +14,19 @@ import { AuthService } from "@core/services/auth.service";
 import type { Branch } from "@shared/models/branch.model";
 import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { Observable, Subject, forkJoin, from, of } from "rxjs";
-import { catchError, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  retry,
+  shareReplay,
+  switchMap,
+  takeUntil,
+  tap,
+  timeout,
+} from "rxjs/operators";
 
 type RoomVisualStatus = "occupied" | "reserved" | "available";
 
@@ -64,10 +77,26 @@ type ApiRoomDetailResponse = {
   data?: ApiRoom;
 };
 
+type BedLifecycleStatus =
+  | "available"
+  | "holding"
+  | "deposited"
+  | "occupied"
+  | "maintenance";
+
+const BED_STATUS_OPTIONS: BedLifecycleStatus[] = [
+  "available",
+  "holding",
+  "deposited",
+  "occupied",
+  "maintenance",
+];
+
 type RoomDetailBedItem = {
   id: string;
+  apiId?: string;
   bedNumber: string;
-  status: RoomVisualStatus;
+  status: BedLifecycleStatus;
   ownerName: string;
 };
 
@@ -109,10 +138,31 @@ type UploadRoomImageResponse = {
   };
 };
 
+type CreateRoomResponse = {
+  success: boolean;
+  data?: {
+    id?: string;
+  };
+};
+
+type InsertBedsPayload = {
+  room_id: string;
+  beds: {
+    bed_number: string;
+    status: "available";
+  }[];
+};
+
+type SearchCriteria = {
+  keyword: string;
+  branchId: string | null;
+};
+
 @Component({
   selector: "app-rooms-management",
   standalone: true,
   imports: [CommonModule, AdminSidebarComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
       <app-admin-sidebar></app-admin-sidebar>
@@ -522,9 +572,22 @@ type UploadRoomImageResponse = {
             </div>
 
             <div *ngIf="!isRoomDetailLoading && selectedRoomDetail as detail">
-              <h4 class="text-2xl font-bold text-[#264893]">
-                Room {{ detail.roomNumber }}
-              </h4>
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="text-2xl font-bold text-[#264893]">
+                  Room {{ detail.roomNumber }}
+                </h4>
+
+                <button
+                  *ngIf="canDeleteRoom"
+                  type="button"
+                  class="rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-70"
+                  [disabled]="isDeletingRoom"
+                  (click)="deleteSelectedRoom()"
+                >
+                  {{ isDeletingRoom ? "Deleting..." : "Delete Room" }}
+                </button>
+              </div>
+
               <p class="mt-1 text-sm font-semibold text-[#264893]/85">
                 {{ detail.branchName }} | zone: {{ detail.zone }} | type:
                 {{ detail.roomType }}
@@ -538,16 +601,33 @@ type UploadRoomImageResponse = {
                   <div class="flex min-w-0 items-center gap-2">
                     <span
                       class="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                      [class]="statusDotClass(bed.status)"
+                      [class]="statusDotClass(mapBedStatus(bed.status))"
                     ></span>
                     <p class="truncate text-sm font-semibold text-[#264893]">
                       Bed {{ bed.bedNumber }} | {{ bed.ownerName }}
                     </p>
                   </div>
 
-                  <span class="text-xs font-semibold text-[#264893]/80">
-                    {{ statusText(bed.status) }}
-                  </span>
+                  <div class="ml-3 flex flex-col items-end gap-1">
+                    <span class="text-xs font-semibold text-[#264893]/80">
+                      {{ bedStatusLabel(bed.status) }}
+                    </span>
+
+                    <select
+                      *ngIf="canCreateRoom"
+                      class="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-[#264893] outline-none focus:border-[#264893]"
+                      [value]="bed.status"
+                      [disabled]="!bed.apiId || isUpdatingBed(bed.id)"
+                      (change)="onBedStatusChange(bed, $event)"
+                    >
+                      <option
+                        *ngFor="let statusOption of bedStatusOptions"
+                        [value]="statusOption"
+                      >
+                        {{ bedStatusLabel(statusOption) }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -573,9 +653,23 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly roomsApiUrl = `${environment.apiUrl}/rooms`;
+  private readonly bedsApiUrl = `${environment.apiUrl}/bed`;
   private readonly destroy$ = new Subject<void>();
-  private readonly searchTrigger$ = new Subject<void>();
+  private readonly searchTrigger$ = new Subject<SearchCriteria>();
   private readonly roomSelection$ = new Subject<string>();
+  private readonly roomsListCache = new Map<
+    string,
+    Observable<MockRoomItem[]>
+  >();
+  private readonly roomDetailCache = new Map<
+    string,
+    Observable<{ detail: RoomDetailView | null; error: string | null }>
+  >();
+  private readonly roomDetailDataCache = new Map<
+    string,
+    { detail: RoomDetailView | null; error: string | null }
+  >();
+  private lastImageUploadFailureCount = 0;
 
   branches: Branch[] = [];
   isBranchDropdownOpen = false;
@@ -589,8 +683,12 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   roomDetailError: string | null = null;
   currentView: PageView = "list";
   isCreatingRoom = false;
+  isDeletingRoom = false;
+  isRoomsLoading = false;
   createRoomError: string | null = null;
   createRoomSuccessMessage: string | null = null;
+  readonly bedStatusOptions = BED_STATUS_OPTIONS;
+  readonly updatingBedIds = new Set<string>();
 
   createRoomForm: CreateRoomForm = {
     branchId: "",
@@ -635,6 +733,10 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
   get canCreateRoom(): boolean {
     return this.authService.hasAnyRole(["manager", "admin"]);
+  }
+
+  get canDeleteRoom(): boolean {
+    return this.authService.hasAnyRole(["admin"]);
   }
 
   get floors(): string[] {
@@ -723,10 +825,14 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchKeyword = target.value;
+    this.searchRooms();
   }
 
   searchRooms(): void {
-    this.searchTrigger$.next();
+    this.searchTrigger$.next({
+      keyword: this.searchKeyword,
+      branchId: this.selectedBranchId,
+    });
   }
 
   openAddRoomView(): void {
@@ -815,17 +921,40 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
     this.uploadRoomImagesToCloudinary()
       .pipe(
         switchMap((uploadedImageUrls) =>
-          this.http.post(this.roomsApiUrl, {
-            ...payload,
-            images_url: uploadedImageUrls,
-          }),
+          this.http
+            .post<CreateRoomResponse>(this.roomsApiUrl, {
+              ...payload,
+              images_url: uploadedImageUrls,
+            })
+            .pipe(timeout(12000), retry(1)),
         ),
+        switchMap((roomResponse) => {
+          const roomId = roomResponse.data?.id?.trim();
+
+          if (!roomId) {
+            throw new Error("Room created but room id was not returned.");
+          }
+
+          const bedPayload = this.buildInsertBedsPayload(
+            roomId,
+            payload.max_capacity,
+          );
+
+          return this.http
+            .post(`${this.bedsApiUrl}/insert`, bedPayload)
+            .pipe(timeout(12000), retry(1));
+        }),
       )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.isCreatingRoom = false;
-          this.createRoomSuccessMessage = "Room created successfully.";
+          const uploadedWarning =
+            this.lastImageUploadFailureCount > 0
+              ? ` ${this.lastImageUploadFailureCount} image(s) failed to upload.`
+              : "";
+          this.createRoomSuccessMessage = `Room and beds created successfully.${uploadedWarning}`;
+          this.roomsListCache.clear();
           this.resetCreateRoomForm(payload.branch_id);
           this.currentView = "list";
           this.searchRooms();
@@ -850,21 +979,37 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       });
   }
 
+  private buildInsertBedsPayload(
+    roomId: string,
+    maxCapacity: number,
+  ): InsertBedsPayload {
+    return {
+      room_id: roomId,
+      beds: Array.from({ length: maxCapacity }, (_, index) => ({
+        bed_number: String(index + 1),
+        status: "available",
+      })),
+    };
+  }
+
   private uploadRoomImagesToCloudinary(): Observable<string[]> {
+    this.lastImageUploadFailureCount = 0;
+
     if (this.selectedRoomImageFiles.length === 0) {
       return of([]);
     }
 
+    let failedCount = 0;
+
     const uploadRequests = this.selectedRoomImageFiles.map((file) =>
       from(this.readFileAsDataUrl(file)).pipe(
         switchMap((fileData) =>
-          this.http.post<UploadRoomImageResponse>(
-            `${this.roomsApiUrl}/upload-image`,
-            {
+          this.http
+            .post<UploadRoomImageResponse>(`${this.roomsApiUrl}/upload-image`, {
               file_data: fileData,
               file_name: file.name,
-            },
-          ),
+            })
+            .pipe(timeout(20000), retry(1)),
         ),
         map((response) => {
           const uploadedUrl = response.data?.image_url?.trim();
@@ -875,10 +1020,21 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
           return uploadedUrl;
         }),
+        catchError(() => {
+          failedCount += 1;
+          return of(null);
+        }),
       ),
     );
 
-    return forkJoin(uploadRequests);
+    return forkJoin(uploadRequests).pipe(
+      map((uploadedUrls) =>
+        uploadedUrls.filter((url): url is string => typeof url === "string"),
+      ),
+      finalize(() => {
+        this.lastImageUploadFailureCount = failedCount;
+      }),
+    );
   }
 
   private readFileAsDataUrl(file: File): Promise<string> {
@@ -903,9 +1059,23 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   }
 
   selectRoom(room: MockRoomItem): void {
+    if (this.isModalOpen && this.selectedRoomId === room.id) {
+      return;
+    }
+
+    const cachedDetail = this.roomDetailDataCache.get(room.id);
+
     this.selectedRoomId = room.id;
     this.isModalOpen = true;
-    this.selectedRoomDetail = null;
+
+    if (cachedDetail) {
+      this.selectedRoomDetail = cachedDetail.detail;
+      this.roomDetailError = cachedDetail.error;
+      this.isRoomDetailLoading = false;
+      this.cdr.markForCheck();
+      return;
+    }
+
     this.roomDetailError = null;
     this.isRoomDetailLoading = true;
     this.cdr.markForCheck();
@@ -917,16 +1087,140 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
+  isUpdatingBed(id: string): boolean {
+    return this.updatingBedIds.has(id);
+  }
+
+  bedStatusLabel(status: BedLifecycleStatus): string {
+    if (status === "holding") {
+      return "Holding";
+    }
+
+    if (status === "deposited") {
+      return "Deposited";
+    }
+
+    if (status === "occupied") {
+      return "Occupied";
+    }
+
+    if (status === "maintenance") {
+      return "Maintenance";
+    }
+
+    return "Available";
+  }
+
+  onBedStatusChange(bed: RoomDetailBedItem, event: Event): void {
+    if (!bed.apiId) {
+      return;
+    }
+
+    const target = event.target as HTMLSelectElement;
+    const nextStatus = this.normalizeBedLifecycleStatus(target.value);
+
+    if (!this.selectedRoomDetail || nextStatus === bed.status) {
+      return;
+    }
+
+    const previousStatus = bed.status;
+    this.updateSelectedRoomBedStatus(bed.id, nextStatus);
+    this.updatingBedIds.add(bed.id);
+    this.roomDetailError = null;
+    this.cdr.markForCheck();
+
+    this.http
+      .patch(`${this.bedsApiUrl}/${bed.apiId}/status`, {
+        status: nextStatus,
+      })
+      .pipe(timeout(10000), retry(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.updatingBedIds.delete(bed.id);
+          this.roomsListCache.clear();
+
+          if (this.selectedRoomDetail) {
+            const cachedRoomDetail = {
+              detail: this.selectedRoomDetail,
+              error: null,
+            };
+
+            this.roomDetailDataCache.set(
+              this.selectedRoomDetail.id,
+              cachedRoomDetail,
+            );
+          }
+
+          this.searchRooms();
+          this.cdr.markForCheck();
+        },
+        error: (error: unknown) => {
+          this.updatingBedIds.delete(bed.id);
+          this.updateSelectedRoomBedStatus(bed.id, previousStatus);
+          this.roomDetailError = this.extractApiErrorMessage(
+            error,
+            "Failed to update bed status.",
+          );
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  deleteSelectedRoom(): void {
+    const roomId = this.selectedRoomId;
+
+    if (!roomId || this.isDeletingRoom || !this.canDeleteRoom) {
+      return;
+    }
+
+    const confirmed = window.confirm("Delete this room permanently?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.isDeletingRoom = true;
+    this.roomDetailError = null;
+
+    this.http
+      .delete(`${this.roomsApiUrl}/${roomId}`)
+      .pipe(timeout(10000), retry(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isDeletingRoom = false;
+          this.roomDetailCache.delete(roomId);
+          this.roomDetailDataCache.delete(roomId);
+          this.roomsListCache.clear();
+          this.selectedRoomId = null;
+          this.selectedRoomDetail = null;
+          this.closeModal();
+          this.createRoomSuccessMessage = "Room deleted successfully.";
+          this.searchRooms();
+          this.cdr.markForCheck();
+        },
+        error: (error: unknown) => {
+          this.isDeletingRoom = false;
+          this.roomDetailError = this.extractApiErrorMessage(
+            error,
+            "Failed to delete room.",
+          );
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
   private setupRoomDetailStream(): void {
     this.roomSelection$
       .pipe(
         switchMap((roomId) =>
-          this.loadRoomDetail(roomId).pipe(
+          this.getRoomDetailCached(roomId).pipe(
             catchError(() =>
-              of({
-                detail: null,
-                error: "Failed to load room detail.",
-              }),
+              of(
+                this.roomDetailDataCache.get(roomId) ?? {
+                  detail: this.selectedRoomDetail,
+                  error: "Failed to load room detail.",
+                },
+              ),
             ),
           ),
         ),
@@ -943,15 +1237,25 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   private setupSearchStream(): void {
     this.searchTrigger$
       .pipe(
-        switchMap(() =>
-          this.fetchRoomsFromApi(
-            this.searchKeyword,
-            this.selectedBranchId,
-          ).pipe(catchError(() => of([]))),
+        debounceTime(400),
+        map((criteria) => ({
+          keyword: criteria.keyword.trim(),
+          branchId: criteria.branchId,
+        })),
+        distinctUntilChanged(
+          (prev, curr) =>
+            prev.keyword === curr.keyword && prev.branchId === curr.branchId,
+        ),
+        tap(() => {
+          this.isRoomsLoading = true;
+        }),
+        switchMap((criteria) =>
+          this.getRoomsFromCache(criteria).pipe(catchError(() => of([]))),
         ),
         takeUntil(this.destroy$),
       )
       .subscribe((rooms) => {
+        this.isRoomsLoading = false;
         this.rooms = rooms;
 
         if (
@@ -964,31 +1268,72 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       });
   }
 
+  private getRoomsFromCache(
+    criteria: SearchCriteria,
+  ): Observable<MockRoomItem[]> {
+    const cacheKey = `${criteria.keyword}::${criteria.branchId ?? "all"}`;
+    const cached = this.roomsListCache.get(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
+
+    const request$ = this.fetchRoomsFromApi(
+      criteria.keyword,
+      criteria.branchId,
+    ).pipe(timeout(10000), retry(1), shareReplay(1));
+
+    this.roomsListCache.set(cacheKey, request$);
+    return request$;
+  }
+
+  private getRoomDetailCached(
+    roomId: string,
+  ): Observable<{ detail: RoomDetailView | null; error: string | null }> {
+    const cached = this.roomDetailCache.get(roomId);
+
+    if (cached) {
+      return cached;
+    }
+
+    const request$ = this.loadRoomDetail(roomId).pipe(
+      timeout(10000),
+      retry(1),
+      tap((result) => {
+        this.roomDetailDataCache.set(roomId, result);
+      }),
+      catchError((error) => {
+        this.roomDetailCache.delete(roomId);
+        throw error;
+      }),
+      shareReplay(1),
+    );
+
+    this.roomDetailCache.set(roomId, request$);
+    return request$;
+  }
+
   private loadRoomDetail(
     roomId: string,
   ): Observable<{ detail: RoomDetailView | null; error: string | null }> {
-    return of(roomId).pipe(
-      switchMap((id) =>
-        this.http.get<ApiRoomDetailResponse>(`${this.roomsApiUrl}/${id}`),
-      ),
-      map((response) => {
-        const room = response?.data;
-        if (!room) {
-          return {
-            detail: null,
-            error: "Room detail not found.",
-          };
-        }
+    return this.http
+      .get<ApiRoomDetailResponse>(`${this.roomsApiUrl}/${roomId}`)
+      .pipe(
+        map((response) => {
+          const room = response?.data;
+          if (!room) {
+            return {
+              detail: null,
+              error: "Room detail not found.",
+            };
+          }
 
-        return {
-          detail: this.mapApiRoomDetail(room),
-          error: null,
-        };
-      }),
-      tap(() => {
-        this.cdr.markForCheck();
-      }),
-    );
+          return {
+            detail: this.mapApiRoomDetail(room),
+            error: null,
+          };
+        }),
+      );
   }
 
   private fetchRoomDetail(roomId: string): void {
@@ -1081,8 +1426,9 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
       return {
         id: bed.id ?? `${apiRoom.id}-${bedNumber}`,
+        apiId: bed.id?.trim() || undefined,
         bedNumber,
-        status: this.mapBedStatus(bed.status ?? "available"),
+        status: this.normalizeBedLifecycleStatus(bed.status),
         ownerName,
       } satisfies RoomDetailBedItem;
     });
@@ -1122,7 +1468,7 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
     return availableBeds > 0 ? "available" : "occupied";
   }
 
-  private mapBedStatus(status: string): RoomVisualStatus {
+  mapBedStatus(status: string): RoomVisualStatus {
     const normalized = status.toLowerCase();
 
     if (normalized === "occupied") {
@@ -1138,6 +1484,57 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
     }
 
     return "available";
+  }
+
+  private normalizeBedLifecycleStatus(value: unknown): BedLifecycleStatus {
+    if (typeof value !== "string") {
+      return "available";
+    }
+
+    const normalized = value.trim().toLowerCase();
+
+    if ((BED_STATUS_OPTIONS as string[]).includes(normalized)) {
+      return normalized as BedLifecycleStatus;
+    }
+
+    return "available";
+  }
+
+  private updateSelectedRoomBedStatus(
+    bedId: string,
+    status: BedLifecycleStatus,
+  ): void {
+    if (!this.selectedRoomDetail) {
+      return;
+    }
+
+    this.selectedRoomDetail = {
+      ...this.selectedRoomDetail,
+      beds: this.selectedRoomDetail.beds.map((bed) =>
+        bed.id === bedId
+          ? {
+              ...bed,
+              status,
+            }
+          : bed,
+      ),
+    };
+  }
+
+  private extractApiErrorMessage(error: unknown, fallback: string): string {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "error" in error &&
+      typeof (error as { error?: { message?: string } }).error === "object" &&
+      (error as { error?: { message?: string } }).error?.message
+    ) {
+      return (
+        (error as { error?: { message?: string } }).error?.message ?? fallback
+      );
+    }
+
+    return fallback;
   }
 
   private mapRoomToHardcodedFloor(
@@ -1270,14 +1667,15 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   private suggestNextRoomNumber(prefix: string): string {
     const prefixUpper = prefix.toUpperCase();
     const regex = new RegExp(`^${prefixUpper}(\\d{3})$`);
+    const baseSerial = 100;
 
     const usedNumbers = this.rooms
       .map((room) => regex.exec(room.roomName.toUpperCase()))
       .filter((match): match is RegExpExecArray => match !== null)
       .map((match) => Number.parseInt(match[1], 10));
 
-    const nextNumber =
-      (usedNumbers.length > 0 ? Math.max(...usedNumbers) : 0) + 1;
+    const maxUsedNumber = usedNumbers.length > 0 ? Math.max(...usedNumbers) : 0;
+    const nextNumber = Math.max(maxUsedNumber, baseSerial) + 1;
     const serial = String(Math.min(nextNumber, 999)).padStart(3, "0");
     return `${prefixUpper}${serial}`;
   }
