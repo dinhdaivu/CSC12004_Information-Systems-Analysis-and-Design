@@ -4,8 +4,8 @@ import { MyBookingController } from '../controllers/my-booking.controller';
 import { supabase } from '../config/supabase';
 import { ConflictError, NotFoundError } from '../utils/errors';
 
-// 1. MOCK EXPRESS REQUEST & RESPONSE
-const mockRequest = (body = {}, params = {}, query = {}, user = {}) => {
+// FIX: Khai báo kiểu :any cho các tham số để tránh lỗi biên dịch của TypeScript
+const mockRequest = (body: any = {}, params: any = {}, query: any = {}, user: any = undefined) => {
   return {
     body,
     params,
@@ -23,7 +23,6 @@ const mockResponse = () => {
 
 const mockNext = jest.fn();
 
-// 2. MOCK SUPABASE CLIENT CHAIN
 const mockSupabaseQuery = {
   select: jest.fn().mockReturnThis(),
   eq: jest.fn().mockReturnThis(),
@@ -45,9 +44,6 @@ describe('MyBookings Module', () => {
     jest.clearAllMocks();
   });
 
-  // ==============================================================
-  // TDD CHO MY-BOOKING.SERVICE.TS
-  // ==============================================================
   describe('MyBookingService', () => {
     
     describe('getMyBookings', () => {
@@ -124,14 +120,12 @@ describe('MyBookings Module', () => {
     });
   });
 
-  // ==============================================================
-  // TDD CHO MY-BOOKING.CONTROLLER.TS
-  // ==============================================================
   describe('MyBookingController', () => {
 
     describe('getList', () => {
       it('should return 401 if user is not authenticated', async () => {
-        const req = mockRequest({}, {}, {}, null); // Không có req.user
+        // FIX: Truyền undefined thay vì null
+        const req = mockRequest({}, {}, {}, undefined); 
         const res = mockResponse();
         await MyBookingController.getList(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(401);
@@ -159,14 +153,15 @@ describe('MyBookings Module', () => {
 
     describe('getDetail', () => {
       it('should return 401 if user is not authenticated', async () => {
-        const req = mockRequest({}, { id: '1' }, {}, null);
+        // FIX: Truyền undefined thay vì null
+        const req = mockRequest({}, { id: '1' }, {}, undefined);
         const res = mockResponse();
         await MyBookingController.getDetail(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(401);
       });
 
       it('should return 400 if id is missing', async () => {
-        const req = mockRequest({}, {}, {}, { id: 'cust-123' }); // Thiếu req.params.id
+        const req = mockRequest({}, {}, {}, { id: 'cust-123' }); 
         const res = mockResponse();
         await MyBookingController.getDetail(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(400);
@@ -185,7 +180,7 @@ describe('MyBookings Module', () => {
 
     describe('performAction', () => {
       it('should return 400 if id or action is missing', async () => {
-        const req = mockRequest({ action: 'cancel' }, {}, {}, { id: 'cust-123' }); // Thiếu param.id
+        const req = mockRequest({ action: 'cancel' }, {}, {}, { id: 'cust-123' }); 
         const res = mockResponse();
         await MyBookingController.performAction(req, res, mockNext);
         expect(res.status).toHaveBeenCalledWith(400);
