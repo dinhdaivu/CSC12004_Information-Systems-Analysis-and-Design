@@ -201,7 +201,7 @@ import { StaffRentalRequestResponse, UpdateRentalStatusPayload } from '@shared/m
       <img src="assets/icons/Reservation.png" style="width: 30px; height: 30px; left: 107px; top: 600px; position: absolute;" />
 
       <div style="width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'ADMIN_RENTAL.SIDEBAR.CONTRACTS' | translate }}</div>
-      <img src="assets/icons/Frame.png" style="width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;" />
+      <img src="assets/icons/Contract.png" style="width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;" />
 
       <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
         <span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'CONTACT_INFO.TITLE' | translate }}<br/><br/></span>

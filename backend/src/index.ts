@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from '@routes/auth.routes';
 import branchRoutes from '@routes/branch.routes';
 import rentalRequestRoutes from './routes/rental-request.routes';
+import myBookingRoutes from './routes/my-booking.routes';
 import { ApiResponseBuilder } from '@models/api.model';
 import { AppError } from '@utils/errors';
 
@@ -31,7 +32,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/rental-requests', rentalRequestRoutes);
-
+app.use('/api/my-bookings', myBookingRoutes);
 // Error handling middleware
 app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
   void req;
