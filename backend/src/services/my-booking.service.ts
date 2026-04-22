@@ -27,23 +27,31 @@ export class MyBookingService {
       const statusStr = filters.status.toLowerCase();
       
       switch (statusStr) {
-        case 'pending':
+        case 'pending': {
           // Pending trên UI tương đương với mới gửi hoặc đang duyệt trong DB
           query = query.in('status', ['requested', 'reviewing']);
           break;
-        case 'confirmed':
+        }
+        case 'confirmed': {
           query = query.in('status', ['viewing_scheduled', 'accepted']);
           break;
-        case 'cancelled':
+        }
+        case 'cancelled': {
           query = query.in('status', ['cancelled', 'rejected']);
           break;
-        case 'active':
-        case 'completed':
+        }
+        case 'active': {
+          query = query.eq('status', 'active');
+          break;
+        }
+        case 'completed': {
           query = query.eq('status', 'completed');
           break;
-        case 'deposit_pending':
+        }
+        case 'deposit_pending': {
           query = query.eq('status', 'deposit_pending');
           break;
+        }
         default:
           // Nếu truyền một status hoàn toàn không hợp lệ, chặn lỗi văng từ Postgres 
           // bằng cách lấy những ENUM hợp lệ hoặc query một ID không tồn tại

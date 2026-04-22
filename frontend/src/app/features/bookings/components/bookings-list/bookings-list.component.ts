@@ -174,7 +174,7 @@ export class BookingsListComponent implements OnInit {
       } else {
         this.router.navigate(['/auth/login']);
       }
-    } catch (e) {
+    } catch (_e) {
       this.router.navigate(['/auth/login']);
     }
     this.isUserMenuOpen = false;
@@ -232,7 +232,7 @@ export class BookingsListComponent implements OnInit {
   }
 
   cancelBooking(id: string): void {
-    if (confirm(this.translate.instant('ACTIONS.CONFIRM_CANCEL_MSG'))) {
+    if (window.confirm(this.translate.instant('ACTIONS.CONFIRM_CANCEL_MSG'))) {
       this.myBookingService.performAction(id, 'cancel').subscribe({
         next: () => {
           const target = this.allBookings.find(b => b.id === id);

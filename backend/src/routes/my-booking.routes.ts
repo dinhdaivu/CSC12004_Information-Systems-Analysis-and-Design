@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { MyBookingController } from '../controllers/my-booking.controller';
-import { authMiddleware, roleMiddleware } from '../middleware/auth.middleware';
+import { authMiddleware/*, roleMiddleware*/ } from '../middleware/auth.middleware';
 
 const router = Router();
 
 // Áp dụng middleware xác thực cho TOÀN BỘ routes ở dưới
 router.use(authMiddleware);
-// Tùy chọn: Nếu muốn chỉ customer mới được gọi API này, có thể dùng:
+// Tùy chọn: Nếu muốn chỉ customer mới được gọi API này
 // router.use(roleMiddleware(['customer']));
 
 // GET /api/my-bookings - Lấy danh sách (có hỗ trợ query ?status=pending)
