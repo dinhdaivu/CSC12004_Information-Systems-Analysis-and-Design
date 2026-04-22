@@ -22,6 +22,7 @@ const mockSupabaseQuery = {
   eq: jest.fn().mockReturnThis(),
   order: jest.fn().mockReturnThis(),
   in: jest.fn().mockReturnThis(),
+  is: jest.fn().mockReturnThis(), // FIX LỖI 2: Đã bổ sung mock hàm is()
   update: jest.fn().mockReturnThis(),
   single: jest.fn(),
   then: jest.fn()
@@ -69,6 +70,13 @@ describe('MyBookings Module', () => {
         expect(mockSupabaseQuery.in).toHaveBeenCalledWith('status', ['cancelled', 'rejected']); 
       });
 
+      it('should fallback to default if status filter is unknown', async () => {
+        mockSupabaseQuery.then.mockImplementationOnce((resolve) => resolve({ data: [], error: null }));
+        await MyBookingService.getMyBookings('cust-123', { status: 'some-random-status' });
+        // Đã mock .is() thành công, verify xem code có nhảy vào nhánh gọi .is('id', null) không
+        expect(mockSupabaseQuery.is).toHaveBeenCalledWith('id', null);
+      });
+
       it('should return empty array if Supabase fails', async () => {
         mockSupabaseQuery.then.mockImplementationOnce((resolve) => resolve({ data: null, error: { message: 'DB Error' } }));
         const result = await MyBookingService.getMyBookings('cust-123', {});
@@ -106,6 +114,7 @@ describe('MyBookings Module', () => {
         expect(result).toEqual(mockUpdatedData);
       });
 
+      // FIX LỖI 1: Đã xóa đi các test checkout thừa thãi
       it('should throw Error for unsupported action', async () => {
         jest.spyOn(MyBookingService, 'getBookingById').mockResolvedValue({ id: '1', status: 'requested' } as any);
         await expect(MyBookingService.handleAction('cust-123', '1', 'unknown-action' as any))
@@ -153,8 +162,6 @@ describe('MyBookings Module', () => {
     });
 
     describe('performAction', () => {
-      
-      // SỬA TẠI ĐÂY: Thay test 400 bằng test Exception (next)
       it('should call next(error) on exception', async () => {
         const req = mockRequest({ action: 'cancel' }, { id: '1' }, {}, { id: 'cust-123' }); 
         const res = mockResponse();
