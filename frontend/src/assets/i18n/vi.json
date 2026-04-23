@@ -16,7 +16,8 @@
     "LOGOUT": "Đăng xuất",
     "LOADING": "Đang tải dữ liệu...",
     "RETRY": "Thử lại",
-    "FETCH_ERROR": "Tải dữ liệu thất bại. Vui lòng thử lại."
+    "FETCH_ERROR": "Tải dữ liệu thất bại. Vui lòng thử lại.",
+    "ROOM": "Phòng"
   },
   "CONTACT_INFO": {
     "TITLE": "Thông tin liên hệ",
@@ -253,6 +254,70 @@
       "FETCH_ERROR": "Lỗi khi tải dữ liệu từ API: ",
       "UPDATE_SUCCESS": "Cập nhật trạng thái thành công: ",
       "UPDATE_ERROR": "Lỗi khi cập nhật trạng thái từ API: "
+    }
+  },
+  "MY_BOOKINGS": {
+    "TITLE": "Lịch Sử Đặt Phòng & Yêu Cầu",
+    "SUBTITLE": "Theo dõi và quản lý tiến trình các yêu cầu thuê phòng, đặt cọc và hợp đồng của bạn.",
+    "STATUS": {
+      "REQUESTED": "Mới gửi yêu cầu",
+      "PENDING": "Đang chờ xử lý",
+      "REVIEWING": "Đang xét duyệt",
+      "VIEWING_SCHEDULED": "Đã xếp lịch xem",
+      "CONFIRMED": "Đã xác nhận",
+      "ACTIVE": "Đang hoạt động",
+      "CANCELLED": "Đã hủy",
+      "CHECKOUT_PENDING": "Chờ trả phòng",
+      "COMPLETED": "Đã hoàn tất"
+    },
+    "FILTERS": {
+      "ALL": "Tất cả trạng thái",
+      "STATUS": "Lọc theo trạng thái"
+    },
+    "TABLE": {
+      "BRANCH": "Chi nhánh",
+      "ROOM": "Phòng",
+      "BED": "Giường",
+      "CREATED_AT": "Ngày tạo",
+      "STATUS": "Trạng thái",
+      "ACTIONS": "Thao tác"
+    },
+    "ACTIONS": {
+      "VIEW_DETAILS": "Xem chi tiết",
+      "CANCEL_REQUEST": "Hủy yêu cầu",
+      "CONFIRM_CANCEL_TITLE": "Xác nhận hủy",
+      "CONFIRM_CANCEL_MSG": "Bạn có chắc chắn muốn hủy yêu cầu thuê phòng này không? Hành động này không thể hoàn tác."
+    },
+    "MESSAGES": {
+      "LOADING": "Đang tải danh sách...",
+      "EMPTY": "Bạn chưa có yêu cầu thuê phòng hay lịch sử đặt phòng nào.",
+      "CANCEL_SUCCESS": "Đã hủy yêu cầu thành công.",
+      "CANCEL_ERROR": "Không thể hủy yêu cầu lúc này. Vui lòng thử lại sau."
+    },
+    "TRACKING": {
+      "TITLE": "Theo Dõi Tiến Trình Yêu Cầu Thuê",
+      "SUBTITLE": "Xem chi tiết tiến trình xử lý yêu cầu thuê phòng của bạn, từ lúc gửi yêu cầu đến khi hoàn tất hợp đồng.",
+      "STEPS": {
+        "PROCESSING": {
+          "LABEL": "Đang xử lý",
+          "DESC": "Ban quản lý đang kiểm tra tình trạng phòng và hồ sơ."
+        },
+        "ACCEPTED": {
+          "LABEL": "Đã chấp thuận",
+          "DESC": "Đã xem phòng xong<br/>Phòng đã sẵn sàng để giữ chỗ."
+        },
+        "REJECTED": {
+          "LABEL": "Đã từ chối",
+          "DESC": "Phòng không còn trống <br/>hoặc hồ sơ không đạt."
+        },
+        "CANCELLED": {
+          "LABEL": "Đã hủy"
+        },
+        "PENDING_DEPOSIT": {
+          "LABEL": "Chờ thanh toán",
+          "DESC": "Đang chờ thanh toán <br/>để giữ phòng."
+        }
+      }
     }
   }
 }
