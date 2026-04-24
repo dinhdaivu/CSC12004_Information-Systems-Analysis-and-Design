@@ -4,7 +4,6 @@ import { RouterModule, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MyBookingService } from '../../../../core/services/my-booking.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-bookings-list',

@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { BranchService } from '@core/services/branch.service'; 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { RentalPayload } from '@shared/models/rental-request.model';
 import { HostListener } from '@angular/core';
 import { inject } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
