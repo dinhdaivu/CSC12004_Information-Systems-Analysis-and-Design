@@ -25,6 +25,7 @@ describe('BookingsListComponent', () => {
     };
 
     mockAuthService = {
+      isAuthenticated: jest.fn().mockReturnValue(true),
       logout: jest.fn().mockReturnValue(of({}))
     };
 

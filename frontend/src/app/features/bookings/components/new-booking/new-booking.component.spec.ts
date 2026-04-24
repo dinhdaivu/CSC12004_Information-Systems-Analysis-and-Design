@@ -95,66 +95,64 @@ describe('NewBookingComponent', () => {
     expect(component.currentPage).toBe(1); // Bị đẩy về trang 1
   });
 
-  it('should submit successfully, show alert and reset to page 1', fakeAsync(() => {
-    // GIẢ LẬP (MOCK) WINDOW.ALERT ĐỂ JEST KHÔNG BỊ LỖI CRASH
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+  it('should submit successfully, show alert and reset to page 1', async () => {
+    // 1. Chặn lỗi window.alert của JSDOM
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-    // Bước 1: Điền dữ liệu hợp lệ vào form
-    component.bookingForm.patchValue({
+    // 2. Điền form hợp lệ
+    component.bookingForm.setValue({
       branch: 'Tô Hiến Thành',
       room_category: 'Twin Room (2)',
-      expected_move_in_date: '2026-05-19',
+      expected_move_in_date: '2026-05-01',
       rental_duration_months: 6,
       people_count: 2,
-      note: 'No preference'
+      note: 'Test'
     });
 
-    // Bước 2: Giả lập đã upload file ảnh CCCD
-    const mockFile = new File(['dummy content'], 'cccd.png', { type: 'image/png' });
-    component.selectedFile = mockFile;
+    // 3. Cấp một file giả để vượt qua điều kiện có ảnh CCCD
+    component.selectedFile = new File(['dummy content'], 'test.png', { type: 'image/png' });
 
-    // Bước 3: Thực hiện gọi Submit
-    component.onSubmit();
-    tick(); // Đợi luồng Observable (API) chạy xong
+    // 4. Giả lập API gọi thành công (trả về Observable)
+    mockRentalService.createRentalRequest.mockReturnValue(of({ success: true }));
 
-    // Bước 4: Kiểm chứng kết quả (Phù hợp với code thực tế của component hiện tại)
+    // 5. GỌI HÀM VÀ CHỜ HOÀN TẤT (Dùng await vì onSubmit là hàm async)
+    await component.onSubmit();
+
+    // 6. Kiểm chứng kết quả
     expect(mockRentalService.createRentalRequest).toHaveBeenCalled();
     expect(component.isSubmitting).toBeFalsy();
-    
-    // Phải gọi hàm alert với thông báo chính xác
-    expect(alertSpy).toHaveBeenCalledWith('Attendance Confirmed! Thank you.');
-    
-    // Code hiện tại của bạn reset về trang 1
-    expect(component.currentPage).toBe(1); 
-    
-    // Dọn dẹp mock
-    alertSpy.mockRestore();
-  }));
+    expect(window.alert).toHaveBeenCalledWith('Attendance Confirmed! Thank you.');
+    expect(component.currentPage).toBe(1);
+    expect(component.selectedFile).toBeNull();
+  });
 
-  it('should handle API error gracefully and show error message', fakeAsync(() => {
-    // Cố tình setup API trả về lỗi
-    const errorResponse = { error: { message: 'Room is fully booked' } };
-    mockRentalService.createRentalRequest.mockReturnValue(throwError(() => errorResponse));
-    
-    // Điền dữ liệu
-    component.bookingForm.patchValue({
+  it('should handle API error gracefully and show error message', async () => {
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    // 1. Điền form và cấp file giả
+    component.bookingForm.setValue({
       branch: 'Tô Hiến Thành',
       room_category: 'Twin Room (2)',
-      expected_move_in_date: '2026-05-19',
+      expected_move_in_date: '2026-05-01',
       rental_duration_months: 6,
       people_count: 2,
-      note: 'Test error'
+      note: ''
     });
-    component.selectedFile = new File([''], 'cccd.png', { type: 'image/png' });
+    component.selectedFile = new File(['dummy content'], 'test.png', { type: 'image/png' });
 
-    // Submit
-    component.onSubmit();
-    tick();
+    // 2. Giả lập API trả về lỗi
+    mockRentalService.createRentalRequest.mockReturnValue(throwError(() => ({
+      error: { message: 'Room is fully booked' }
+    })));
 
-    // Kiểm chứng xử lý lỗi
+    // 3. GỌI HÀM VÀ CHỜ HOÀN TẤT
+    await component.onSubmit();
+
+    // 4. Kiểm chứng kết quả lỗi
+    expect(mockRentalService.createRentalRequest).toHaveBeenCalled();
     expect(component.isSubmitting).toBeFalsy();
     expect(component.errorMessage).toContain('Room is fully booked');
-  }));
+  });
 
   it('should toggle language menu and change language', () => {
     const translateSpy = jest.spyOn(component['translate'], 'use');
