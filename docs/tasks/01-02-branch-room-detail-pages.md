@@ -118,12 +118,12 @@ Implement `docs/tasks/01-02-branch-room-detail-pages.md`.
 
 ## Completion Conditions
 
-- [ ] `/rooms/:id` no longer shows placeholder text.
-- [ ] All three branch detail variants can be represented by data.
-- [ ] Facilities and policy sections render.
-- [ ] Contact action works.
-- [ ] Frontend tests pass.
-- [ ] Backend endpoint or stub is documented.
+- [x] `/rooms/:id` no longer shows placeholder text.
+- [x] All three branch detail variants can be represented by data.
+- [x] Facilities and policy sections render.
+- [x] Contact action works.
+- [x] Frontend tests pass.
+- [x] Backend endpoint or stub is documented.
 
 ---
 

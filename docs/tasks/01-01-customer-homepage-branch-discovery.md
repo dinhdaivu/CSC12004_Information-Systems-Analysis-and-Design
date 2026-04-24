@@ -133,12 +133,12 @@ Implement `docs/tasks/01-01-customer-homepage-branch-discovery.md`.
 
 ## Completion Conditions
 
-- [ ] `/dashboard` no longer shows placeholder text.
-- [ ] Three branch homepage states are represented through branch data/selection.
-- [ ] Search filters branches.
-- [ ] "View more" navigates to detail.
-- [ ] Branch API or typed stub exists.
-- [ ] Tests pass for the changed frontend/backend code.
+- [x] `/dashboard` no longer shows placeholder text.
+- [x] Three branch homepage states are represented through branch data/selection.
+- [x] Search filters branches.
+- [x] "View more" navigates to detail.
+- [x] Branch API or typed stub exists.
+- [x] Tests pass for the changed frontend/backend code.
 
 ---
 

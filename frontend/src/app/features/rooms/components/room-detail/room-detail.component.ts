@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SharedFacility, RoomData, RoomType, BranchDetail } from '../../../../shared/models/branch.model';
-import { BranchService } from '../../../../core/services/branch.service'; 
+import { BranchService } from '../../../../core/services/branch.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-room-detail',
@@ -219,18 +220,34 @@ import { BranchService } from '../../../../core/services/branch.service';
           <img style="width: 100%; height: 100%; border-radius: 50%;" src="assets/icons/earth.png" (error)="onImageError($event, 'https://placehold.co/75x75/000/FFF?text=EN/VI')"/>
         </div>
         <div *ngIf="isLangMenuOpen" class="glass-menu animate-fade-in" style="position: absolute; left: 1560px; top: 170px; width: 200px; z-index: 61;">
-          <div (click)="changeLang('vi')" class="menu-item">{{ 'COMMON.VIETNAMESE' | translate }}</div>
+          <div (mousedown)="changeLang('vi')" class="menu-item">{{ 'COMMON.VIETNAMESE' | translate }}</div>
           <div style="height: 1px; background: rgba(255, 255, 255, 0.2); margin: 5px 15px;"></div>
-          <div (click)="changeLang('en')" class="menu-item">{{ 'COMMON.ENGLISH' | translate }}</div>
+          <div (mousedown)="changeLang('en')" class="menu-item">{{ 'COMMON.ENGLISH' | translate }}</div>
         </div>
 
         <div (click)="toggleUserMenu()" tabindex="0" (blur)="closeMenusDelay()" class="hover-scale" style="width: 70px; height: 70px; left: 1755px; top: 90px; position: absolute; cursor: pointer; outline: none; z-index: 60;">
           <img style="width: 100%; height: 100%; border-radius: 50%; border: 3px solid white;" src="assets/icons/User.png" (error)="onImageError($event, 'https://placehold.co/70x70/000/FFF?text=U')"/>
         </div>
-        <div *ngIf="isUserMenuOpen" class="glass-menu animate-fade-in" style="position: absolute; left: 1690px; top: 170px; width: 200px; z-index: 61;">
-          <div class="menu-item">{{ 'AUTH.SIGN_UP' | translate }}</div>
-          <div style="height: 1px; background: rgba(255, 255, 255, 0.2); margin: 5px 15px;"></div>
-          <div class="menu-item">{{ 'AUTH.LOG_IN' | translate }}</div>
+        <div *ngIf="isUserMenuOpen" style="position: absolute; left: 1680px; top: 180px; width: 200px; height: 150px; z-index: 100;">
+          <div style="width: 200px; height: 150px; left: 0px; top: 0px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
+
+          <ng-container *ngIf="!isAuthenticated">
+            <div (mousedown)="navigate('/register')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'AUTH.REGISTER.TITLE' | translate }}
+            </div>
+            <div (mousedown)="navigate('/login')" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'AUTH.LOGIN.TITLE' | translate }}
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="isAuthenticated">
+            <div (mousedown)="navigate('/profile')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'COMMON.PROFILE' | translate }}
+            </div>
+            <div (mousedown)="logout()" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'COMMON.LOGOUT' | translate }}
+            </div>
+          </ng-container>
         </div>
         
         <img (click)="goHome()" class="hover-scale" style="width: 185px; height: 165px; left: 105px; top: 90px; position: absolute; object-fit: contain; cursor: pointer; z-index: 60;" src="assets/icons/Logo.png" (error)="onImageError($event, 'https://placehold.co/185x165/FFF/000?text=Logo')" />
@@ -267,6 +284,8 @@ import { BranchService } from '../../../../core/services/branch.service';
   `]
 })
 export class RoomDetailComponent implements OnInit, OnDestroy {
+  authService = inject(AuthService);
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private translate = inject(TranslateService);
@@ -281,6 +300,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   isTransitioning = false; 
   isLangMenuOpen = false;
   isUserMenuOpen = false;
+  isAuthenticated = false;
 
   activeSharedIndex = 0;
   activeRoomType: RoomType = 'twin';
@@ -329,8 +349,10 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     const browserLang = this.translate.getBrowserLang();
     this.translate.use(browserLang?.match(/en|vi/) ? browserLang : 'vi');
   }
-
+  
   ngOnInit(): void {
+    this.onResize();
+    this.isAuthenticated = this.authService.isAuthenticated();
     this.calculateScale();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -341,6 +363,19 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopAutoPlay();
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe(() => {
+      this.isAuthenticated = false;
+      this.isUserMenuOpen = false;
+      this.router.navigate(['/login']);
+    });
+  }
+
+  navigate(path: string): void {
+    this.router.navigate([path]);
+    this.isUserMenuOpen = false;
   }
 
   @HostListener('window:resize')

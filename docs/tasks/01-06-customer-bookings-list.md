@@ -54,8 +54,8 @@ Implement the `/bookings` customer list screen. This is a derived implementation
 
 ## Completion Conditions
 
-- [ ] `/bookings` no longer shows placeholder text.
-- [ ] Customer records render with status filters.
-- [ ] Detail navigation works.
-- [ ] Customer data access is scoped.
-- [ ] Tests pass for changed code.
+- [x] `/bookings` no longer shows placeholder text.
+- [x] Customer records render with status filters.
+- [x] Detail navigation works.
+- [x] Customer data access is scoped.
+- [x] Tests pass for changed code.

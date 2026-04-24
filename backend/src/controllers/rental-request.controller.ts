@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { AppError } from '../utils/errors';
+import cloudinary from '../config/cloudinary';
 
 // 1. Enum khớp 100% với kiểu "public.rental_request_status" trong DB của bạn
 export enum RentalRequestStatus {
@@ -31,6 +32,18 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
         if (!customerId) return next(new AppError(401, 'UNAUTHORIZED', 'Yêu cầu đăng nhập'));
         if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database client chưa được khởi tạo'));
         
+        if (requestData.identity_card_base64) {
+            const uploadResult = await cloudinary.uploader.upload(requestData.identity_card_base64 as string, {
+                folder: 'homestay_dorm_id_cards'
+            });
+            // Gán link ảnh mới vào cột database ta vừa tạo
+            requestData.identity_card_url = uploadResult.secure_url;
+            
+            // Xóa chuỗi base64 khổng lồ này đi để không bị lỗi khi Insert vào Supabase
+            delete requestData.identity_card_base64; 
+        }
+
+        // Gọi supabase insert data với requestData như bình thường...
         const { data, error } = await supabase
             .from('rental_requests')
             .insert([{ 
