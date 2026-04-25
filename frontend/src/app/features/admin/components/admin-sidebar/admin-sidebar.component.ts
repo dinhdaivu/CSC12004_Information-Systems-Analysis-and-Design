@@ -57,7 +57,7 @@ export class AdminSidebarComponent {
     { label: "Inquiries", path: "/admin" },
     { label: "Schedules", path: "/admin/scheduled" },
     { label: "Rooms", path: "/admin/rooms" },
-    { label: "Payments", path: "/admin/payments" },
+    { label: "Reservations", path: "/admin/payments" },
     { label: "Users", path: "/admin/users" },
   ];
 
