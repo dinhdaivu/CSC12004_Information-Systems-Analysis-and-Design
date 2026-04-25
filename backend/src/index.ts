@@ -7,6 +7,8 @@ import branchRoutes from "@routes/branch.routes";
 import roomRoutes from "@routes/room.routes";
 import bedRoutes from "@routes/bed.routes";
 import viewingAppointmentsRoutes from "@routes/viewing-appointments.routes";
+import depositRoutes from "@routes/deposit.routes";
+import paymentRoutes from "@routes/payment.routes";
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
 
@@ -36,6 +38,8 @@ app.use("/api/branches", branchRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/bed", bedRoutes);
 app.use("/api/viewing-appointments", viewingAppointmentsRoutes);
+app.use("/api/deposits", depositRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // Error handling middleware
 app.use(
