@@ -1,0 +1,4 @@
+- Room management: Tui sửa lại để phù hợp cho việc add room nữa
+- Hiện tại patch có thay đổi trạng thái beds
+- Xóa rooms
+- Vị trí của các button không giống trên figma
