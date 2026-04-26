@@ -13,9 +13,9 @@ const viewingAppointmentsRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+router.use(viewingAppointmentsRateLimiter);
 router.use(authMiddleware);
 router.use(roleMiddleware(ALLOWED_VIEWING_ROLES));
-router.use(viewingAppointmentsRateLimiter);
 
 router.post(
   "/",
