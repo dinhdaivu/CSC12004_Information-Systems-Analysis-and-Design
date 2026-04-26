@@ -1,4 +1,5 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { DepositController } from "@controllers/deposit.controller";
 import { authMiddleware, roleMiddleware } from "@middleware/auth.middleware";
 
@@ -11,6 +12,14 @@ const STAFF_AND_ADMIN_ROLES = [
   "admin",
 ];
 
+const depositRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+router.use(depositRateLimiter);
 router.use(authMiddleware);
 router.use(roleMiddleware(STAFF_AND_ADMIN_ROLES));
 
