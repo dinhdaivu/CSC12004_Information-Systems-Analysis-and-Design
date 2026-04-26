@@ -104,8 +104,8 @@ Implement `docs/tasks/01-03-customer-rental-request.md`.
 
 ## Completion Conditions
 
-- [ ] `/bookings/new` no longer shows placeholder text.
-- [ ] Customer can submit a rental request.
-- [ ] Request data includes selected branch/room/bed and rental preferences.
-- [ ] Staff-facing request list can consume the created data.
-- [ ] Tests pass for changed code.
+- [x] `/bookings/new` no longer shows placeholder text.
+- [x] Customer can submit a rental request.
+- [x] Request data includes selected branch/room/bed and rental preferences.
+- [x] Staff-facing request list can consume the created data.
+- [x] Tests pass for changed code.

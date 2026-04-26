@@ -3,6 +3,7 @@ import { UsersManagementComponent } from "./components/users-management/users-ma
 import { RoomsManagementComponent } from "./components/rooms-management/rooms-management.component";
 import { PaymentsComponent } from "./components/payments/payments.component";
 import { ScheduledManagementComponent } from "./components/scheduled-management/scheduled-management.component";
+import { RentalRequestsComponent } from "./components/rental-requests/rental-request.component";
 
 import { Routes } from "@angular/router";
 import { authGuard } from "@core/guards/auth.guard";
@@ -47,6 +48,14 @@ export const ADMIN_ROUTES: Routes = [
     canActivate: [authGuard, roleGuard],
     data: {
       roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "rental-requests",
+    component: RentalRequestsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "manager", "admin"],
     },
   },
 ];

@@ -6,7 +6,30 @@
   "COMMON": {
     "LANGUAGE": "Ngôn ngữ",
     "ENGLISH": "Tiếng Anh",
-    "VIETNAMESE": "Tiếng Việt"
+    "VIETNAMESE": "Tiếng Việt",
+    "ABOUT_US": "Về chúng tôi",
+    "GUIDELINES": "Hướng dẫn",
+    "CONTACT": "Liên hệ",
+    "PROFILE": "Hồ sơ",
+    "BOOKING": "Đặt phòng",
+    "CONTRACT": "Hợp đồng",
+    "LOGOUT": "Đăng xuất",
+    "LOADING": "Đang tải dữ liệu...",
+    "RETRY": "Thử lại",
+    "FETCH_ERROR": "Tải dữ liệu thất bại. Vui lòng thử lại.",
+    "ROOM": "Phòng"
+  },
+  "CONTACT_INFO": {
+    "TITLE": "Thông tin liên hệ",
+    "HEADQUARTERS": "Trụ sở chính: ",
+    "ADDRESS_1": "227 Nguyễn Văn Cừ, Phường 4, ",
+    "ADDRESS_2": "Quận 5, TP.HCM.",
+    "PHONE_LABEL": "Điện thoại: ",
+    "PHONE": "(08) 18.276.266.",
+    "EMAIL_LABEL": "Email:",
+    "EMAIL": " contact@homestaydorm.vn",
+    "HOURS_LABEL": "Giờ làm việc:",
+    "HOURS": " T2 - T7 | 08:00 AM - 06:00 PM."
   },
   "AUTH": {
     "FIELDS": {
@@ -20,6 +43,8 @@
       "PASSWORD": "Mật khẩu phải có ít nhất 6 ký tự.",
       "PASSWORD_MATCH": "Mật khẩu xác nhận không khớp."
     },
+    "SIGN_UP": "Đăng ký",
+    "LOG_IN": "Đăng nhập",
     "LOGIN": {
       "TITLE": "ĐĂNG NHẬP",
       "SUBTITLE": "Chào mừng quay trở lại!",
@@ -42,7 +67,9 @@
       "SUBMITTING": "Đang tạo tài khoản...",
       "HAS_ACCOUNT": "Đã có tài khoản?",
       "LOGIN_ACTION": "Đăng nhập",
-      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại."
+      "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại.",
+      "SIGN_UP": "Đăng ký",
+      "LOG_IN": "Đăng nhập"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "XÁC NHẬN EMAIL",
@@ -81,5 +108,216 @@
     "ROOMS_AVAILABLE": "phòng trống",
     "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
     "CONTACT_US": "Liên hệ với chúng tôi"
+  },
+  "NAV": {
+    "GUIDELINES": "Hướng dẫn",
+    "ABOUT_US": "Về chúng tôi",
+    "CONTACT": "Liên hệ"
+  },
+  "ROOM_DETAIL": {
+    "FOOTER_SLOGAN": "Sự thoải mái của bạn là ưu tiên của chúng tôi.",
+    "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. Bảo lưu mọi quyền.",
+    "CONTACT_INFO": "Thông Tin Liên Hệ",
+    "HEADQUARTERS": "Trụ sở chính",
+    "ADDRESS_FOOTER": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM.",
+    "PHONE": "Điện thoại",
+    "EMAIL": "Email",
+    "OFFICE_HOURS": "Giờ làm việc",
+    "OFFICE_TIME": "Thứ 2 - Thứ 7 | 08:00 SA - 06:00 CH",
+    "CONTACT_US": "Liên Hệ Ngay",
+    "POLICY_INTRO": "Vui lòng xem qua các chính sách đặt phòng của chúng tôi:",
+    "POLICY_RENT": "Thanh Toán Tiền Thuê",
+    "POLICY_RENT_DESC": "Tiền thuê phải được thanh toán trong 5 ngày đầu tiên của tháng.",
+    "POLICY_DEPOSIT": "Tiền Cọc",
+    "POLICY_DEPOSIT_DESC": "Yêu cầu đặt cọc tương đương 1 tháng tiền thuê.",
+    "POLICY_CONFIRM": "Xác Nhận Đặt Phòng",
+    "POLICY_CONFIRM_DESC": "Phòng chỉ được xác nhận sau khi nhận đủ tiền cọc.",
+    "POLICY_REFUND": "Chính Sách Hoàn Tiền",
+    "POLICY_REFUND_100": "Hoàn 100% nếu hủy trước 14 ngày chuyển vào.",
+    "POLICY_REFUND_70": "Hoàn 70% nếu hủy trước 7-13 ngày chuyển vào.",
+    "POLICY_REFUND_50": "Hoàn 50% nếu hủy trước 3-6 ngày chuyển vào.",
+    "POLICY_REFUND_80": "Không hoàn tiền nếu hủy dưới 3 ngày chuyển vào.",
+    "TWIN_ROOM": "Phòng Đôi (2)",
+    "QUAD_ROOM": "Phòng Bốn (4)",
+    "CAPACITY": "Sức chứa:",
+    "AMENITIES": "Tiện ích:",
+    "ROOM_FACILITIES_TITLE": "Tiện Ích Trong Phòng",
+    "SHARED_COMMUNITY_TITLE": "Không Gian Sinh Hoạt Chung",
+    "BRANCH_TITLE": "Chi Nhánh {{name}}",
+    "DINING_HALL": "PHÒNG ĂN",
+    "DINING_DESC": "Khu vực ăn uống rộng rãi và sạch sẽ.",
+    "LIVING_LOUNGE": "PHÒNG KHÁCH",
+    "LIVING_DESC": "Không gian sinh hoạt chung thoải mái để thư giãn.",
+    "LAUNDRY_ZONE": "KHU GIẶT ỦI",
+    "LAUNDRY_DESC": "Trang thiết bị giặt sấy hiện đại hoạt động 24/7.",
+    "TWIN_CAPACITY": "2 Người",
+    "TWIN_AMENITIES": "2 Giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
+    "QUAD_CAPACITY": "4 Người",
+    "QUAD_AMENITIES": "4 Giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
+    "CONTACT_ACTION": "Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: {{name}}",
+    "ADDRESS_DEFAULT": "123 Đường Mặc Định, Phường Mặc Định, TP.HCM.",
+    "DESC_DEFAULT": "Một không gian tuyệt vời để sinh sống và học tập.",
+    "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyễn Cửu Vân, Phường 17, Quận Bình Thạnh, TP.HCM",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Chi nhánh Nguyễn Cửu Vân mang đến trải nghiệm sống độc đáo tại khu vực Bình Thạnh sầm uất. Vị trí gần Quận 1 khiến nơi đây trở thành địa điểm được săn đón cho những ai muốn ở gần trung tâm thành phố mà vẫn tận hưởng không khí ký túc xá ấm cúng.",
+    
+    "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 Tô Hiến Thành, Phường 13, Quận 10, TP.HCM",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Trải nghiệm nhịp sống đô thị tuyệt vời nhất ngay trung tâm Quận 10. Chi nhánh Tô Hiến Thành nằm ở vị trí chiến lược gần các trường đại học lớn và trung tâm mua sắm sầm uất, là ngôi nhà lý tưởng cho sinh viên coi trọng sự tiện lợi và khu dân cư nhộn nhịp.",
+    
+    "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quốc Hương, Phường Thảo Điền, TP Thủ Đức (Quận 2)",
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nép mình trong một khu vực yên bình và hiện đại, Chi nhánh Trần Não mang đến môi trường chuyên nghiệp với không gian rộng rãi. Chi nhánh này hoàn hảo cho các chuyên gia trẻ và sinh viên thích sự cân bằng giữa công việc tập trung và đời sống cộng đồng."
+  },
+  "BOOKING": {
+    "TITLE": "Phiếu Đăng Ký Thuê Phòng",
+    "SUBTITLE": "Vui lòng cung cấp thông tin và sở thích để chúng tôi tìm cho bạn chỗ ở phù hợp nhất.",
+    "BRANCH_SELECTION": "Chọn Chi Nhánh",
+    "ROOM_CATEGORY": "Loại Phòng",
+    "MOVE_IN_DATE": "Ngày Dự Kiến Chuyển Vào",
+    "OCCUPANTS": "Số Lượng Người Ở",
+    "DURATION": "Thời Hạn Hợp Đồng",
+    "RENTAL_TYPE": "Hình Thức Thuê",
+    "UPLOAD_ID": "Tải Lên Ảnh CCCD/CMND",
+    "BROWSE": "Chọn tệp",
+    "SUBMIT": "Gửi Yêu Cầu",
+    "SUCCESS": "Yêu cầu thuê phòng của bạn đã được gửi thành công!",
+    "ERROR": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "SHARED_FULL": "Giường ghép / Nguyên phòng",
+    "NEXT": "Tiếp theo",
+    "VIEWING_TITLE": "Lịch Hẹn Xem Phòng",
+    "VIEWING_SUBTITLE": "Xem lại chi tiết lịch hẹn của bạn và gặp nhân viên tư vấn để trực tiếp tham quan cơ sở vật chất.",
+    "CONFIRM_ATTENDANCE": "Xác Nhận Tham Gia",
+    "DATE": "Ngày",
+    "TIME": "Thời gian",
+    "TIME_VALUE": "9 SA",
+    "LOCATION": "Địa điểm",
+    "ROOM_INTEREST": "Phòng Quan Tâm",
+    "ROOM_TWIN": "Phòng Đôi (2)",
+    "ROOM_QUAD": "Phòng Bốn (4)",
+    "PROCESSING": "* Yêu cầu của bạn đang được xử lý"
+  },
+  "ADMIN_RENTAL": {
+    "TITLE": "Quản Lý Yêu Cầu Thuê",
+    "SUBTITLE": "Quản lý và xử lý tất cả các yêu cầu phòng từ khách hàng tiềm năng trên toàn hệ thống.",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm ...",
+    "FILTER": "Lọc",
+    "TABLE": {
+      "GUESS_ID": "Mã Khách",
+      "GUESS_NAME": "Tên Khách",
+      "GENDER": "Giới Tính",
+      "BRANCH": "Chi Nhánh",
+      "ROOM_CATEGORY": "Loại Phòng",
+      "REQUEST_DATE": "Ngày Yêu Cầu",
+      "STATUS": "Trạng Thái",
+      "DETAIL": "Chi Tiết"
+    },
+    "PROFILE": {
+      "TITLE": "Hồ Sơ Yêu Cầu Thuê",
+      "SUBTITLE": "Xem xét các yêu cầu lưu trú cơ bản và giấy tờ tùy thân để chuẩn bị cho buổi tư vấn trực tiếp.",
+      "CORE_REQS": "Yêu Cầu Thuê Cơ Bản",
+      "TARGET_BRANCH": "Chi Nhánh Mong Muốn",
+      "ROOM_CATEGORY": "Loại Phòng",
+      "RENTAL_TYPE": "Hình Thức Thuê",
+      "MOVE_IN_DATE": "Ngày Chuyển Vào Dự Kiến",
+      "OCCUPANCY": "Số Lượng Người Ở",
+      "PERSONS": "Người",
+      "CONTACT_INFO": "Thông Tin Liên Hệ",
+      "FULL_NAME": "Họ và Tên",
+      "GENDER": "Giới Tính",
+      "PHONE": "Số Điện Thoại",
+      "EMAIL": "Địa Chỉ Email",
+      "ID_NUMBER": "Số CCCD/CMND",
+      "RETURN": "Quay Lại",
+      "REVIEW_QUALIFY": "Xem Xét & Đánh Giá",
+      "BACK": "< Quay Lại"
+    },
+    "VERIFICATION": {
+      "TITLE": "Xác Minh Điều Kiện Khách Hàng",
+      "SUBTITLE": "Xác nhận hồ sơ và giấy tờ của khách hàng đáp ứng các tiêu chuẩn lưu trú của ký túc xá.",
+      "CHECKLIST_TITLE": "Danh Sách Kiểm Tra Bắt Buộc",
+      "CHECK_1": "Tên và số CCCD/CMND khớp với thông tin đăng ký.",
+      "CHECK_2": "Giới tính khách hàng phù hợp với phòng/khu vực được chỉ định.",
+      "CHECK_3": "Số lượng người ở không vượt quá sức chứa của loại phòng đã chọn.",
+      "RESULTS_TITLE": "Kết Quả Xác Minh",
+      "REVIEWER_NOTE": "Ghi Chú Của Người Duyệt",
+      "NOTE_PLACEHOLDER": "Nhập ghi chú đánh giá của bạn tại đây...",
+      "REQ_MORE_INFO": "Yêu Cầu Thêm Thông Tin",
+      "REJECT_LEAD": "Từ Chối Khách",
+      "APPROVE_PROCEED": "Chấp Thuận & Tiếp Tục"
+    },
+    "SIDEBAR": {
+      "INQUIRIES": "Yêu Cầu Thuê",
+      "SCHEDULES": "Lịch Hẹn",
+      "ROOMS": "Quản Lý Phòng",
+      "RESERVATIONS": "Đặt Phòng",
+      "CONTRACTS": "Hợp Đồng"
+    },
+    "ALERTS": {
+      "FETCH_ERROR": "Lỗi khi tải dữ liệu từ API: ",
+      "UPDATE_SUCCESS": "Cập nhật trạng thái thành công: ",
+      "UPDATE_ERROR": "Lỗi khi cập nhật trạng thái từ API: "
+    }
+  },
+  "MY_BOOKINGS": {
+    "TITLE": "Lịch Sử Đặt Phòng & Yêu Cầu",
+    "SUBTITLE": "Theo dõi và quản lý tiến trình các yêu cầu thuê phòng, đặt cọc và hợp đồng của bạn.",
+    "STATUS": {
+      "REQUESTED": "Mới gửi yêu cầu",
+      "PENDING": "Đang chờ xử lý",
+      "REVIEWING": "Đang xét duyệt",
+      "VIEWING_SCHEDULED": "Đã xếp lịch xem",
+      "CONFIRMED": "Đã xác nhận",
+      "ACTIVE": "Đang hoạt động",
+      "CANCELLED": "Đã hủy",
+      "CHECKOUT_PENDING": "Chờ trả phòng",
+      "COMPLETED": "Đã hoàn tất"
+    },
+    "FILTERS": {
+      "ALL": "Tất cả trạng thái",
+      "STATUS": "Lọc theo trạng thái"
+    },
+    "TABLE": {
+      "BRANCH": "Chi nhánh",
+      "ROOM": "Phòng",
+      "BED": "Giường",
+      "CREATED_AT": "Ngày tạo",
+      "STATUS": "Trạng thái",
+      "ACTIONS": "Thao tác"
+    },
+    "ACTIONS": {
+      "VIEW_DETAILS": "Xem chi tiết",
+      "CANCEL_REQUEST": "Hủy yêu cầu",
+      "CONFIRM_CANCEL_TITLE": "Xác nhận hủy",
+      "CONFIRM_CANCEL_MSG": "Bạn có chắc chắn muốn hủy yêu cầu thuê phòng này không? Hành động này không thể hoàn tác."
+    },
+    "MESSAGES": {
+      "LOADING": "Đang tải danh sách...",
+      "EMPTY": "Bạn chưa có yêu cầu thuê phòng hay lịch sử đặt phòng nào.",
+      "CANCEL_SUCCESS": "Đã hủy yêu cầu thành công.",
+      "CANCEL_ERROR": "Không thể hủy yêu cầu lúc này. Vui lòng thử lại sau."
+    },
+    "TRACKING": {
+      "TITLE": "Theo Dõi Tiến Trình Yêu Cầu Thuê",
+      "SUBTITLE": "Xem chi tiết tiến trình xử lý yêu cầu thuê phòng của bạn, từ lúc gửi yêu cầu đến khi hoàn tất hợp đồng.",
+      "STEPS": {
+        "PROCESSING": {
+          "LABEL": "Đang xử lý",
+          "DESC": "Ban quản lý đang kiểm tra tình trạng phòng và hồ sơ."
+        },
+        "ACCEPTED": {
+          "LABEL": "Đã chấp thuận",
+          "DESC": "Đã xem phòng xong<br/>Phòng đã sẵn sàng để giữ chỗ."
+        },
+        "REJECTED": {
+          "LABEL": "Đã từ chối",
+          "DESC": "Phòng không còn trống <br/>hoặc hồ sơ không đạt."
+        },
+        "CANCELLED": {
+          "LABEL": "Đã hủy"
+        },
+        "PENDING_DEPOSIT": {
+          "LABEL": "Chờ thanh toán",
+          "DESC": "Đang chờ thanh toán <br/>để giữ phòng."
+        }
+      }
+    }
   }
 }

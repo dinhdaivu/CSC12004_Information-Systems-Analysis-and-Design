@@ -210,7 +210,10 @@ CREATE TABLE IF NOT EXISTS public.rental_requests (
     status public.rental_request_status NOT NULL DEFAULT 'requested',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CHECK (budget_min IS NULL OR budget_max IS NULL OR budget_min <= budget_max)
+    CHECK (budget_min IS NULL OR budget_max IS NULL OR budget_min <= budget_max),
+    expected_move_in_date DATE,
+    rental_duration_months INTEGER,
+    identity_card_url TEXT
 );
 
 CREATE TABLE IF NOT EXISTS public.viewing_appointments (

@@ -104,8 +104,8 @@ Implement `docs/tasks/01-04-staff-rental-registration-management.md`.
 
 ## Completion Conditions
 
-- [ ] Staff can view rental requests.
-- [ ] Staff can record matching and viewing results.
-- [ ] Accepted request can proceed to deposit flow.
-- [ ] API or typed stub exists.
-- [ ] Tests pass for changed code.
+- [x] Staff can view rental requests.
+- [x] Staff can record matching and viewing results.
+- [x] Accepted request can proceed to deposit flow.
+- [x] API or typed stub exists.
+- [x] Tests pass for changed code.

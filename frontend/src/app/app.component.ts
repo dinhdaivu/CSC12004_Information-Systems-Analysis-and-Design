@@ -4,27 +4,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { AuthService } from '@core/services/auth.service';
 import { LanguageService } from '@core/i18n/language.service';
-import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher.component';
-
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, TranslateModule, LanguageSwitcherComponent],
+  imports: [RouterOutlet, TranslateModule],
   template: `
-    <div [class.min-h-screen]="!isFullscreenAuthRoute()" [class.bg-gray-50]="!isFullscreenAuthRoute()">
-      @if (!isFullscreenAuthRoute()) {
-        <header class="border-b bg-white px-4 py-3 shadow-sm">
-          <div class="mx-auto flex max-w-6xl items-center justify-between gap-4">
-            <div>
-              <h1 class="text-lg font-semibold text-gray-900">{{ 'APP.TITLE' | translate }}</h1>
-              <p class="text-sm text-gray-600">{{ 'APP.WELCOME' | translate }}</p>
-            </div>
-
-            <app-language-switcher></app-language-switcher>
-          </div>
-        </header>
-      }
-
+    <div>
       <router-outlet></router-outlet>
     </div>
   `,
