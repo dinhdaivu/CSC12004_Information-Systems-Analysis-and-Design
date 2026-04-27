@@ -1210,7 +1210,11 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
           : "Unassigned room"),
       customer:
         record.customerName ?? `Customer ${record.customerId.slice(0, 8)}`,
-      staff: record.saleName ?? (record.saleId ? `Sale ${record.saleId.slice(0, 8)}` : "Unassigned sale"),
+      staff:
+        record.saleName ??
+        (record.saleId
+          ? `Sale ${record.saleId.slice(0, 8)}`
+          : "Unassigned sale"),
     };
   }
 
