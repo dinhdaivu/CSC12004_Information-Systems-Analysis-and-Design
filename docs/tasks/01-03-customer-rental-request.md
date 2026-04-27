@@ -54,20 +54,20 @@ Customer rental request flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace `NewBookingComponent` placeholder with rental request form.
-- [ ] Pre-fill selected room/branch when arriving from detail page.
-- [ ] Capture expected move-in date, rental duration, number of tenants, gender/room preferences, budget, and notes.
-- [ ] Add form validation and submit states.
-- [ ] Add success/error feedback.
+- [x] Replace `NewBookingComponent` placeholder with rental request form.
+- [x] Pre-fill selected room/branch when arriving from detail page.
+- [x] Capture expected move-in date, rental duration, number of tenants, gender/room preferences, budget, and notes.
+- [x] Add form validation and submit states.
+- [x] Add success/error feedback.
 
 ### Backend (Express/Supabase)
 
-- [ ] Add rental request model/table.
-- [ ] Implement `POST /api/rental-requests`.
-- [ ] Implement `GET /api/rental-requests` for staff follow-up.
-- [ ] Validate room/bed availability before accepting a request.
+- [x] Add rental request model/table.
+- [x] Implement `POST /api/rental-requests`.
+- [x] Implement `GET /api/rental-requests` for staff follow-up.
+- [x] Validate room/bed availability before accepting a request.
 
 ### Tests
 
@@ -104,8 +104,8 @@ Implement `docs/tasks/01-03-customer-rental-request.md`.
 
 ## Completion Conditions
 
-- [ ] `/bookings/new` no longer shows placeholder text.
-- [ ] Customer can submit a rental request.
-- [ ] Request data includes selected branch/room/bed and rental preferences.
-- [ ] Staff-facing request list can consume the created data.
-- [ ] Tests pass for changed code.
+- [x] `/bookings/new` no longer shows placeholder text.
+- [x] Customer can submit a rental request.
+- [x] Request data includes selected branch/room/bed and rental preferences.
+- [x] Staff-facing request list can consume the created data.
+- [x] Tests pass for changed code.

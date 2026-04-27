@@ -8,6 +8,47 @@
     "ENGLISH": "English",
     "VIETNAMESE": "Vietnamese"
   },
+  "NAV": {
+    "PUBLIC": {
+      "HOME": "Discover",
+      "ROOMS": "Room Catalog",
+      "BOOKINGS": "My Bookings",
+      "ADMIN": "Admin Workspace"
+    },
+    "ADMIN": {
+      "OVERVIEW": "Overview",
+      "ROOMS": "Room Management",
+      "PAYMENTS": "Payments",
+      "USERS": "User Management"
+    },
+    "HERO": {
+      "ABOUT": "About us",
+      "GUIDELINES": "Guidelines",
+      "CONTACT": "Contact"
+    }
+  },
+  "SHELL": {
+    "PUBLIC": {
+      "TAGLINE": "Flexible living for students, residents, and growing teams."
+    },
+    "ADMIN": {
+      "TAGLINE": "Operations cockpit",
+      "ACCESS_BADGE": "Authorized account",
+      "ACCESS_FALLBACK": "Admin profile is loading",
+      "HEADER_BADGE": "Admin navigation"
+    },
+    "USER": {
+      "SIGNED_IN": "Signed in",
+      "MY_BOOKINGS": "Open my bookings",
+      "ADMIN_WORKSPACE": "Go to admin workspace",
+      "LOGOUT": "Log out",
+      "LOGIN": "Log in",
+      "REGISTER": "Sign Up",
+      "WELCOME_BADGE": "Guest menu",
+      "GUEST_TITLE": "Welcome to HomeStay Dorm",
+      "GUEST_SUBTITLE": "Sign in to continue bookings, payments, and resident actions."
+    }
+  },
   "AUTH": {
     "FIELDS": {
       "EMAIL": "Email Address",
@@ -76,10 +117,80 @@
   },
   "DASHBOARD": {
     "TITLE": "Discover HomeStay Dorm Branches",
-    "SEARCH_PLACEHOLDER": "Search by branch name or address...",
+    "SEARCH_PLACEHOLDER": "Search...",
     "VIEW_MORE": "View more",
     "ROOMS_AVAILABLE": "rooms available",
     "EMPTY_STATE": "No matching branches found.",
-    "CONTACT_US": "Contact Us Now"
+    "CONTACT_US": "Contact Us Now",
+    "SECTIONS": {
+      "ABOUT": {
+        "TITLE": "Built for flexible city living",
+        "BODY": "HomeStay Dorm combines branch discovery, student-friendly housing, and a guided booking journey into one calm experience. The homepage introduces each branch the way the Figma fullpage screen intended: cinematic first, practical second.",
+        "CARD_ONE_LABEL": "Focus",
+        "CARD_ONE_VALUE": "Comfortable branches in key districts",
+        "CARD_TWO_LABEL": "Experience",
+        "CARD_TWO_VALUE": "Fast discovery with multilingual navigation"
+      },
+      "GUIDELINES": {
+        "CARD_ONE": {
+          "TITLE": "Explore branches",
+          "BODY": "Use the hero search and branch slider to quickly compare locations before moving into detail pages."
+        },
+        "CARD_TWO": {
+          "TITLE": "Review the process",
+          "BODY": "Navigation is designed to guide visitors from discovery to room detail, booking, and later account actions."
+        },
+        "CARD_THREE": {
+          "TITLE": "Switch language anytime",
+          "BODY": "The globe menu keeps English and Vietnamese available directly from the hero navigation."
+        }
+      },
+      "CONTACT": {
+        "TITLE": "Need help choosing a branch?",
+        "BODY": "Talk with the HomeStay Dorm team if you want guidance on location, room type, or the next booking step.",
+        "CARD_ONE_LABEL": "Email",
+        "CARD_ONE_VALUE": "support@homestaydorm.vn",
+        "CARD_TWO_LABEL": "Phone",
+        "CARD_TWO_VALUE": "+84 28 1234 5678"
+      }
+    }
+  },
+  "PAGES": {
+    "ROOMS_LIST": {
+      "TITLE": "Room Catalog",
+      "DESCRIPTION": "The shared customer shell is ready. Room listing content will be connected in task 01-02."
+    },
+    "ROOM_DETAIL": {
+      "TITLE": "Room Detail",
+      "DESCRIPTION": "The room detail view now sits inside the shared public layout. Full branch and room content will be completed in task 01-02."
+    },
+    "BOOKINGS_LIST": {
+      "TITLE": "My Bookings",
+      "DESCRIPTION": "Booking status and resident actions will be implemented in task 01-06. The navigation, auth gating, and customer shell are ready."
+    },
+    "BOOKINGS_NEW": {
+      "TITLE": "New Booking",
+      "DESCRIPTION": "The booking creation route is wired into the shared customer shell. Rental request details will be implemented in task 01-03."
+    },
+    "BOOKINGS_DETAIL": {
+      "TITLE": "Booking Detail",
+      "DESCRIPTION": "The booking detail screen now inherits the shared customer layout. Payment and contract states will be implemented in later booking tasks."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Admin Overview",
+      "DESCRIPTION": "The shared admin shell and sidebar are now in place. Dashboard metrics will be completed in task 03-05."
+    },
+    "ADMIN_USERS": {
+      "TITLE": "User Management",
+      "DESCRIPTION": "Role-based navigation is ready. User management data and actions will be implemented in task 03-04."
+    },
+    "ADMIN_ROOMS": {
+      "TITLE": "Room Management",
+      "DESCRIPTION": "The admin navigation and protected route are ready. Room operations will be completed in task 03-02."
+    },
+    "ADMIN_PAYMENTS": {
+      "TITLE": "Payment Tracking",
+      "DESCRIPTION": "The payments workspace now sits inside the shared admin shell. Deposit and reconciliation flows will be implemented in tasks 02-02 and 03-03."
+    }
   }
 }

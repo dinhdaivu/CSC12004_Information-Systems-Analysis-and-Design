@@ -53,19 +53,19 @@ Staff rental registration flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Add `/admin/rental-requests` route or extend admin dashboard.
-- [ ] Add request list and request detail views.
-- [ ] Add room/bed matching action.
+- [x] Add `/admin/rental-requests` route or extend admin dashboard.
+- [x] Add request list and request detail views.
+- [x] Add room/bed matching action.
 - [ ] Link to schedule creation in task 03-01.
-- [ ] Add viewing result states: agreed, needs follow-up, not interested, no-show.
+- [x] Add viewing result states: agreed, needs follow-up, not interested, no-show.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement rental request list/detail endpoints.
-- [ ] Implement request status update endpoint.
-- [ ] Implement viewing result persistence.
+- [x] Implement rental request list/detail endpoints.
+- [x] Implement request status update endpoint.
+- [x] Implement viewing result persistence.
 - [ ] Link accepted requests to deposit creation flow.
 
 ### Tests
@@ -104,8 +104,8 @@ Implement `docs/tasks/01-04-staff-rental-registration-management.md`.
 
 ## Completion Conditions
 
-- [ ] Staff can view rental requests.
-- [ ] Staff can record matching and viewing results.
+- [x] Staff can view rental requests.
+- [x] Staff can record matching and viewing results.
 - [ ] Accepted request can proceed to deposit flow.
-- [ ] API or typed stub exists.
-- [ ] Tests pass for changed code.
+- [x] API or typed stub exists.
+- [x] Tests pass for changed code.

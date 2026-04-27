@@ -8,6 +8,47 @@
     "ENGLISH": "Tiếng Anh",
     "VIETNAMESE": "Tiếng Việt"
   },
+  "NAV": {
+    "PUBLIC": {
+      "HOME": "Khám phá",
+      "ROOMS": "Danh sách phòng",
+      "BOOKINGS": "Đơn của tôi",
+      "ADMIN": "Khu vực quản trị"
+    },
+    "ADMIN": {
+      "OVERVIEW": "Tổng quan",
+      "ROOMS": "Quản lý phòng",
+      "PAYMENTS": "Thanh toán",
+      "USERS": "Quản lý người dùng"
+    },
+    "HERO": {
+      "ABOUT": "Về chúng tôi",
+      "GUIDELINES": "Hướng dẫn",
+      "CONTACT": "Liên hệ"
+    }
+  },
+  "SHELL": {
+    "PUBLIC": {
+      "TAGLINE": "Không gian sống linh hoạt cho sinh viên, cư dân và đội ngũ vận hành đang phát triển."
+    },
+    "ADMIN": {
+      "TAGLINE": "Bảng điều phối vận hành",
+      "ACCESS_BADGE": "Tài khoản được phân quyền",
+      "ACCESS_FALLBACK": "Đang tải hồ sơ quản trị",
+      "HEADER_BADGE": "Điều hướng quản trị"
+    },
+    "USER": {
+      "SIGNED_IN": "Đã đăng nhập",
+      "MY_BOOKINGS": "Mở danh sách đơn của tôi",
+      "ADMIN_WORKSPACE": "Đi đến khu vực quản trị",
+      "LOGOUT": "Đăng xuất",
+      "LOGIN": "Đăng nhập",
+      "REGISTER": "Đăng ký",
+      "WELCOME_BADGE": "Menu khách",
+      "GUEST_TITLE": "Chào mừng đến với HomeStay Dorm",
+      "GUEST_SUBTITLE": "Hãy đăng nhập để tiếp tục đặt chỗ, thanh toán và theo dõi các yêu cầu lưu trú."
+    }
+  },
   "AUTH": {
     "FIELDS": {
       "EMAIL": "Địa chỉ email",
@@ -76,10 +117,80 @@
   },
   "DASHBOARD": {
     "TITLE": "Khám phá các chi nhánh HomeStay Dorm",
-    "SEARCH_PLACEHOLDER": "Tìm kiếm theo tên chi nhánh hoặc địa chỉ...",
-    "VIEW_MORE": "Xem chi tiết",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm...",
+    "VIEW_MORE": "Xem thêm",
     "ROOMS_AVAILABLE": "phòng trống",
     "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
-    "CONTACT_US": "Liên hệ với chúng tôi"
+    "CONTACT_US": "Liên hệ với chúng tôi",
+    "SECTIONS": {
+      "ABOUT": {
+        "TITLE": "Thiết kế cho nhịp sống đô thị linh hoạt",
+        "BODY": "HomeStay Dorm kết hợp tra cứu chi nhánh, tìm chỗ ở phù hợp cho sinh viên và hành trình đặt chỗ rõ ràng trong một trải nghiệm mạch lạc. Trang chủ hiện giới thiệu từng chi nhánh theo đúng tinh thần của fullpage Figma: ấn tượng trước, thực dụng sau.",
+        "CARD_ONE_LABEL": "Trọng tâm",
+        "CARD_ONE_VALUE": "Chi nhánh thuận tiện tại các quận trọng điểm",
+        "CARD_TWO_LABEL": "Trải nghiệm",
+        "CARD_TWO_VALUE": "Khám phá nhanh với điều hướng song ngữ"
+      },
+      "GUIDELINES": {
+        "CARD_ONE": {
+          "TITLE": "Khám phá chi nhánh",
+          "BODY": "Sử dụng thanh tìm kiếm và bộ chuyển chi nhánh ở hero để so sánh địa điểm trước khi đi vào trang chi tiết."
+        },
+        "CARD_TWO": {
+          "TITLE": "Nắm rõ quy trình",
+          "BODY": "Điều hướng được thiết kế để dẫn người dùng từ khám phá sang chi tiết phòng, đặt chỗ và các thao tác tài khoản sau đó."
+        },
+        "CARD_THREE": {
+          "TITLE": "Đổi ngôn ngữ bất cứ lúc nào",
+          "BODY": "Menu hình quả địa cầu giữ sẵn tiếng Anh và tiếng Việt ngay trong điều hướng của hero."
+        }
+      },
+      "CONTACT": {
+        "TITLE": "Cần hỗ trợ chọn chi nhánh phù hợp?",
+        "BODY": "Hãy liên hệ với đội ngũ HomeStay Dorm nếu bạn muốn được tư vấn về vị trí, loại phòng hoặc bước đặt chỗ tiếp theo.",
+        "CARD_ONE_LABEL": "Email",
+        "CARD_ONE_VALUE": "support@homestaydorm.vn",
+        "CARD_TWO_LABEL": "Điện thoại",
+        "CARD_TWO_VALUE": "+84 28 1234 5678"
+      }
+    }
+  },
+  "PAGES": {
+    "ROOMS_LIST": {
+      "TITLE": "Danh sách phòng",
+      "DESCRIPTION": "Khung giao diện dùng chung cho khách hàng đã sẵn sàng. Nội dung danh sách phòng sẽ được kết nối đầy đủ ở task 01-02."
+    },
+    "ROOM_DETAIL": {
+      "TITLE": "Chi tiết phòng",
+      "DESCRIPTION": "Màn hình chi tiết phòng hiện đã nằm trong shared public layout. Nội dung chi nhánh và phòng sẽ được hoàn thiện ở task 01-02."
+    },
+    "BOOKINGS_LIST": {
+      "TITLE": "Đơn của tôi",
+      "DESCRIPTION": "Trạng thái đặt chỗ và các hành động của cư dân sẽ được triển khai ở task 01-06. Điều hướng, phân quyền và customer shell hiện đã sẵn sàng."
+    },
+    "BOOKINGS_NEW": {
+      "TITLE": "Tạo đơn mới",
+      "DESCRIPTION": "Tuyến tạo booking đã được đặt vào shared customer shell. Chi tiết yêu cầu thuê sẽ được triển khai ở task 01-03."
+    },
+    "BOOKINGS_DETAIL": {
+      "TITLE": "Chi tiết đơn",
+      "DESCRIPTION": "Màn hình chi tiết booking hiện đã kế thừa shared customer layout. Các trạng thái thanh toán và hợp đồng sẽ được triển khai trong các task booking tiếp theo."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Tổng quan quản trị",
+      "DESCRIPTION": "Shared admin shell và sidebar đã sẵn sàng. Các chỉ số dashboard sẽ được hoàn thiện ở task 03-05."
+    },
+    "ADMIN_USERS": {
+      "TITLE": "Quản lý người dùng",
+      "DESCRIPTION": "Điều hướng theo vai trò đã sẵn sàng. Dữ liệu và thao tác quản lý người dùng sẽ được triển khai ở task 03-04."
+    },
+    "ADMIN_ROOMS": {
+      "TITLE": "Quản lý phòng",
+      "DESCRIPTION": "Điều hướng quản trị và tuyến được bảo vệ đã sẵn sàng. Nghiệp vụ quản lý phòng sẽ được hoàn thiện ở task 03-02."
+    },
+    "ADMIN_PAYMENTS": {
+      "TITLE": "Theo dõi thanh toán",
+      "DESCRIPTION": "Khu vực payments hiện đã nằm trong shared admin shell. Các luồng đặt cọc và đối soát sẽ được triển khai ở task 02-02 và 03-03."
+    }
   }
 }
