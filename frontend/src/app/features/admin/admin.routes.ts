@@ -27,7 +27,23 @@ export const ADMIN_ROUTES: Routes = [
     },
   },
   {
+    path: "users-management",
+    component: UsersManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["manager", "admin"],
+    },
+  },
+  {
     path: "rooms",
+    component: RoomsManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "rooms-management",
     component: RoomsManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
@@ -37,6 +53,14 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: "payments",
     component: PaymentsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "scheduled-management",
+    component: ScheduledManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
       roles: ["sale", "accountant", "manager", "admin"],
