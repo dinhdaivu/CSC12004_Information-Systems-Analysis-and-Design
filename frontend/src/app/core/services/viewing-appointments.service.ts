@@ -10,7 +10,7 @@ export type ViewingAppointmentRecord = {
   id: string;
   rentalRequestId: string;
   customerId: string;
-  saleId: string;
+  saleId: string | null;
   roomId: string | null;
   bedId: string | null;
   scheduledAt: string;
