@@ -6,7 +6,30 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "ENGLISH": "English",
-    "VIETNAMESE": "Vietnamese"
+    "VIETNAMESE": "Vietnamese",
+    "ABOUT_US": "About us",
+    "GUIDELINES": "Guidelines",
+    "CONTACT": "Contact",
+    "PROFILE": "Profile",
+    "BOOKING": "Booking",
+    "CONTRACT": "Contract",
+    "LOGOUT": "Logout",
+    "LOADING": "Loading...",
+    "RETRY": "Retry",
+    "FETCH_ERROR": "Failed to load data. Please try again.",
+    "ROOM": "Room"
+  },
+  "CONTACT_INFO": {
+    "TITLE": "Contact Information",
+    "HEADQUARTERS": "Headquarters: ",
+    "ADDRESS_1": "227 Nguyen Van Cu Street, Ward 4, ",
+    "ADDRESS_2": "District 5, HCMC.",
+    "PHONE_LABEL": "Phone: ",
+    "PHONE": "(08) 18.276.266.",
+    "EMAIL_LABEL": "Email:",
+    "EMAIL": " contact@homestaydorm.vn",
+    "HOURS_LABEL": "Office Hours:",
+    "HOURS": " Mon - Sat | 08:00 AM - 06:00 PM."
   },
   "NAV": {
     "PUBLIC": {
@@ -61,6 +84,8 @@
       "PASSWORD": "Password must be at least 6 characters.",
       "PASSWORD_MATCH": "Passwords do not match."
     },
+    "SIGN_UP": "Sign Up",
+    "LOG_IN": "Log In",
     "LOGIN": {
       "TITLE": "LOG IN",
       "SUBTITLE": "Welcome Back!",
@@ -83,7 +108,9 @@
       "SUBMITTING": "Creating account...",
       "HAS_ACCOUNT": "Already have an account?",
       "LOGIN_ACTION": "Log In",
-      "ERROR": "Unable to create account. Please try again."
+      "ERROR": "Unable to create account. Please try again.",
+      "SIGN_UP": "Sign Up",
+      "LOG_IN": "Log In"
     },
     "CONFIRM_EMAIL": {
       "TITLE": "CONFIRM EMAIL",
@@ -191,6 +218,240 @@
     "ADMIN_PAYMENTS": {
       "TITLE": "Payment Tracking",
       "DESCRIPTION": "The payments workspace now sits inside the shared admin shell. Deposit and reconciliation flows will be implemented in tasks 02-02 and 03-03."
+
+    }
+  },
+  "ROOM_DETAIL": {
+    "FOOTER_SLOGAN": "Your comfort, our priority.",
+    "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. All rights reserved.",
+    "CONTACT_INFO": "Contact Information",
+    "HEADQUARTERS": "Headquarters",
+    "ADDRESS_FOOTER": "227 Nguyen Van Cu Street, Ward 4, District 5, HCMC.",
+    "PHONE": "Phone",
+    "EMAIL": "Email",
+    "OFFICE_HOURS": "Office Hours",
+    "OFFICE_TIME": "Mon - Sat | 08:00 AM - 06:00 PM",
+    "CONTACT_US": "Contact Us",
+    "POLICY_INTRO": "Please review our booking policies:",
+    "POLICY_RENT": "Rent Payment",
+    "POLICY_RENT_DESC": "Rent must be paid within the first 5 days of the month.",
+    "POLICY_DEPOSIT": "Deposit",
+    "POLICY_DEPOSIT_DESC": "A deposit equivalent to 1 month's rent is required.",
+    "POLICY_CONFIRM": "Booking Confirmation",
+    "POLICY_CONFIRM_DESC": "Bookings are confirmed only after the deposit is received.",
+    "POLICY_REFUND": "Refund Policy",
+    "POLICY_REFUND_100": "100% refund if cancelled 14 days before move-in.",
+    "POLICY_REFUND_70": "70% refund if cancelled 7-13 days before move-in.",
+    "POLICY_REFUND_50": "50% refund if cancelled 3-6 days before move-in.",
+    "POLICY_REFUND_80": "No refund if cancelled less than 3 days before move-in.",
+    "TWIN_ROOM": "Twin Room (2)",
+    "QUAD_ROOM": "Quad Room (4)",
+    "CAPACITY": "Capacity:",
+    "AMENITIES": "Amenities:",
+    "ROOM_FACILITIES_TITLE": "Room Facilities",
+    "SHARED_COMMUNITY_TITLE": "Shared Community Spaces",
+    "BRANCH_TITLE": "{{name}} Branch",
+    "DINING_HALL": "DINING HALL",
+    "DINING_DESC": "Spacious and clean dining area for everyone.",
+    "LIVING_LOUNGE": "LIVING LOUNGE",
+    "LIVING_DESC": "Comfortable lounge for relaxation and socializing.",
+    "LAUNDRY_ZONE": "LAUNDRY ZONE",
+    "LAUNDRY_DESC": "Modern washing and drying machines available 24/7.",
+    "TWIN_CAPACITY": "2 Persons",
+    "TWIN_AMENITIES": "2 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
+    "QUAD_CAPACITY": "4 Persons",
+    "QUAD_AMENITIES": "4 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
+    "CONTACT_ACTION": "Contact request successfully sent to the management of: {{name}}",
+    "ADDRESS_DEFAULT": "123 Default Street, Default Ward, HCMC.",
+    "DESC_DEFAULT": "A great place to stay.",
+    "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyen Cuu Van Street, Ward 17, Binh Thanh District, HCMC",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "The Nguyễn Cửu Vân Branch offers a unique living experience in the vibrant Binh Thanh District. Its proximity to District 1 makes it a highly sought-after location for those who want to be close to the city center while enjoying a cozy dormitory atmosphere.",
+
+    "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 To Hien Thanh Street, Ward 13, District 10, HCMC",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Experience urban living at its finest in the heart of District 10. Our Tô Hiến Thành Branch is strategically located near major universities and vibrant shopping hubs, making it the ideal home for students who value convenience and a lively neighborhood.",
+
+    "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City (District 2)",
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nestled in a more peaceful and modern area, the Trần Não Branch offers a professional environment with spacious surroundings. This branch is perfect for young professionals and students who prefer a balance between focused work and community life."
+  },
+  "BOOKING": {
+    "TITLE": "Rental Registration Form",
+    "SUBTITLE": "Provide your details and preferences to help us find your perfect stay.",
+    "BRANCH_SELECTION": "Branch Selection",
+    "ROOM_CATEGORY": "Room Category",
+    "MOVE_IN_DATE": "Move-in Date",
+    "OCCUPANTS": "Number of Occupants",
+    "DURATION": "Contract Duration",
+    "RENTAL_TYPE": "Rental Type",
+    "UPLOAD_ID": "Upload Your ID Photo",
+    "BROWSE": "Browse",
+    "SUBMIT": "Submit",
+    "SUCCESS": "Your rental request has been submitted successfully!",
+    "ERROR": "An error occurred. Please try again.",
+    "SHARED_FULL": "Shared bed / Full room",
+    "NEXT": "Next",
+    "VIEWING_TITLE": "My Viewing Appointment",
+    "VIEWING_SUBTITLE": "Review your scheduled tour details and meet our sales representative to explore the facilities in person.",
+    "CONFIRM_ATTENDANCE": "Confirm Attendance",
+    "DATE": "Date",
+    "TIME": "Time",
+    "TIME_VALUE": "9AM",
+    "LOCATION": "Location",
+    "ROOM_INTEREST": "Room Interest",
+    "ROOM_TWIN": "Twin Room (2)",
+    "ROOM_QUAD": "Quad Room (4)",
+    "PROCESSING": "* Your request is being processed"
+  },
+  "ADMIN_RENTAL": {
+    "TITLE": "Rental Inquiries Management",
+    "SUBTITLE": "Manage and process all incoming room requests from potential residents across all branches.",
+    "SEARCH_PLACEHOLDER": "Search ...",
+    "FILTER": "Filter",
+    "TABLE": {
+      "GUESS_ID": "Guess ID",
+      "GUESS_NAME": "Guess Name",
+      "GENDER": "Gender",
+      "BRANCH": "Branch",
+      "ROOM_CATEGORY": "Room Category",
+      "REQUEST_DATE": "Request Date",
+      "STATUS": "Status",
+      "DETAIL": "Detail"
+    },
+    "PROFILE": {
+      "TITLE": "Guest Inquiry Profile",
+      "SUBTITLE": "Review core residency requirements and identification to prepare for the direct consultation.",
+      "CORE_REQS": "Core Rental Requirements",
+      "TARGET_BRANCH": "Target Branch",
+      "ROOM_CATEGORY": "Room Category",
+      "RENTAL_TYPE": "Rental Type",
+      "MOVE_IN_DATE": "Expected Move-in Date",
+      "OCCUPANCY": "Occupancy",
+      "PERSONS": "Persons",
+      "CONTACT_INFO": "Contact Information",
+      "FULL_NAME": "Full Name",
+      "GENDER": "Gender",
+      "PHONE": "Phone Number",
+      "EMAIL": "Email Address",
+      "ID_NUMBER": "Identity Card Number",
+      "RETURN": "Return",
+      "REVIEW_QUALIFY": "Review & Qualify",
+      "BACK": "< Back"
+    },
+    "VERIFICATION": {
+      "TITLE": "Lead Eligibility Verification",
+      "SUBTITLE": "Confirm that the guest's profile and documentation meet the dormitory’s residency standards.",
+      "CHECKLIST_TITLE": "Mandatory Checklist",
+      "CHECK_1": "Name and ID number match the registration details.",
+      "CHECK_2": "Guest gender matches the designated room/zone.",
+      "CHECK_3": "Number of occupants does not exceed the capacity for the selected room type.",
+      "RESULTS_TITLE": "Verification Results",
+      "REVIEWER_NOTE": "Reviewer’s Note",
+      "NOTE_PLACEHOLDER": "Enter your review notes here...",
+      "REQ_MORE_INFO": "Request More Info",
+      "REJECT_LEAD": "Reject Lead",
+      "APPROVE_PROCEED": "Approve & Proceed"
+    },
+    "SIDEBAR": {
+      "INQUIRIES": "Inquiries",
+      "SCHEDULES": "Schedules",
+      "ROOMS": "Rooms",
+      "RESERVATIONS": "Reservations",
+      "CONTRACTS": "Contracts"
+    },
+    "ALERTS": {
+      "FETCH_ERROR": "Error loading data from API: ",
+      "UPDATE_SUCCESS": "Successfully updated status to: ",
+      "UPDATE_ERROR": "Error updating status from API: "
+    }
+  },
+  "MY_BOOKINGS": {
+    "TITLE": "My Bookings & Requests",
+    "SUBTITLE": "Track and manage your rental requests, deposits, and active stays.",
+    "STATUS": {
+      "REQUESTED": "Requested",
+      "PENDING": "Pending",
+      "REVIEWING": "Reviewing",
+      "VIEWING_SCHEDULED": "Viewing Scheduled",
+      "CONFIRMED": "Confirmed",
+      "ACTIVE": "Active",
+      "CANCELLED": "Cancelled",
+      "CHECKOUT_PENDING": "Checkout Pending",
+      "COMPLETED": "Completed"
+    },
+    "FILTERS": {
+      "ALL": "All Statuses",
+      "STATUS": "Filter by status"
+    },
+    "TABLE": {
+      "BRANCH": "Branch",
+      "ROOM": "Room",
+      "BED": "Bed",
+      "CREATED_AT": "Created Date",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
+    "ACTIONS": {
+      "VIEW_DETAILS": "View Details",
+      "CANCEL_REQUEST": "Cancel Request",
+      "CONFIRM_CANCEL_TITLE": "Confirm Cancellation",
+      "CONFIRM_CANCEL_MSG": "Are you sure you want to cancel this rental request? This action cannot be undone."
+    },
+    "MESSAGES": {
+      "LOADING": "Loading your bookings...",
+      "EMPTY": "You don't have any bookings or rental requests yet.",
+      "CANCEL_SUCCESS": "Request cancelled successfully.",
+      "CANCEL_ERROR": "Could not cancel the request at this time. Please try again later."
+    },
+    "TRACKING": {
+      "TITLE": "Request Tracking",
+      "SUBTITLE": "Stay updated on the real-time status of your application, from initial review to final approval for deposit .",
+      "STEPS": {
+        "PROCESSING": {
+          "LABEL": "Processing",
+          "DESC": "Sales team is checking availability and eligibility."
+        },
+        "ACCEPTED": {
+          "LABEL": "Accepted",
+          "DESC": "Viewing completed<br/>Room is available for reservation."
+        },
+        "REJECTED": {
+          "LABEL": "Rejected",
+          "DESC": "Room is unavailable <br/>or criteria not met."
+        },
+        "CANCELLED": {
+          "LABEL": "Cancelled"
+        },
+        "PENDING_DEPOSIT": {
+          "LABEL": "Pending Deposit",
+          "DESC": "Awaiting payment <br/>to lock the room."
+        }
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Monitor the latest system snapshot and navigate quickly to core admin operations.",
+      "loading": "Loading dashboard data...",
+      "retry": "Retry",
+      "error": "Unable to load dashboard data. Please try again.",
+      "summarySection": "Summary",
+      "users": "Total Users",
+      "rooms": "Total Rooms",
+      "bookings": "Total Rental Requests",
+      "revenue": "Total Revenue",
+      "quickNavigation": "Quick Navigation",
+      "usersManagement": "Users Management",
+      "roomsManagement": "Rooms Management",
+      "rentalRequests": "Rental Requests",
+      "payments": "Payments",
+      "scheduledManagement": "Scheduled Management",
+      "recentActivity": "Recent Activity",
+      "emptyRecentActivity": "No recent activity available.",
+      "activity": {
+        "newUserRegistered": "A new user account has been created.",
+        "paymentReceived": "A payment has been confirmed.",
+        "bookingApproved": "A rental request has been approved."
+      }
     }
   }
 }

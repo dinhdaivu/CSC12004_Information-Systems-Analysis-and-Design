@@ -138,7 +138,7 @@ Implement `docs/tasks/01-01-customer-homepage-branch-discovery.md`.
 - [x] Search filters branches.
 - [x] "View more" navigates to detail.
 - [x] Branch API or typed stub exists.
-- [ ] Tests pass for the changed frontend/backend code.
+- [x] Tests pass for the changed frontend/backend code.
 
 ---
 

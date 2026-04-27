@@ -1,146 +1,94 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BookingsListComponent } from './bookings-list.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { MyBookingService } from '../../../../core/services/my-booking.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('BookingsListComponent', () => {
   let component: BookingsListComponent;
-  let fixture: any;
-  let httpMock: HttpTestingController;
-  let router: any;
+  let fixture: ComponentFixture<BookingsListComponent>;
+  let mockMyBookingService: any;
+  let mockAuthService: any;
+  let mockRouter: any;
+
+  const mockBookingsData = [
+    { id: '1', status: 'requested', rooms: { room_number: '101' } },
+    { id: '2', status: 'accepted', rooms: { room_number: '102' } },
+  ];
 
   beforeEach(async () => {
+    mockMyBookingService = {
+      getMyBookings: jest.fn().mockReturnValue(of({ data: mockBookingsData })),
+      performAction: jest.fn().mockReturnValue(of({}))
+    };
+
+    mockAuthService = {
+      isAuthenticated: jest.fn().mockReturnValue(true),
+      logout: jest.fn().mockReturnValue(of({}))
+    };
+
+    mockRouter = {
+      navigate: jest.fn()
+    };
+
     await TestBed.configureTestingModule({
-      imports: [BookingsListComponent, HttpClientTestingModule],
+      imports: [
+        BookingsListComponent, 
+        TranslateModule.forRoot()
+      ],
       providers: [
-        {
-          provide: Router,
-          useValue: { navigate: jest.fn() }
-        }
+        { provide: MyBookingService, useValue: mockMyBookingService },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: Router, useValue: mockRouter },
+        TranslateService 
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingsListComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
+    fixture.detectChanges();
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
-  describe('Component Initialization', () => {
-    it('should create the bookings list component', () => {
-      expect(component).toBeTruthy();
-    });
-
-    it('should initialize without errors', () => {
-      expect(() => fixture.detectChanges()).not.toThrow();
-    });
-
-    it('should have valid component instance', () => {
-      fixture.detectChanges();
-      expect(fixture.componentInstance).toEqual(component);
-    });
-
-    it('should be a standalone component', () => {
-      expect(BookingsListComponent).toBeDefined();
-    });
+  it('should load bookings on init', () => {
+    expect(mockMyBookingService.getMyBookings).toHaveBeenCalled();
+    expect(component.allBookings.length).toBe(2);
+    expect(component.bookings.length).toBe(2);
+    
+    // FIX: Dùng cú pháp của Jest thay vì Jasmine
+    expect(component.isLoading).toBe(false); 
   });
 
-  describe('Bookings Data Loading', () => {
-    it('should load bookings on initialization', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should fetch bookings from API', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should display loaded bookings', () => {
-      fixture.detectChanges();
-      const compiled = fixture.nativeElement;
-      expect(compiled).toBeTruthy();
-    });
-
-    it('should handle loading state', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should handle empty bookings list', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+  it('should apply local filter correctly for pending status', () => {
+    component.filterStatus('pending');
+    expect(component.currentFilter).toBe('pending');
+    expect(component.bookings.length).toBe(1);
+    expect(component.bookings[0].id).toBe('1'); 
   });
 
-  describe('Bookings Rendering', () => {
-    it('should render booking list items', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should display booking list with proper structure', () => {
-      fixture.detectChanges();
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.children.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should render booking details', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
+  it('should apply local filter correctly for confirmed status', () => {
+    component.filterStatus('confirmed');
+    expect(component.bookings.length).toBe(1);
+    expect(component.bookings[0].id).toBe('2'); 
   });
 
-  describe('Status Filtering', () => {
-    it('should filter bookings by status', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should display bookings for confirmed status', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should display bookings for pending status', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should display bookings for cancelled status', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should update list when status filter changes', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+  it('should call performAction and update status when cancel is confirmed', () => {
+    // FIX: Dùng jest.spyOn thay vì spyOn của Jasmine
+    jest.spyOn(window, 'confirm').mockReturnValue(true); 
+    
+    component.cancelBooking('1');
+    
+    expect(mockMyBookingService.performAction).toHaveBeenCalledWith('1', 'cancel');
+    expect(component.allBookings[0].status).toBe('cancelled');
   });
 
-  describe('User Actions', () => {
-    it('should navigate to booking details', () => {
-      fixture.detectChanges();
-      expect(router.navigate).toBeDefined();
-    });
-
-    it('should handle cancel booking action', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
-
-    it('should handle modify booking action', () => {
-      fixture.detectChanges();
-      expect(component).toBeDefined();
-    });
-
-    it('should process booking selection', () => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+  it('should navigate to detail page', () => {
+    component.navigate('/bookings/1');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/bookings/1']);
   });
 });

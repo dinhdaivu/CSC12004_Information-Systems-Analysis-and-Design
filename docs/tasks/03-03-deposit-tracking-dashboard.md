@@ -1,6 +1,7 @@
 # [Task] Deposit Tracking Dashboard
 
 > **Implementation Rules**
+>
 > 1. **Before implementation**: Check [frontend-status.md](../frontend-status.md), [api-endpoints.md](../architecture/api-endpoints.md), [database.md](../architecture/database.md), and [state-machine.md](../architecture/state-machine.md).
 > 2. **Stubs**: If a dependency is not implemented, create a typed stub and add `// TODO: Implemented in task 03-03`.
 > 3. **After implementation**: Update docs if deposit/payment endpoint behavior or status transitions change.
@@ -17,20 +18,20 @@ Implement an admin/staff dashboard for tracking deposit requests and payment sta
 
 ### Figma Screen
 
-| Screen | Figma Link | Angular Route |
-|--------|------------|---------------|
+| Screen                     | Figma Link                                                                                  | Angular Route     |
+| -------------------------- | ------------------------------------------------------------------------------------------- | ----------------- |
 | Deposit Tracking Dashboard | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=512-1722) | `/admin/payments` |
 
 ---
 
 ## Reference Documents
 
-| Document | Section |
-|----------|---------|
-| [UC2](../UC/UC2.md) | Deposit and rental confirmation |
-| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Payments |
-| [State Machine](../architecture/state-machine.md) | DepositStatus, RoomStatus |
-| [Software Layers](../architecture/layers.md) | PaymentController, DepositRequest, Payment |
+| Document                                          | Section                                    |
+| ------------------------------------------------- | ------------------------------------------ |
+| [UC2](../UC/UC2.md)                               | Deposit and rental confirmation            |
+| [API Endpoints](../architecture/api-endpoints.md) | Deposits, Payments                         |
+| [State Machine](../architecture/state-machine.md) | DepositStatus, RoomStatus                  |
+| [Software Layers](../architecture/layers.md)      | PaymentController, DepositRequest, Payment |
 
 ---
 
@@ -74,35 +75,37 @@ Deposit tracking flow:
 
 ### Tests
 
-| Layer | Test File | Mock Target |
-|-------|-----------|-------------|
+| Layer    | Test File                                                                        | Mock Target               |
+| -------- | -------------------------------------------------------------------------------- | ------------------------- |
 | Frontend | `frontend/src/app/features/admin/components/payments/payments.component.spec.ts` | Deposits/payments service |
-| Backend | `backend/src/__tests__/deposits.spec.ts` | Supabase client |
-| Backend | `backend/src/__tests__/payments.spec.ts` | Supabase client |
+| Backend  | `backend/src/__tests__/deposits.spec.ts`                                         | Supabase client           |
+| Backend  | `backend/src/__tests__/payments.spec.ts`                                         | Supabase client           |
 
-| # | Test Case | Layer | Expected |
-|---|-----------|-------|----------|
-| 1 | Dashboard loads deposits | Frontend | Deposit rows/cards are rendered |
-| 2 | Status filter | Frontend | Service called with selected status |
-| 3 | Confirm deposit | Backend | Deposit becomes PAID, room becomes DEPOSITED |
-| 4 | Cancel deposit | Backend | Deposit becomes CANCELLED |
-| 5 | Unauthorized confirm | Backend | Customer role is rejected |
+| #   | Test Case                | Layer    | Expected                                     |
+| --- | ------------------------ | -------- | -------------------------------------------- |
+| 1   | Dashboard loads deposits | Frontend | Deposit rows/cards are rendered              |
+| 2   | Status filter            | Frontend | Service called with selected status          |
+| 3   | Confirm deposit          | Backend  | Deposit becomes PAID, room becomes DEPOSITED |
+| 4   | Cancel deposit           | Backend  | Deposit becomes CANCELLED                    |
+| 5   | Unauthorized confirm     | Backend  | Customer role is rejected                    |
 
 ---
 
 ## AI Implementation Prompt
 
---------------------------------------------------
+---
 
 Implement `docs/tasks/03-03-deposit-tracking-dashboard.md`.
 
 ## References
+
 - UC: `docs/UC/UC2.md`
 - API: `docs/architecture/api-endpoints.md`
 - State machine: `docs/architecture/state-machine.md`
 - Figma: Deposit Tracking Dashboard
 
 ## Implementation
+
 - Replace `PaymentsComponent` placeholder.
 - Add typed deposit and payment service.
 - Implement filters and list/dashboard UI.
@@ -111,14 +114,16 @@ Implement `docs/tasks/03-03-deposit-tracking-dashboard.md`.
 - If backend is missing, create typed stubs with `// TODO: Implemented in task 03-03`.
 
 ## Important Status Rules
+
 - Confirm deposit: `DepositStatus.PAID`; associated room should become `DEPOSITED`.
 - Cancel deposit: `DepositStatus.CANCELLED`; room should return to `AVAILABLE` unless another hold exists.
 
 ## Test Requirements
+
 - Frontend tests for loading, filtering, and action click.
 - Backend tests for confirm/cancel state transitions if routes are implemented.
 
---------------------------------------------------
+---
 
 ---
 

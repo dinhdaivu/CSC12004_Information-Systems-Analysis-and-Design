@@ -6,10 +6,12 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { PaymentsComponent } from './components/payments/payments.component';
 import { RoomsManagementComponent } from './components/rooms-management/rooms-management.component';
 import { UsersManagementComponent } from './components/users-management/users-management.component';
+import { ScheduledManagementComponent } from "./components/scheduled-management/scheduled-management.component";
+import { RentalRequestsComponent } from "./components/rental-requests/rental-request.component";
 
 export const ADMIN_ROUTES: Routes = [
   {
-    path: '',
+    path: "",
     component: AdminDashboardComponent,
     canActivate: [authGuard, roleGuard],
     data: {
@@ -20,7 +22,7 @@ export const ADMIN_ROUTES: Routes = [
     } satisfies AppRouteData
   },
   {
-    path: 'users',
+    path: "users",
     component: UsersManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
@@ -31,7 +33,15 @@ export const ADMIN_ROUTES: Routes = [
     } satisfies AppRouteData
   },
   {
-    path: 'rooms',
+    path: "users-management",
+    component: UsersManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["manager", "admin"],
+    },
+  },
+  {
+    path: "rooms",
     component: RoomsManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
@@ -42,7 +52,15 @@ export const ADMIN_ROUTES: Routes = [
     } satisfies AppRouteData
   },
   {
-    path: 'payments',
+    path: "rooms-management",
+    component: RoomsManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "payments",
     component: PaymentsComponent,
     canActivate: [authGuard, roleGuard],
     data: {
@@ -51,5 +69,29 @@ export const ADMIN_ROUTES: Routes = [
       navLabelKey: 'NAV.ADMIN.PAYMENTS',
       pageTitleKey: 'PAGES.ADMIN_PAYMENTS.TITLE',
     } satisfies AppRouteData
-  }
+  },
+  {
+    path: "scheduled-management",
+    component: ScheduledManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "scheduled",
+    component: ScheduledManagementComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+    },
+  },
+  {
+    path: "rental-requests",
+    component: RentalRequestsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "manager", "admin"],
+    },
+  },
 ];

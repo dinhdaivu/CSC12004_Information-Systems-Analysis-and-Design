@@ -106,6 +106,6 @@ Implement `docs/tasks/01-04-staff-rental-registration-management.md`.
 
 - [x] Staff can view rental requests.
 - [x] Staff can record matching and viewing results.
-- [ ] Accepted request can proceed to deposit flow.
+- [x] Accepted request can proceed to deposit flow.
 - [x] API or typed stub exists.
 - [x] Tests pass for changed code.

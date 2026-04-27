@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentIndex = 0;
   isTransitioning = false;
   autoPlayTimer: number | null = null;
+
   ngOnInit(): void {
     this.branchService.getBranches().subscribe((data) => {
       this.branches = data;
