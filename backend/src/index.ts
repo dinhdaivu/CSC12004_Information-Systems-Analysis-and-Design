@@ -12,6 +12,7 @@ import depositRoutes from "@routes/deposit.routes";
 import paymentRoutes from "@routes/payment.routes";
 import rentalRequestRoutes from "@routes/rental-request.routes";
 import myBookingRoutes from "@routes/my-booking.routes";
+import usersRoutes from "@routes/users.routes";
 
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
@@ -52,6 +53,9 @@ app.use("/api/payments", paymentRoutes);
 // main routes
 app.use("/api/rental-requests", rentalRequestRoutes);
 app.use("/api/my-bookings", myBookingRoutes);
+
+// admin routes
+app.use("/api/users", usersRoutes);
 
 // Error handling middleware
 app.use(
