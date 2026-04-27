@@ -159,10 +159,10 @@
     "DESC_DEFAULT": "Một không gian tuyệt vời để sinh sống và học tập.",
     "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyễn Cửu Vân, Phường 17, Quận Bình Thạnh, TP.HCM",
     "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Chi nhánh Nguyễn Cửu Vân mang đến trải nghiệm sống độc đáo tại khu vực Bình Thạnh sầm uất. Vị trí gần Quận 1 khiến nơi đây trở thành địa điểm được săn đón cho những ai muốn ở gần trung tâm thành phố mà vẫn tận hưởng không khí ký túc xá ấm cúng.",
-    
+
     "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 Tô Hiến Thành, Phường 13, Quận 10, TP.HCM",
     "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Trải nghiệm nhịp sống đô thị tuyệt vời nhất ngay trung tâm Quận 10. Chi nhánh Tô Hiến Thành nằm ở vị trí chiến lược gần các trường đại học lớn và trung tâm mua sắm sầm uất, là ngôi nhà lý tưởng cho sinh viên coi trọng sự tiện lợi và khu dân cư nhộn nhịp.",
-    
+
     "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quốc Hương, Phường Thảo Điền, TP Thủ Đức (Quận 2)",
     "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nép mình trong một khu vực yên bình và hiện đại, Chi nhánh Trần Não mang đến môi trường chuyên nghiệp với không gian rộng rãi. Chi nhánh này hoàn hảo cho các chuyên gia trẻ và sinh viên thích sự cân bằng giữa công việc tập trung và đời sống cộng đồng."
   },
@@ -317,6 +317,33 @@
           "LABEL": "Chờ thanh toán",
           "DESC": "Đang chờ thanh toán <br/>để giữ phòng."
         }
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Bảng điều khiển quản trị",
+      "subtitle": "Theo dõi tổng quan hệ thống mới nhất và điều hướng nhanh đến các tác vụ quản trị chính.",
+      "loading": "Đang tải dữ liệu bảng điều khiển...",
+      "retry": "Thử lại",
+      "error": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại.",
+      "summarySection": "Tổng quan",
+      "users": "Tổng người dùng",
+      "rooms": "Tổng phòng",
+      "bookings": "Tổng yêu cầu thuê",
+      "revenue": "Tổng doanh thu",
+      "quickNavigation": "Điều hướng nhanh",
+      "usersManagement": "Quản lý người dùng",
+      "roomsManagement": "Quản lý phòng",
+      "rentalRequests": "Yêu cầu thuê",
+      "payments": "Thanh toán",
+      "scheduledManagement": "Quản lý lịch",
+      "recentActivity": "Hoạt động gần đây",
+      "emptyRecentActivity": "Chưa có hoạt động gần đây.",
+      "activity": {
+        "newUserRegistered": "Một tài khoản người dùng mới đã được tạo.",
+        "paymentReceived": "Một khoản thanh toán đã được xác nhận.",
+        "bookingApproved": "Một yêu cầu thuê đã được phê duyệt."
       }
     }
   }

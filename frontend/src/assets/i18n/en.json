@@ -159,10 +159,10 @@
     "DESC_DEFAULT": "A great place to stay.",
     "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyen Cuu Van Street, Ward 17, Binh Thanh District, HCMC",
     "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "The Nguyễn Cửu Vân Branch offers a unique living experience in the vibrant Binh Thanh District. Its proximity to District 1 makes it a highly sought-after location for those who want to be close to the city center while enjoying a cozy dormitory atmosphere.",
-    
+
     "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 To Hien Thanh Street, Ward 13, District 10, HCMC",
     "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Experience urban living at its finest in the heart of District 10. Our Tô Hiến Thành Branch is strategically located near major universities and vibrant shopping hubs, making it the ideal home for students who value convenience and a lively neighborhood.",
-    
+
     "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City (District 2)",
     "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nestled in a more peaceful and modern area, the Trần Não Branch offers a professional environment with spacious surroundings. This branch is perfect for young professionals and students who prefer a balance between focused work and community life."
   },
@@ -317,6 +317,33 @@
           "LABEL": "Pending Deposit",
           "DESC": "Awaiting payment <br/>to lock the room."
         }
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Monitor the latest system snapshot and navigate quickly to core admin operations.",
+      "loading": "Loading dashboard data...",
+      "retry": "Retry",
+      "error": "Unable to load dashboard data. Please try again.",
+      "summarySection": "Summary",
+      "users": "Total Users",
+      "rooms": "Total Rooms",
+      "bookings": "Total Rental Requests",
+      "revenue": "Total Revenue",
+      "quickNavigation": "Quick Navigation",
+      "usersManagement": "Users Management",
+      "roomsManagement": "Rooms Management",
+      "rentalRequests": "Rental Requests",
+      "payments": "Payments",
+      "scheduledManagement": "Scheduled Management",
+      "recentActivity": "Recent Activity",
+      "emptyRecentActivity": "No recent activity available.",
+      "activity": {
+        "newUserRegistered": "A new user account has been created.",
+        "paymentReceived": "A payment has been confirmed.",
+        "bookingApproved": "A rental request has been approved."
       }
     }
   }
