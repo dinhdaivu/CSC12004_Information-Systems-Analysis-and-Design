@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  NgZone,
   OnDestroy,
   OnInit,
   inject,
@@ -652,6 +653,7 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   private readonly branchService = inject(BranchService);
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ngZone = inject(NgZone);
   private readonly roomsApiUrl = `${environment.apiUrl}/rooms`;
   private readonly bedsApiUrl = `${environment.apiUrl}/bed`;
   private readonly destroy$ = new Subject<void>();
@@ -702,6 +704,13 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
   rooms: MockRoomItem[] = [];
 
+  private runInView(update: () => void): void {
+    this.ngZone.run(() => {
+      update();
+      this.cdr.markForCheck();
+    });
+  }
+
   ngOnInit(): void {
     this.setupRoomDetailStream();
 
@@ -709,9 +718,11 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       .getBranches()
       .pipe(takeUntil(this.destroy$))
       .subscribe((branches) => {
-        this.branches = branches.slice(0, 3);
-        this.setupSearchStream();
-        this.searchRooms();
+        this.runInView(() => {
+          this.branches = branches.slice(0, 3);
+          this.setupSearchStream();
+          this.searchRooms();
+        });
       });
   }
 
@@ -948,17 +959,18 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.isCreatingRoom = false;
-          const uploadedWarning =
-            this.lastImageUploadFailureCount > 0
-              ? ` ${this.lastImageUploadFailureCount} image(s) failed to upload.`
-              : "";
-          this.createRoomSuccessMessage = `Room and beds created successfully.${uploadedWarning}`;
-          this.roomsListCache.clear();
-          this.resetCreateRoomForm(payload.branch_id);
-          this.currentView = "list";
-          this.searchRooms();
-          this.cdr.markForCheck();
+          this.runInView(() => {
+            this.isCreatingRoom = false;
+            const uploadedWarning =
+              this.lastImageUploadFailureCount > 0
+                ? ` ${this.lastImageUploadFailureCount} image(s) failed to upload.`
+                : "";
+            this.createRoomSuccessMessage = `Room and beds created successfully.${uploadedWarning}`;
+            this.roomsListCache.clear();
+            this.resetCreateRoomForm(payload.branch_id);
+            this.currentView = "list";
+            this.searchRooms();
+          });
         },
         error: (error: unknown) => {
           const fallback = "Failed to create room. Please check input data.";
@@ -972,9 +984,10 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
               ? (error as { error?: { message?: string } }).error?.message
               : fallback;
 
-          this.isCreatingRoom = false;
-          this.createRoomError = message ?? fallback;
-          this.cdr.markForCheck();
+          this.runInView(() => {
+            this.isCreatingRoom = false;
+            this.createRoomError = message ?? fallback;
+          });
         },
       });
   }
@@ -1136,32 +1149,34 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       .pipe(timeout(10000), retry(1), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.updatingBedIds.delete(bed.id);
-          this.roomsListCache.clear();
+          this.runInView(() => {
+            this.updatingBedIds.delete(bed.id);
+            this.roomsListCache.clear();
 
-          if (this.selectedRoomDetail) {
-            const cachedRoomDetail = {
-              detail: this.selectedRoomDetail,
-              error: null,
-            };
+            if (this.selectedRoomDetail) {
+              const cachedRoomDetail = {
+                detail: this.selectedRoomDetail,
+                error: null,
+              };
 
-            this.roomDetailDataCache.set(
-              this.selectedRoomDetail.id,
-              cachedRoomDetail,
-            );
-          }
+              this.roomDetailDataCache.set(
+                this.selectedRoomDetail.id,
+                cachedRoomDetail,
+              );
+            }
 
-          this.searchRooms();
-          this.cdr.markForCheck();
+            this.searchRooms();
+          });
         },
         error: (error: unknown) => {
-          this.updatingBedIds.delete(bed.id);
-          this.updateSelectedRoomBedStatus(bed.id, previousStatus);
-          this.roomDetailError = this.extractApiErrorMessage(
-            error,
-            "Failed to update bed status.",
-          );
-          this.cdr.markForCheck();
+          this.runInView(() => {
+            this.updatingBedIds.delete(bed.id);
+            this.updateSelectedRoomBedStatus(bed.id, previousStatus);
+            this.roomDetailError = this.extractApiErrorMessage(
+              error,
+              "Failed to update bed status.",
+            );
+          });
         },
       });
   }
@@ -1187,24 +1202,26 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
       .pipe(timeout(10000), retry(1), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.isDeletingRoom = false;
-          this.roomDetailCache.delete(roomId);
-          this.roomDetailDataCache.delete(roomId);
-          this.roomsListCache.clear();
-          this.selectedRoomId = null;
-          this.selectedRoomDetail = null;
-          this.closeModal();
-          this.createRoomSuccessMessage = "Room deleted successfully.";
-          this.searchRooms();
-          this.cdr.markForCheck();
+          this.runInView(() => {
+            this.isDeletingRoom = false;
+            this.roomDetailCache.delete(roomId);
+            this.roomDetailDataCache.delete(roomId);
+            this.roomsListCache.clear();
+            this.selectedRoomId = null;
+            this.selectedRoomDetail = null;
+            this.closeModal();
+            this.createRoomSuccessMessage = "Room deleted successfully.";
+            this.searchRooms();
+          });
         },
         error: (error: unknown) => {
-          this.isDeletingRoom = false;
-          this.roomDetailError = this.extractApiErrorMessage(
-            error,
-            "Failed to delete room.",
-          );
-          this.cdr.markForCheck();
+          this.runInView(() => {
+            this.isDeletingRoom = false;
+            this.roomDetailError = this.extractApiErrorMessage(
+              error,
+              "Failed to delete room.",
+            );
+          });
         },
       });
   }
@@ -1227,10 +1244,11 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(({ detail, error }) => {
-        this.selectedRoomDetail = detail;
-        this.roomDetailError = error;
-        this.isRoomDetailLoading = false;
-        this.cdr.markForCheck();
+        this.runInView(() => {
+          this.selectedRoomDetail = detail;
+          this.roomDetailError = error;
+          this.isRoomDetailLoading = false;
+        });
       });
   }
 
@@ -1247,7 +1265,9 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
             prev.keyword === curr.keyword && prev.branchId === curr.branchId,
         ),
         tap(() => {
-          this.isRoomsLoading = true;
+          this.runInView(() => {
+            this.isRoomsLoading = true;
+          });
         }),
         switchMap((criteria) =>
           this.getRoomsFromCache(criteria).pipe(catchError(() => of([]))),
@@ -1255,16 +1275,18 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe((rooms) => {
-        this.isRoomsLoading = false;
-        this.rooms = rooms;
+        this.runInView(() => {
+          this.isRoomsLoading = false;
+          this.rooms = rooms;
 
-        if (
-          this.selectedRoomId &&
-          !rooms.some((room) => room.id === this.selectedRoomId)
-        ) {
-          this.selectedRoomId = null;
-          this.selectedRoomDetail = null;
-        }
+          if (
+            this.selectedRoomId &&
+            !rooms.some((room) => room.id === this.selectedRoomId)
+          ) {
+            this.selectedRoomId = null;
+            this.selectedRoomDetail = null;
+          }
+        });
       });
   }
 

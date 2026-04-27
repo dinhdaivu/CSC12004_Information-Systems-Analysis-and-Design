@@ -61,23 +61,23 @@ type AppointmentFilters = {
 
       <div class="ml-0 flex min-h-screen flex-col md:ml-64">
         <main class="flex-1 px-6 py-6">
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+          <div class="schedule-core">
+            <div
+              class="schedule-header mb-6 flex flex-wrap items-start justify-between gap-4"
+            >
               <div>
-                <h2 class="text-3xl font-bold text-[#264893]">
-                  Viewing Schedule
-                </h2>
-                <p class="mt-2 max-w-3xl text-sm text-[#264893]/80">
+                <h2 class="text-3xl font-bold">Viewing Schedule</h2>
+                <p class="mt-2 max-w-3xl text-sm">
                   Manage upcoming property tours and assign sales
                   representatives to lead branch visits.
                 </p>
               </div>
 
-              <div class="flex flex-wrap items-center gap-3">
+              <div class="schedule-toolbar flex flex-wrap items-center gap-3">
                 <div class="relative">
                   <button
                     type="button"
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#264893] transition hover:border-[#264893] hover:text-[#264893]"
+                    class="schedule-branch-btn"
                     (click)="toggleBranchDropdown()"
                   >
                     {{ selectedBranchLabel }}
@@ -88,11 +88,11 @@ type AppointmentFilters = {
 
                   <div
                     *ngIf="isBranchDropdownOpen"
-                    class="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
+                    class="schedule-branch-dropdown absolute left-0 top-full z-20 mt-2 w-64 p-2"
                   >
                     <button
                       type="button"
-                      class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[#264893] transition hover:bg-slate-100"
+                      class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition"
                       (click)="selectBranch(null)"
                     >
                       All Branches
@@ -101,7 +101,7 @@ type AppointmentFilters = {
                     <button
                       *ngFor="let branch of branches"
                       type="button"
-                      class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[#264893] transition hover:bg-slate-100"
+                      class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition"
                       (click)="selectBranch(branch.id)"
                     >
                       {{ branch.name }}
@@ -109,16 +109,11 @@ type AppointmentFilters = {
                   </div>
                 </div>
 
-                <div
-                  class="inline-flex rounded-xl border border-slate-300 bg-slate-50 p-1"
-                >
+                <div class="view-switch inline-flex p-1">
                   <button
                     type="button"
-                    class="rounded-lg px-4 py-2 text-sm font-semibold transition"
-                    [class.bg-white]="viewMode === 'calendar'"
-                    [class.text-[#264893]]="viewMode === 'calendar'"
-                    [class.shadow]="viewMode === 'calendar'"
-                    [class.text-[#264893]/70]="viewMode !== 'calendar'"
+                    class="btn-view"
+                    [class.active]="viewMode === 'calendar'"
                     (click)="setViewMode('calendar')"
                   >
                     Calendar View
@@ -126,11 +121,8 @@ type AppointmentFilters = {
 
                   <button
                     type="button"
-                    class="rounded-lg px-4 py-2 text-sm font-semibold transition"
-                    [class.bg-white]="viewMode === 'list'"
-                    [class.text-[#264893]]="viewMode === 'list'"
-                    [class.shadow]="viewMode === 'list'"
-                    [class.text-[#264893]/70]="viewMode !== 'list'"
+                    class="btn-view"
+                    [class.active]="viewMode === 'list'"
                     (click)="setViewMode('list')"
                   >
                     List View
@@ -139,20 +131,17 @@ type AppointmentFilters = {
               </div>
             </div>
 
-            <section
-              *ngIf="viewMode === 'calendar'"
-              class="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_290px]"
-            >
-              <div class="rounded-2xl bg-[#fafafa] px-4 py-5">
+            <section *ngIf="viewMode === 'calendar'" class="calendar-wrapper">
+              <div class="calendar-panel">
                 <div
-                  class="grid grid-cols-7 gap-3 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-[#264893]"
+                  class="days-header grid grid-cols-7 gap-3 text-center text-[11px] font-bold uppercase tracking-[0.16em]"
                 >
                   <span *ngFor="let dayLabel of weekDays">{{ dayLabel }}</span>
                 </div>
 
-                <div class="mt-3 h-px w-full bg-[#264893]/20"></div>
-
-                <div class="mt-4 grid grid-cols-7 gap-y-5 text-center">
+                <div
+                  class="days-grid mt-4 grid grid-cols-7 gap-y-5 text-center"
+                >
                   <div
                     *ngFor="let cell of calendarCells"
                     class="flex justify-center"
@@ -197,11 +186,13 @@ type AppointmentFilters = {
                 </div>
               </div>
 
-              <aside class="rounded-2xl bg-[#fafafa] p-4 shadow-sm">
-                <div class="mb-5 flex items-center justify-between gap-3">
+              <aside class="legend-panel">
+                <div
+                  class="month-navigation mb-5 flex items-center justify-between gap-3"
+                >
                   <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full text-xl font-semibold text-[#264893] transition hover:bg-[#eaf2ff]"
+                    class="nav-arrow"
                     aria-label="Previous month"
                     (click)="prevMonth()"
                   >
@@ -209,14 +200,14 @@ type AppointmentFilters = {
                   </button>
 
                   <h3
-                    class="flex-1 whitespace-nowrap text-center text-2xl font-bold text-[#264893]"
+                    class="flex-1 whitespace-nowrap text-center text-2xl font-bold"
                   >
                     {{ monthLabel }}
                   </h3>
 
                   <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full text-xl font-semibold text-[#264893] transition hover:bg-[#eaf2ff]"
+                    class="nav-arrow"
                     aria-label="Next month"
                     (click)="nextMonth()"
                   >
@@ -230,7 +221,7 @@ type AppointmentFilters = {
                 <div class="mt-4 flex flex-col gap-6">
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('cancelled')"
                     (click)="selectStatusFilter('cancelled')"
                   >
@@ -248,7 +239,7 @@ type AppointmentFilters = {
 
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('pending')"
                     (click)="selectStatusFilter('pending')"
                   >
@@ -266,7 +257,7 @@ type AppointmentFilters = {
 
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('scheduled')"
                     (click)="selectStatusFilter('scheduled')"
                   >
@@ -285,11 +276,8 @@ type AppointmentFilters = {
               </aside>
             </section>
 
-            <section
-              *ngIf="viewMode === 'list'"
-              class="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_290px]"
-            >
-              <div class="space-y-4">
+            <section *ngIf="viewMode === 'list'" class="calendar-wrapper">
+              <div class="list-container">
                 <div
                   *ngIf="isLoading"
                   class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
@@ -315,49 +303,42 @@ type AppointmentFilters = {
                   No appointments found for the selected filters.
                 </div>
 
-                <div class="space-y-3">
-                  <article
-                    *ngFor="let appointment of filteredAppointments"
-                    class="flex cursor-pointer items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4 shadow-md transition hover:bg-slate-100"
-                    role="button"
-                    tabindex="0"
-                    (click)="openApprovalModal(appointment)"
-                    (keydown.enter)="openApprovalModal(appointment)"
-                    (keydown.space)="
-                      $event.preventDefault(); openApprovalModal(appointment)
-                    "
-                  >
-                    <div class="flex min-w-0 items-center gap-3">
-                      <span
-                        class="h-3 w-3 flex-shrink-0 rounded-full"
-                        [class]="statusDotClass[appointment.status]"
-                      ></span>
-                      <p class="truncate text-sm font-bold text-[#264893]">
-                        {{ formatListDateWithWeekday(appointment.date) }}
-                      </p>
-                    </div>
-
-                    <div class="h-9 w-px bg-[#264893]/20"></div>
-
-                    <div class="min-w-0 flex-1 text-right">
-                      <p class="truncate text-sm font-bold text-[#264893]">
-                        {{ appointment.customer }}
-                      </p>
-                      <p class="truncate text-xs text-[#264893]/70">
-                        {{ formatTimeShort(appointment.time) }} -
-                        {{ appointment.branch }} | Sales:
-                        {{ appointment.staff }}
-                      </p>
-                    </div>
-                  </article>
-                </div>
-
-                <div
-                  class="flex items-center justify-center gap-6 pt-2 text-sm font-semibold text-[#264893]"
+                <article
+                  *ngFor="let appointment of filteredAppointments"
+                  class="appointment-card"
+                  role="button"
+                  tabindex="0"
+                  (click)="openApprovalModal(appointment)"
+                  (keydown.enter)="openApprovalModal(appointment)"
+                  (keydown.space)="
+                    $event.preventDefault(); openApprovalModal(appointment)
+                  "
                 >
+                  <div class="card-date">
+                    <span
+                      class="dot"
+                      [class.cancelled-dot]="appointment.status === 'cancelled'"
+                      [class.pending-dot]="appointment.status === 'pending'"
+                      [class.scheduled-dot]="appointment.status === 'scheduled'"
+                    ></span>
+                    {{ formatListDateWithWeekday(appointment.date) }}
+                  </div>
+
+                  <div class="divider"></div>
+
+                  <div class="card-info">
+                    <strong>{{ appointment.customer }}</strong>
+                    <p>
+                      {{ formatTimeShort(appointment.time) }} -
+                      {{ appointment.branch }}
+                    </p>
+                  </div>
+                </article>
+
+                <div class="pagination">
                   <button
                     type="button"
-                    class="transition hover:text-[#12346d] disabled:cursor-not-allowed disabled:opacity-40"
+                    class="page-nav"
                     (click)="goToPrevPage()"
                     [disabled]="currentPage <= 1"
                   >
@@ -366,7 +347,7 @@ type AppointmentFilters = {
                   <span>{{ currentPage }}</span>
                   <button
                     type="button"
-                    class="transition hover:text-[#12346d] disabled:cursor-not-allowed disabled:opacity-40"
+                    class="page-nav"
                     (click)="goToNextPage()"
                     [disabled]="currentPage >= totalPages"
                   >
@@ -375,11 +356,13 @@ type AppointmentFilters = {
                 </div>
               </div>
 
-              <aside class="rounded-2xl bg-[#fafafa] p-4 shadow-sm">
-                <div class="mb-5 flex items-center justify-between gap-3">
+              <aside class="legend-panel">
+                <div
+                  class="month-navigation mb-5 flex items-center justify-between gap-3"
+                >
                   <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full text-xl font-semibold text-[#264893] transition hover:bg-[#eaf2ff]"
+                    class="nav-arrow"
                     aria-label="Previous month"
                     (click)="prevMonth()"
                   >
@@ -387,14 +370,14 @@ type AppointmentFilters = {
                   </button>
 
                   <h3
-                    class="flex-1 whitespace-nowrap text-center text-2xl font-bold text-[#264893]"
+                    class="flex-1 whitespace-nowrap text-center text-2xl font-bold"
                   >
                     {{ monthLabel }}
                   </h3>
 
                   <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full text-xl font-semibold text-[#264893] transition hover:bg-[#eaf2ff]"
+                    class="nav-arrow"
                     aria-label="Next month"
                     (click)="nextMonth()"
                   >
@@ -408,7 +391,7 @@ type AppointmentFilters = {
                 <div class="mt-4 flex flex-col gap-6">
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('cancelled')"
                     (click)="selectStatusFilter('cancelled')"
                   >
@@ -426,7 +409,7 @@ type AppointmentFilters = {
 
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('pending')"
                     (click)="selectStatusFilter('pending')"
                   >
@@ -444,7 +427,7 @@ type AppointmentFilters = {
 
                   <button
                     type="button"
-                    class="flex items-start gap-3 rounded-lg p-2 text-left text-[#264893] transition"
+                    class="legend-item flex items-start gap-3 rounded-lg p-2 text-left transition"
                     [class.bg-white]="isStatusSelected('scheduled')"
                     (click)="selectStatusFilter('scheduled')"
                   >
@@ -475,6 +458,250 @@ type AppointmentFilters = {
       ></app-viewing-approval-modal>
     </div>
   `,
+  styles: [
+    `
+      .schedule-core {
+        background: #fdf6e9;
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+
+      .schedule-header h2,
+      .schedule-header p,
+      .days-header,
+      .month-navigation h3,
+      .legend-item,
+      .nav-arrow,
+      .schedule-branch-btn,
+      .btn-view {
+        color: #2b4c9b;
+      }
+
+      .schedule-branch-btn {
+        border: none;
+        background: #2b4c9b;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 10px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .schedule-branch-dropdown {
+        border-radius: 12px;
+        border: 1px solid #dbe5f3;
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      }
+
+      .schedule-branch-dropdown button {
+        color: #2b4c9b;
+      }
+
+      .schedule-branch-dropdown button:hover {
+        background: #f2f6ff;
+      }
+
+      .view-switch {
+        border: 1px solid #2b4c9b;
+        border-radius: 9999px;
+        background: transparent;
+        gap: 8px;
+      }
+
+      .btn-view {
+        border: 2px solid #2b4c9b;
+        border-radius: 9999px;
+        background: transparent;
+        font-weight: 700;
+        padding: 10px 18px;
+      }
+
+      .btn-view.active {
+        background: #2b4c9b;
+        color: #fff;
+      }
+
+      .calendar-wrapper {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 40px;
+      }
+
+      .calendar-panel,
+      .legend-panel {
+        background: transparent;
+      }
+
+      .days-header {
+        border-bottom: 1px solid #d0d8e8;
+        padding-bottom: 10px;
+      }
+
+      .days-grid {
+        color: #2b4c9b;
+      }
+
+      .month-navigation {
+        margin-bottom: 28px;
+      }
+
+      .nav-arrow {
+        background: transparent;
+        border: none;
+        font-size: 24px;
+        font-weight: 700;
+        width: 32px;
+        height: 32px;
+        border-radius: 9999px;
+      }
+
+      .nav-arrow:hover {
+        background: #eef4ff;
+      }
+
+      .legend-item p {
+        color: #334155;
+      }
+
+      .list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .appointment-card {
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        padding: 18px 26px;
+        border-radius: 40px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .appointment-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-date {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 16px;
+      }
+
+      .divider {
+        width: 2px;
+        height: 38px;
+        background-color: #111827;
+        margin: 0 22px;
+      }
+
+      .card-info {
+        flex: 1.6;
+        min-width: 0;
+      }
+
+      .card-info strong {
+        display: block;
+        font-size: 17px;
+        color: #0f172a;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-info p {
+        color: #475569;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 9999px;
+        flex-shrink: 0;
+      }
+
+      .cancelled-dot {
+        background-color: #f8a5a5;
+      }
+
+      .pending-dot {
+        background-color: #fde68a;
+      }
+
+      .scheduled-dot {
+        background-color: #86efac;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        margin-top: 8px;
+        font-weight: 700;
+        color: #2b4c9b;
+      }
+
+      .page-nav {
+        background: transparent;
+        border: none;
+        color: #2b4c9b;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .page-nav:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 1024px) {
+        .calendar-wrapper {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .appointment-card {
+          border-radius: 24px;
+          padding: 14px 16px;
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .divider {
+          width: 100%;
+          height: 1px;
+          margin: 0;
+        }
+
+        .card-date,
+        .card-info {
+          width: 100%;
+        }
+      }
+    `,
+  ],
 })
 export class ScheduledManagementComponent implements OnInit, OnDestroy {
   private readonly branchService = inject(BranchService);
@@ -983,7 +1210,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
           : "Unassigned room"),
       customer:
         record.customerName ?? `Customer ${record.customerId.slice(0, 8)}`,
-      staff: record.saleName ?? `Sale ${record.saleId.slice(0, 8)}`,
+      staff: record.saleName ?? (record.saleId ? `Sale ${record.saleId.slice(0, 8)}` : "Unassigned sale"),
     };
   }
 
