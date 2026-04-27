@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { ForbiddenError, UnauthorizedError } from "@utils/errors";
 import type { AuthRequest } from "@middleware/auth.middleware";
 
