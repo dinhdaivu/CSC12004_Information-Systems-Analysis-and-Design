@@ -1,4 +1,4 @@
-import { Observable, of, Subject } from "rxjs";
+import { Observable, of } from "rxjs";
 import { catchError, finalize, takeUntil, tap } from "rxjs/operators";
 
 type HandleRequestOptions<T> = {
