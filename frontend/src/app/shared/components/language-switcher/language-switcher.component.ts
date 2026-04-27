@@ -114,8 +114,8 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__trigger {
-      width: clamp(3rem, 3.9vw, 4.6875rem);
-      height: clamp(3rem, 3.9vw, 4.6875rem);
+      width: clamp(3.5rem, 6.48vh, 4.375rem);
+      height: clamp(3.5rem, 6.48vh, 4.375rem);
       border: 0;
       background: transparent;
     }

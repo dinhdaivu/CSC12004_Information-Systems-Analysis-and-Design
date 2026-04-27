@@ -52,11 +52,11 @@ type ImmersiveLink = {
               <div class="relative">
                 <button
                   type="button"
-                  class="inline-flex h-12 w-12 items-center justify-center rounded-full transition hover:opacity-85"
+                  class="inline-flex h-[clamp(3rem,3.9vw,4.6875rem)] w-[clamp(3rem,3.9vw,4.6875rem)] items-center justify-center rounded-full transition hover:opacity-85"
                   (click)="toggleUserMenu()"
                   aria-label="Open user menu"
                 >
-                  <img src="assets/icons/Account.svg" aria-hidden="true" class="h-full w-full object-contain" />
+                  <img src="assets/icons/account.svg" aria-hidden="true" class="h-[46%] w-[46%] object-contain" />
                   <span class="sr-only">Account</span>
                 </button>
 
@@ -86,61 +86,64 @@ type ImmersiveLink = {
           </div>
 
           <div class="relative mx-auto hidden max-w-[1920px] lg:block lg:h-[14.5rem]">
-            <a routerLink="/dashboard" class="absolute left-[5.2%] top-[6.25rem] block" (click)="closeMenus()">
+            <a routerLink="/dashboard" class="absolute left-[5.2%] top-[clamp(4.5rem,9.26vh,6.25rem)] block" (click)="closeMenus()">
               <img
                 src="assets/icons/logo.svg"
                 alt="HomeStay Dorm"
-                class="h-auto w-[11.5625rem] object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.18)]"
+                class="h-auto w-[clamp(8.75rem,17.13vh,11.5625rem)] object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.18)]"
               />
             </a>
 
-            <nav class="absolute left-[55.78%] top-[6.875rem] flex items-center gap-[3rem]">
-              @for (item of immersiveLinks; track item.labelKey) {
-                <a
-                  [routerLink]="item.route"
-                  class="font-['Afacad'] text-[2rem] font-semibold leading-[1.34375] text-white transition hover:text-sky-200"
-                  (click)="closeMenus()"
-                >
-                  {{ item.labelKey | translate }}
-                </a>
-              }
-            </nav>
-
-            <div class="absolute right-[5.47%] top-[5.95rem] flex items-center gap-[1.2rem]">
-              <app-language-switcher tone="dark" size="hero"></app-language-switcher>
-
-              <div class="relative">
-                <button
-                  type="button"
-                  class="inline-flex h-[4.375rem] w-[4.375rem] items-center justify-center rounded-full transition hover:opacity-85"
-                  (click)="toggleUserMenu()"
-                  aria-label="Open user menu"
-                >
-                  <img src="assets/icons/Account.svg" aria-hidden="true" class="h-full w-full object-contain" />
-                  <span class="sr-only">Account</span>
-                </button>
-
-                @if (isUserMenuOpen) {
-                  <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[12.5rem] overflow-hidden rounded-[1.6rem] border border-white/15 bg-slate-950/55 shadow-[0_22px_60px_rgba(0,0,0,0.28)] backdrop-blur-[18px]">
-                    @if (currentUser()) {
-                      <button type="button" class="immersive-menu-action" (click)="navigateTo(currentUserRoute())">
-                        {{ currentUserLabel() | translate }}
-                      </button>
-                      <div class="h-px bg-white/12"></div>
-                      <button type="button" class="immersive-menu-action" (click)="handleLogout()">
-                        {{ 'SHELL.USER.LOGOUT' | translate }}
-                      </button>
-                    } @else {
-                      <button type="button" class="immersive-menu-action" (click)="navigateTo('/register')">
-                        {{ 'SHELL.USER.REGISTER' | translate }}
-                      </button>
-                      <div class="h-px bg-white/12"></div>
-                      <button type="button" class="immersive-menu-action" (click)="navigateTo('/login')">
-                        {{ 'SHELL.USER.LOGIN' | translate }}
-                      </button>
-                    }
-                  </div>
+            <div class="absolute right-[5.47%] top-[clamp(4.5rem,9.26vh,6.25rem)] flex items-center gap-[clamp(2rem,4vw,4rem)]">
+              
+              <nav class="flex items-center gap-[clamp(2.1rem,6.2vh,4rem)]">
+                @for (item of immersiveLinks; track item.labelKey) {
+                  <a
+                    [routerLink]="item.route"
+                    class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200"
+                    (click)="closeMenus()"
+                  >
+                    {{ item.labelKey | translate }}
+                  </a>
                 }
+              </nav>
+
+              <div class="flex items-center gap-[clamp(0.9rem,1.8vh,1.35rem)]">
+                <app-language-switcher tone="dark" size="hero"></app-language-switcher>
+
+                <div class="relative">
+                  <button
+                    type="button"
+                    class="inline-flex h-[clamp(3.5rem,6.48vh,4.375rem)] w-[clamp(3.5rem,6.48vh,4.375rem)] items-center justify-center rounded-full transition hover:opacity-85"
+                    (click)="toggleUserMenu()"
+                    aria-label="Open user menu"
+                  >
+                    <img src="assets/icons/account.svg" aria-hidden="true" class="h-[56%] w-[56%] object-contain" />
+                    <span class="sr-only">Account</span>
+                  </button>
+
+                  @if (isUserMenuOpen) {
+                    <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[12.5rem] overflow-hidden rounded-[1.6rem] border border-white/15 bg-slate-950/55 shadow-[0_22px_60px_rgba(0,0,0,0.28)] backdrop-blur-[18px]">
+                      @if (currentUser()) {
+                        <button type="button" class="immersive-menu-action" (click)="navigateTo(currentUserRoute())">
+                          {{ currentUserLabel() | translate }}
+                        </button>
+                        <div class="h-px bg-white/12"></div>
+                        <button type="button" class="immersive-menu-action" (click)="handleLogout()">
+                          {{ 'SHELL.USER.LOGOUT' | translate }}
+                        </button>
+                      } @else {
+                        <button type="button" class="immersive-menu-action" (click)="navigateTo('/register')">
+                          {{ 'SHELL.USER.REGISTER' | translate }}
+                        </button>
+                        <div class="h-px bg-white/12"></div>
+                        <button type="button" class="immersive-menu-action" (click)="navigateTo('/login')">
+                          {{ 'SHELL.USER.LOGIN' | translate }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>
