@@ -182,6 +182,63 @@
       }
     }
   },
+  "ABOUT": {
+    "HERO": {
+      "TITLE": "VỀ CHÚNG TÔI",
+      "TAGLINE": "HOMESTAY DORM - NÂNG ĐỠ HÀNH TRÌNH, XÂY DỰNG NGÔI NHÀ CỦA BẠN.",
+      "QUOTE": "\"Không chỉ là ký túc xá, chúng tôi tạo ra một hệ sinh thái sống chuyên nghiệp để thế hệ trẻ phát triển, kết nối và vững vàng trong môi trường an toàn, minh bạch.\""
+    },
+    "STORY": {
+      "INTRO": "HomeStay Dorm được hình thành từ sự thấu hiểu những khó khăn mà sinh viên và người trẻ đi làm gặp phải khi tìm một nơi ở phù hợp trong một thành phố năng động. Chúng tôi tái định nghĩa khái niệm \"Ký túc xá\" bằng cách kết hợp kỷ luật hiện đại của một khu lưu trú chuyên nghiệp với sự ấm áp và linh hoạt của một ngôi nhà thật sự.",
+      "BODY": "Với 03 chi nhánh chiến lược trên toàn thành phố, chúng tôi đảm bảo một quy trình quản lý chuẩn hóa — từ đăng ký, đặt cọc đến bàn giao phòng — để loại bỏ mọi lo lắng về bảo mật và minh bạch tài chính."
+    },
+    "PILLARS": {
+      "HOM": {
+        "NAME": "Hôm - Tận tâm",
+        "DESC": "Đại diện cho những khởi đầu mới. Chúng tôi đồng hành từ câu hỏi đầu tiên và dẫn dắt bạn vào không gian sống mới một cách chu đáo."
+      },
+      "SA": {
+        "NAME": "Sa - Ấm áp",
+        "DESC": "Đại diện cho năng lượng cộng đồng. Chúng tôi nuôi dưỡng sự gắn kết bằng sự tử tế, để không gian chung trở thành một gia đình thứ hai."
+      },
+      "DO": {
+        "NAME": "Đô - Minh bạch",
+        "DESC": "Đại diện cho sự rõ ràng trong từng con số. Chúng tôi cam kết quy trình tài chính minh bạch từ tiền cọc đến hoàn trả."
+      }
+    },
+    "BRANCHES": {
+      "VALUE": "3 Chi nhánh",
+      "TITLE": "Chi nhánh chiến lược",
+      "SUBTITLE": "Vận hành tại những khu vực trọng điểm để việc ở trọ luôn thuận tiện.",
+      "CARD_TITLE": "Mạng lưới",
+      "CARD_DESC": "Ba chi nhánh được bố trí để phục vụ sinh viên và người trẻ trên toàn thành phố."
+    },
+    "CONFIRMATION": {
+      "VALUE": "24 Giờ",
+      "TITLE": "Xác nhận trong 24 giờ",
+      "CARD_TITLE": "Xử lý",
+      "CARD_DESC": "Yêu cầu đặt chỗ và đặt cọc được xử lý trong khung 24 giờ nghiêm ngặt."
+    },
+    "TRANSPARENCY": {
+      "VALUE": "100%",
+      "TITLE": "100% Minh bạch tài chính",
+      "CARD_TITLE": "Rõ ràng",
+      "CARD_DESC": "Mọi giao dịch đều được ghi nhận, xác minh và dễ dàng tra soát."
+    },
+    "FOOTER": {
+      "TAGLINE": "Nâng đỡ hành trình của bạn, xây dựng mái nhà của bạn.",
+      "COPYRIGHT": "© 2026 HomeStay Dorm. Bảo lưu mọi quyền.",
+      "CONTACT_TITLE": "Thông tin liên hệ",
+      "HQ_LABEL": "Trụ sở chính: ",
+      "HQ_VALUE": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM.",
+      "PHONE_LABEL": "Điện thoại: ",
+      "PHONE_VALUE": "(08) 18.276.266.",
+      "EMAIL_LABEL": "Email: ",
+      "EMAIL_VALUE": "contact@homestaydorm.vn",
+      "HOURS_LABEL": "Giờ làm việc: ",
+      "HOURS_VALUE": "T2 - T7 | 08:00 AM - 06:00 PM."
+    }
+  },
   "PAGES": {
     "ROOMS_LIST": {
       "TITLE": "Danh sách phòng",

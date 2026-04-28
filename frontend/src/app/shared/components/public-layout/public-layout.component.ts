@@ -100,7 +100,9 @@ type ImmersiveLink = {
                 @for (item of immersiveLinks; track item.labelKey) {
                   <a
                     [routerLink]="item.route"
-                    class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200"
+                    routerLinkActive="border-b-2 border-white"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200 pb-0.5"
                     (click)="closeMenus()"
                   >
                     {{ item.labelKey | translate }}
@@ -365,9 +367,9 @@ export class PublicLayoutComponent {
   ];
 
   readonly immersiveLinks: ImmersiveLink[] = [
-    { labelKey: 'NAV.HERO.ABOUT', route: '/dashboard' },
-    { labelKey: 'NAV.HERO.GUIDELINES', route: '/dashboard' },
-    { labelKey: 'NAV.HERO.CONTACT', route: '/dashboard' },
+    { labelKey: 'NAV.HERO.ABOUT', route: '/about' },
+    { labelKey: 'NAV.HERO.GUIDELINES', route: '/guideline' },
+    { labelKey: 'NAV.HERO.CONTACT', route: '/contact' },
   ];
 
   isMobileMenuOpen = false;

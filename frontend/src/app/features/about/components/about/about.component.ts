@@ -1,176 +1,531 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
-/* Mascot and hero images sourced from Figma assets.
-   Replace with permanent paths under assets/images/ once downloaded. */
-const HERO_BG = 'https://www.figma.com/api/mcp/asset/f9a03180-9f7f-46bb-99bb-021200986e38';
-const MASCOT_HOM = 'https://www.figma.com/api/mcp/asset/3483e101-9f28-4208-ad69-adb896471030';
-const MASCOT_SA = 'https://www.figma.com/api/mcp/asset/ddaeb985-dd24-4db3-8196-7d1f015d0282';
-const MASCOT_DO = 'https://www.figma.com/api/mcp/asset/30be6eac-6af6-4228-87c3-4c6e58d17036';
+type PillarCard = {
+  titleKey: string;
+  descriptionKey: string;
+  image: string;
+};
+
+type StatCard = {
+  imgSrc: string;
+  valueKey: string;
+  titleKey: string;
+  descriptionKey: string;
+};
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink],
+  imports: [CommonModule, TranslateModule],
   template: `
-    <!-- ── Hero ── -->
-    <section class="relative overflow-hidden" style="min-height:58vh">
-      <img
-        [src]="heroBg"
-        alt=""
-        aria-hidden="true"
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-      <!-- dark top vignette -->
-      <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-transparent"></div>
-      <!-- cream bleed-in from bottom -->
-      <div class="absolute bottom-0 left-0 right-0 h-[45%] bg-gradient-to-t from-[#fef4df] to-transparent"></div>
+    <section class="about-page">
+      <header class="about-hero">
+        <img src="assets/pictures/AboutUsHeader.png" alt="" aria-hidden="true" class="about-hero__bg" />
+        <div class="about-hero__overlay-dark"></div>
+        <div class="about-hero__overlay-bottom"></div>
 
-      <div class="relative z-10 flex min-h-[58vh] flex-col items-center justify-center px-6 pb-12 pt-28 text-center">
-        <h1 class="font-['Big_Shoulders_Text'] text-[4.5rem] font-extrabold leading-none text-[#264893] lg:text-[8rem]">
-          {{ 'ABOUT.HERO.TITLE' | translate }}
-        </h1>
-        <h2 class="mt-3 max-w-[90%] font-['Big_Shoulders_Text'] text-[1.25rem] font-extrabold leading-tight text-[#264893] lg:max-w-[74%] lg:text-[2.5rem]">
-          {{ 'ABOUT.HERO.SUBTITLE' | translate }}
-        </h2>
-        <p class="mt-5 max-w-[85%] font-['Afacad'] text-[1.05rem] italic leading-relaxed text-[#264893] lg:max-w-[66%] lg:text-[1.75rem]">
-          {{ 'ABOUT.HERO.QUOTE' | translate }}
-        </p>
-      </div>
-    </section>
-
-    <!-- ── Mascots ── -->
-    <section class="bg-[#fef4df] px-6 py-20 lg:px-20">
-      <div class="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 md:grid-cols-3">
-        @for (mascot of mascots; track mascot.nameKey) {
-          <div class="flex flex-col items-center">
-            <!-- floating mascot image above the border box -->
-            <div class="relative z-10 mb-[-3.5rem] h-[11rem] w-[10rem] drop-shadow-[4px_4px_4px_rgba(0,0,0,0.25)]">
-              <img [src]="mascot.image" [alt]="mascot.nameKey | translate" class="h-full w-full object-contain" />
-            </div>
-            <!-- border card -->
-            <div class="flex w-full flex-col items-center rounded-[1.5625rem] border-[3px] border-[#264893] px-6 pb-8 pt-16">
-              <h3 class="font-['Afacad'] text-[1.8rem] font-medium text-[#264893] text-center">
-                {{ mascot.nameKey | translate }}
-              </h3>
-              <p class="mt-4 font-['Afacad'] text-[1rem] italic leading-relaxed text-[#264893] text-justify">
-                {{ mascot.descKey | translate }}
-              </p>
-            </div>
-          </div>
-        }
-      </div>
-    </section>
-
-    <!-- ── About text ── -->
-    <section class="bg-[#fef4df] px-6 pb-16 pt-4 lg:px-20">
-      <div class="mx-auto max-w-[79.5rem] space-y-6 text-center font-['Afacad'] text-[1.05rem] italic leading-relaxed text-[#264893] lg:text-[1.75rem]">
-        <p>{{ 'ABOUT.TEXT.PARA1' | translate }}</p>
-        <p>{{ 'ABOUT.TEXT.PARA2' | translate }}</p>
-      </div>
-    </section>
-
-    <!-- ── Stats ── -->
-    <section class="bg-[#fef4df] px-6 pb-24 pt-8 lg:px-20">
-      <div class="mx-auto grid max-w-[1400px] grid-cols-1 gap-12 md:grid-cols-3">
-        @for (stat of stats; track stat.valueKey) {
-          <div class="flex flex-col items-center text-center">
-            <i [class]="stat.icon + ' text-[3rem] text-[#264893]'"></i>
-            <p class="mt-3 font-['Afacad'] text-[3.5rem] font-bold leading-none text-[#264893] lg:text-[4rem]">
-              {{ stat.valueKey | translate }}
-            </p>
-            <p class="mt-1 font-['Afacad'] text-[1.5rem] font-semibold text-[#264893]">
-              {{ stat.labelKey | translate }}
-            </p>
-            <p class="mt-3 max-w-[18rem] font-['Afacad'] text-[1rem] leading-snug text-[#264893] text-justify">
-              {{ stat.descKey | translate }}
-            </p>
-          </div>
-        }
-      </div>
-    </section>
-
-    <!-- ── Footer ── -->
-    <footer class="bg-[#264893] px-6 py-12 lg:px-20">
-      <div class="mx-auto flex max-w-[1400px] flex-col gap-10 md:flex-row md:items-start md:justify-between">
-        <!-- Left: logo + tagline -->
-        <div class="flex flex-col items-center gap-3 text-center md:items-start md:text-left">
-          <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="h-20 w-20 object-contain brightness-0 invert" />
-          <p class="font-['Afacad'] text-[1.1rem] italic text-[#fef4df]">
-            {{ 'ABOUT.FOOTER.TAGLINE' | translate }}
-          </p>
-          <p class="font-['Afacad'] text-[0.95rem] text-[#fef4df]/70">
-            {{ 'ABOUT.FOOTER.COPYRIGHT' | translate }}
-          </p>
-        </div>
-
-        <!-- Right: contact info -->
-        <div class="font-['Afacad'] text-white">
-          <h4 class="text-[1.75rem] font-bold italic">{{ 'ABOUT.FOOTER.CONTACT_TITLE' | translate }}</h4>
-          <div class="mt-3 space-y-1 text-[1.1rem]">
-            <p>
-              <span class="font-bold">{{ 'ABOUT.FOOTER.HQ_LABEL' | translate }}</span>
-              <span class="font-normal"> {{ 'ABOUT.FOOTER.HQ_VALUE' | translate }}</span>
-            </p>
-            <p>
-              <span class="font-bold">{{ 'ABOUT.FOOTER.PHONE_LABEL' | translate }}</span>
-              <span class="font-normal"> {{ 'ABOUT.FOOTER.PHONE_VALUE' | translate }}</span>
-            </p>
-            <p>
-              <span class="font-bold">{{ 'ABOUT.FOOTER.EMAIL_LABEL' | translate }}</span>
-              <span class="font-normal"> {{ 'ABOUT.FOOTER.EMAIL_VALUE' | translate }}</span>
-            </p>
-            <p>
-              <span class="font-bold">{{ 'ABOUT.FOOTER.HOURS_LABEL' | translate }}</span>
-              <span class="font-normal"> {{ 'ABOUT.FOOTER.HOURS_VALUE' | translate }}</span>
-            </p>
+        <div class="about-shell about-hero__content">
+          <div class="about-hero__copy">
+            <h1>{{ 'ABOUT.HERO.TITLE' | translate }}</h1>
+            <p class="about-hero__tagline">{{ 'ABOUT.HERO.TAGLINE' | translate }}</p>
+            <p class="about-hero__quote">{{ 'ABOUT.HERO.QUOTE' | translate }}</p>
           </div>
         </div>
-      </div>
-    </footer>
-  `
+      </header>
+
+      <main class="about-main">
+        <section class="about-shell about-pillars">
+          @for (pillar of pillars; track pillar.titleKey) {
+            <article class="pillar-card reveal">
+              <div class="pillar-card__art">
+                <img [src]="pillar.image" [alt]="pillar.titleKey | translate" class="pillar-card__art-img" />
+              </div>
+              <h2>{{ pillar.titleKey | translate }}</h2>
+              <p>{{ pillar.descriptionKey | translate }}</p>
+            </article>
+          }
+        </section>
+
+        <section class="about-shell about-story reveal">
+          <p>{{ 'ABOUT.STORY.INTRO' | translate }}</p>
+          <p>{{ 'ABOUT.STORY.BODY' | translate }}</p>
+        </section>
+
+        <section class="about-shell about-stats">
+          @for (stat of stats; track stat.titleKey) {
+            <article class="stat-card reveal">
+              <div class="stat-card__icon">
+                <img [src]="stat.imgSrc" aria-hidden="true" class="stat-card__icon-img" />
+              </div>
+              <div class="stat-card__value">{{ stat.valueKey | translate }}</div>
+              <h3 class="stat-card__title">{{ stat.titleKey | translate }}</h3>
+              <p class="stat-card__desc">{{ stat.descriptionKey | translate }}</p>
+            </article>
+          }
+        </section>
+      </main>
+
+      <footer class="about-footer reveal">
+        <div class="about-shell about-footer__inner">
+          <div class="about-footer__branding">
+            <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="about-footer__logo" />
+            <p>{{ 'ABOUT.FOOTER.TAGLINE' | translate }}</p>
+            <small>{{ 'ABOUT.FOOTER.COPYRIGHT' | translate }}</small>
+          </div>
+
+          <div class="about-footer__contact">
+            <h2>{{ 'ABOUT.FOOTER.CONTACT_TITLE' | translate }}</h2>
+            <p><strong>{{ 'ABOUT.FOOTER.HQ_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.HQ_VALUE' | translate }}</p>
+            <p><strong>{{ 'ABOUT.FOOTER.PHONE_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.PHONE_VALUE' | translate }}</p>
+            <p><strong>{{ 'ABOUT.FOOTER.EMAIL_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.EMAIL_VALUE' | translate }}</p>
+            <p><strong>{{ 'ABOUT.FOOTER.HOURS_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.HOURS_VALUE' | translate }}</p>
+          </div>
+        </div>
+      </footer>
+
+      <button type="button" class="chat-fab" aria-label="Open chat">
+        <i class="bi bi-chat-dots-fill"></i>
+      </button>
+    </section>
+  `,
+  styles: [`
+    :host {
+      display: block;
+    }
+
+    .about-page {
+      min-height: 100vh;
+      background: #fef4df;
+      color: #264893;
+    }
+
+    .about-shell {
+      width: min(100%, 120rem);
+      margin: 0 auto;
+      /* Figma: section left edge ~273px on 1920px canvas → 14.2vw */
+      padding-inline: clamp(2rem, 14.2vw, 18rem);
+    }
+
+    /* ── Hero ─────────────────────────────────── */
+
+    .about-hero {
+      position: relative;
+      /* 1920px design: content ends at ~901px; add bottom fade → ~1080px = 56.25vw */
+      min-height: clamp(38rem, 56.25vw, 74rem);
+      overflow: hidden;
+      background: #e8e0d4;
+    }
+
+    .about-hero__bg,
+    .about-hero__overlay-dark,
+    .about-hero__overlay-bottom {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .about-hero__bg {
+      object-fit: cover;
+      object-position: center top;
+      opacity: 0.28;
+    }
+
+    /* dark band at the very top so nav text stays readable */
+    .about-hero__overlay-dark {
+      background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0.55) 0%,
+        rgba(0, 0, 0, 0.30) 12%,
+        rgba(0, 0, 0, 0.08) 24%,
+        transparent 36%
+      );
+    }
+
+    .about-hero__overlay-bottom {
+      background: linear-gradient(180deg, transparent 0%, transparent 45%, rgba(254, 244, 223, 0.60) 68%, #fef4df 100%);
+    }
+
+    .about-hero__content {
+      position: relative;
+      z-index: 1;
+      min-height: clamp(38rem, 56.25vw, 74rem);
+      /* slightly above Figma's 27vw so text sits in the upper-mid of the hero */
+      padding-top: clamp(11rem, 21vw, 28rem);
+      padding-bottom: clamp(4rem, 6vw, 8rem);
+    }
+
+    .about-hero__copy {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* Figma gap: ~37px between elements at 1920px → ~2vw */
+      gap: clamp(0.5rem, 2vw, 2.25rem);
+      text-align: center;
+      color: #264893;
+    }
+
+    .about-hero__copy h1 {
+      margin: 0;
+      font-family: 'Big Shoulders Text', sans-serif;
+      /* Figma: 128px / 1920px = 6.67vw */
+      font-size: clamp(3rem, 6.67vw, 8.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+    }
+
+    .about-hero__tagline {
+      margin: 0;
+      max-width: 80rem;
+      font-family: 'Big Shoulders Text', sans-serif;
+      /* Figma: 48px / 1920px = 2.5vw */
+      font-size: clamp(1.1rem, 2.5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+
+    .about-hero__quote {
+      margin: 0;
+      max-width: 80rem;
+      font-family: 'Afacad', sans-serif;
+      /* Figma: 36px / 1920px = 1.875vw */
+      font-size: clamp(1rem, 1.875vw, 2.375rem);
+      line-height: 1.45;
+      font-style: italic;
+      padding-inline: 1rem;
+      opacity: 0.9;
+    }
+
+    /* ── Main ─────────────────────────────────── */
+
+    .about-main {
+      background: #fef4df;
+      padding-bottom: clamp(3rem, 5vw, 5rem);
+    }
+
+    /* ── Pillars ──────────────────────────────── */
+
+    .about-pillars {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 3vw, 3.5rem);
+      /* padding-top reserves space for the mascots floating above the cards */
+      padding-top: clamp(10rem, 13vw, 14rem);
+      padding-bottom: clamp(3rem, 6vw, 6rem);
+      /* extra side room so edge mascots don't overflow the shell margin */
+      padding-inline: clamp(3rem, 5vw, 6rem);
+    }
+
+    @media (max-width: 860px) {
+      .about-pillars {
+        grid-template-columns: 1fr;
+        gap: clamp(9rem, 13vw, 14rem);
+      }
+    }
+
+    .pillar-card {
+      position: relative;
+      border: 3px solid #264893;
+      border-radius: 1.5rem;
+      background: rgba(255, 251, 241, 0.80);
+      padding: clamp(1.75rem, 2.5vw, 2.5rem) clamp(1.5rem, 2.5vw, 2.5rem) clamp(1.75rem, 2.5vw, 2.5rem);
+      text-align: center;
+    }
+
+    .pillar-card__art {
+      position: absolute;
+      left: 50%;
+      /* anchor bottom of art to top of card; shift down so feet overlap border */
+      bottom: 100%;
+      transform: translate(-50%, 2.5rem);
+      width: clamp(8rem, 10.5vw, 11rem);
+    }
+
+    .pillar-card__art-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .pillar-card h2 {
+      margin: 0 0 0.75rem;
+      font-family: 'Afacad', sans-serif;
+      font-size: clamp(1.35rem, 2vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .pillar-card p {
+      margin: 0;
+      font-family: 'Afacad', sans-serif;
+      font-size: clamp(0.95rem, 1.15vw, 1.2rem);
+      line-height: 1.65;
+      text-align: justify;
+      opacity: 0.85;
+    }
+
+    /* ── Story ────────────────────────────────── */
+
+    .about-story {
+      padding-top: clamp(2rem, 4vw, 4rem);
+      padding-bottom: clamp(3rem, 5vw, 5rem);
+      font-family: 'Afacad', sans-serif;
+      font-style: italic;
+      font-size: clamp(1rem, 1.25vw, 1.5rem);
+      line-height: 1.75;
+      text-align: center;
+      max-width: 90rem;
+      margin-inline: auto;
+    }
+
+    .about-story p + p {
+      margin-top: 1.5rem;
+    }
+
+    /* ── Stats ────────────────────────────────── */
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.5rem, 3vw, 3rem);
+      padding-bottom: clamp(3rem, 6vw, 6rem);
+    }
+
+    @media (max-width: 860px) {
+      .about-stats {
+        grid-template-columns: 1fr;
+        max-width: 36rem;
+      }
+    }
+
+    .stat-card {
+      text-align: center;
+      font-family: 'Afacad', sans-serif;
+    }
+
+    .stat-card__icon {
+      display: grid;
+      place-items: center;
+      width: clamp(4rem, 5.5vw, 5.5rem);
+      height: clamp(4rem, 5.5vw, 5.5rem);
+      margin: 0 auto clamp(1rem, 1.5vw, 1.5rem);
+    }
+
+    .stat-card__icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .stat-card__value {
+      font-family: 'Big Shoulders Text', sans-serif;
+      font-size: clamp(2.4rem, 4.5vw, 4.75rem);
+      font-weight: 800;
+      line-height: 0.95;
+      color: #264893;
+    }
+
+    .stat-card__title {
+      margin: 0.6rem 0 0;
+      font-size: clamp(1.15rem, 1.7vw, 1.85rem);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .stat-card__desc {
+      margin: 0.75rem 0 0;
+      font-size: clamp(0.92rem, 1.05vw, 1.1rem);
+      line-height: 1.65;
+      text-align: justify;
+      opacity: 0.8;
+    }
+
+    /* ── Footer ───────────────────────────────── */
+
+    .about-footer {
+      background: #264893;
+      color: #fef4df;
+      padding: clamp(2.5rem, 4.5vw, 5rem) 0;
+    }
+
+    .about-footer__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(2rem, 6vw, 8rem);
+    }
+
+
+    .about-footer__branding {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .about-footer__logo {
+      /* logo.svg is 185×165 — use a width that shows the full image including text */
+      width: clamp(9rem, 12vw, 14rem);
+      height: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .about-footer__branding p {
+      margin: 0.25rem 0 0;
+      font-family: 'Afacad', sans-serif;
+      font-size: clamp(0.9rem, 1.1vw, 1.15rem);
+      font-style: italic;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .about-footer__branding small {
+      font-family: 'Afacad', sans-serif;
+      font-size: clamp(0.75rem, 0.9vw, 0.95rem);
+      opacity: 0.6;
+    }
+
+    .about-footer__contact {
+      flex: 1;
+    }
+
+    .about-footer__contact h2 {
+      margin: 0 0 clamp(0.75rem, 1.2vw, 1.25rem);
+      font-family: 'Afacad', sans-serif;
+      font-style: italic;
+      font-size: clamp(1.6rem, 2.5vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .about-footer__contact p {
+      margin: clamp(0.15rem, 0.25vw, 0.3rem) 0 0;
+      font-family: 'Afacad', sans-serif;
+      font-size: clamp(0.9rem, 1.1vw, 1.25rem);
+      line-height: 1.4;
+    }
+
+    .about-footer__contact strong {
+      font-weight: 700;
+    }
+
+    /* ── Floating chat button ─────────────────── */
+
+    .chat-fab {
+      position: fixed;
+      bottom: clamp(1.5rem, 3vw, 2.5rem);
+      right: clamp(1.5rem, 3vw, 2.5rem);
+      width: clamp(3.25rem, 4.5vw, 5rem);
+      height: clamp(3.25rem, 4.5vw, 5rem);
+      border-radius: 50%;
+      background: #264893;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: clamp(1.1rem, 1.5vw, 1.6rem);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 24px rgba(38, 72, 147, 0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 200;
+    }
+
+    .chat-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 36px rgba(38, 72, 147, 0.55);
+    }
+
+    .chat-fab:active {
+      transform: scale(0.96);
+    }
+
+    /* ── Scroll-reveal animations ─────────────── */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* stagger for grid siblings */
+    .reveal:nth-child(2) { transition-delay: 0.13s; }
+    .reveal:nth-child(3) { transition-delay: 0.26s; }
+  `]
 })
-export class AboutComponent {
-  readonly heroBg = HERO_BG;
+export class AboutComponent implements AfterViewInit, OnDestroy {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private observer: IntersectionObserver | null = null;
 
-  readonly mascots = [
+  readonly pillars: PillarCard[] = [
     {
-      image: MASCOT_HOM,
-      nameKey: 'ABOUT.MASCOT.HOM.NAME',
-      descKey: 'ABOUT.MASCOT.HOM.DESC',
+      titleKey: 'ABOUT.PILLARS.HOM.NAME',
+      descriptionKey: 'ABOUT.PILLARS.HOM.DESC',
+      image: 'assets/icons/hom.svg',
     },
     {
-      image: MASCOT_SA,
-      nameKey: 'ABOUT.MASCOT.SA.NAME',
-      descKey: 'ABOUT.MASCOT.SA.DESC',
+      titleKey: 'ABOUT.PILLARS.SA.NAME',
+      descriptionKey: 'ABOUT.PILLARS.SA.DESC',
+      image: 'assets/icons/sa.svg',
     },
     {
-      image: MASCOT_DO,
-      nameKey: 'ABOUT.MASCOT.DO.NAME',
-      descKey: 'ABOUT.MASCOT.DO.DESC',
+      titleKey: 'ABOUT.PILLARS.DO.NAME',
+      descriptionKey: 'ABOUT.PILLARS.DO.DESC',
+      image: 'assets/icons/do.svg',
     },
   ];
 
-  readonly stats = [
+  readonly stats: StatCard[] = [
     {
-      icon: 'bi bi-building',
-      valueKey: 'ABOUT.STATS.BRANCHES.VALUE',
-      labelKey: 'ABOUT.STATS.BRANCHES.LABEL',
-      descKey: 'ABOUT.STATS.BRANCHES.DESC',
+      imgSrc: 'assets/icons/house.svg',
+      valueKey: 'ABOUT.BRANCHES.VALUE',
+      titleKey: 'ABOUT.BRANCHES.TITLE',
+      descriptionKey: 'ABOUT.BRANCHES.CARD_DESC',
     },
     {
-      icon: 'bi bi-clock',
-      valueKey: 'ABOUT.STATS.HOURS.VALUE',
-      labelKey: 'ABOUT.STATS.HOURS.LABEL',
-      descKey: 'ABOUT.STATS.HOURS.DESC',
+      imgSrc: 'assets/icons/people.svg',
+      valueKey: 'ABOUT.TRANSPARENCY.VALUE',
+      titleKey: 'ABOUT.TRANSPARENCY.TITLE',
+      descriptionKey: 'ABOUT.TRANSPARENCY.CARD_DESC',
     },
     {
-      icon: 'bi bi-shield-check',
-      valueKey: 'ABOUT.STATS.TRANSPARENCY.VALUE',
-      labelKey: 'ABOUT.STATS.TRANSPARENCY.LABEL',
-      descKey: 'ABOUT.STATS.TRANSPARENCY.DESC',
+      imgSrc: 'assets/icons/clock.svg',
+      valueKey: 'ABOUT.CONFIRMATION.VALUE',
+      titleKey: 'ABOUT.CONFIRMATION.TITLE',
+      descriptionKey: 'ABOUT.CONFIRMATION.CARD_DESC',
     },
   ];
+
+  ngAfterViewInit(): void {
+    const elements = this.elementRef.nativeElement.querySelectorAll('.reveal');
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          } else {
+            entry.target.classList.remove('revealed');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    elements.forEach((el: Element) => this.observer!.observe(el));
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
 }

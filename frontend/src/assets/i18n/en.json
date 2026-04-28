@@ -182,6 +182,63 @@
       }
     }
   },
+  "ABOUT": {
+    "HERO": {
+      "TITLE": "ABOUT US",
+      "TAGLINE": "HOMESTAY DORM - NURTURING YOUR JOURNEY, BUILDING YOUR HOME.",
+      "QUOTE": "\"More than just a dormitory, we provide a professional living ecosystem designed for the young generation to grow, connect, and thrive in a safe and transparent environment\""
+    },
+    "STORY": {
+      "INTRO": "HomeStay Dorm was born from a deep understanding of the challenges students and young professionals face when looking for a place to live in a dynamic city. We have redefined the \"Dormitory\" concept by combining the modern discipline of a professional Dorm with the warmth and flexibility of a true Home.",
+      "BODY": "With 03 strategic branches across the city, we ensure a standardized management process - from registration and deposit to room handover - to eliminate your worries about security and financial clarity."
+    },
+    "PILLARS": {
+      "HOM": {
+        "NAME": "Hôm - Dedication",
+        "DESC": "Representing new beginnings. We are dedicated to supporting you from your first inquiry and guiding each step into a new living environment."
+      },
+      "SA": {
+        "NAME": "Sa - Warmth",
+        "DESC": "Representing community energy. We warm your stay with kindness and connection, turning shared spaces into a second family."
+      },
+      "DO": {
+        "NAME": "Đô - Transparency",
+        "DESC": "Representing clarity in every figure. We commit to a transparent financial flow from deposits to refunds."
+      }
+    },
+    "BRANCHES": {
+      "VALUE": "3 Branches",
+      "TITLE": "Strategic Branches",
+      "SUBTITLE": "Operating across key locations to keep student living accessible.",
+      "CARD_TITLE": "Network",
+      "CARD_DESC": "Three branches are positioned to support students and young professionals across the city."
+    },
+    "CONFIRMATION": {
+      "VALUE": "24-Hour",
+      "TITLE": "24-Hour Confirmation",
+      "CARD_TITLE": "Processing",
+      "CARD_DESC": "Booking and deposit requests are processed within a strict 24-hour window."
+    },
+    "TRANSPARENCY": {
+      "VALUE": "100%",
+      "TITLE": "100% Financial Transparency",
+      "CARD_TITLE": "Clarity",
+      "CARD_DESC": "Every transaction is documented, verified, and made easy to review."
+    },
+    "FOOTER": {
+      "TAGLINE": "Nurturing Your Journey, Building Your Home.",
+      "COPYRIGHT": "© 2026 HomeStay Dorm. All Rights Reserved.",
+      "CONTACT_TITLE": "Contact Information",
+      "HQ_LABEL": "Headquarters: ",
+      "HQ_VALUE": "227 Nguyen Van Cu Street, Ward 4, District 5, HCMC.",
+      "PHONE_LABEL": "Phone: ",
+      "PHONE_VALUE": "(08) 18.276.266.",
+      "EMAIL_LABEL": "Email: ",
+      "EMAIL_VALUE": "contact@homestaydorm.vn",
+      "HOURS_LABEL": "Office Hours: ",
+      "HOURS_VALUE": "Mon - Sat | 08:00 AM - 06:00 PM."
+    }
+  },
   "PAGES": {
     "ROOMS_LIST": {
       "TITLE": "Room Catalog",

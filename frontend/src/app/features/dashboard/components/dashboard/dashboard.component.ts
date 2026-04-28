@@ -35,7 +35,21 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   template: `
-    <section class="relative min-h-screen overflow-hidden font-['Afacad'] text-white">
+    @if (isLoading) {
+      <div class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df;">
+        <img
+          src="assets/icons/logo.svg"
+          alt="HomeStay Dorm"
+          class="h-28 w-auto object-contain"
+        />
+        <p class="text-[1.05rem] italic tracking-wide text-[#264893]/70" style="font-family: 'Afacad', sans-serif;">
+          Nurturing Your Journey, Building Your Home.
+        </p>
+        <span class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"></span>
+      </div>
+    }
+
+    <section class="relative min-h-screen overflow-hidden font-['Afacad'] text-white" [class.invisible]="isLoading">
       @if (selectedBranch) {
         <img
           [src]="getHeroImageUrl(selectedBranch)"
@@ -134,6 +148,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   searchQuery = '';
   currentIndex = 0;
   isTransitioning = false;
+  isLoading = true;
   autoPlayTimer: number | null = null;
 
   ngOnInit(): void {
@@ -148,6 +163,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.currentIndex = 0;
         }
         this.startAutoPlay();
+
+        const img = new window.Image();
+        img.onload = () => { this.isLoading = false; this.cdr.detectChanges(); };
+        img.onerror = () => { this.isLoading = false; this.cdr.detectChanges(); };
+        img.src = this.getHeroImageUrl(this.selectedBranch);
+      } else {
+        this.isLoading = false;
       }
 
       this.cdr.detectChanges();
