@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { PublicFooterComponent } from '@shared/components/public-footer/public-footer.component';
 
 type PillarCard = {
   titleKey: string;
@@ -18,7 +19,7 @@ type StatCard = {
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, PublicFooterComponent],
   template: `
     <section class="about-page">
       <header class="about-hero">
@@ -67,23 +68,7 @@ type StatCard = {
         </section>
       </main>
 
-      <footer class="about-footer reveal">
-        <div class="about-shell about-footer__inner">
-          <div class="about-footer__branding">
-            <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="about-footer__logo" />
-            <p>{{ 'ABOUT.FOOTER.TAGLINE' | translate }}</p>
-            <small>{{ 'ABOUT.FOOTER.COPYRIGHT' | translate }}</small>
-          </div>
-
-          <div class="about-footer__contact">
-            <h2>{{ 'ABOUT.FOOTER.CONTACT_TITLE' | translate }}</h2>
-            <p><strong>{{ 'ABOUT.FOOTER.HQ_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.HQ_VALUE' | translate }}</p>
-            <p><strong>{{ 'ABOUT.FOOTER.PHONE_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.PHONE_VALUE' | translate }}</p>
-            <p><strong>{{ 'ABOUT.FOOTER.EMAIL_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.EMAIL_VALUE' | translate }}</p>
-            <p><strong>{{ 'ABOUT.FOOTER.HOURS_LABEL' | translate }}</strong>{{ 'ABOUT.FOOTER.HOURS_VALUE' | translate }}</p>
-          </div>
-        </div>
-      </footer>
+      <app-public-footer></app-public-footer>
 
       <button type="button" class="chat-fab" aria-label="Open chat">
         <i class="bi bi-chat-dots-fill"></i>
@@ -151,8 +136,7 @@ type StatCard = {
       position: relative;
       z-index: 1;
       min-height: clamp(38rem, 56.25vw, 74rem);
-      /* slightly above Figma's 27vw so text sits in the upper-mid of the hero */
-      padding-top: clamp(11rem, 21vw, 28rem);
+      padding-top: clamp(9rem, 17vw, 22rem);
       padding-bottom: clamp(4rem, 6vw, 8rem);
     }
 
@@ -181,24 +165,22 @@ type StatCard = {
       margin: 0;
       max-width: 80rem;
       font-family: 'Big Shoulders Text', sans-serif;
-      /* Figma: 48px / 1920px = 2.5vw */
-      font-size: clamp(1.1rem, 2.5vw, 3.25rem);
+      font-size: clamp(1rem, 2.1vw, 2.75rem);
       font-weight: 800;
-      line-height: 1.05;
+      line-height: 1.1;
       text-transform: uppercase;
       letter-spacing: 0.01em;
     }
 
     .about-hero__quote {
       margin: 0;
-      max-width: 80rem;
+      max-width: 72rem;
       font-family: 'Afacad', sans-serif;
-      /* Figma: 36px / 1920px = 1.875vw */
-      font-size: clamp(1rem, 1.875vw, 2.375rem);
-      line-height: 1.45;
+      font-size: clamp(0.95rem, 1.6vw, 2rem);
+      line-height: 1.55;
       font-style: italic;
       padding-inline: 1rem;
-      opacity: 0.9;
+      opacity: 0.88;
     }
 
     /* ── Main ─────────────────────────────────── */
@@ -343,78 +325,6 @@ type StatCard = {
       line-height: 1.65;
       text-align: justify;
       opacity: 0.8;
-    }
-
-    /* ── Footer ───────────────────────────────── */
-
-    .about-footer {
-      background: #264893;
-      color: #fef4df;
-      padding: clamp(2.5rem, 4.5vw, 5rem) 0;
-    }
-
-    .about-footer__inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: clamp(2rem, 6vw, 8rem);
-    }
-
-
-    .about-footer__branding {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .about-footer__logo {
-      /* logo.svg is 185×165 — use a width that shows the full image including text */
-      width: clamp(9rem, 12vw, 14rem);
-      height: auto;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-    }
-
-    .about-footer__branding p {
-      margin: 0.25rem 0 0;
-      font-family: 'Afacad', sans-serif;
-      font-size: clamp(0.9rem, 1.1vw, 1.15rem);
-      font-style: italic;
-      line-height: 1.4;
-      opacity: 0.9;
-    }
-
-    .about-footer__branding small {
-      font-family: 'Afacad', sans-serif;
-      font-size: clamp(0.75rem, 0.9vw, 0.95rem);
-      opacity: 0.6;
-    }
-
-    .about-footer__contact {
-      flex: 1;
-    }
-
-    .about-footer__contact h2 {
-      margin: 0 0 clamp(0.75rem, 1.2vw, 1.25rem);
-      font-family: 'Afacad', sans-serif;
-      font-style: italic;
-      font-size: clamp(1.6rem, 2.5vw, 2.75rem);
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .about-footer__contact p {
-      margin: clamp(0.15rem, 0.25vw, 0.3rem) 0 0;
-      font-family: 'Afacad', sans-serif;
-      font-size: clamp(0.9rem, 1.1vw, 1.25rem);
-      line-height: 1.4;
-    }
-
-    .about-footer__contact strong {
-      font-weight: 700;
     }
 
     /* ── Floating chat button ─────────────────── */
