@@ -116,7 +116,7 @@ type AdminNavItem = {
           </header>
 
           @if (isSidebarOpen) {
-            <div class="fixed inset-0 z-20 bg-slate-950/40 xl:hidden"></div>
+            <div class="fixed inset-0 z-20 bg-slate-950/40 xl:hidden" (click)="closeMenus()"></div>
             <aside class="fixed inset-y-0 left-0 z-30 w-[296px] border-r border-slate-200/20 bg-slate-950 px-6 py-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.28)] xl:hidden">
               <div class="flex items-center justify-between">
                 <a routerLink="/admin" class="font-['Big_Shoulders_Text'] text-3xl font-black uppercase tracking-[0.12em]" (click)="closeMenus()">HomeStay</a>

@@ -114,23 +114,6 @@ const makeRoomRow = (overrides: Partial<Record<string, unknown>> = {}) => ({
   ...overrides,
 });
 
-function mockGetRooms(data: unknown[], error: unknown = null) {
-  const order = jest.fn().mockResolvedValue({ data, error });
-  const select = jest.fn().mockReturnValue({ order });
-  mockedSupabase.from.mockReturnValue({ select });
-}
-
-function mockGetRoomsWithFilters(data: unknown[], error: unknown = null) {
-  const resolved = jest.fn().mockResolvedValue({ data, error });
-  const eqBeds = jest.fn().mockReturnValue({ resolved });
-  const eq3 = jest.fn().mockReturnValue({ eq: eqBeds });
-  const eq2 = jest.fn().mockReturnValue({ eq: eq3 });
-  const eq1 = jest.fn().mockReturnValue({ eq: eq2, order: jest.fn().mockResolvedValue({ data, error }) });
-  const order = jest.fn().mockReturnValue({ eq: eq1, ...{ resolved } });
-  const select = jest.fn().mockReturnValue({ order });
-  mockedSupabase.from.mockReturnValue({ select });
-}
-
 describe("Room Routes", () => {
   beforeEach(() => {
     jest.clearAllMocks();

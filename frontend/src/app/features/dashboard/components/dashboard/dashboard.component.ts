@@ -323,8 +323,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private isKnownMissingHeroImage(heroImage: string): boolean {
-    const normalizedHeroImage = this.normalizeText(heroImage);
-    return normalizedHeroImage.includes('homepage to hien thanh.png');
+    const KNOWN_MISSING: string[] = [
+      'Homepage To Hien Thanh.png',
+    ];
+    return KNOWN_MISSING.some((bad) => heroImage.trim() === bad);
   }
 
   private normalizeText(value: string): string {

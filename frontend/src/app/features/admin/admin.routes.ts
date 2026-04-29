@@ -34,11 +34,8 @@ export const ADMIN_ROUTES: Routes = [
   },
   {
     path: "users-management",
-    component: UsersManagementComponent,
-    canActivate: [authGuard, roleGuard],
-    data: {
-      roles: ["manager", "admin"],
-    },
+    redirectTo: "users",
+    pathMatch: "full",
   },
   {
     path: "rooms",
@@ -53,11 +50,8 @@ export const ADMIN_ROUTES: Routes = [
   },
   {
     path: "rooms-management",
-    component: RoomsManagementComponent,
-    canActivate: [authGuard, roleGuard],
-    data: {
-      roles: ["sale", "accountant", "manager", "admin"],
-    },
+    redirectTo: "rooms",
+    pathMatch: "full",
   },
   {
     path: "payments",
@@ -72,11 +66,8 @@ export const ADMIN_ROUTES: Routes = [
   },
   {
     path: "scheduled-management",
-    component: ScheduledManagementComponent,
-    canActivate: [authGuard, roleGuard],
-    data: {
-      roles: ["sale", "accountant", "manager", "admin"],
-    },
+    redirectTo: "scheduled",
+    pathMatch: "full",
   },
   {
     path: "scheduled",
@@ -84,7 +75,10 @@ export const ADMIN_ROUTES: Routes = [
     canActivate: [authGuard, roleGuard],
     data: {
       roles: ["sale", "accountant", "manager", "admin"],
-    },
+      access: ["sale", "accountant", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.SCHEDULED",
+      pageTitleKey: "PAGES.ADMIN_SCHEDULED.TITLE",
+    } satisfies AppRouteData,
   },
   {
     path: "rental-requests",
@@ -92,6 +86,9 @@ export const ADMIN_ROUTES: Routes = [
     canActivate: [authGuard, roleGuard],
     data: {
       roles: ["sale", "manager", "admin"],
-    },
+      access: ["sale", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.RENTAL_REQUESTS",
+      pageTitleKey: "PAGES.ADMIN_RENTAL_REQUESTS.TITLE",
+    } satisfies AppRouteData,
   },
 ];
