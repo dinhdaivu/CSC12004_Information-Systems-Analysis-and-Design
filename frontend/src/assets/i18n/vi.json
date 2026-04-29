@@ -87,7 +87,7 @@
     "SIGN_UP": "Đăng ký",
     "LOG_IN": "Đăng nhập",
     "LOGIN": {
-      "TITLE": "CHÀO MỪNG TRỞ LẠI",
+      "TITLE": "CHÀO MỪNG",
       "SUBTITLE": "Đăng nhập vào tài khoản của bạn",
       "SUBMIT": "Đăng nhập",
       "SUBMITTING": "Đang đăng nhập…",
@@ -257,6 +257,61 @@
       "EMAIL": {
         "TITLE": "Gửi email cho chúng tôi",
         "VALUE": "contact@homestaydorm.vn"
+      }
+    }
+  },
+  "GUIDELINES": {
+    "HERO": {
+      "TITLE": "HƯỚNG DẪN",
+      "SUBTITLE": "Hành trình của cư dân",
+      "TAGLINE": "Từ lần xem phòng đầu tiên đến khi đối soát hoàn trả cuối cùng, quy trình có cấu trúc của chúng tôi đảm bảo một hành trình lưu trú liền mạch và an toàn. Hãy làm theo hướng dẫn từng bước này để nắm rõ mọi giai đoạn khi ở tại HomeStay Dorm."
+    },
+    "STEPS": {
+      "STEP1": {
+        "NUMBER": "Bước 1",
+        "TITLE": "Tư vấn & Xem phòng",
+        "ITEM1_LABEL": "Tiếp nhận yêu cầu: ",
+        "ITEM1_DESC": "Duyệt qua các phòng và giường còn trống tại 03 chi nhánh, cung cấp nhu cầu cơ bản của bạn (vị trí, ngân sách, khu vực theo giới tính).",
+        "ITEM2_LABEL": "Lịch hẹn xem phòng: ",
+        "ITEM2_DESC": "Phối hợp với đội ngũ để sắp xếp một buổi tham quan thực tế, nơi bạn sẽ được tư vấn về nội quy, phí dịch vụ và quy định đặt cọc.",
+        "ITEM3_LABEL": "Lựa chọn: ",
+        "ITEM3_DESC": "Chọn phòng riêng hoặc giường ghép phù hợp với nhu cầu và lối sống của bạn."
+      },
+      "STEP2": {
+        "NUMBER": "Bước 2",
+        "TITLE": "Đặt chỗ & Xác nhận đặt cọc",
+        "ITEM1_LABEL": "Tính tiền đặt cọc: ",
+        "ITEM1_DESC": "Số tiền đặt cọc được tính theo công thức: (2 tháng tiền thuê) × (số lượng giường).",
+        "ITEM2_LABEL": "Hạn thanh toán 24 giờ: ",
+        "ITEM2_DESC": "Sau khi khởi tạo đặt phòng, bạn phải hoàn tất thanh toán và tải lên bằng chứng (chuyển khoản hoặc biên lai) trong vòng 24 giờ để tránh yêu cầu bị hủy tự động.",
+        "ITEM3_LABEL": "Trạng thái giữ chỗ: ",
+        "ITEM3_DESC": "Sau khi xác nhận, không gian đã chọn sẽ được khóa chính thức trong hệ thống và không còn hiển thị cho khách hàng khác."
+      },
+      "STEP3": {
+        "NUMBER": "Bước 3",
+        "TITLE": "Ký hợp đồng & Bàn giao phòng",
+        "ITEM1_LABEL": "Xác minh hồ sơ: ",
+        "ITEM1_DESC": "Cung cấp giấy tờ tùy thân hợp lệ (CCCD/Hộ chiếu) để tạo hồ sơ cư dân và chuẩn bị hợp đồng.",
+        "ITEM2_LABEL": "Ký hợp đồng điện tử: ",
+        "ITEM2_DESC": "Xem xét và ký hợp đồng thuê kỹ thuật số, trong đó nêu rõ chu kỳ thanh toán, phí dịch vụ và điều kiện hoàn trả.",
+        "ITEM3_LABEL": "Bàn giao thực tế: ",
+        "ITEM3_DESC": "Hoàn tất quy trình bàn giao phòng, bao gồm biên bản ghi nhận tình trạng giường, nệm, tủ khóa và thẻ từ."
+      },
+      "STEP4": {
+        "NUMBER": "Bước 4",
+        "TITLE": "Trả phòng & Đối soát hoàn trả",
+        "ITEM1_LABEL": "Thông báo chấm dứt hợp đồng: ",
+        "ITEM1_DESC": "Đăng ký ngày trả phòng qua hệ thống để bắt đầu quy trình checkout.",
+        "ITEM2_LABEL": "Kiểm tra tài sản & cơ sở vật chất: ",
+        "ITEM2_DESC": "Tiến hành kiểm tra cuối về tình trạng phòng, vệ sinh và tính toàn vẹn của tài sản.",
+        "ITEM3_LABEL": "Chính sách hoàn trả minh bạch: ",
+        "ITEM3_DESC": "Tỷ lệ hoàn trả tiền cọc được xác định theo tình trạng hợp đồng và thời gian lưu trú:",
+        "ITEM3_SUB1": "Hoàn 100%: Hoàn tất hợp đồng đúng thời hạn.",
+        "ITEM3_SUB2": "Hoàn 70%: Lưu trú trên 06 tháng nhưng chưa hết hạn hợp đồng.",
+        "ITEM3_SUB3": "Hoàn 50%: Lưu trú dưới 06 tháng.",
+        "ITEM3_SUB4": "Hoàn 80%: Hủy sau khi đặt cọc nhưng chưa ký hợp đồng.",
+        "ITEM4_LABEL": "Quyết toán cuối kỳ: ",
+        "ITEM4_DESC": "Các khoản phí dịch vụ còn nợ hoặc thiệt hại tài sản sẽ được khấu trừ từ số tiền hoàn trả trước khi thanh toán."
       }
     }
   },

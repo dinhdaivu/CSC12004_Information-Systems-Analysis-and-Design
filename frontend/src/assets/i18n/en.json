@@ -260,6 +260,61 @@
       }
     }
   },
+  "GUIDELINES": {
+    "HERO": {
+      "TITLE": "GUIDELINES",
+      "SUBTITLE": "The Resident Journey",
+      "TAGLINE": "From your first room viewing to the final deposit reconciliation, our structured process ensures a seamless and secure stay. Follow this step-by-step guide to navigate every stage of your journey with HomeStay Dorm."
+    },
+    "STEPS": {
+      "STEP1": {
+        "NUMBER": "Step 1",
+        "TITLE": "Consultation & Room Viewing",
+        "ITEM1_LABEL": "Initial Inquiry: ",
+        "ITEM1_DESC": "Browse available rooms or beds across our 03 branches and provide your basic preferences (location, budget, gender-specific zones).",
+        "ITEM2_LABEL": "Scheduled Viewing: ",
+        "ITEM2_DESC": "Coordinate with our team to arrange a physical visit where you will be briefed on house rules, utility fees, and deposit regulations.",
+        "ITEM3_LABEL": "Selection: ",
+        "ITEM3_DESC": "Choose the specific room or shared bed arrangement that suits your lifestyle."
+      },
+      "STEP2": {
+        "NUMBER": "Step 2",
+        "TITLE": "Reservation & Deposit Confirmation",
+        "ITEM1_LABEL": "Deposit Calculation: ",
+        "ITEM1_DESC": "The required deposit is calculated as: (2 Months' Rent) × (Number of Beds).",
+        "ITEM2_LABEL": "24-Hour Payment Deadline: ",
+        "ITEM2_DESC": "Once a booking is initiated, you must complete the payment and upload proof (bank transfer or receipt) within 24 hours to prevent the request from being automatically cancelled.",
+        "ITEM3_LABEL": "Holding Status: ",
+        "ITEM3_DESC": "Upon confirmation, your selected space is officially locked in the system and will no longer be available to other customers."
+      },
+      "STEP3": {
+        "NUMBER": "Step 3",
+        "TITLE": "Contract Signing & Handover",
+        "ITEM1_LABEL": "Document Verification: ",
+        "ITEM1_DESC": "Provide valid identification (ID/Passport) for resident profile creation and contract preparation.",
+        "ITEM2_LABEL": "E-Contract Execution: ",
+        "ITEM2_DESC": "Review and sign the digital rental agreement, which details rent cycles, service fees, and refund conditions.",
+        "ITEM3_LABEL": "Physical Handover: ",
+        "ITEM3_DESC": "Complete the room handover process, including a signed report on the condition of your bed, mattress, locker, and keycard."
+      },
+      "STEP4": {
+        "NUMBER": "Step 4",
+        "TITLE": "Move-out & Refund Reconciliation",
+        "ITEM1_LABEL": "Termination Notice: ",
+        "ITEM1_DESC": "Register your move-out date through the system to begin the checkout process.",
+        "ITEM2_LABEL": "Asset & Facility Inspection: ",
+        "ITEM2_DESC": "A final check on room condition, cleanliness, and asset integrity will be performed.",
+        "ITEM3_LABEL": "Transparent Refund Policy: ",
+        "ITEM3_DESC": "Your deposit refund rate is determined by your contract status and length of stay:",
+        "ITEM3_SUB1": "100% Refund: Completion of the full contract term.",
+        "ITEM3_SUB2": "70% Refund: Stays exceeding 06 months but ending before the contract term.",
+        "ITEM3_SUB3": "50% Refund: Stays under 06 months.",
+        "ITEM3_SUB4": "80% Refund: Cancellations made after depositing but before signing the contract.",
+        "ITEM4_LABEL": "Final Settlement: ",
+        "ITEM4_DESC": "Any outstanding utility bills or asset damages will be deducted from the calculated refund amount before the final payment is issued."
+      }
+    }
+  },
   "PAGES": {
     "ROOMS_LIST": {
       "TITLE": "Room Catalog",

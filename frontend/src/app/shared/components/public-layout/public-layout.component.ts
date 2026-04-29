@@ -47,7 +47,7 @@ type ImmersiveLink = {
                 <i class="bi" [class.bi-list]="!isMobileMenuOpen" [class.bi-x-lg]="isMobileMenuOpen"></i>
               </button>
 
-              <app-language-switcher tone="dark" size="hero"></app-language-switcher>
+              <app-language-switcher tone="dark" size="hero" [forceClose]="langCloseSignal" (menuOpened)="isUserMenuOpen = false"></app-language-switcher>
 
               <div class="relative">
                 <button
@@ -61,20 +61,20 @@ type ImmersiveLink = {
                 </button>
 
                 @if (isUserMenuOpen) {
-                  <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[12.5rem] overflow-hidden rounded-[1.6rem] border border-white/15 bg-slate-950/55 shadow-[0_22px_60px_rgba(0,0,0,0.28)] backdrop-blur-[18px]">
+                  <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[9.5rem] overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.13)]">
                     @if (currentUser()) {
-                      <button type="button" class="immersive-menu-action" (click)="navigateTo(currentUserRoute())">
+                      <button type="button" class="immersive-menu-action immersive-menu-action--primary" (click)="navigateTo(currentUserRoute())">
                         {{ currentUserLabel() | translate }}
                       </button>
-                      <div class="h-px bg-white/12"></div>
+                      <div class="h-px bg-slate-950/[0.06]"></div>
                       <button type="button" class="immersive-menu-action" (click)="handleLogout()">
                         {{ 'SHELL.USER.LOGOUT' | translate }}
                       </button>
                     } @else {
-                      <button type="button" class="immersive-menu-action" (click)="navigateTo('/register')">
+                      <button type="button" class="immersive-menu-action immersive-menu-action--primary" (click)="navigateTo('/register')">
                         {{ 'SHELL.USER.REGISTER' | translate }}
                       </button>
-                      <div class="h-px bg-white/12"></div>
+                      <div class="h-px bg-slate-950/[0.06]"></div>
                       <button type="button" class="immersive-menu-action" (click)="navigateTo('/login')">
                         {{ 'SHELL.USER.LOGIN' | translate }}
                       </button>
@@ -111,7 +111,7 @@ type ImmersiveLink = {
               </nav>
 
               <div class="flex items-center gap-[clamp(0.9rem,1.8vh,1.35rem)]">
-                <app-language-switcher tone="dark" size="hero"></app-language-switcher>
+                <app-language-switcher tone="dark" size="hero" [forceClose]="langCloseSignal" (menuOpened)="isUserMenuOpen = false"></app-language-switcher>
 
                 <div class="relative">
                   <button
@@ -125,20 +125,20 @@ type ImmersiveLink = {
                   </button>
 
                   @if (isUserMenuOpen) {
-                    <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[12.5rem] overflow-hidden rounded-[1.6rem] border border-white/15 bg-slate-950/55 shadow-[0_22px_60px_rgba(0,0,0,0.28)] backdrop-blur-[18px]">
+                    <div class="absolute right-0 top-[calc(100%+0.75rem)] w-[9.5rem] overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.13)]">
                       @if (currentUser()) {
-                        <button type="button" class="immersive-menu-action" (click)="navigateTo(currentUserRoute())">
+                        <button type="button" class="immersive-menu-action immersive-menu-action--primary" (click)="navigateTo(currentUserRoute())">
                           {{ currentUserLabel() | translate }}
                         </button>
-                        <div class="h-px bg-white/12"></div>
+                        <div class="h-px bg-slate-950/[0.06]"></div>
                         <button type="button" class="immersive-menu-action" (click)="handleLogout()">
                           {{ 'SHELL.USER.LOGOUT' | translate }}
                         </button>
                       } @else {
-                        <button type="button" class="immersive-menu-action" (click)="navigateTo('/register')">
+                        <button type="button" class="immersive-menu-action immersive-menu-action--primary" (click)="navigateTo('/register')">
                           {{ 'SHELL.USER.REGISTER' | translate }}
                         </button>
-                        <div class="h-px bg-white/12"></div>
+                        <div class="h-px bg-slate-950/[0.06]"></div>
                         <button type="button" class="immersive-menu-action" (click)="navigateTo('/login')">
                           {{ 'SHELL.USER.LOGIN' | translate }}
                         </button>
@@ -205,7 +205,7 @@ type ImmersiveLink = {
                 <i class="bi" [class.bi-list]="!isMobileMenuOpen" [class.bi-x-lg]="isMobileMenuOpen"></i>
               </button>
 
-              <app-language-switcher tone="light"></app-language-switcher>
+              <app-language-switcher tone="light" [forceClose]="langCloseSignal" (menuOpened)="isUserMenuOpen = false"></app-language-switcher>
 
               <div class="relative">
                 <button
@@ -338,19 +338,24 @@ type ImmersiveLink = {
       width: 100%;
       border: 0;
       background: transparent;
-      padding: 1rem 1.25rem;
-      color: #ffffff;
+      padding: 0.5rem 0.5rem;
+      color: #1d1d1d;
       cursor: pointer;
       font-family: 'Afacad', sans-serif;
-      font-size: clamp(1rem, 1.45vw, 1.65rem);
-      font-style: italic;
-      line-height: 1.15;
+      font-size: 1rem;
+      font-style: normal;
+      line-height: 1.2;
       text-align: center;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.15s ease;
+    }
+
+    .immersive-menu-action--primary {
+      font-weight: 700;
+      color: #264893;
     }
 
     .immersive-menu-action:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(38, 72, 147, 0.05);
     }
   `]
 })
@@ -368,12 +373,13 @@ export class PublicLayoutComponent {
 
   readonly immersiveLinks: ImmersiveLink[] = [
     { labelKey: 'NAV.HERO.ABOUT', route: '/about' },
-    { labelKey: 'NAV.HERO.GUIDELINES', route: '/guideline' },
+    { labelKey: 'NAV.HERO.GUIDELINES', route: '/guidelines' },
     { labelKey: 'NAV.HERO.CONTACT', route: '/contact' },
   ];
 
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
+  langCloseSignal = 0;
 
   visibleNavItems(): PublicNavItem[] {
     const user = this.currentUser();
@@ -428,6 +434,7 @@ export class PublicLayoutComponent {
 
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
+    if (this.isUserMenuOpen) this.langCloseSignal++;
   }
 
   closeMenus(): void {

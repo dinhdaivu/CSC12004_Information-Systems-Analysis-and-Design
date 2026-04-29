@@ -51,7 +51,7 @@ type ContactCard = {
 
       <!-- ── Chat FAB ── -->
       <button type="button" class="chat-fab" aria-label="Open chat">
-        <i class="bi bi-chat-dots-fill"></i>
+        <img src="assets/icons/chats.svg" alt="Chat" class="chat-fab__icon" />
       </button>
     </section>
   `,
@@ -226,11 +226,10 @@ type ContactCard = {
       width: clamp(3.25rem, 4.5vw, 5rem);
       height: clamp(3.25rem, 4.5vw, 5rem);
       border-radius: 50%;
-      background: #264893;
-      color: #fff;
+      background: transparent;
       border: none;
       cursor: pointer;
-      font-size: clamp(1.1rem, 1.5vw, 1.6rem);
+      padding: 0;
       display: grid;
       place-items: center;
       box-shadow: 0 6px 24px rgba(38,72,147,0.45);
@@ -240,6 +239,12 @@ type ContactCard = {
 
     .chat-fab:hover { transform: scale(1.1); box-shadow: 0 10px 36px rgba(38,72,147,0.55); }
     .chat-fab:active { transform: scale(0.96); }
+
+    .chat-fab__icon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
     /* ── Scroll-reveal ───────────────────────────── */
 

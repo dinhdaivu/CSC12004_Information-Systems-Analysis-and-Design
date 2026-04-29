@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, Input, inject } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService, SupportedLanguage } from '@core/i18n/language.service';
 
@@ -135,14 +135,15 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
       position: absolute;
       top: calc(100% + 0.5rem);
       right: 0;
-      min-width: 9rem;
-      padding: 0.45rem 0.55rem;
-      border-radius: 8px;
-      background: #efebe3;
-      box-shadow: 0 12px 24px rgba(18, 29, 62, 0.18);
+      min-width: 9.5rem;
+      padding: 0.3rem 0.45rem;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.13);
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.15rem;
       z-index: 20;
     }
 
@@ -153,23 +154,21 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__menu {
-      min-width: 12.5rem;
-      padding: 0;
-      border-radius: 1.6rem;
-      background: rgba(15, 23, 42, 0.58);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.26);
-      backdrop-filter: blur(16px);
-      overflow: hidden;
+      min-width: 9.5rem;
+      padding: 0.3rem 0.45rem;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.13);
     }
 
     .language-switcher__option {
       width: 100%;
-      padding: 0.45rem 0.25rem;
+      padding: 0.5rem 0.5rem;
       border: 0;
       border-radius: 6px;
       background: transparent;
-      border-bottom: 1px solid rgba(38, 72, 147, 0.5);
+      border-bottom: 1px solid rgba(38, 72, 147, 0.15);
       color: #1d1d1d;
       font-family: 'Afacad', sans-serif;
       font-size: 1rem;
@@ -177,6 +176,7 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
       line-height: 1.2;
       text-align: center;
       cursor: pointer;
+      transition: background-color 0.15s ease;
     }
 
     .language-switcher--dark .language-switcher__option {
@@ -185,13 +185,12 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__option {
-      padding: 1rem 1.25rem;
-      border-radius: 0;
-      border-bottom-color: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
-      font-size: clamp(1rem, 1.56vw, 1.55rem);
-      font-style: italic;
-      line-height: 1.1;
+      border-radius: 6px;
+      border-bottom-color: rgba(38, 72, 147, 0.15);
+      color: #1d1d1d;
+      font-size: 1rem;
+      font-style: normal;
+      line-height: 1.2;
     }
 
     .language-switcher__option:last-child {
@@ -208,12 +207,12 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__option--active {
-      color: #ffffff;
+      color: #264893;
       font-weight: 700;
     }
 
     .language-switcher__option:hover {
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(38, 72, 147, 0.05);
     }
 
     .language-switcher--dark .language-switcher__option:hover {
@@ -221,7 +220,7 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__option:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(38, 72, 147, 0.05);
     }
   `]
 })
@@ -231,6 +230,8 @@ export class LanguageSwitcherComponent {
 
   @Input() tone: 'light' | 'dark' = 'light';
   @Input() size: 'default' | 'hero' = 'default';
+  @Input() set forceClose(val: number) { if (val) this.isOpen = false; }
+  @Output() readonly menuOpened = new EventEmitter<void>();
 
   isOpen = false;
 
@@ -240,6 +241,7 @@ export class LanguageSwitcherComponent {
 
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
+    if (this.isOpen) this.menuOpened.emit();
   }
 
   changeLanguage(language: SupportedLanguage): void {
