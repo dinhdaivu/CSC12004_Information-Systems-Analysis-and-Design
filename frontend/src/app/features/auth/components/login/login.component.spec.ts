@@ -116,4 +116,35 @@ describe('LoginComponent', () => {
       },
     });
   });
+
+  it('should toggle password visibility', () => {
+    expect(component.showPassword).toBe(false);
+    component.togglePasswordVisibility();
+    expect(component.showPassword).toBe(true);
+    component.togglePasswordVisibility();
+    expect(component.showPassword).toBe(false);
+  });
+
+  it('should not send reset request when email is invalid', () => {
+    fixture.detectChanges();
+    component.form.controls.email.setValue('not-an-email');
+    component.requestPasswordReset();
+    expect(authService.forgotPassword).not.toHaveBeenCalled();
+  });
+
+  it('should use fallback message when reset error has no message', () => {
+    authService.forgotPassword.mockReturnValue(throwError(() => ({ error: { error: {} } })));
+    fixture.detectChanges();
+    component.form.controls.email.setValue('user@example.com');
+    component.requestPasswordReset();
+    expect(component.errorMessage).toBeTruthy();
+  });
+
+  it('should use fallback message when login error has no message', () => {
+    authService.login.mockReturnValue(throwError(() => ({ error: { error: {} } })));
+    fixture.detectChanges();
+    component.form.setValue({ email: 'user@example.com', password: 'secret123' });
+    component.submit();
+    expect(component.errorMessage).toBeTruthy();
+  });
 });

@@ -175,4 +175,67 @@ describe('DashboardComponent', () => {
     expect(component.searchQuery).toBe('');
     expect(component.filteredBranches.length).toBe(2);
   });
+
+  it('should return empty string for getSafeUrl with undefined', () => {
+    expect(component.getSafeUrl(undefined)).toBe('');
+  });
+
+  it('should return encoded url for getSafeUrl with value', () => {
+    const result = component.getSafeUrl('/assets/img.png');
+    expect(result).toContain('assets');
+  });
+
+  it('should strip leading path from getSafeUrl', () => {
+    const result = component.getSafeUrl('http://cdn.com/public/img.png');
+    expect(result).toContain('img.png');
+  });
+
+  it('should return branch display name without prefix', () => {
+    const branch = { id: '1', name: 'Homestay Dorm Tô Hiến Thành', address: '', heroImage: '' } as any;
+    const result = component.getBranchDisplayName(branch);
+    expect(result).not.toMatch(/homestay dorm/i);
+  });
+
+  it('should not go to next branch when no filtered branches', () => {
+    component.filteredBranches = [];
+    const prev = component.currentIndex;
+    component.nextBranch();
+    expect(component.currentIndex).toBe(prev);
+  });
+
+  it('should not go to prev branch when no filtered branches', () => {
+    component.filteredBranches = [];
+    const prev = component.currentIndex;
+    component.prevBranch();
+    expect(component.currentIndex).toBe(prev);
+  });
+
+  it('should stop auto play without error', () => {
+    component.startAutoPlay();
+    expect(() => component.stopAutoPlay()).not.toThrow();
+    expect(component.autoPlayTimer).toBeNull();
+  });
+
+  it('should stop auto play when timer is null', () => {
+    component.autoPlayTimer = null;
+    expect(() => component.stopAutoPlay()).not.toThrow();
+  });
+
+  it('should return hero image url for selected branch', () => {
+    const branch = mockBranches[0] as any;
+    const url = component.getHeroImageUrl(branch);
+    expect(typeof url).toBe('string');
+  });
+
+  it('should return display address from preset or branch', () => {
+    const branch = mockBranches[0] as any;
+    const addr = component.getDisplayAddress(branch);
+    expect(typeof addr).toBe('string');
+  });
+
+  it('should set selectedBranch to null when search yields no results', () => {
+    component.searchQuery = 'zzz-no-match';
+    component.onSearch();
+    expect(component.selectedBranch).toBeNull();
+  });
 });

@@ -91,4 +91,100 @@ describe('BookingsListComponent', () => {
     component.navigate('/bookings/1');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/bookings/1']);
   });
+
+  it('should toggle lang menu and close user menu', () => {
+    component.isUserMenuOpen = true;
+    component.toggleLangMenu();
+    expect(component.isLangMenuOpen).toBe(true);
+    expect(component.isUserMenuOpen).toBe(false);
+  });
+
+  it('should toggle user menu and close lang menu', () => {
+    component.isLangMenuOpen = true;
+    component.toggleUserMenu();
+    expect(component.isUserMenuOpen).toBe(true);
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should change language', () => {
+    const translateSpy = jest.spyOn(component['translate'], 'use');
+    component.changeLang('vi');
+    expect(translateSpy).toHaveBeenCalledWith('vi');
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should logout and navigate to login', () => {
+    component.logout();
+    expect(mockAuthService.logout).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should navigate to login when logout returns non-observable', () => {
+    mockAuthService.logout.mockReturnValue(undefined);
+    component.logout();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should navigate to login when logout throws', () => {
+    mockAuthService.logout.mockImplementation(() => { throw new Error('fail'); });
+    component.logout();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should not cancel booking when confirm returns false', () => {
+    jest.spyOn(window, 'confirm').mockReturnValue(false);
+    component.cancelBooking('1');
+    expect(mockMyBookingService.performAction).not.toHaveBeenCalled();
+  });
+
+  it('should return correct step level for each status', () => {
+    expect(component.getStepLevel('requested')).toBe(1);
+    expect(component.getStepLevel('accepted')).toBe(2);
+    expect(component.getStepLevel('cancelled')).toBe(3);
+    expect(component.getStepLevel('deposit_pending')).toBe(4);
+    expect(component.getStepLevel('completed')).toBe(4);
+    expect(component.getStepLevel('unknown')).toBe(1);
+  });
+
+  it('should return correct line width for each step level', () => {
+    expect(component.getLineWidth('requested')).toBe(0);
+    expect(component.getLineWidth('accepted')).toBe(247);
+    expect(component.getLineWidth('cancelled')).toBe(492);
+    expect(component.getLineWidth('completed')).toBe(739);
+  });
+
+  it('should return true for canCancel on eligible statuses', () => {
+    expect(component.canCancel('requested')).toBe(true);
+    expect(component.canCancel('reviewing')).toBe(true);
+    expect(component.canCancel('viewing_scheduled')).toBe(true);
+  });
+
+  it('should return false for canCancel on ineligible status', () => {
+    expect(component.canCancel('accepted')).toBe(false);
+    expect(component.canCancel('cancelled')).toBe(false);
+  });
+
+  it('should filter by cancelled status', () => {
+    component.allBookings = [
+      { id: '3', status: 'cancelled', rooms: { room_number: '103' } },
+      { id: '4', status: 'requested', rooms: { room_number: '104' } },
+    ] as any;
+    component.filterStatus('cancelled');
+    expect(component.bookings.length).toBe(1);
+    expect(component.bookings[0].id).toBe('3');
+  });
+
+  it('should return all bookings when filter is empty', () => {
+    component.filterStatus('');
+    expect(component.bookings.length).toBe(component.allBookings.length);
+  });
+
+  it('should handle load bookings error', () => {
+    const { throwError } = require('rxjs');
+    mockMyBookingService.getMyBookings.mockReturnValue(
+      throwError(() => new Error('load fail'))
+    );
+    component.loadBookings();
+    expect(component.isLoading).toBe(false);
+  });
 });

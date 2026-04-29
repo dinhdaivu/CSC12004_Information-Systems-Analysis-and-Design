@@ -86,4 +86,56 @@ describe('AdminLayoutComponent', () => {
 
     expect(authServiceMock.logout).toHaveBeenCalledTimes(1);
   });
+
+  it('should toggle sidebar', () => {
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    const component = fixture.componentInstance;
+    component.isSidebarOpen = false;
+    component.toggleSidebar();
+    expect(component.isSidebarOpen).toBe(true);
+    component.toggleSidebar();
+    expect(component.isSidebarOpen).toBe(false);
+  });
+
+  it('should toggle user menu', () => {
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    const component = fixture.componentInstance;
+    component.isUserMenuOpen = false;
+    component.toggleUserMenu();
+    expect(component.isUserMenuOpen).toBe(true);
+  });
+
+  it('should close all menus via closeMenus', () => {
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    const component = fixture.componentInstance;
+    component.isSidebarOpen = true;
+    component.isUserMenuOpen = true;
+    component.closeMenus();
+    expect(component.isSidebarOpen).toBe(false);
+    expect(component.isUserMenuOpen).toBe(false);
+  });
+
+  it('should return current user initial from full_name', () => {
+    authServiceMock.getCurrentUser.mockReturnValue({ role: 'admin', full_name: 'Admin User', email: 'admin@example.com' });
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    expect(fixture.componentInstance.currentUserInitial()).toBe('A');
+  });
+
+  it('should return initial from email when full_name is empty', () => {
+    authServiceMock.getCurrentUser.mockReturnValue({ role: 'admin', full_name: '', email: 'boss@example.com' });
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    expect(fixture.componentInstance.currentUserInitial()).toBe('B');
+  });
+
+  it('should close menus when document clicked outside', () => {
+    const fixture = TestBed.createComponent(AdminLayoutComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.isSidebarOpen = true;
+    const outsideEl = document.createElement('div');
+    const event = new MouseEvent('click');
+    Object.defineProperty(event, 'target', { value: outsideEl });
+    component.handleDocumentClick(event);
+    expect(component.isSidebarOpen).toBe(false);
+  });
 });

@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AboutComponent } from './about.component';
+import { GuidelinesComponent } from './guidelines.component';
 
-describe('AboutComponent', () => {
-  let fixture: ComponentFixture<AboutComponent>;
+describe('GuidelinesComponent', () => {
+  let fixture: ComponentFixture<GuidelinesComponent>;
+  let component: GuidelinesComponent;
   let capturedCallback: IntersectionObserverCallback | null = null;
 
   beforeEach(async () => {
@@ -32,20 +32,42 @@ describe('AboutComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [AboutComponent, RouterTestingModule, TranslateModule.forRoot()],
+      imports: [GuidelinesComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AboutComponent);
+    fixture = TestBed.createComponent(GuidelinesComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the about page', () => {
-    expect(fixture.componentInstance).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should render the hero title', () => {
-    const hero = fixture.nativeElement.querySelector('h1');
-    expect(hero).toBeTruthy();
+  it('should render the hero header', () => {
+    const header = (fixture.nativeElement as HTMLElement).querySelector('header');
+    expect(header).toBeTruthy();
+  });
+
+  it('should define 4 guideline steps', () => {
+    expect(component.steps.length).toBe(4);
+  });
+
+  it('should render 4 step articles', () => {
+    const steps = (fixture.nativeElement as HTMLElement).querySelectorAll('.gl-step');
+    expect(steps.length).toBe(4);
+  });
+
+  it('should have step 4 with sub-items on one of its items', () => {
+    const step4 = component.steps[3];
+    const itemWithSubs = step4.items.find((i) => i.subItems && i.subItems.length > 0);
+    expect(itemWithSubs).toBeTruthy();
+    expect(itemWithSubs?.subItems?.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('should render the chat FAB button', () => {
+    const fab = (fixture.nativeElement as HTMLElement).querySelector('.chat-fab');
+    expect(fab).toBeTruthy();
   });
 
   it('should add revealed class when entry is intersecting', () => {
@@ -63,7 +85,7 @@ describe('AboutComponent', () => {
     expect(el.classList.contains('revealed')).toBe(false);
   });
 
-  it('should disconnect observer on destroy', () => {
-    expect(() => fixture.destroy()).not.toThrow();
+  it('should disconnect IntersectionObserver on destroy', () => {
+    expect(() => component.ngOnDestroy()).not.toThrow();
   });
 });

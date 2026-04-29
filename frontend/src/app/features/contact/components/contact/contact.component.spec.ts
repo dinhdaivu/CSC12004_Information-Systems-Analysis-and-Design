@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AboutComponent } from './about.component';
+import { ContactComponent } from './contact.component';
 
-describe('AboutComponent', () => {
-  let fixture: ComponentFixture<AboutComponent>;
+describe('ContactComponent', () => {
+  let fixture: ComponentFixture<ContactComponent>;
+  let component: ContactComponent;
   let capturedCallback: IntersectionObserverCallback | null = null;
 
   beforeEach(async () => {
@@ -32,20 +32,38 @@ describe('AboutComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [AboutComponent, RouterTestingModule, TranslateModule.forRoot()],
+      imports: [ContactComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AboutComponent);
+    fixture = TestBed.createComponent(ContactComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the about page', () => {
-    expect(fixture.componentInstance).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should render the hero title', () => {
-    const hero = fixture.nativeElement.querySelector('h1');
-    expect(hero).toBeTruthy();
+  it('should render the hero header', () => {
+    const header = (fixture.nativeElement as HTMLElement).querySelector('header');
+    expect(header).toBeTruthy();
+  });
+
+  it('should render 3 contact cards', () => {
+    const cards = (fixture.nativeElement as HTMLElement).querySelectorAll('.contact-card');
+    expect(cards.length).toBe(3);
+  });
+
+  it('should have cards with the correct icon paths', () => {
+    const icons = component.cards.map((c) => c.icon);
+    expect(icons).toContain('assets/icons/house.svg');
+    expect(icons).toContain('assets/icons/phone.svg');
+    expect(icons).toContain('assets/icons/mail-contact.svg');
+  });
+
+  it('should render the chat FAB button', () => {
+    const fab = (fixture.nativeElement as HTMLElement).querySelector('.chat-fab');
+    expect(fab).toBeTruthy();
   });
 
   it('should add revealed class when entry is intersecting', () => {
@@ -63,7 +81,7 @@ describe('AboutComponent', () => {
     expect(el.classList.contains('revealed')).toBe(false);
   });
 
-  it('should disconnect observer on destroy', () => {
-    expect(() => fixture.destroy()).not.toThrow();
+  it('should disconnect IntersectionObserver on destroy', () => {
+    expect(() => component.ngOnDestroy()).not.toThrow();
   });
 });
