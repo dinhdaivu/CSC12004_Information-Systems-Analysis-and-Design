@@ -1,7 +1,7 @@
 {
   "APP": {
-    "TITLE": "Ký túc xá HomeStay",
-    "WELCOME": "Chào mừng bạn đến với Ký túc xá HomeStay"
+    "TITLE": "HomeStay Dorm",
+    "WELCOME": "Chào mừng đến với HomeStay Dorm"
   },
   "COMMON": {
     "LANGUAGE": "Ngôn ngữ",
@@ -14,29 +14,70 @@
     "BOOKING": "Đặt phòng",
     "CONTRACT": "Hợp đồng",
     "LOGOUT": "Đăng xuất",
-    "LOADING": "Đang tải dữ liệu...",
+    "LOADING": "Đang tải…",
     "RETRY": "Thử lại",
-    "FETCH_ERROR": "Tải dữ liệu thất bại. Vui lòng thử lại.",
+    "FETCH_ERROR": "Không thể tải nội dung. Vui lòng thử lại.",
     "ROOM": "Phòng"
   },
   "CONTACT_INFO": {
     "TITLE": "Thông tin liên hệ",
-    "HEADQUARTERS": "Trụ sở chính: ",
+    "HEADQUARTERS": "Trụ sở chính",
     "ADDRESS_1": "227 Nguyễn Văn Cừ, Phường 4, ",
-    "ADDRESS_2": "Quận 5, TP.HCM.",
-    "PHONE_LABEL": "Điện thoại: ",
-    "PHONE": "(08) 18.276.266.",
-    "EMAIL_LABEL": "Email:",
-    "EMAIL": " contact@homestaydorm.vn",
-    "HOURS_LABEL": "Giờ làm việc:",
-    "HOURS": " T2 - T7 | 08:00 AM - 06:00 PM."
+    "ADDRESS_2": "Quận 5, TP.HCM",
+    "PHONE_LABEL": "Điện thoại",
+    "PHONE": "(+84) 818.916.621",
+    "EMAIL_LABEL": "Email",
+    "EMAIL": "contact@homestaydorm.vn",
+    "HOURS_LABEL": "Giờ làm việc",
+    "HOURS": "Thứ 2 – Thứ 7 | 08:00 – 18:00"
+  },
+  "NAV": {
+    "PUBLIC": {
+      "HOME": "Khám phá",
+      "ROOMS": "Danh sách phòng",
+      "BOOKINGS": "Đơn của tôi",
+      "ADMIN": "Khu vực quản trị"
+    },
+    "ADMIN": {
+      "OVERVIEW": "Tổng quan",
+      "ROOMS": "Quản lý phòng",
+      "PAYMENTS": "Thanh toán",
+      "USERS": "Quản lý người dùng"
+    },
+    "HERO": {
+      "ABOUT": "Về chúng tôi",
+      "GUIDELINES": "Hướng dẫn",
+      "CONTACT": "Liên hệ"
+    }
+  },
+  "SHELL": {
+    "PUBLIC": {
+      "TAGLINE": "Không gian sống tiện nghi, minh bạch — dành cho sinh viên và người trẻ đi làm."
+    },
+    "ADMIN": {
+      "TAGLINE": "Trung tâm vận hành",
+      "ACCESS_BADGE": "Tài khoản được phân quyền",
+      "ACCESS_FALLBACK": "Đang tải hồ sơ quản trị…",
+      "HEADER_BADGE": "Điều hướng quản trị"
+    },
+    "USER": {
+      "SIGNED_IN": "Đã đăng nhập",
+      "MY_BOOKINGS": "Xem đơn đặt phòng",
+      "ADMIN_WORKSPACE": "Đi đến khu vực quản trị",
+      "LOGOUT": "Đăng xuất",
+      "LOGIN": "Đăng nhập",
+      "REGISTER": "Đăng ký",
+      "WELCOME_BADGE": "Menu khách",
+      "GUEST_TITLE": "Chào mừng đến với HomeStay Dorm",
+      "GUEST_SUBTITLE": "Đăng nhập để quản lý đặt phòng, thanh toán và thông tin lưu trú của bạn."
+    }
   },
   "AUTH": {
     "FIELDS": {
       "EMAIL": "Địa chỉ email",
-      "EMAIL_PLACEHOLDER": "Nhập email của bạn",
+      "EMAIL_PLACEHOLDER": "Nhập địa chỉ email",
       "PASSWORD": "Mật khẩu",
-      "PASSWORD_PLACEHOLDER": "Nhập mật khẩu của bạn"
+      "PASSWORD_PLACEHOLDER": "Nhập mật khẩu"
     },
     "VALIDATION": {
       "EMAIL": "Vui lòng nhập địa chỉ email hợp lệ.",
@@ -46,25 +87,25 @@
     "SIGN_UP": "Đăng ký",
     "LOG_IN": "Đăng nhập",
     "LOGIN": {
-      "TITLE": "ĐĂNG NHẬP",
-      "SUBTITLE": "Chào mừng quay trở lại!",
+      "TITLE": "CHÀO MỪNG",
+      "SUBTITLE": "Đăng nhập vào tài khoản của bạn",
       "SUBMIT": "Đăng nhập",
-      "SUBMITTING": "Đang đăng nhập...",
+      "SUBMITTING": "Đang đăng nhập…",
       "FORGOT_PASSWORD": "Quên mật khẩu?",
       "REGISTER": "Đăng ký",
-      "NEW_USER_PROMPT": "Lần đầu đến với HomeStay Dorm?",
-      "RESET_ERROR": "Không thể bắt đầu quy trình khôi phục mật khẩu. Vui lòng thử lại.",
-      "ERROR": "Không thể đăng nhập. Vui lòng thử lại."
+      "NEW_USER_PROMPT": "Lần đầu sử dụng HomeStay Dorm?",
+      "RESET_ERROR": "Không thể khởi động quy trình khôi phục mật khẩu. Vui lòng thử lại.",
+      "ERROR": "Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại email và mật khẩu."
     },
     "REGISTER": {
-      "TITLE": "ĐĂNG KÝ",
+      "TITLE": "TẠO TÀI KHOẢN",
       "SUBTITLE": "Tham gia cộng đồng HomeStay Dorm",
       "CONFIRM_PASSWORD": "Xác nhận mật khẩu",
       "CONFIRM_PASSWORD_PLACEHOLDER": "Nhập lại mật khẩu",
       "TOGGLE_PASSWORD": "Hiện hoặc ẩn mật khẩu",
       "TOGGLE_CONFIRM_PASSWORD": "Hiện hoặc ẩn mật khẩu xác nhận",
       "SUBMIT": "Tạo tài khoản",
-      "SUBMITTING": "Đang tạo tài khoản...",
+      "SUBMITTING": "Đang tạo tài khoản…",
       "HAS_ACCOUNT": "Đã có tài khoản?",
       "LOGIN_ACTION": "Đăng nhập",
       "ERROR": "Không thể tạo tài khoản. Vui lòng thử lại.",
@@ -72,196 +113,392 @@
       "LOG_IN": "Đăng nhập"
     },
     "CONFIRM_EMAIL": {
-      "TITLE": "XÁC NHẬN EMAIL",
-      "SUBTITLE": "Xác minh địa chỉ email của bạn",
-      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh gồm 6 chữ số đến email của bạn.\nHãy nhập mã bên dưới để kích hoạt tài khoản.",
+      "TITLE": "XÁC MINH EMAIL",
+      "SUBTITLE": "Một bước cuối cùng",
+      "DESCRIPTION": "Chúng tôi đã gửi mã xác minh gồm 6 chữ số đến email của bạn.\nNhập mã bên dưới để kích hoạt tài khoản.",
       "VALIDATION": "Vui lòng nhập đầy đủ mã xác minh gồm 6 chữ số.",
-      "SUBMIT": "Xác minh & kích hoạt",
-      "SUBMITTING": "Đang xác minh...",
-      "SUCCESS": "Xác minh email thành công. Bạn có thể đăng nhập ngay bây giờ.",
-      "ERROR": "Không thể xác minh mã. Vui lòng thử lại.",
+      "SUBMIT": "Xác minh & Kích hoạt",
+      "SUBMITTING": "Đang xác minh…",
+      "SUCCESS": "Xác minh thành công. Bạn có thể đăng nhập ngay.",
+      "ERROR": "Mã không đúng hoặc đã hết hạn. Vui lòng thử lại.",
       "RESEND_PROMPT": "Chưa nhận được mã?",
       "RESEND_ACTION": "Gửi lại mã",
-      "RESENDING": "Đang gửi lại...",
+      "RESENDING": "Đang gửi…",
       "RESEND_SUCCESS": "Mã xác minh mới đã được gửi.",
       "LOGIN_ACTION": "Quay lại đăng nhập"
     },
     "RESET_PASSWORD": {
       "TITLE": "ĐẶT LẠI MẬT KHẨU",
       "SUBTITLE": "Khôi phục tài khoản",
-      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục gồm 6 chữ số đến email của bạn.\nHãy nhập mã bên dưới và đặt mật khẩu mới.",
-      "VALIDATION": "Vui lòng nhập đầy đủ mã gồm 6 chữ số và mật khẩu mới hợp lệ.",
-      "SUBMIT": "Xác minh & cập nhật mật khẩu",
-      "SUBMITTING": "Đang cập nhật mật khẩu...",
-      "SUCCESS": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "DESCRIPTION": "Chúng tôi đã gửi mã khôi phục gồm 6 chữ số đến email của bạn.\nNhập mã bên dưới và chọn mật khẩu mới.",
+      "VALIDATION": "Vui lòng nhập đầy đủ mã 6 chữ số và mật khẩu mới hợp lệ.",
+      "SUBMIT": "Cập nhật mật khẩu",
+      "SUBMITTING": "Đang cập nhật…",
+      "SUCCESS": "Mật khẩu đã được cập nhật. Bạn có thể đăng nhập ngay.",
       "ERROR": "Không thể đặt lại mật khẩu. Vui lòng thử lại.",
       "RESEND_PROMPT": "Chưa nhận được mã?",
       "RESEND_ACTION": "Gửi lại mã",
-      "RESENDING": "Đang gửi lại...",
+      "RESENDING": "Đang gửi…",
       "RESEND_SUCCESS": "Mã khôi phục mới đã được gửi."
     }
   },
   "DASHBOARD": {
-    "TITLE": "Khám phá các chi nhánh HomeStay Dorm",
-    "SEARCH_PLACEHOLDER": "Tìm kiếm theo tên chi nhánh hoặc địa chỉ...",
+    "TITLE": "Khám phá HomeStay Dorm",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm chi nhánh…",
     "VIEW_MORE": "Xem chi tiết",
     "ROOMS_AVAILABLE": "phòng trống",
-    "EMPTY_STATE": "Không tìm thấy chi nhánh nào phù hợp với từ khóa tìm kiếm của bạn.",
-    "CONTACT_US": "Liên hệ với chúng tôi"
+    "EMPTY_STATE": "Không tìm thấy chi nhánh phù hợp. Hãy thử từ khóa khác.",
+    "CONTACT_US": "Liên hệ ngay",
+    "SECTIONS": {
+      "ABOUT": {
+        "TITLE": "Thiết kế cho nhịp sống đô thị hiện đại",
+        "BODY": "HomeStay Dorm kết hợp tra cứu chi nhánh, chỗ ở thân thiện với sinh viên và quy trình đặt phòng rõ ràng — tất cả trong một trải nghiệm liền mạch, minh bạch và lấy cư dân làm trung tâm.",
+        "CARD_ONE_LABEL": "Trọng tâm",
+        "CARD_ONE_VALUE": "Chi nhánh thuận tiện tại các quận trọng điểm",
+        "CARD_TWO_LABEL": "Trải nghiệm",
+        "CARD_TWO_VALUE": "Khám phá nhanh với giao diện song ngữ"
+      },
+      "GUIDELINES": {
+        "CARD_ONE": {
+          "TITLE": "Khám phá chi nhánh",
+          "BODY": "Dùng thanh tìm kiếm và bộ chuyển chi nhánh để so sánh vị trí trước khi xem chi tiết phòng."
+        },
+        "CARD_TWO": {
+          "TITLE": "Theo dõi quy trình",
+          "BODY": "Hệ thống dẫn bạn từng bước — từ khám phá, chọn phòng, đặt chỗ đến quản lý tài khoản."
+        },
+        "CARD_THREE": {
+          "TITLE": "Đổi ngôn ngữ bất cứ lúc nào",
+          "BODY": "Chuyển giữa tiếng Anh và tiếng Việt ngay lập tức bằng biểu tượng địa cầu trên thanh điều hướng."
+        }
+      },
+      "CONTACT": {
+        "TITLE": "Cần hỗ trợ chọn chi nhánh?",
+        "BODY": "Đội ngũ HomeStay Dorm sẵn sàng tư vấn về vị trí, loại phòng hoặc bước tiếp theo trong hành trình đặt phòng của bạn.",
+        "CARD_ONE_LABEL": "Email",
+        "CARD_ONE_VALUE": "contact@homestaydorm.vn",
+        "CARD_TWO_LABEL": "Điện thoại",
+        "CARD_TWO_VALUE": "(+84) 818.916.621"
+      }
+    }
   },
-  "NAV": {
-    "GUIDELINES": "Hướng dẫn",
-    "ABOUT_US": "Về chúng tôi",
-    "CONTACT": "Liên hệ"
+  "ABOUT": {
+    "HERO": {
+      "TITLE": "VỀ CHÚNG TÔI",
+      "TAGLINE": "HOMESTAY DORM — NÂNG ĐỠ HÀNH TRÌNH, XÂY DỰNG NGÔI NHÀ CỦA BẠN.",
+      "QUOTE": "\"Không chỉ là ký túc xá — chúng tôi tạo dựng một hệ sinh thái sống chuyên nghiệp để thế hệ trẻ phát triển, kết nối và vững vàng trong môi trường an toàn, minh bạch.\""
+    },
+    "STORY": {
+      "INTRO": "HomeStay Dorm ra đời từ sự thấu hiểu sâu sắc những khó khăn của sinh viên và người trẻ đi làm khi tìm chỗ ở phù hợp tại một thành phố năng động. Chúng tôi tái định nghĩa mô hình ký túc xá — kết hợp tính chuyên nghiệp của khu lưu trú hiện đại với sự ấm áp và linh hoạt của một ngôi nhà thật sự.",
+      "BODY": "Với ba chi nhánh chiến lược trải dài khắp thành phố, chúng tôi đảm bảo quy trình quản lý chuẩn hóa, minh bạch — từ đăng ký, đặt cọc đến bàn giao phòng — để cư dân không bao giờ phải lo lắng về tài chính hay an toàn chỗ ở."
+    },
+    "PILLARS": {
+      "HOM": {
+        "NAME": "Hôm — Tận tâm",
+        "DESC": "Chúng tôi đồng hành từ câu hỏi đầu tiên, dẫn dắt từng cư dân vào không gian sống mới bằng sự chu đáo thực sự."
+      },
+      "SA": {
+        "NAME": "Sa — Ấm áp",
+        "DESC": "Chúng tôi nuôi dưỡng sự gắn kết cộng đồng bằng lòng tốt bụng, biến không gian chung thành một gia đình thứ hai."
+      },
+      "DO": {
+        "NAME": "Đô — Minh bạch",
+        "DESC": "Từ tiền cọc đến hoàn trả, mọi giao dịch đều được ghi nhận, xác minh và dễ dàng tra soát."
+      }
+    },
+    "BRANCHES": {
+      "VALUE": "3 Chi nhánh",
+      "TITLE": "03 Chi nhánh chiến lược",
+      "SUBTITLE": "Hiện diện tại các quận trọng điểm để việc di chuyển luôn thuận tiện.",
+      "CARD_TITLE": "Mạng lưới",
+      "CARD_DESC": "Vận hành tại các vị trí trọng điểm, mang đến khả năng tiếp cận tốt nhất cho sinh viên và người trẻ đi làm."
+    },
+    "CONFIRMATION": {
+      "VALUE": "24 Giờ",
+      "TITLE": "Xác nhận trong 24 giờ",
+      "CARD_TITLE": "Xử lý",
+      "CARD_DESC": "Hệ thống được tối ưu hóa để đảm bảo mọi yêu cầu đặt phòng và đặt cọc được xử lý trong khung 24 giờ nghiêm ngặt."
+    },
+    "TRANSPARENCY": {
+      "VALUE": "100%",
+      "TITLE": "100% Minh bạch tài chính",
+      "CARD_TITLE": "Rõ ràng",
+      "CARD_DESC": "Mọi giao dịch, từ tiền đặt cọc ban đầu đến đối soát hoàn trả cuối cùng, đều được ghi nhận rõ ràng và xác minh đầy đủ."
+    },
+    "FOOTER": {
+      "TAGLINE": "Nâng đỡ hành trình của bạn, xây dựng mái nhà của bạn.",
+      "COPYRIGHT": "© 2026 HomeStay Dorm. Bảo lưu mọi quyền.",
+      "CONTACT_TITLE": "Thông tin liên hệ",
+      "HQ_LABEL": "Trụ sở chính: ",
+      "HQ_VALUE": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM",
+      "PHONE_LABEL": "Điện thoại: ",
+      "PHONE_VALUE": "(+84) 818.916.621",
+      "EMAIL_LABEL": "Email: ",
+      "EMAIL_VALUE": "contact@homestaydorm.vn",
+      "HOURS_LABEL": "Giờ làm việc: ",
+      "HOURS_VALUE": "Thứ 2 – Thứ 7 | 08:00 – 18:00"
+    }
+  },
+  "CONTACT": {
+    "HERO": {
+      "TITLE": "LIÊN HỆ",
+      "SUBTITLE": "Bạn có câu hỏi? Chúng tôi luôn sẵn sàng.",
+      "TAGLINE": "Dù bạn đang tìm ngôi nhà mới, muốn đặt lịch xem phòng hay có thắc mắc về quy trình — đội ngũ HomeStay Dorm luôn ở đây để hỗ trợ."
+    },
+    "CARDS": {
+      "VISIT": {
+        "TITLE": "Ghé thăm chúng tôi",
+        "VALUE": "227 Nguyễn Văn Cừ,\nPhường 4, Quận 5, TP.HCM"
+      },
+      "CALL": {
+        "TITLE": "Gọi cho chúng tôi",
+        "VALUE": "(+84) 818.916.621"
+      },
+      "EMAIL": {
+        "TITLE": "Gửi email cho chúng tôi",
+        "VALUE": "contact@homestaydorm.vn"
+      }
+    }
+  },
+  "GUIDELINES": {
+    "HERO": {
+      "TITLE": "HƯỚNG DẪN",
+      "SUBTITLE": "Hành trình của cư dân",
+      "TAGLINE": "Từ lần xem phòng đầu tiên đến khi đối soát hoàn trả cuối cùng, quy trình có cấu trúc của chúng tôi đảm bảo một hành trình lưu trú liền mạch và an toàn. Hãy làm theo hướng dẫn từng bước này để nắm rõ mọi giai đoạn khi ở tại HomeStay Dorm."
+    },
+    "STEPS": {
+      "STEP1": {
+        "NUMBER": "Bước 1",
+        "TITLE": "Tư vấn & Xem phòng",
+        "ITEM1_LABEL": "Tiếp nhận yêu cầu: ",
+        "ITEM1_DESC": "Duyệt qua các phòng và giường còn trống tại 03 chi nhánh, cung cấp nhu cầu cơ bản của bạn (vị trí, ngân sách, khu vực theo giới tính).",
+        "ITEM2_LABEL": "Lịch hẹn xem phòng: ",
+        "ITEM2_DESC": "Phối hợp với đội ngũ để sắp xếp một buổi tham quan thực tế, nơi bạn sẽ được tư vấn về nội quy, phí dịch vụ và quy định đặt cọc.",
+        "ITEM3_LABEL": "Lựa chọn: ",
+        "ITEM3_DESC": "Chọn phòng riêng hoặc giường ghép phù hợp với nhu cầu và lối sống của bạn."
+      },
+      "STEP2": {
+        "NUMBER": "Bước 2",
+        "TITLE": "Đặt chỗ & Xác nhận đặt cọc",
+        "ITEM1_LABEL": "Tính tiền đặt cọc: ",
+        "ITEM1_DESC": "Số tiền đặt cọc được tính theo công thức: (2 tháng tiền thuê) × (số lượng giường).",
+        "ITEM2_LABEL": "Hạn thanh toán 24 giờ: ",
+        "ITEM2_DESC": "Sau khi khởi tạo đặt phòng, bạn phải hoàn tất thanh toán và tải lên bằng chứng (chuyển khoản hoặc biên lai) trong vòng 24 giờ để tránh yêu cầu bị hủy tự động.",
+        "ITEM3_LABEL": "Trạng thái giữ chỗ: ",
+        "ITEM3_DESC": "Sau khi xác nhận, không gian đã chọn sẽ được khóa chính thức trong hệ thống và không còn hiển thị cho khách hàng khác."
+      },
+      "STEP3": {
+        "NUMBER": "Bước 3",
+        "TITLE": "Ký hợp đồng & Bàn giao phòng",
+        "ITEM1_LABEL": "Xác minh hồ sơ: ",
+        "ITEM1_DESC": "Cung cấp giấy tờ tùy thân hợp lệ (CCCD/Hộ chiếu) để tạo hồ sơ cư dân và chuẩn bị hợp đồng.",
+        "ITEM2_LABEL": "Ký hợp đồng điện tử: ",
+        "ITEM2_DESC": "Xem xét và ký hợp đồng thuê kỹ thuật số, trong đó nêu rõ chu kỳ thanh toán, phí dịch vụ và điều kiện hoàn trả.",
+        "ITEM3_LABEL": "Bàn giao thực tế: ",
+        "ITEM3_DESC": "Hoàn tất quy trình bàn giao phòng, bao gồm biên bản ghi nhận tình trạng giường, nệm, tủ khóa và thẻ từ."
+      },
+      "STEP4": {
+        "NUMBER": "Bước 4",
+        "TITLE": "Trả phòng & Đối soát hoàn trả",
+        "ITEM1_LABEL": "Thông báo chấm dứt hợp đồng: ",
+        "ITEM1_DESC": "Đăng ký ngày trả phòng qua hệ thống để bắt đầu quy trình checkout.",
+        "ITEM2_LABEL": "Kiểm tra tài sản & cơ sở vật chất: ",
+        "ITEM2_DESC": "Tiến hành kiểm tra cuối về tình trạng phòng, vệ sinh và tính toàn vẹn của tài sản.",
+        "ITEM3_LABEL": "Chính sách hoàn trả minh bạch: ",
+        "ITEM3_DESC": "Tỷ lệ hoàn trả tiền cọc được xác định theo tình trạng hợp đồng và thời gian lưu trú:",
+        "ITEM3_SUB1": "Hoàn 100%: Hoàn tất hợp đồng đúng thời hạn.",
+        "ITEM3_SUB2": "Hoàn 70%: Lưu trú trên 06 tháng nhưng chưa hết hạn hợp đồng.",
+        "ITEM3_SUB3": "Hoàn 50%: Lưu trú dưới 06 tháng.",
+        "ITEM3_SUB4": "Hoàn 80%: Hủy sau khi đặt cọc nhưng chưa ký hợp đồng.",
+        "ITEM4_LABEL": "Quyết toán cuối kỳ: ",
+        "ITEM4_DESC": "Các khoản phí dịch vụ còn nợ hoặc thiệt hại tài sản sẽ được khấu trừ từ số tiền hoàn trả trước khi thanh toán."
+      }
+    }
+  },
+  "PAGES": {
+    "ROOMS_LIST": {
+      "TITLE": "Danh sách phòng",
+      "DESCRIPTION": "Duyệt qua các phòng còn trống tại tất cả chi nhánh. Lọc theo loại phòng, sức chứa hoặc vị trí để tìm lựa chọn phù hợp."
+    },
+    "ROOM_DETAIL": {
+      "TITLE": "Chi tiết phòng",
+      "DESCRIPTION": "Xem tiện ích, chính sách và thông số phòng — sau đó đặt phòng trực tiếp khi bạn đã sẵn sàng."
+    },
+    "BOOKINGS_LIST": {
+      "TITLE": "Đơn của tôi",
+      "DESCRIPTION": "Theo dõi yêu cầu thuê, tiến trình đặt cọc và hợp đồng đang hoạt động tại một nơi."
+    },
+    "BOOKINGS_NEW": {
+      "TITLE": "Tạo đơn mới",
+      "DESCRIPTION": "Gửi yêu cầu thuê phòng bằng cách điền thông tin và tải lên tài liệu cần thiết."
+    },
+    "BOOKINGS_DETAIL": {
+      "TITLE": "Chi tiết đơn",
+      "DESCRIPTION": "Xem trạng thái đầy đủ của đơn, bao gồm tiến trình thanh toán và các mốc hợp đồng."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Tổng quan quản trị",
+      "DESCRIPTION": "Theo dõi hoạt động toàn hệ thống và điều hướng nhanh đến các tác vụ quản trị chính."
+    },
+    "ADMIN_USERS": {
+      "TITLE": "Quản lý người dùng",
+      "DESCRIPTION": "Xem, quản lý và phân quyền cho tất cả người dùng đã đăng ký trên nền tảng."
+    },
+    "ADMIN_ROOMS": {
+      "TITLE": "Quản lý phòng",
+      "DESCRIPTION": "Giám sát kho phòng, trạng thái phòng trống và phân bổ theo chi nhánh."
+    },
+    "ADMIN_PAYMENTS": {
+      "TITLE": "Theo dõi thanh toán",
+      "DESCRIPTION": "Quản lý đặt cọc, tiền thuê và hoàn trả trên tất cả hợp đồng đang hoạt động."
+    }
   },
   "ROOM_DETAIL": {
-    "FOOTER_SLOGAN": "Sự thoải mái của bạn là ưu tiên của chúng tôi.",
+    "FOOTER_SLOGAN": "Sự thoải mái của bạn là cam kết của chúng tôi.",
     "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. Bảo lưu mọi quyền.",
-    "CONTACT_INFO": "Thông Tin Liên Hệ",
+    "CONTACT_INFO": "Thông tin liên hệ",
     "HEADQUARTERS": "Trụ sở chính",
-    "ADDRESS_FOOTER": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM.",
+    "ADDRESS_FOOTER": "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM",
     "PHONE": "Điện thoại",
     "EMAIL": "Email",
     "OFFICE_HOURS": "Giờ làm việc",
-    "OFFICE_TIME": "Thứ 2 - Thứ 7 | 08:00 SA - 06:00 CH",
-    "CONTACT_US": "Liên Hệ Ngay",
-    "POLICY_INTRO": "Vui lòng xem qua các chính sách đặt phòng của chúng tôi:",
-    "POLICY_RENT": "Thanh Toán Tiền Thuê",
+    "OFFICE_TIME": "Thứ 2 – Thứ 7 | 08:00 – 18:00",
+    "CONTACT_US": "Liên hệ ngay",
+    "POLICY_INTRO": "Vui lòng xem qua các chính sách đặt phòng và lưu trú của chúng tôi:",
+    "POLICY_RENT": "Thanh toán tiền thuê",
     "POLICY_RENT_DESC": "Tiền thuê phải được thanh toán trong 5 ngày đầu tiên của tháng.",
-    "POLICY_DEPOSIT": "Tiền Cọc",
-    "POLICY_DEPOSIT_DESC": "Yêu cầu đặt cọc tương đương 1 tháng tiền thuê.",
-    "POLICY_CONFIRM": "Xác Nhận Đặt Phòng",
-    "POLICY_CONFIRM_DESC": "Phòng chỉ được xác nhận sau khi nhận đủ tiền cọc.",
-    "POLICY_REFUND": "Chính Sách Hoàn Tiền",
+    "POLICY_DEPOSIT": "Tiền đặt cọc",
+    "POLICY_DEPOSIT_DESC": "Yêu cầu đặt cọc tương đương 1 tháng tiền thuê để xác nhận đặt phòng.",
+    "POLICY_CONFIRM": "Xác nhận đặt phòng",
+    "POLICY_CONFIRM_DESC": "Phòng chỉ được giữ sau khi nhận đủ tiền đặt cọc.",
+    "POLICY_REFUND": "Chính sách hoàn tiền",
     "POLICY_REFUND_100": "Hoàn 100% nếu hủy trước 14 ngày chuyển vào.",
-    "POLICY_REFUND_70": "Hoàn 70% nếu hủy trước 7-13 ngày chuyển vào.",
-    "POLICY_REFUND_50": "Hoàn 50% nếu hủy trước 3-6 ngày chuyển vào.",
-    "POLICY_REFUND_80": "Không hoàn tiền nếu hủy dưới 3 ngày chuyển vào.",
-    "TWIN_ROOM": "Phòng Đôi (2)",
-    "QUAD_ROOM": "Phòng Bốn (4)",
-    "CAPACITY": "Sức chứa:",
-    "AMENITIES": "Tiện ích:",
-    "ROOM_FACILITIES_TITLE": "Tiện Ích Trong Phòng",
-    "SHARED_COMMUNITY_TITLE": "Không Gian Sinh Hoạt Chung",
-    "BRANCH_TITLE": "Chi Nhánh {{name}}",
+    "POLICY_REFUND_70": "Hoàn 70% nếu hủy trước 7–13 ngày chuyển vào.",
+    "POLICY_REFUND_50": "Hoàn 50% nếu hủy trước 3–6 ngày chuyển vào.",
+    "POLICY_REFUND_80": "Không hoàn tiền nếu hủy trong vòng 3 ngày trước ngày chuyển vào.",
+    "TWIN_ROOM": "Phòng đôi (2 người)",
+    "QUAD_ROOM": "Phòng bốn (4 người)",
+    "CAPACITY": "Sức chứa",
+    "AMENITIES": "Tiện ích",
+    "ROOM_FACILITIES_TITLE": "Tiện ích trong phòng",
+    "SHARED_COMMUNITY_TITLE": "Không gian sinh hoạt chung",
+    "BRANCH_TITLE": "Chi nhánh {{name}}",
     "DINING_HALL": "PHÒNG ĂN",
-    "DINING_DESC": "Khu vực ăn uống rộng rãi và sạch sẽ.",
+    "DINING_DESC": "Khu ăn uống rộng rãi, sạch sẽ phục vụ toàn bộ cư dân.",
     "LIVING_LOUNGE": "PHÒNG KHÁCH",
-    "LIVING_DESC": "Không gian sinh hoạt chung thoải mái để thư giãn.",
+    "LIVING_DESC": "Không gian sinh hoạt chung thoải mái để thư giãn và giao lưu.",
     "LAUNDRY_ZONE": "KHU GIẶT ỦI",
-    "LAUNDRY_DESC": "Trang thiết bị giặt sấy hiện đại hoạt động 24/7.",
-    "TWIN_CAPACITY": "2 Người",
-    "TWIN_AMENITIES": "2 Giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
-    "QUAD_CAPACITY": "4 Người",
-    "QUAD_AMENITIES": "4 Giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
-    "CONTACT_ACTION": "Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: {{name}}",
-    "ADDRESS_DEFAULT": "123 Đường Mặc Định, Phường Mặc Định, TP.HCM.",
-    "DESC_DEFAULT": "Một không gian tuyệt vời để sinh sống và học tập.",
+    "LAUNDRY_DESC": "Máy giặt và sấy hiện đại hoạt động 24 giờ mỗi ngày.",
+    "TWIN_CAPACITY": "2 người",
+    "TWIN_AMENITIES": "2 giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
+    "QUAD_CAPACITY": "4 người",
+    "QUAD_AMENITIES": "4 giường, Máy lạnh, Tủ quần áo, Bàn học, WC riêng",
+    "CONTACT_ACTION": "Yêu cầu liên hệ đã được gửi đến đội ngũ tại chi nhánh {{name}}.",
+    "ADDRESS_DEFAULT": "HomeStay Dorm, Thành phố Hồ Chí Minh.",
+    "DESC_DEFAULT": "Không gian thân thiện, được thiết kế cho việc học, phát triển và giao lưu cộng đồng.",
     "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyễn Cửu Vân, Phường 17, Quận Bình Thạnh, TP.HCM",
-    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Chi nhánh Nguyễn Cửu Vân mang đến trải nghiệm sống độc đáo tại khu vực Bình Thạnh sầm uất. Vị trí gần Quận 1 khiến nơi đây trở thành địa điểm được săn đón cho những ai muốn ở gần trung tâm thành phố mà vẫn tận hưởng không khí ký túc xá ấm cúng.",
-    
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Chi nhánh Nguyễn Cửu Vân mang đến trải nghiệm sống sôi động tại Bình Thạnh — chỉ vài phút đến Quận 1. Lý tưởng cho những ai muốn ở gần trung tâm thành phố mà vẫn tận hưởng không khí gần gũi, ấm cúng của cộng đồng ký túc xá.",
     "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 Tô Hiến Thành, Phường 13, Quận 10, TP.HCM",
-    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Trải nghiệm nhịp sống đô thị tuyệt vời nhất ngay trung tâm Quận 10. Chi nhánh Tô Hiến Thành nằm ở vị trí chiến lược gần các trường đại học lớn và trung tâm mua sắm sầm uất, là ngôi nhà lý tưởng cho sinh viên coi trọng sự tiện lợi và khu dân cư nhộn nhịp.",
-    
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Tọa lạc ngay trung tâm Quận 10, chi nhánh Tô Hiến Thành đặt bạn trong tầm tay của các trường đại học lớn và khu mua sắm sầm uất. Lựa chọn hàng đầu cho sinh viên coi trọng sự tiện lợi và nhịp sống đô thị năng động.",
     "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quốc Hương, Phường Thảo Điền, TP Thủ Đức (Quận 2)",
-    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nép mình trong một khu vực yên bình và hiện đại, Chi nhánh Trần Não mang đến môi trường chuyên nghiệp với không gian rộng rãi. Chi nhánh này hoàn hảo cho các chuyên gia trẻ và sinh viên thích sự cân bằng giữa công việc tập trung và đời sống cộng đồng."
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nép mình trong khu vực yên tĩnh và hiện đại của Thảo Điền, chi nhánh Quốc Hương mang đến môi trường chuyên nghiệp với không gian rộng rãi và mảng xanh thoáng đãng. Phù hợp cho người trẻ đi làm và sinh viên yêu thích sự cân bằng giữa công việc tập trung và đời sống cộng đồng."
   },
   "BOOKING": {
-    "TITLE": "Phiếu Đăng Ký Thuê Phòng",
-    "SUBTITLE": "Vui lòng cung cấp thông tin và sở thích để chúng tôi tìm cho bạn chỗ ở phù hợp nhất.",
-    "BRANCH_SELECTION": "Chọn Chi Nhánh",
-    "ROOM_CATEGORY": "Loại Phòng",
-    "MOVE_IN_DATE": "Ngày Dự Kiến Chuyển Vào",
-    "OCCUPANTS": "Số Lượng Người Ở",
-    "DURATION": "Thời Hạn Hợp Đồng",
-    "RENTAL_TYPE": "Hình Thức Thuê",
-    "UPLOAD_ID": "Tải Lên Ảnh CCCD/CMND",
+    "TITLE": "Phiếu đăng ký thuê phòng",
+    "SUBTITLE": "Cho chúng tôi biết nhu cầu của bạn — chúng tôi sẽ giúp tìm căn phòng phù hợp nhất.",
+    "BRANCH_SELECTION": "Chi nhánh mong muốn",
+    "ROOM_CATEGORY": "Loại phòng",
+    "MOVE_IN_DATE": "Ngày dự kiến chuyển vào",
+    "OCCUPANTS": "Số lượng người ở",
+    "DURATION": "Thời hạn hợp đồng",
+    "RENTAL_TYPE": "Hình thức thuê",
+    "UPLOAD_ID": "Tải lên ảnh CCCD/CMND",
     "BROWSE": "Chọn tệp",
-    "SUBMIT": "Gửi Yêu Cầu",
-    "SUCCESS": "Yêu cầu thuê phòng của bạn đã được gửi thành công!",
+    "SUBMIT": "Gửi yêu cầu",
+    "SUCCESS": "Yêu cầu thuê phòng đã được gửi. Chúng tôi sẽ liên hệ với bạn sớm.",
     "ERROR": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "SHARED_FULL": "Giường ghép / Nguyên phòng",
-    "NEXT": "Tiếp theo",
-    "VIEWING_TITLE": "Lịch Hẹn Xem Phòng",
-    "VIEWING_SUBTITLE": "Xem lại chi tiết lịch hẹn của bạn và gặp nhân viên tư vấn để trực tiếp tham quan cơ sở vật chất.",
-    "CONFIRM_ATTENDANCE": "Xác Nhận Tham Gia",
+    "NEXT": "Tiếp tục",
+    "VIEWING_TITLE": "Lịch hẹn xem phòng",
+    "VIEWING_SUBTITLE": "Xem lại thông tin buổi tham quan và gặp nhân viên tư vấn để trực tiếp khám phá cơ sở vật chất.",
+    "CONFIRM_ATTENDANCE": "Xác nhận tham dự",
     "DATE": "Ngày",
-    "TIME": "Thời gian",
-    "TIME_VALUE": "9 SA",
+    "TIME": "Giờ",
+    "TIME_VALUE": "9:00 SA",
     "LOCATION": "Địa điểm",
-    "ROOM_INTEREST": "Phòng Quan Tâm",
-    "ROOM_TWIN": "Phòng Đôi (2)",
-    "ROOM_QUAD": "Phòng Bốn (4)",
-    "PROCESSING": "* Yêu cầu của bạn đang được xử lý"
+    "ROOM_INTEREST": "Phòng quan tâm",
+    "ROOM_TWIN": "Phòng đôi (2 người)",
+    "ROOM_QUAD": "Phòng bốn (4 người)",
+    "PROCESSING": "Yêu cầu của bạn đang được đội ngũ xem xét."
   },
   "ADMIN_RENTAL": {
-    "TITLE": "Quản Lý Yêu Cầu Thuê",
-    "SUBTITLE": "Quản lý và xử lý tất cả các yêu cầu phòng từ khách hàng tiềm năng trên toàn hệ thống.",
-    "SEARCH_PLACEHOLDER": "Tìm kiếm ...",
+    "TITLE": "Yêu cầu thuê phòng",
+    "SUBTITLE": "Xem xét và xử lý tất cả yêu cầu thuê từ khách hàng tiềm năng trên toàn bộ hệ thống.",
+    "SEARCH_PLACEHOLDER": "Tìm theo tên, chi nhánh hoặc trạng thái…",
     "FILTER": "Lọc",
     "TABLE": {
-      "GUESS_ID": "Mã Khách",
-      "GUESS_NAME": "Tên Khách",
-      "GENDER": "Giới Tính",
-      "BRANCH": "Chi Nhánh",
-      "ROOM_CATEGORY": "Loại Phòng",
-      "REQUEST_DATE": "Ngày Yêu Cầu",
-      "STATUS": "Trạng Thái",
-      "DETAIL": "Chi Tiết"
+      "GUESS_ID": "Mã khách",
+      "GUESS_NAME": "Tên khách",
+      "GENDER": "Giới tính",
+      "BRANCH": "Chi nhánh",
+      "ROOM_CATEGORY": "Loại phòng",
+      "REQUEST_DATE": "Ngày yêu cầu",
+      "STATUS": "Trạng thái",
+      "DETAIL": "Chi tiết"
     },
     "PROFILE": {
-      "TITLE": "Hồ Sơ Yêu Cầu Thuê",
-      "SUBTITLE": "Xem xét các yêu cầu lưu trú cơ bản và giấy tờ tùy thân để chuẩn bị cho buổi tư vấn trực tiếp.",
-      "CORE_REQS": "Yêu Cầu Thuê Cơ Bản",
-      "TARGET_BRANCH": "Chi Nhánh Mong Muốn",
-      "ROOM_CATEGORY": "Loại Phòng",
-      "RENTAL_TYPE": "Hình Thức Thuê",
-      "MOVE_IN_DATE": "Ngày Chuyển Vào Dự Kiến",
-      "OCCUPANCY": "Số Lượng Người Ở",
-      "PERSONS": "Người",
-      "CONTACT_INFO": "Thông Tin Liên Hệ",
-      "FULL_NAME": "Họ và Tên",
-      "GENDER": "Giới Tính",
-      "PHONE": "Số Điện Thoại",
-      "EMAIL": "Địa Chỉ Email",
+      "TITLE": "Hồ sơ yêu cầu thuê",
+      "SUBTITLE": "Xem xét yêu cầu lưu trú và giấy tờ tùy thân trước buổi tư vấn trực tiếp.",
+      "CORE_REQS": "Yêu cầu thuê phòng",
+      "TARGET_BRANCH": "Chi nhánh mong muốn",
+      "ROOM_CATEGORY": "Loại phòng",
+      "RENTAL_TYPE": "Hình thức thuê",
+      "MOVE_IN_DATE": "Ngày dự kiến chuyển vào",
+      "OCCUPANCY": "Số người ở",
+      "PERSONS": "người",
+      "CONTACT_INFO": "Thông tin liên hệ",
+      "FULL_NAME": "Họ và tên",
+      "GENDER": "Giới tính",
+      "PHONE": "Số điện thoại",
+      "EMAIL": "Địa chỉ email",
       "ID_NUMBER": "Số CCCD/CMND",
-      "RETURN": "Quay Lại",
-      "REVIEW_QUALIFY": "Xem Xét & Đánh Giá",
-      "BACK": "< Quay Lại"
+      "RETURN": "Quay lại",
+      "REVIEW_QUALIFY": "Xem xét & Đánh giá",
+      "BACK": "Quay lại"
     },
     "VERIFICATION": {
-      "TITLE": "Xác Minh Điều Kiện Khách Hàng",
-      "SUBTITLE": "Xác nhận hồ sơ và giấy tờ của khách hàng đáp ứng các tiêu chuẩn lưu trú của ký túc xá.",
-      "CHECKLIST_TITLE": "Danh Sách Kiểm Tra Bắt Buộc",
+      "TITLE": "Xác minh điều kiện",
+      "SUBTITLE": "Xác nhận hồ sơ và giấy tờ của khách hàng đáp ứng tiêu chuẩn lưu trú trước khi tiếp tục.",
+      "CHECKLIST_TITLE": "Danh sách kiểm tra",
       "CHECK_1": "Tên và số CCCD/CMND khớp với thông tin đăng ký.",
       "CHECK_2": "Giới tính khách hàng phù hợp với phòng/khu vực được chỉ định.",
-      "CHECK_3": "Số lượng người ở không vượt quá sức chứa của loại phòng đã chọn.",
-      "RESULTS_TITLE": "Kết Quả Xác Minh",
-      "REVIEWER_NOTE": "Ghi Chú Của Người Duyệt",
-      "NOTE_PLACEHOLDER": "Nhập ghi chú đánh giá của bạn tại đây...",
-      "REQ_MORE_INFO": "Yêu Cầu Thêm Thông Tin",
-      "REJECT_LEAD": "Từ Chối Khách",
-      "APPROVE_PROCEED": "Chấp Thuận & Tiếp Tục"
+      "CHECK_3": "Số người ở không vượt quá sức chứa của loại phòng đã chọn.",
+      "RESULTS_TITLE": "Kết quả xác minh",
+      "REVIEWER_NOTE": "Ghi chú người duyệt",
+      "NOTE_PLACEHOLDER": "Thêm ghi chú hoặc nhận xét cho lần xem xét này…",
+      "REQ_MORE_INFO": "Yêu cầu bổ sung thông tin",
+      "REJECT_LEAD": "Từ chối",
+      "APPROVE_PROCEED": "Chấp thuận & Tiếp tục"
     },
     "SIDEBAR": {
-      "INQUIRIES": "Yêu Cầu Thuê",
-      "SCHEDULES": "Lịch Hẹn",
-      "ROOMS": "Quản Lý Phòng",
-      "RESERVATIONS": "Đặt Phòng",
-      "CONTRACTS": "Hợp Đồng"
+      "INQUIRIES": "Yêu cầu thuê",
+      "SCHEDULES": "Lịch hẹn",
+      "ROOMS": "Quản lý phòng",
+      "RESERVATIONS": "Đặt phòng",
+      "CONTRACTS": "Hợp đồng"
     },
     "ALERTS": {
-      "FETCH_ERROR": "Lỗi khi tải dữ liệu từ API: ",
-      "UPDATE_SUCCESS": "Cập nhật trạng thái thành công: ",
-      "UPDATE_ERROR": "Lỗi khi cập nhật trạng thái từ API: "
+      "FETCH_ERROR": "Không thể tải dữ liệu: ",
+      "UPDATE_SUCCESS": "Đã cập nhật trạng thái thành: ",
+      "UPDATE_ERROR": "Không thể cập nhật trạng thái: "
     }
   },
   "MY_BOOKINGS": {
-    "TITLE": "Lịch Sử Đặt Phòng & Yêu Cầu",
-    "SUBTITLE": "Theo dõi và quản lý tiến trình các yêu cầu thuê phòng, đặt cọc và hợp đồng của bạn.",
+    "TITLE": "Đơn của tôi",
+    "SUBTITLE": "Theo dõi và quản lý yêu cầu thuê, tiền đặt cọc và các hợp đồng đang hoạt động.",
     "STATUS": {
-      "REQUESTED": "Mới gửi yêu cầu",
-      "PENDING": "Đang chờ xử lý",
+      "REQUESTED": "Đã gửi",
+      "PENDING": "Đang chờ",
       "REVIEWING": "Đang xét duyệt",
       "VIEWING_SCHEDULED": "Đã xếp lịch xem",
       "CONFIRMED": "Đã xác nhận",
@@ -278,7 +515,7 @@
       "BRANCH": "Chi nhánh",
       "ROOM": "Phòng",
       "BED": "Giường",
-      "CREATED_AT": "Ngày tạo",
+      "CREATED_AT": "Ngày gửi",
       "STATUS": "Trạng thái",
       "ACTIONS": "Thao tác"
     },
@@ -286,37 +523,64 @@
       "VIEW_DETAILS": "Xem chi tiết",
       "CANCEL_REQUEST": "Hủy yêu cầu",
       "CONFIRM_CANCEL_TITLE": "Xác nhận hủy",
-      "CONFIRM_CANCEL_MSG": "Bạn có chắc chắn muốn hủy yêu cầu thuê phòng này không? Hành động này không thể hoàn tác."
+      "CONFIRM_CANCEL_MSG": "Bạn có chắc muốn hủy yêu cầu này? Hành động này không thể hoàn tác."
     },
     "MESSAGES": {
-      "LOADING": "Đang tải danh sách...",
-      "EMPTY": "Bạn chưa có yêu cầu thuê phòng hay lịch sử đặt phòng nào.",
+      "LOADING": "Đang tải danh sách đơn…",
+      "EMPTY": "Bạn chưa có yêu cầu thuê phòng nào.",
       "CANCEL_SUCCESS": "Đã hủy yêu cầu thành công.",
       "CANCEL_ERROR": "Không thể hủy yêu cầu lúc này. Vui lòng thử lại sau."
     },
     "TRACKING": {
-      "TITLE": "Theo Dõi Tiến Trình Yêu Cầu Thuê",
-      "SUBTITLE": "Xem chi tiết tiến trình xử lý yêu cầu thuê phòng của bạn, từ lúc gửi yêu cầu đến khi hoàn tất hợp đồng.",
+      "TITLE": "Tiến trình yêu cầu",
+      "SUBTITLE": "Theo dõi trạng thái yêu cầu theo thời gian thực — từ lúc xét duyệt đến xác nhận đặt cọc.",
       "STEPS": {
         "PROCESSING": {
-          "LABEL": "Đang xử lý",
-          "DESC": "Ban quản lý đang kiểm tra tình trạng phòng và hồ sơ."
+          "LABEL": "Đang xem xét",
+          "DESC": "Đội ngũ đang kiểm tra tình trạng phòng và thông tin hồ sơ."
         },
         "ACCEPTED": {
           "LABEL": "Đã chấp thuận",
-          "DESC": "Đã xem phòng xong<br/>Phòng đã sẵn sàng để giữ chỗ."
+          "DESC": "Đã xem phòng.<br/>Phòng sẵn sàng để đặt chỗ."
         },
         "REJECTED": {
           "LABEL": "Đã từ chối",
-          "DESC": "Phòng không còn trống <br/>hoặc hồ sơ không đạt."
+          "DESC": "Phòng không còn trống<br/>hoặc hồ sơ chưa đáp ứng điều kiện."
         },
         "CANCELLED": {
           "LABEL": "Đã hủy"
         },
         "PENDING_DEPOSIT": {
-          "LABEL": "Chờ thanh toán",
-          "DESC": "Đang chờ thanh toán <br/>để giữ phòng."
+          "LABEL": "Chờ đặt cọc",
+          "DESC": "Vui lòng hoàn tất thanh toán đặt cọc<br/>để giữ phòng."
         }
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Bảng điều khiển quản trị",
+      "subtitle": "Theo dõi hoạt động hệ thống theo thời gian thực và điều hướng nhanh đến các tác vụ chính.",
+      "loading": "Đang tải bảng điều khiển…",
+      "retry": "Thử lại",
+      "error": "Không thể tải dữ liệu. Vui lòng thử lại.",
+      "summarySection": "Tổng quan",
+      "users": "Tổng người dùng",
+      "rooms": "Tổng phòng",
+      "bookings": "Yêu cầu thuê",
+      "revenue": "Tổng doanh thu",
+      "quickNavigation": "Truy cập nhanh",
+      "usersManagement": "Quản lý người dùng",
+      "roomsManagement": "Quản lý phòng",
+      "rentalRequests": "Yêu cầu thuê",
+      "payments": "Thanh toán",
+      "scheduledManagement": "Quản lý lịch",
+      "recentActivity": "Hoạt động gần đây",
+      "emptyRecentActivity": "Chưa có hoạt động nào để hiển thị.",
+      "activity": {
+        "newUserRegistered": "Một tài khoản người dùng mới đã được tạo.",
+        "paymentReceived": "Một khoản thanh toán đã được xác nhận.",
+        "bookingApproved": "Một yêu cầu thuê đã được phê duyệt."
       }
     }
   }

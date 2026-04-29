@@ -32,15 +32,15 @@ Create the shared frontend shell used by customer and admin screens: logo, langu
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Create shared public layout for customer screens.
-- [ ] Create shared admin layout with sidebar navigation.
-- [ ] Add route metadata for customer/staff/accountant/manager/admin access.
-- [ ] Wire language switcher into the Figma-style navigation.
-- [ ] Keep the existing `LanguageService` and `LanguageSwitcherComponent` behavior for English/Vietnamese switching.
-- [ ] Add profile menu placeholder or real profile/logout actions.
-- [ ] Ensure child pages do not duplicate the same shell markup.
+- [x] Create shared public layout for customer screens.
+- [x] Create shared admin layout with sidebar navigation.
+- [x] Add route metadata for customer/staff/accountant/manager/admin access.
+- [x] Wire language switcher into the Figma-style navigation.
+- [x] Keep the existing `LanguageService` and `LanguageSwitcherComponent` behavior for English/Vietnamese switching.
+- [x] Add profile menu placeholder or real profile/logout actions.
+- [x] Ensure child pages do not duplicate the same shell markup.
 
 ### Tests
 
@@ -80,8 +80,8 @@ Implement `docs/tasks/00-03-app-shell-layout-and-navigation.md`.
 
 ## Completion Conditions
 
-- [ ] Public and admin layouts exist.
-- [ ] Navigation is reusable and not duplicated per page.
-- [ ] Role-based links are represented.
-- [ ] Language switcher remains usable.
-- [ ] Tests pass for changed code.
+- [x] Public and admin layouts exist.
+- [x] Navigation is reusable and not duplicated per page.
+- [x] Role-based links are represented.
+- [x] Language switcher remains usable.
+- [x] Tests pass for changed code.

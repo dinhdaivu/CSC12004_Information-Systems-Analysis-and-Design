@@ -1,13 +1,33 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { environment } from "@environments/environment";
 import { BranchService } from "@core/services/branch.service";
 import type { Branch } from "@shared/models/branch.model";
+import {
+  createLoadingState,
+  type ViewState,
+} from "@shared/utils/loading-state.util";
+import { handleRequest } from "@shared/utils/request-handler.util";
 import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
-import { forkJoin, of } from "rxjs";
-import { catchError } from "rxjs/operators";
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  forkJoin,
+  of,
+} from "rxjs";
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+} from "rxjs/operators";
 
 type DepositRow = {
   id: string;
@@ -53,6 +73,12 @@ type ApiResponse<T> = {
   message?: string;
 };
 
+type PaymentsVmData = {
+  branches: Branch[];
+  deposits: DepositRow[];
+  completedDepositPayments: number;
+};
+
 @Component({
   selector: "app-payments",
   standalone: true,
@@ -65,157 +91,184 @@ type ApiResponse<T> = {
         <main class="flex-1 px-6 py-6">
           <div class="dashboard-card">
             <ng-container *ngIf="currentView === 'list'; else proofView">
-              <header class="card-header">
-                <h1>Deposit Tracking Dashboard</h1>
-                <p>
-                  Create deposit requests, monitor payment windows, and
-                  coordinate with Management for confirmation.
-                </p>
-                <p class="summary-text">
-                  Completed deposit payments: {{ completedDepositPayments }}
-                </p>
-              </header>
+              <ng-container *ngIf="vm$ | async as vm">
+                <header class="card-header">
+                  <h1>Deposit Tracking Dashboard</h1>
+                  <p>
+                    Create deposit requests, monitor payment windows, and
+                    coordinate with Management for confirmation.
+                  </p>
+                  <p class="summary-text">
+                    Completed deposit payments:
+                    {{ vm.data.completedDepositPayments }}
+                  </p>
+                </header>
 
-              <div class="toolbar">
-                <div class="relative">
-                  <button
-                    type="button"
-                    class="btn-branch"
-                    (click)="toggleBranchDropdown()"
-                  >
-                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
-                    <span>{{ selectedBranchLabel }}</span>
-                  </button>
-
-                  <div *ngIf="isBranchDropdownOpen" class="branch-dropdown">
-                    <button type="button" (click)="selectBranch(null)">
-                      All Branches
+                <div class="toolbar">
+                  <div class="relative">
+                    <button
+                      type="button"
+                      class="btn-branch"
+                      (click)="toggleBranchDropdown()"
+                    >
+                      <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                      <span>{{ selectedBranchLabel(vm.data.branches) }}</span>
                     </button>
 
-                    <button
-                      *ngFor="let branch of branches"
-                      type="button"
-                      (click)="selectBranch(branch.id)"
+                    <div *ngIf="isBranchDropdownOpen" class="branch-dropdown">
+                      <button type="button" (click)="selectBranch(null)">
+                        All Branches
+                      </button>
+
+                      <button
+                        *ngFor="let branch of vm.data.branches"
+                        type="button"
+                        (click)="selectBranch(branch.id)"
+                      >
+                        {{ branch.name }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="search-filter-group">
+                    <label
+                      class="search-box"
+                      aria-label="Search deposit requests"
                     >
-                      {{ branch.name }}
+                      <i
+                        class="fa-solid fa-magnifying-glass"
+                        aria-hidden="true"
+                      ></i>
+                      <input type="text" placeholder="Search ..." />
+                    </label>
+                    <button type="button" class="btn-filter">
+                      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                      <span>Filter</span>
                     </button>
                   </div>
                 </div>
 
-                <div class="search-filter-group">
-                  <label
-                    class="search-box"
-                    aria-label="Search deposit requests"
-                  >
-                    <i
-                      class="fa-solid fa-magnifying-glass"
-                      aria-hidden="true"
-                    ></i>
-                    <input type="text" placeholder="Search ..." />
-                  </label>
-                  <button type="button" class="btn-filter">
-                    <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-                    <span>Filter</span>
-                  </button>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Guest ID</th>
+                        <th>Name</th>
+                        <th>Room & Bed ID</th>
+                        <th>Amount</th>
+                        <th>Time Remaining</th>
+                        <th>Status</th>
+                        <th>Proof</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <ng-container *ngIf="vm.loading; else loadedRows">
+                        <tr
+                          *ngFor="let _ of skeletonRows; trackBy: trackByIndex"
+                          class="skeleton-row"
+                          aria-hidden="true"
+                        >
+                          <td><span class="skeleton-line w-20"></span></td>
+                          <td><span class="skeleton-line w-36"></span></td>
+                          <td><span class="skeleton-line w-28"></span></td>
+                          <td><span class="skeleton-line w-24"></span></td>
+                          <td><span class="skeleton-line w-20"></span></td>
+                          <td><span class="skeleton-line w-16"></span></td>
+                          <td><span class="skeleton-chip"></span></td>
+                        </tr>
+                      </ng-container>
+
+                      <ng-template #loadedRows>
+                        <tr *ngIf="vm.error">
+                          <td colspan="7" class="state-row state-row-error">
+                            {{ vm.error }}
+                          </td>
+                        </tr>
+
+                        <tr *ngIf="!vm.error && vm.data.deposits.length === 0">
+                          <td colspan="7" class="state-row">
+                            No deposit requests found.
+                          </td>
+                        </tr>
+
+                        <tr
+                          *ngFor="
+                            let row of vm.data.deposits;
+                            trackBy: trackByDepositId
+                          "
+                        >
+                          <td>{{ row.guestId }}</td>
+                          <td>{{ row.name }}</td>
+                          <td>{{ row.roomBed }}</td>
+                          <td>{{ row.amountVnd | number: "1.0-0" }} VND</td>
+                          <td>{{ row.timeRemaining }}</td>
+                          <td>
+                            <span
+                              class="status-badge"
+                              [class.status-pending]="row.status === 'Pending'"
+                              [class.status-paid]="row.status === 'Paid'"
+                              [class.status-cancelled]="
+                                row.status === 'Cancelled'
+                              "
+                            >
+                              {{ row.status }}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              class="proof-btn"
+                              [disabled]="
+                                proofDetailLoading || proofActionLoading
+                              "
+                              (click)="
+                                openProofPage(row.id, row.name, row.roomBed)
+                              "
+                            >
+                              <svg
+                                class="proof-icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                              >
+                                <rect
+                                  x="3"
+                                  y="3"
+                                  width="18"
+                                  height="18"
+                                  rx="2"
+                                  ry="2"
+                                ></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                              </svg>
+                              <span class="sr-only">Open proof</span>
+                            </button>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
 
-              <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Guest ID</th>
-                      <th>Name</th>
-                      <th>Room & Bed ID</th>
-                      <th>Amount</th>
-                      <th>Time Remaining</th>
-                      <th>Status</th>
-                      <th>Proof</th>
-                    </tr>
-                  </thead>
+                <div class="pagination" aria-label="Pagination">
+                  <span>&lt;</span>
+                  <span class="active">1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                  <span>...</span>
+                  <span>&gt;</span>
+                </div>
 
-                  <tbody>
-                    <tr *ngIf="loading">
-                      <td colspan="7" class="state-row">Loading deposits...</td>
-                    </tr>
-
-                    <tr *ngIf="!loading && errorMessage">
-                      <td colspan="7" class="state-row state-row-error">
-                        {{ errorMessage }}
-                      </td>
-                    </tr>
-
-                    <tr
-                      *ngIf="!loading && !errorMessage && deposits.length === 0"
-                    >
-                      <td colspan="7" class="state-row">
-                        No deposit requests found.
-                      </td>
-                    </tr>
-
-                    <tr *ngFor="let row of deposits">
-                      <td>{{ row.guestId }}</td>
-                      <td>{{ row.name }}</td>
-                      <td>{{ row.roomBed }}</td>
-                      <td>{{ row.amountVnd | number: "1.0-0" }} VND</td>
-                      <td>{{ row.timeRemaining }}</td>
-                      <td>
-                        <span
-                          class="status-badge"
-                          [class.status-pending]="row.status === 'Pending'"
-                          [class.status-paid]="row.status === 'Paid'"
-                          [class.status-cancelled]="row.status === 'Cancelled'"
-                        >
-                          {{ row.status }}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          class="proof-btn"
-                          (click)="openProofPage(row.id, row.name, row.roomBed)"
-                        >
-                          <svg
-                            class="proof-icon"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
-                          >
-                            <rect
-                              x="3"
-                              y="3"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                          </svg>
-                          <span class="sr-only">Open proof</span>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="pagination" aria-label="Pagination">
-                <span>&lt;</span>
-                <span class="active">1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>...</span>
-                <span>&gt;</span>
-              </div>
-
-              <button type="button" class="btn-add">+ Add Request</button>
+                <button type="button" class="btn-add">+ Add Request</button>
+              </ng-container>
             </ng-container>
 
             <ng-template #proofView>
@@ -235,43 +288,58 @@ type ApiResponse<T> = {
                       isStatusCancelled(selectedDepositProof?.status)
                     "
                   >
-                    {{ selectedDepositProof?.status ?? "loading..." }}
+                    {{
+                      proofDetailLoading
+                        ? "loading..."
+                        : (selectedDepositProof?.status ?? "N/A")
+                    }}
                   </span>
+                </p>
+                <p *ngIf="proofErrorMessage" class="proof-error-text">
+                  {{ proofErrorMessage }}
                 </p>
               </header>
 
               <div class="proof-upload-area">
                 <div class="dashed-border">
                   <div class="image-placeholder">
-                    <img
-                      *ngIf="selectedDepositProof?.proofImageUrl"
-                      [src]="selectedDepositProof?.proofImageUrl ?? ''"
-                      alt="Deposit proof"
-                      class="proof-image"
-                    />
-
-                    <svg
-                      *ngIf="!selectedDepositProof?.proofImageUrl"
-                      width="100"
-                      height="100"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#aab4c8"
-                      stroke-width="1"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                    <ng-container
+                      *ngIf="
+                        selectedDepositProof as proof;
+                        else proofPlaceholder
+                      "
                     >
-                      <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                      <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
+                      <img
+                        *ngIf="proof.proofImageUrl; else proofPlaceholder"
+                        [src]="proof.proofImageUrl"
+                        alt="Deposit proof"
+                        class="proof-image"
+                      />
+                    </ng-container>
+
+                    <ng-template #proofPlaceholder>
+                      <svg
+                        width="100"
+                        height="100"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#aab4c8"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <rect
+                          x="3"
+                          y="3"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    </ng-template>
                   </div>
                 </div>
               </div>
@@ -649,6 +717,62 @@ type ApiResponse<T> = {
         color: #b12222;
       }
 
+      .skeleton-row td {
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+
+      .skeleton-line,
+      .skeleton-chip {
+        display: inline-block;
+        height: 14px;
+        border-radius: 8px;
+        background: linear-gradient(
+          90deg,
+          #e6e9f2 25%,
+          #f2f5fb 50%,
+          #e6e9f2 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.2s ease-in-out infinite;
+      }
+
+      .skeleton-chip {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+      }
+
+      .w-16 {
+        width: 4rem;
+      }
+
+      .w-20 {
+        width: 5rem;
+      }
+
+      .w-24 {
+        width: 6rem;
+      }
+
+      .w-28 {
+        width: 7rem;
+      }
+
+      .w-36 {
+        width: 9rem;
+      }
+
+      @keyframes skeleton-shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
       .status-badge {
         font-weight: 700;
       }
@@ -750,6 +874,13 @@ type ApiResponse<T> = {
         color: #264893;
         font-size: 0.9rem;
         font-weight: 700;
+      }
+
+      .proof-error-text {
+        margin: 10px 0 0;
+        color: #b12222;
+        font-size: 0.9rem;
+        font-weight: 600;
       }
 
       .proof-upload-area {
@@ -1042,20 +1173,60 @@ type ApiResponse<T> = {
     `,
   ],
 })
-export class PaymentsComponent implements OnInit {
+export class PaymentsComponent implements OnDestroy {
   private readonly http = inject(HttpClient);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly branchService = inject(BranchService);
   private readonly depositsApiUrl = `${environment.apiUrl}/deposits`;
   private readonly paymentsApiUrl = `${environment.apiUrl}/payments`;
+  private readonly destroy$ = new Subject<void>();
+  private readonly selectedBranchId$ = new BehaviorSubject<string | null>(null);
+  private readonly reloadTrigger$ = new Subject<void>();
+  private branchesSnapshot: Branch[] = [];
 
-  deposits: DepositRow[] = [];
-  branches: Branch[] = [];
+  readonly skeletonRows = Array.from({ length: 6 });
+
+  readonly vm$: Observable<ViewState<PaymentsVmData>> = combineLatest([
+    this.branchService.getBranches().pipe(
+      catchError(() => of<Branch[]>([])),
+      shareReplay(1),
+    ),
+    this.selectedBranchId$.pipe(debounceTime(150), distinctUntilChanged()),
+    this.reloadTrigger$.pipe(startWith(void 0)),
+  ]).pipe(
+    switchMap(([branches, branchId]) =>
+      createLoadingState(
+        this.fetchDashboardData(branchId).pipe(
+          map((dashboard) => ({
+            data: {
+              branches,
+              deposits: dashboard.deposits,
+              completedDepositPayments: dashboard.completedDepositPayments,
+            },
+            error: dashboard.error,
+          })),
+        ),
+        {
+          branches,
+          deposits: [],
+          completedDepositPayments: 0,
+        },
+        "Cannot load dashboard data. Please try again.",
+      ),
+    ),
+    map((state) => {
+      this.branchesSnapshot = state.data.branches;
+      return state;
+    }),
+    shareReplay(1),
+  );
+  // Thêm property này vào component
+  private readonly cancelProofRequest$ = new Subject<void>();
   selectedBranchId: string | null = null;
   isBranchDropdownOpen = false;
   currentView: "list" | "proof" = "list";
-  loading = false;
-  errorMessage = "";
-  completedDepositPayments = 0;
+  proofErrorMessage: string | null = null;
+  proofDetailLoading = false;
 
   proofActionLoading = false;
   isRejectModalOpen = false;
@@ -1077,25 +1248,26 @@ export class PaymentsComponent implements OnInit {
   get isProofActionDisabled(): boolean {
     return (
       this.proofActionLoading ||
+      this.proofDetailLoading ||
       !this.isStatusPending(this.selectedDepositProof?.status)
     );
   }
 
-  ngOnInit(): void {
-    this.branchService.getBranches().subscribe((branches) => {
-      this.branches = branches;
-      this.loadDashboardData();
-    });
+  // Cập nhật ngOnDestroy để complete cả cancelProofRequest$
+  ngOnDestroy(): void {
+    this.cancelProofRequest$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  get selectedBranchLabel(): string {
+  selectedBranchLabel(branches: Branch[]): string {
     if (!this.selectedBranchId) {
       return "All Branches";
     }
 
     return (
-      this.branches.find((branch) => branch.id === this.selectedBranchId)
-        ?.name ?? "All Branches"
+      branches.find((branch) => branch.id === this.selectedBranchId)?.name ??
+      "All Branches"
     );
   }
 
@@ -1106,7 +1278,7 @@ export class PaymentsComponent implements OnInit {
   selectBranch(branchId: string | null): void {
     this.selectedBranchId = branchId;
     this.isBranchDropdownOpen = false;
-    this.loadDashboardData();
+    this.selectedBranchId$.next(branchId);
   }
 
   openProofPage(
@@ -1114,40 +1286,57 @@ export class PaymentsComponent implements OnInit {
     customerName: string,
     roomBed: string,
   ): void {
+    // Cancel request cũ nếu đang chạy, không cần guard proofDetailLoading nữa
+    this.cancelProofRequest$.next();
+
     this.selectedDepositId = depositId;
     this.proofModalSubtitle = `${customerName} | ${roomBed}`;
     this.selectedDepositProof = null;
     this.currentView = "proof";
+    this.proofErrorMessage = null;
+    this.cdr.markForCheck();
 
-    this.http
-      .get<ApiResponse<DepositDetailApiItem>>(
+    handleRequest<ApiResponse<DepositDetailApiItem>>({
+      request$: this.http.get<ApiResponse<DepositDetailApiItem>>(
         `${this.depositsApiUrl}/${depositId}`,
-      )
-      .pipe(
-        catchError(() =>
-          of<ApiResponse<DepositDetailApiItem>>({ success: false }),
-        ),
-      )
-      .subscribe((response) => {
-        if (response.success && response.data) {
-          this.selectedDepositProof = response.data;
-
-          const customer = response.data.customer?.fullName ?? customerName;
-          const room = response.data.room?.roomNumber ?? "Unknown room";
-          const bed = response.data.bedNumber
-            ? ` - ${response.data.bedNumber}`
-            : "";
-          this.proofModalSubtitle = `${customer} | ${room}${bed}`;
+      ),
+      fallbackValue: { success: false },
+      setLoading: (loading) => {
+        this.proofDetailLoading = loading;
+      },
+      onSuccess: (response) => {
+        if (!response?.success || !response.data) {
+          this.selectedDepositProof = null;
+          this.proofErrorMessage = "Cannot load deposit proof detail.";
+          this.cdr.markForCheck();
           return;
         }
 
-        this.errorMessage = "Cannot load deposit proof detail.";
-      });
+        this.selectedDepositProof = response.data;
+        const customer = response.data.customer?.fullName ?? customerName;
+        const room = response.data.room?.roomNumber ?? "Unknown room";
+        const bed = response.data.bedNumber
+          ? ` - ${response.data.bedNumber}`
+          : "";
+        this.proofModalSubtitle = `${customer} | ${room}${bed}`;
+        this.cdr.markForCheck();
+      },
+      onError: () => {
+        this.proofErrorMessage = "Cannot load deposit proof detail.";
+        this.cdr.markForCheck();
+      },
+      // Dùng cancelProofRequest$ thay vì destroy$
+      until$: this.cancelProofRequest$,
+    }).subscribe();
   }
 
   closeProofPage(): void {
+    // Cancel request đang chạy khi đóng trang proof
+    this.cancelProofRequest$.next();
+
     this.currentView = "list";
     this.proofActionLoading = false;
+    this.proofDetailLoading = false;
     this.isRejectModalOpen = false;
     this.isVerifyConfirmModalOpen = false;
     this.isForwardRequestModalOpen = false;
@@ -1163,8 +1352,9 @@ export class PaymentsComponent implements OnInit {
     this.selectedDepositProof = null;
     this.selectedDepositId = null;
     this.proofModalSubtitle = "";
+    this.proofErrorMessage = null;
+    this.cdr.markForCheck();
   }
-
   openRejectModal(): void {
     if (!this.isStatusPending(this.selectedDepositProof?.status)) {
       return;
@@ -1184,30 +1374,40 @@ export class PaymentsComponent implements OnInit {
       return;
     }
 
+    if (this.proofActionLoading) {
+      return;
+    }
+
     if (!this.isStatusPending(this.selectedDepositProof?.status)) {
       this.isRejectModalOpen = false;
       return;
     }
 
-    this.proofActionLoading = true;
-    this.http
-      .patch<ApiResponse<unknown>>(
+    handleRequest<ApiResponse<unknown>>({
+      request$: this.http.patch<ApiResponse<unknown>>(
         `${this.depositsApiUrl}/${this.selectedDepositId}/cancel`,
         { reason: this.rejectReason.trim() || undefined },
-      )
-      .pipe(catchError(() => of<ApiResponse<unknown>>({ success: false })))
-      .subscribe((response) => {
-        this.proofActionLoading = false;
-        if (!response.success) {
-          this.errorMessage = "Reject proof failed. Please try again.";
+      ),
+      fallbackValue: { success: false },
+      setLoading: (loading) => {
+        this.proofActionLoading = loading;
+      },
+      onSuccess: (response) => {
+        if (!response?.success) {
+          this.proofErrorMessage = "Reject proof failed. Please try again.";
           return;
         }
 
         this.isRejectModalOpen = false;
         this.rejectReason = "";
         this.closeProofPage();
-        this.loadDashboardData();
-      });
+        this.reloadDashboardData();
+      },
+      onError: () => {
+        this.proofErrorMessage = "Reject proof failed. Please try again.";
+      },
+      until$: this.destroy$,
+    }).subscribe();
   }
 
   verifyProof(): void {
@@ -1215,27 +1415,37 @@ export class PaymentsComponent implements OnInit {
       return;
     }
 
+    if (this.proofActionLoading) {
+      return;
+    }
+
     if (!this.isStatusPending(this.selectedDepositProof?.status)) {
       return;
     }
 
-    this.proofActionLoading = true;
-    this.http
-      .patch<ApiResponse<unknown>>(
+    handleRequest<ApiResponse<unknown>>({
+      request$: this.http.patch<ApiResponse<unknown>>(
         `${this.depositsApiUrl}/${this.selectedDepositId}/confirm`,
         {},
-      )
-      .pipe(catchError(() => of<ApiResponse<unknown>>({ success: false })))
-      .subscribe((response) => {
-        this.proofActionLoading = false;
-        if (!response.success) {
-          this.errorMessage = "Verify proof failed. Please try again.";
+      ),
+      fallbackValue: { success: false },
+      setLoading: (loading) => {
+        this.proofActionLoading = loading;
+      },
+      onSuccess: (response) => {
+        if (!response?.success) {
+          this.proofErrorMessage = "Verify proof failed. Please try again.";
           return;
         }
 
         this.closeProofPage();
-        this.loadDashboardData();
-      });
+        this.reloadDashboardData();
+      },
+      onError: () => {
+        this.proofErrorMessage = "Verify proof failed. Please try again.";
+      },
+      until$: this.destroy$,
+    }).subscribe();
   }
 
   openVerifyConfirmModal(): void {
@@ -1316,7 +1526,7 @@ export class PaymentsComponent implements OnInit {
   private resolveForwardBranchName(detail: DepositDetailApiItem): string {
     const roomBranchId = detail.room?.branchId;
     if (roomBranchId) {
-      const matchedBranch = this.branches.find(
+      const matchedBranch = this.branchesSnapshot.find(
         (branch) => branch.id === roomBranchId,
       );
       if (matchedBranch) {
@@ -1325,7 +1535,7 @@ export class PaymentsComponent implements OnInit {
     }
 
     if (this.selectedBranchId) {
-      const selectedBranch = this.branches.find(
+      const selectedBranch = this.branchesSnapshot.find(
         (branch) => branch.id === this.selectedBranchId,
       );
       if (selectedBranch) {
@@ -1340,49 +1550,60 @@ export class PaymentsComponent implements OnInit {
     return (status ?? "").trim().toLowerCase();
   }
 
-  private loadDashboardData(): void {
-    this.loading = true;
-    this.errorMessage = "";
+  trackByDepositId(index: number, row: DepositRow): string {
+    return row.id;
+  }
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  private reloadDashboardData(): void {
+    this.reloadTrigger$.next();
+  }
+
+  private fetchDashboardData(branchId: string | null): Observable<{
+    deposits: DepositRow[];
+    completedDepositPayments: number;
+    error: string | null;
+  }> {
     const paymentParams = new HttpParams().set("type", "deposit");
     let depositParams = new HttpParams();
 
-    if (this.selectedBranchId) {
-      depositParams = depositParams.set("branchId", this.selectedBranchId);
+    if (branchId) {
+      depositParams = depositParams.set("branchId", branchId);
     }
 
-    forkJoin({
+    return forkJoin({
       deposits: this.http
         .get<ApiResponse<DepositApiItem[]>>(this.depositsApiUrl, {
           params: depositParams,
         })
-        .pipe(catchError(() => of({ success: false, data: [] }))),
+        .pipe(
+          catchError(() =>
+            of<ApiResponse<DepositApiItem[]>>({ success: false, data: [] }),
+          ),
+        ),
       payments: this.http
         .get<ApiResponse<PaymentApiItem[]>>(this.paymentsApiUrl, {
           params: paymentParams,
         })
-        .pipe(catchError(() => of({ success: false, data: [] }))),
-    }).subscribe({
-      next: ({ deposits, payments }) => {
-        this.deposits = (deposits.data ?? []).map((item) =>
-          this.mapDeposit(item),
-        );
-        this.completedDepositPayments = (payments.data ?? []).filter(
+        .pipe(
+          catchError(() =>
+            of<ApiResponse<PaymentApiItem[]>>({ success: false, data: [] }),
+          ),
+        ),
+    }).pipe(
+      map(({ deposits, payments }) => ({
+        deposits: (deposits.data ?? []).map((item) => this.mapDeposit(item)),
+        completedDepositPayments: (payments.data ?? []).filter(
           (payment) => payment.status === "completed",
-        ).length;
-
-        if (!deposits.success) {
-          this.errorMessage =
-            "Cannot load deposits from API. Please try again.";
-        }
-      },
-      error: () => {
-        this.errorMessage = "Cannot load dashboard data. Please try again.";
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
+        ).length,
+        error: deposits.success
+          ? null
+          : "Cannot load deposits from API. Please try again.",
+      })),
+    );
   }
 
   private mapDeposit(item: DepositApiItem): DepositRow {
