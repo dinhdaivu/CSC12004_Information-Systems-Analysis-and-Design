@@ -5,6 +5,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MyBookingService } from '../../../../core/services/my-booking.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+interface BookingRecord {
+  id: string;
+  status: string;
+  rooms?: { room_number: string };
+}
+
 @Component({
   selector: 'app-bookings-list',
   standalone: true,
@@ -77,7 +83,7 @@ import { AuthService } from '../../../../core/services/auth.service';
                 <div style="width: 1317px; height: 730px; left: 500px; top: 250px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
                 
                 <div style="width: 684px; height: 30px; left: 593px; top: 336px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
-                  {{ 'MY_BOOKINGS.TRACKING.TITLE' | translate }} {{ booking.rooms?.room_number ? '- ' + ('COMMON.ROOM' | translate) + ' ' + booking.rooms.room_number : '' }}
+                  {{ 'MY_BOOKINGS.TRACKING.TITLE' | translate }} {{ booking.rooms?.room_number ? '- ' + ('COMMON.ROOM' | translate) + ' ' + booking.rooms?.room_number : '' }}
                 </div>
                 <div style="width: 889px; height: 30px; left: 593px; top: 393px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
                   {{ 'MY_BOOKINGS.TRACKING.SUBTITLE' | translate }}
@@ -128,8 +134,8 @@ export class BookingsListComponent implements OnInit {
   isAuthenticated = false;
   scaleFactor = 1;
   
-  allBookings: any[] = [];
-  bookings: any[] = [];
+  allBookings: BookingRecord[] = [];
+  bookings: BookingRecord[] = [];
   currentFilter = '';
   isLoading = true;
 
@@ -181,7 +187,7 @@ export class BookingsListComponent implements OnInit {
 
   logout(): void {
     try {
-      const result: any = this.authService.logout();
+      const result = this.authService.logout() as { subscribe?: (cb: () => void) => void } | null | undefined;
       if (result && typeof result.subscribe === 'function') {
         result.subscribe(() => this.router.navigate(['/login']));
       } else {
@@ -197,20 +203,16 @@ export class BookingsListComponent implements OnInit {
     this.isLoading = true;
     
     this.myBookingService.getMyBookings({}).subscribe({
-      next: (res: any) => {
-        const data = res.data || res || [];
-        if (data.length > 0) {
-          this.allBookings = data;
-        } else {
-          this.allBookings = [];
-        }
+      next: (res: { data?: unknown[] }) => {
+        const data = (res.data ?? []) as BookingRecord[];
+        this.allBookings = data.length > 0 ? data : [];
         this.applyLocalFilter();
         this.isLoading = false;
       },
-      error: (err: any) => {
+      error: (err: unknown) => {
         console.error('Failed to load bookings', err);
         this.isLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       }
     });
   }
@@ -252,7 +254,7 @@ export class BookingsListComponent implements OnInit {
           if (target) target.status = 'cancelled';
           this.applyLocalFilter();
         },
-        error: (err: any) => {
+        error: (err: unknown) => {
           console.error(err);
           this.cdr.detectChanges();
         }

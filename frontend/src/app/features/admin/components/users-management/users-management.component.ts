@@ -358,7 +358,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
           this.pageFilter$.next(currentPage);
         },
         error: () => {
-          alert("Failed to update user role");
+          window.alert("Failed to update user role");
         },
       });
   }
@@ -381,7 +381,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
           this.pageFilter$.next(currentPage);
         },
         error: () => {
-          alert("Failed to update user status");
+          window.alert("Failed to update user status");
         },
       });
   }
@@ -389,7 +389,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
   viewUserDetail(userId: string): void {
     const user = this.users.find((u) => u.id === userId);
     if (user) {
-      alert(`User: ${user.fullName} (${user.email})`);
+      window.alert(`User: ${user.fullName} (${user.email})`);
     }
   }
 

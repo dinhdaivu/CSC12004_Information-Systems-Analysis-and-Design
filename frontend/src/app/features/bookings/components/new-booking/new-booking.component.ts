@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RentalRequestService } from '@core/services/rental-request.service';
+import { RentalPayload } from '@shared/models/rental-request.model';
 import { BranchService } from '@core/services/branch.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HostListener } from '@angular/core';
@@ -350,7 +351,7 @@ export class NewBookingComponent implements OnInit {
     const mappedBranchId = this.branchIdMap[selectedBranchName];
     
     // GIỮ NGUYÊN 100% NHƯ BẠN YÊU CẦU
-    const payload: any = {
+    const payload: RentalPayload = {
       expected_move_in_date: formValues.expected_move_in_date,
       rental_duration_months: Number(formValues.rental_duration_months),
       people_count: Number(formValues.people_count),
@@ -371,7 +372,7 @@ export class NewBookingComponent implements OnInit {
       payload.identity_card_base64 = await this.toBase64(this.selectedFile);
     }
 
-    this.rentalRequestService.createRentalRequest(payload as any).subscribe({
+    this.rentalRequestService.createRentalRequest(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
         window.alert('Attendance Confirmed! Thank you.');
@@ -388,9 +389,10 @@ export class NewBookingComponent implements OnInit {
         this.currentPage = 1;
         this.cdr.detectChanges();
       },
-      error: (err: any) => {
+      error: (err: unknown) => {
         this.isSubmitting = false;
-        this.errorMessage = '* ' + (err.error?.message || 'Error occurred. Please try again.');
+        const errObj = err as { error?: { message?: string } };
+        this.errorMessage = '* ' + (errObj.error?.message || 'Error occurred. Please try again.');
         this.cdr.detectChanges();
       }
     });
