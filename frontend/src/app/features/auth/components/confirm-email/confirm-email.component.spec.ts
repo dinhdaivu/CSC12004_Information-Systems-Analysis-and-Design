@@ -156,4 +156,68 @@ describe('ConfirmEmailComponent', () => {
 
     expect(component.errorMessage).toBe('Bad code');
   });
+
+  it('should navigate to login via goToLogin', async () => {
+    const { component } = await createComponent([['email', 'signup@example.com']]);
+    await component.goToLogin();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should handle resend error', async () => {
+    authService.resendVerificationCode.mockReturnValue(throwError(() => new Error('fail')));
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+    component.resendCode();
+    expect(component.errorMessage).toBeTruthy();
+  });
+
+  it('should ignore paste with no digits', async () => {
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+    const preventDefault = jest.fn();
+    component.onCodePaste(0, {
+      clipboardData: { getData: () => 'abc' },
+      preventDefault,
+    } as unknown as ClipboardEvent);
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should handle onDigitInput with single digit', async () => {
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+    const input = document.createElement('input');
+    input.value = '5';
+    component.onDigitInput(0, { target: input } as unknown as Event);
+    expect(component.codeControls.at(0).value).toBe('5');
+  });
+
+  it('should handle onDigitInput with multi-digit value (paste via input)', async () => {
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+    const input = document.createElement('input');
+    input.value = '123456';
+    component.onDigitInput(0, { target: input } as unknown as Event);
+    expect(component.codeControls.value.join('')).toBe('123456');
+  });
+
+  it('should handle onKeyDown backspace on first index (no-op)', async () => {
+    const { fixture, component } = await createComponent([['email', 'signup@example.com']]);
+    fixture.detectChanges();
+    component.codeControls.at(0).setValue('');
+    expect(() => component.onKeyDown(0, { key: 'Backspace' } as KeyboardEvent)).not.toThrow();
+  });
+
+  it('should navigate to register when email is empty during submit', async () => {
+    authService.getPendingRegistrationEmail.mockReturnValue('');
+    const { fixture, component } = await createComponent([]);
+    fixture.detectChanges();
+    jest.clearAllMocks();
+    // Force a valid form but no email
+    ['1', '2', '3', '4', '5', '6'].forEach((digit, index) => {
+      component.codeControls.at(index).setValue(digit);
+    });
+    (component as any).email = '';
+    component.submit();
+    expect(router.navigate).toHaveBeenCalledWith(['/register']);
+  });
 });

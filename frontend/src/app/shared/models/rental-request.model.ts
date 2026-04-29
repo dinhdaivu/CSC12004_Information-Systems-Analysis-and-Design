@@ -6,6 +6,7 @@ export interface RentalPayload {
   note: string;
   branch_id?: string;
   room_id?: string;
+  identity_card_base64?: string;
 }
 
 export interface RentalRequestResponse {

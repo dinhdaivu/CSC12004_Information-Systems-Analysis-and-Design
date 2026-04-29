@@ -10,7 +10,13 @@ type BranchWithRooms = {
   rooms?: Array<{ id: string | number }> | null;
 };
 
-const DEFAULT_BRANCH_HERO_IMAGE = 'assets/pictures/Homepage To Hien Thanh.png';
+const DEFAULT_BRANCH_HERO_IMAGE = 'assets/pictures/Homepage Tô Hiến Thành.png';
+
+const BRANCH_HERO_IMAGES: Array<{ keys: string[]; heroImage: string }> = [
+  { keys: ['to hien thanh'], heroImage: 'assets/pictures/Homepage Tô Hiến Thành.png' },
+  { keys: ['tran nao'], heroImage: 'assets/pictures/Homepage Trần Não.png' },
+  { keys: ['nguyen cuu van'], heroImage: 'assets/pictures/Homepage Nguyễn Cửu Vân.png' },
+];
 
 function getSupabaseClient() {
   if (!supabase) {
@@ -26,9 +32,22 @@ function mapBranch(branch: BranchWithRooms) {
     name: branch.name,
     address: branch.address,
     description: branch.description,
-    heroImage: branch.hero_image_url || DEFAULT_BRANCH_HERO_IMAGE,
+    heroImage: branch.hero_image_url || resolveBranchHeroImage(branch),
     roomCount: branch.rooms?.length ?? 0,
   };
+}
+
+function resolveBranchHeroImage(branch: BranchWithRooms): string {
+  const searchableText = normalizeText(`${branch.name} ${branch.address}`);
+  const preset = BRANCH_HERO_IMAGES.find((item) => item.keys.some((key) => searchableText.includes(key)));
+  return preset?.heroImage ?? DEFAULT_BRANCH_HERO_IMAGE;
+}
+
+function normalizeText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 export const getBranches = async (req: Request, res: Response) => {

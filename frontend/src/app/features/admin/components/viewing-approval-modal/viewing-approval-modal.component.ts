@@ -137,7 +137,7 @@ export class ViewingApprovalModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     document.body.style.overflow = "hidden";
-    queueMicrotask(() => {
+    window.queueMicrotask(() => {
       this.animateIn = true;
     });
   }
