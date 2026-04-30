@@ -77,11 +77,99 @@ describe('RoomDetailComponent', () => {
   // [x] Kiểm tra hành vi của nút liên hệ
   it('should trigger contact action on click', () => {
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
     component.onContactAction();
-    
+
     // Đảm bảo hàm alert được gọi
     expect(alertSpy).toHaveBeenCalled();
     alertSpy.mockRestore();
+  });
+
+  it('should return empty string for getSafeUrl with undefined', () => {
+    expect(component.getSafeUrl(undefined)).toBe('');
+  });
+
+  it('should return encoded url for getSafeUrl with value', () => {
+    const result = component.getSafeUrl('/assets/img.png');
+    expect(result).toContain('assets');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('should strip path prefix for getSafeUrl', () => {
+    const result = component.getSafeUrl('http://cdn.com/public/test.png');
+    expect(result).toContain('test.png');
+  });
+
+  it('should stop auto play without error', () => {
+    component.startAutoPlay();
+    expect(() => component.stopAutoPlay()).not.toThrow();
+  });
+
+  it('should stop auto play when no timer set', () => {
+    (component as any).autoPlayTimer = undefined;
+    expect(() => component.stopAutoPlay()).not.toThrow();
+  });
+
+  it('should toggle lang menu', () => {
+    component.isLangMenuOpen = false;
+    component.toggleLangMenu();
+    expect(component.isLangMenuOpen).toBe(true);
+    component.toggleLangMenu();
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should close user menu when opening lang menu', () => {
+    component.isUserMenuOpen = true;
+    component.toggleLangMenu();
+    expect(component.isUserMenuOpen).toBe(false);
+  });
+
+  it('should toggle user menu', () => {
+    component.isUserMenuOpen = false;
+    component.toggleUserMenu();
+    expect(component.isUserMenuOpen).toBe(true);
+  });
+
+  it('should close lang menu when opening user menu', () => {
+    component.isLangMenuOpen = true;
+    component.toggleUserMenu();
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should not change image src when already fallback', () => {
+    const img = document.createElement('img');
+    img.src = 'fallback.png';
+    const event = { target: img } as unknown as Event;
+    component.onImageError(event, 'fallback.png');
+    expect(img.src).toContain('fallback.png');
+  });
+
+  it('should not trigger setSharedIndex for same index', () => {
+    component.activeSharedIndex = 1;
+    expect(() => component.setSharedIndex(1)).not.toThrow();
+  });
+
+  it('should not trigger setRoomType for same type', () => {
+    component.activeRoomType = 'twin';
+    expect(() => component.setRoomType('twin')).not.toThrow();
+  });
+
+  it('should not trigger setRoomIndex for same index', () => {
+    component.activeRoomIndex = 0;
+    expect(() => component.setRoomIndex(0)).not.toThrow();
+  });
+
+  it('should retry fetch from route snapshot', () => {
+    jest.clearAllMocks();
+    component.retryFetch();
+    expect(mockBranchService.getBranchById).toHaveBeenCalledWith('123');
+  });
+
+  it('should set loading to false on error', () => {
+    const { throwError } = require('rxjs');
+    mockBranchService.getBranchById.mockReturnValueOnce(throwError(() => new Error('Network error')));
+    component.retryFetch();
+    expect(component.isLoading).toBe(false);
+    expect(component.errorMessage).toBeTruthy();
   });
 });

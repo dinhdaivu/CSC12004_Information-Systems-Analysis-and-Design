@@ -25,7 +25,7 @@ Implement branch/room detail pages showing the branch title, address, descriptio
 |--------|------------|---------------|
 | View Detail To Hien Thanh | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=18-113) | `/rooms/:id` |
 | View Detail Tran Nao | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=275-480) | `/rooms/:id` |
-| View Detail Nguyen Cuu Van | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=270-435) | `/rooms/:id` |
+| View Detail Nguyen Cuu Van | [Figma](https://www.figma.com/design/v5iX9OxYe2cAeoilzLuHCr/Homestay-Dorm?node-id=275-572) | `/rooms/:id` |
 
 ---
 
@@ -57,21 +57,21 @@ Branch detail flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace `RoomDetailComponent` placeholder with detail UI.
-- [ ] Read route param `id`.
-- [ ] Load detail data via a room/branch service.
-- [ ] Render shared community facilities and room facilities sections.
-- [ ] Render financial/legal policy content from data.
-- [ ] Add "Contact Us Now" action.
-- [ ] Add loading, empty, and error states.
+- [x] Replace `RoomDetailComponent` placeholder with detail UI.
+- [x] Read route param `id`.
+- [x] Load detail data via a room/branch service.
+- [x] Render shared community facilities and room facilities sections.
+- [x] Render financial/legal policy content from data.
+- [x] Add "Contact Us Now" action.
+- [x] Add loading, empty, and error states.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement or verify `GET /api/rooms/:id`.
-- [ ] Implement or verify `GET /api/branches/:id`.
-- [ ] Include branch facilities, room facilities, policies, images, and available beds/rooms.
+- [x] Implement or verify `GET /api/rooms/:id`.
+- [x] Implement or verify `GET /api/branches/:id`.
+- [x] Include branch facilities, room facilities, policies, images, and available beds/rooms.
 
 ### Tests
 
@@ -136,5 +136,6 @@ Implement `docs/tasks/01-02-branch-room-detail-pages.md`.
 
 ## Notes
 
-- The Nguyen Cuu Van parent frame ID was truncated during Figma metadata extraction; the recorded link points to text inside that detail screen.
-- Keep detail content data-driven to avoid separate hard-coded components for each branch.
+- Implemented: `RoomDetailComponent` is fully built (489 lines) using `BranchService` → `GET /api/branches/:id`; renders branch hero, facilities, room types, policies, and "Contact Us Now" CTA with i18n support.
+- Figma node ID for Nguyễn Cửu Vân corrected from `270:435` to `275:572`.
+- All three branch detail variants are data-driven through the same component.

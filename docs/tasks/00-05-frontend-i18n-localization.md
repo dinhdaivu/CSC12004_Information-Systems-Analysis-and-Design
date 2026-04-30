@@ -31,13 +31,13 @@ Ensure every user-facing frontend screen supports the website language option. T
 
 ### Frontend (Angular)
 
-- [ ] Keep `en` and `vi` as supported languages.
-- [ ] Keep English as fallback unless product requirements change.
-- [ ] Add translation keys for all new screen titles, labels, buttons, validation errors, empty states, success messages, and API error messages.
-- [ ] Replace hard-coded user-facing template strings with `| translate` or `TranslateService` lookups.
-- [ ] Keep backend enum/status values separate from display labels; map them through translation keys in the UI.
-- [ ] Verify Vietnamese strings render correctly with UTF-8 encoding.
-- [ ] Ensure the language switcher remains available in the shared app shell.
+- [x] Keep `en` and `vi` as supported languages.
+- [x] Keep English as fallback unless product requirements change.
+- [x] Add translation keys for all new screen titles, labels, buttons, validation errors, empty states, success messages, and API error messages.
+- [x] Replace hard-coded user-facing template strings with `| translate` or `TranslateService` lookups.
+- [x] Keep backend enum/status values separate from display labels; map them through translation keys in the UI.
+- [x] Verify Vietnamese strings render correctly with UTF-8 encoding.
+- [x] Ensure the language switcher remains available in the shared app shell.
 
 ### Tests
 
@@ -79,11 +79,11 @@ Implement `docs/tasks/00-05-frontend-i18n-localization.md`.
 
 ## Completion Conditions
 
-- [ ] All implemented user-facing screens use translation keys instead of hard-coded display copy.
-- [ ] `en.json` and `vi.json` contain matching key coverage.
-- [ ] Vietnamese copy renders correctly.
-- [ ] The language switcher remains accessible from the shared shell.
-- [ ] Tests pass for changed frontend code.
+- [x] All implemented user-facing screens use translation keys instead of hard-coded display copy.
+- [x] `en.json` and `vi.json` contain matching key coverage.
+- [x] Vietnamese copy renders correctly.
+- [x] The language switcher remains accessible from the shared shell.
+- [x] Tests pass for changed frontend code.
 
 ---
 

@@ -53,19 +53,19 @@ Staff rental registration flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Add `/admin/rental-requests` route or extend admin dashboard.
-- [ ] Add request list and request detail views.
-- [ ] Add room/bed matching action.
+- [x] Add `/admin/rental-requests` route or extend admin dashboard.
+- [x] Add request list and request detail views.
+- [x] Add room/bed matching action.
 - [ ] Link to schedule creation in task 03-01.
-- [ ] Add viewing result states: agreed, needs follow-up, not interested, no-show.
+- [x] Add viewing result states: agreed, needs follow-up, not interested, no-show.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement rental request list/detail endpoints.
-- [ ] Implement request status update endpoint.
-- [ ] Implement viewing result persistence.
+- [x] Implement rental request list/detail endpoints.
+- [x] Implement request status update endpoint.
+- [x] Implement viewing result persistence.
 - [ ] Link accepted requests to deposit creation flow.
 
 ### Tests

@@ -1081,14 +1081,14 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   handleApprove(updatedAppointment: ViewingAppointmentRecord): void {
     this.replaceAppointmentInList(updatedAppointment);
     this.appointmentsCache.clear();
-    alert("Appointment approved");
+    window.alert("Appointment approved");
     this.closeApprovalModal();
   }
 
   handleDecline(updatedAppointment: ViewingAppointmentRecord): void {
     this.replaceAppointmentInList(updatedAppointment);
     this.appointmentsCache.clear();
-    alert("Appointment rejected");
+    window.alert("Appointment rejected");
     this.closeApprovalModal();
   }
 
