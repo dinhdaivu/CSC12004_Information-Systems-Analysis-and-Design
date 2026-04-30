@@ -195,7 +195,10 @@ export class BookingsListComponent implements OnInit {
 
   loadBookings(): void {
     this.isLoading = true;
-    
+
+    console.log('Auth check:', this.authService.isAuthenticated());
+    console.log('Token:', this.authService.getToken?.()); // nếu có
+
     this.myBookingService.getMyBookings({}).subscribe({
       next: (res: any) => {
         const data = res.data || res || [];
@@ -245,7 +248,7 @@ export class BookingsListComponent implements OnInit {
   }
 
   cancelBooking(id: string): void {
-    if (window.confirm(this.translate.instant('ACTIONS.CONFIRM_CANCEL_MSG'))) {
+    if (window.confirm(this.translate.instant('MY_BOOKINGS.ACTIONS.CONFIRM_CANCEL_MSG'))) {
       this.myBookingService.performAction(id, 'cancel').subscribe({
         next: () => {
           const target = this.allBookings.find(b => b.id === id);

@@ -107,9 +107,24 @@ import { ZoneService } from '@core/services/zone.service';
                         <option value="quad">{{ 'ROOM_BED_SEARCH.FILTERS.QUAD' | translate }}</option>
                     </select>
                 </div>
-                <div>
+
+                <div style="margin-bottom: 10px;">
+                    <label style="font-family: Afacad; font-weight: 600; color: #264893;">{{ 'ROOM_BED_SEARCH.FILTERS.STATUS' | translate }}</label>
+                    <select [(ngModel)]="filterStatus" (ngModelChange)="loadRooms()" style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; outline: none; font-family: Afacad;">
+                        <option value="">{{ 'ROOM_BED_SEARCH.FILTERS.ALL' | translate }}</option>
+                        <option value="available">{{ 'ROOM_BED_SEARCH.FILTERS.STATUS_AVAILABLE' | translate }}</option>
+                        <option value="full">{{ 'ROOM_BED_SEARCH.FILTERS.STATUS_FULL' | translate }}</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 10px;">
                     <label style="font-family: Afacad; font-weight: 600; color: #264893;">{{ 'ROOM_BED_SEARCH.FILTERS.CAPACITY' | translate }}</label>
                     <input type="number" [(ngModel)]="filterCapacity" (ngModelChange)="loadRooms()" [placeholder]="'ROOM_BED_SEARCH.FILTERS.CAPACITY_PLACEHOLDER' | translate" style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; outline: none; font-family: Afacad;">
+                </div>
+
+                <div>
+                    <label style="font-family: Afacad; font-weight: 600; color: #264893;">{{ 'ROOM_BED_SEARCH.FILTERS.MAX_PRICE' | translate }}</label>
+                    <input type="number" [(ngModel)]="filterMaxPrice" (ngModelChange)="loadRooms()" [placeholder]="'ROOM_BED_SEARCH.FILTERS.PRICE_PLACEHOLDER' | translate" style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; outline: none; font-family: Afacad;">
                 </div>
             </div>
 
@@ -170,7 +185,7 @@ import { ZoneService } from '@core/services/zone.service';
             <ng-container *ngFor="let bed of selectedRoom?.beds; let i = index">
                <div (click)="bed.status === 'available' ? selectBed(bed.id) : null" [style.top.px]="440 + i * 111" style="width: 463px; height: 94.99px; left: 803px; position: absolute; background: #F6F6F6; box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.10); border-radius: 25px; cursor: pointer;" [style.border]="selectedBedId === bed.id ? '3px solid #264893' : 'none'" [style.opacity]="bed.status === 'available' ? '1' : '0.7'"></div>
                
-               <div [style.top.px]="460.93 + i * 111" style="width: 57.31px; height: 57px; left: 864.56px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{bedName: (bed.bedNumber || i+1)} }}</div>
+               <div [style.top.px]="460.93 + i * 111" style="width: 57.31px; height: 57px; left: 864.56px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{ number: (bed.bedNumber || i+1) } }}</div>
                
                <div [style.top.px]="461 + i * 111" style="width: 216.75px; height: 56.99px; left: 1024.88px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bed.status === 'available' ? ('ROOM_BED_SEARCH.ROOM.VACANT' | translate) : ('ROOM_BED_SEARCH.ROOM.OCCUPIED_BED' | translate) }}</div>
                
@@ -221,7 +236,8 @@ export class RoomsListComponent implements OnInit {
   filterCapacity: number | null = null;
   filterBranchId = '';
   filterBranchName = 'Tô Hiến Thành'; 
-
+  filterStatus = '';
+  filterMaxPrice: number | null = null;
   
   zones: any[] = []; // Thay đổi kiểu dữ liệu thành Object
   currentZoneIndex = 0; 
@@ -325,6 +341,8 @@ export class RoomsListComponent implements OnInit {
     if (this.searchText) params.search = this.searchText;
     if (this.filterType) params.room_type = this.filterType;
     if (this.filterCapacity) params.capacity = this.filterCapacity;
+    if (this.filterStatus) params.status = this.filterStatus;
+    if (this.filterMaxPrice) params.max_price = this.filterMaxPrice;
 
     this.roomService.getRooms(params).subscribe({
       next: (res: any) => {
@@ -414,9 +432,11 @@ export class RoomsListComponent implements OnInit {
   }
 
   goToDetail() {
-    if (this.selectedRoomId) {
-      this.router.navigate(['/rooms', this.selectedRoomId]);
-    }
+    if (this.selectedRoom && this.selectedRoom.branchId) {
+    this.router.navigate(['/rooms', this.selectedRoom.branchId]);
+  } else {
+    alert('Vui lòng chọn một phòng để xem chi tiết.');
+  }
   }
 
   goToBedStep(): void {
@@ -433,34 +453,27 @@ export class RoomsListComponent implements OnInit {
 
   confirmAction(): void {
     if (!this.selectedBedId) {
-      alert('Vui lòng chọn một giường trống.');
+      this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => alert(msg));
       return;
     }
     if (!this.isAuthenticated) {
-      alert('Vui lòng đăng nhập để thực hiện thuê/đặt phòng.');
-      this.router.navigate(['/login']);
+      this.translate.get('ROOM_BED_SEARCH.MESSAGES.LOGIN_REQUIRED').subscribe(msg => {
+        alert(msg);
+        this.router.navigate(['/login']);
+      });
       return;
     }
 
-    const payload = {
-      branch_id: this.selectedRoom.branchId, // Gửi branch_id như payload yêu cầu
+    // Chuẩn bị dữ liệu theo đúng "ngôn ngữ" của trang NewBookingComponent
+    const bookingData = {
+      branch_name: this.filterBranchName,
+      // Map giá trị backend sang giá trị của radio button ở trang NewBooking
+      room_category: this.selectedRoom.roomType === 'twin' ? 'Twin Room (2)' : 'Quad Room (4)',
       room_id: this.selectedRoom.id,
-      bed_id: this.selectedBedId,
-      expected_move_in_date: new Date().toISOString().split('T')[0], 
-      rental_duration_months: 6, 
-      people_count: 1 
+      bed_id: this.selectedBedId
     };
 
-    this.rentalRequestService.createRentalRequest(payload as any).subscribe({
-      next: () => {
-        alert('Gửi yêu cầu thuê phòng thành công!');
-        this.router.navigate(['/bookings']);
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại sau.');
-      }
-    });
+    this.router.navigate(['/bookings/new'], { state: { data: bookingData } });
   }
 
   getStatusColor(status: string): string {

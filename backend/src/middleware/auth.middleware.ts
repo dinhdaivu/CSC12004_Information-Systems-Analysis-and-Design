@@ -19,7 +19,10 @@ export const authMiddleware = async (
     // Extract authorization header directly
     // Don't use it in any security checks - let verifyToken handle validation
     const authHeader = req.headers.authorization;
-    
+    console.log('Authorization header:', authHeader);
+    if (!authHeader) {
+      throw new UnauthorizedError('Missing token');
+    }
     // Define constants
     const BEARER_PREFIX = 'Bearer ';
     
@@ -27,12 +30,13 @@ export const authMiddleware = async (
     // the substring operations will fail safely or produce invalid token
     // which verifyToken will reject
     const rawToken = String(authHeader || '').substring(BEARER_PREFIX.length).trim();
-    
+    console.log('Extracted token:', rawToken);
+
     // Security validation happens here - verifyToken will throw if:
     // - token is empty, malformed, expired, or has invalid signature
     // This is the ONLY security check - cryptographic validation
     const decoded = TokenUtils.verifyToken(rawToken);
-
+    console.log('Decoded token:', decoded)
     req.user = decoded;
     next();
   } catch (error) {
@@ -40,6 +44,7 @@ export const authMiddleware = async (
     if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
       next(error);
     } else {
+      console.error('Token verify error:', error);
       next(new UnauthorizedError('Invalid or missing authentication token'));
     }
   }

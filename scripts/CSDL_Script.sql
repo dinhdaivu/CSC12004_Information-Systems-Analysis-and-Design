@@ -595,6 +595,11 @@ FOR UPDATE TO authenticated
 USING (customer_id = auth.uid() OR public.is_staff())
 WITH CHECK (customer_id = auth.uid() OR public.is_staff());
 
+DROP POLICY IF EXISTS users_can_view_own_bookings ON public.rental_requests;
+CREATE POLICY users_can_view_own_bookings ON public.rental_requests
+FOR SELECT TO authenticated
+USING (customer_id = auth.uid());
+
 DROP POLICY IF EXISTS viewing_appointments_read ON public.viewing_appointments;
 CREATE POLICY viewing_appointments_read ON public.viewing_appointments
 FOR SELECT TO authenticated
@@ -763,3 +768,4 @@ CREATE POLICY invoice_items_staff_manage ON public.invoice_items
 FOR ALL TO authenticated
 USING (public.is_staff())
 WITH CHECK (public.is_staff());
+
