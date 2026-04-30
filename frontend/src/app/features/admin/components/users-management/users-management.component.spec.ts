@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { UsersManagementComponent } from './users-management.component';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('UsersManagementComponent', () => {
   let component: UsersManagementComponent;
@@ -8,8 +10,15 @@ describe('UsersManagementComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UsersManagementComponent],
+      providers: [provideRouter([]), {
+        provide: ActivatedRoute,
+        useValue: {
+          params: of({}),
+          queryParams: of({})
+        }
+      }
+      ]
     }).compileComponents();
-
     fixture = TestBed.createComponent(UsersManagementComponent);
     component = fixture.componentInstance;
   });

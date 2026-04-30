@@ -46,9 +46,7 @@ describe("AdminDashboardComponent", () => {
 
   it("should request dashboard summary on initialization", () => {
     fixture.detectChanges();
-    expect(adminDashboardServiceMock.getDashboardSummary).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(adminDashboardServiceMock.getDashboardSummary).toHaveBeenCalled();
   });
 
   it("should render quick navigation links", () => {

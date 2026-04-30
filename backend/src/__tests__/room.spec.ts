@@ -43,7 +43,7 @@ describe("RoomService - getRooms", () => {
         status: "available",
         created_at: "2023-01-01T00:00:00Z",
         updated_at: "2023-01-01T00:00:00Z",
-        branches: { id: "branch-1", name: "Nguyễn Cửu Vân", address: "123 NCV" },
+        zones: { id: "zone-1", name: "Zone", branches: { id: "branch-1", name: "Nguyễn Cửu Vân", address: "123 NCV" } },
         beds: [],
       },
     ];
@@ -86,14 +86,14 @@ describe("RoomService - getRooms", () => {
         id: "room-1",
         room_number: "101",
         room_type: "twin",
-        branches: { id: "b1", name: "Branch A", address: "" },
+        zones: { branches: { id: "b1", name: "Branch A", address: "" } },
         beds: []
       },
       {
         id: "room-2",
         room_number: "202",
         room_type: "quad",
-        branches: { id: "b2", name: "Branch B", address: "" },
+        zones: { branches: { id: "b2", name: "Branch B", address: "" } },
         beds: []
       }
     ];

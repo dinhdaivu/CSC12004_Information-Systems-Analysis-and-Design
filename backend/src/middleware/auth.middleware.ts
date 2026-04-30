@@ -21,7 +21,7 @@ export const authMiddleware = async (
     const authHeader = req.headers.authorization;
     console.log('Authorization header:', authHeader);
     if (!authHeader) {
-      throw new UnauthorizedError('Missing token');
+      throw new UnauthorizedError('Invalid or missing authentication token');
     }
     // Define constants
     const BEARER_PREFIX = 'Bearer ';

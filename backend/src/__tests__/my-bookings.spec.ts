@@ -22,9 +22,10 @@ const mockSupabaseQuery = {
   eq: jest.fn().mockReturnThis(),
   order: jest.fn().mockReturnThis(),
   in: jest.fn().mockReturnThis(),
-  is: jest.fn().mockReturnThis(), // FIX LỖI 2: Đã bổ sung mock hàm is()
+  is: jest.fn().mockReturnThis(),
   update: jest.fn().mockReturnThis(),
   single: jest.fn(),
+  maybeSingle: jest.fn(),
   then: jest.fn()
 };
 
@@ -86,13 +87,13 @@ describe('MyBookings Module', () => {
 
     describe('getBookingById', () => {
       it('should throw NotFoundError if booking does not exist', async () => {
-        mockSupabaseQuery.single.mockResolvedValueOnce({ data: null, error: { message: 'Not found' } } as never);
+        mockSupabaseQuery.maybeSingle.mockResolvedValueOnce({ data: null, error: null } as never);
         await expect(MyBookingService.getBookingById('cust-123', 'invalid-id')).rejects.toThrow(NotFoundError);
       });
 
       it('should return data if booking exists', async () => {
         const mockData = { id: '1', status: 'requested' };
-        mockSupabaseQuery.single.mockResolvedValueOnce({ data: mockData, error: null } as never);
+        mockSupabaseQuery.maybeSingle.mockResolvedValueOnce({ data: mockData, error: null } as never);
         const result = await MyBookingService.getBookingById('cust-123', '1');
         expect(result).toEqual(mockData);
       });

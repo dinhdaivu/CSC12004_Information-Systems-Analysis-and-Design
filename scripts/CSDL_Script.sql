@@ -181,10 +181,10 @@ CREATE TABLE IF NOT EXISTS public.zones (
     UNIQUE (branch_id, name)
 );
 
--- [Thay thế] Bảng Rooms mới tham chiếu zone_id
 CREATE TABLE IF NOT EXISTS public.rooms (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    zone_id UUID NOT NULL REFERENCES public.zones(id) ON DELETE CASCADE,
+    branch_id UUID NOT NULL REFERENCES public.branches(id) ON DELETE CASCADE,
+    zone_id UUID REFERENCES public.zones(id) ON DELETE SET NULL,
     room_number TEXT NOT NULL,
     room_type TEXT,
     max_capacity INT NOT NULL CHECK (max_capacity > 0),
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS public.rooms (
     status public.room_status NOT NULL DEFAULT 'available',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (zone_id, room_number)
+    UNIQUE (branch_id, room_number)
 );
 
 CREATE TABLE IF NOT EXISTS public.beds (
@@ -768,4 +768,3 @@ CREATE POLICY invoice_items_staff_manage ON public.invoice_items
 FOR ALL TO authenticated
 USING (public.is_staff())
 WITH CHECK (public.is_staff());
-

@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RoomsManagementComponent } from './rooms-management.component';
+import { ActivatedRoute, provideRouter } from '@angular/router'; // Thêm import này
+import { of } from 'rxjs'; // Thêm import này nếu cần thiết
+
 
 describe('RoomsManagementComponent', () => {
   let component: RoomsManagementComponent;
@@ -8,6 +11,14 @@ describe('RoomsManagementComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RoomsManagementComponent],
+      providers: [provideRouter([]), {
+        provide: ActivatedRoute,
+        useValue: {
+          params: of({}),
+          queryParams: of({})
+        }
+      }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(RoomsManagementComponent);
