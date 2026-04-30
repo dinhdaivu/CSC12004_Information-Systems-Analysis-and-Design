@@ -1,4 +1,25 @@
 <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+  <div
+    *ngIf="isLoading"
+    class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+    style="background: #fef4df"
+  >
+    <img
+      src="assets/icons/logo.svg"
+      alt="HomeStay Dorm"
+      class="h-28 w-auto object-contain"
+    />
+    <p
+      class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
+      style="font-family: &quot;Afacad&quot;, sans-serif"
+    >
+      Nurturing Your Journey, Building Your Home.
+    </p>
+    <span
+      class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
+    ></span>
+  </div>
+
   <app-admin-sidebar></app-admin-sidebar>
 
   <div class="ml-0 flex min-h-screen flex-col md:ml-64">
@@ -11,20 +32,6 @@
           <p class="mt-2 max-w-3xl text-sm text-[#264893]/80">
             {{ "admin.dashboard.subtitle" | translate }}
           </p>
-        </div>
-
-        <div
-          *ngIf="isLoading"
-          class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8"
-        >
-          <div
-            class="flex items-center justify-center gap-3 text-sm font-medium text-[#264893]/80"
-          >
-            <span
-              class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-[#264893]/30 border-t-[#264893]"
-            ></span>
-            <span>{{ "admin.dashboard.loading" | translate }}</span>
-          </div>
         </div>
 
         <div

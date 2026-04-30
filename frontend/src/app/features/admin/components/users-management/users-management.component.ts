@@ -1,5 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  inject,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { BehaviorSubject, Subject, combineLatest } from "rxjs";
@@ -32,6 +39,27 @@ type UserRow = {
   imports: [CommonModule, FormsModule, AdminSidebarComponent],
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+      <div
+        *ngIf="isLoading"
+        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+        style="background: #fef4df"
+      >
+        <img
+          src="assets/icons/logo.svg"
+          alt="HomeStay Dorm"
+          class="h-28 w-auto object-contain"
+        />
+        <p
+          class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
+          style="font-family: 'Afacad', sans-serif"
+        >
+          Nurturing Your Journey, Building Your Home.
+        </p>
+        <span
+          class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
+        ></span>
+      </div>
+
       <app-admin-sidebar></app-admin-sidebar>
 
       <div class="ml-0 flex min-h-screen flex-col md:ml-64">
@@ -275,6 +303,8 @@ type UserRow = {
 })
 export class UsersManagementComponent implements OnInit, OnDestroy {
   private readonly usersService = inject(UsersService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ngZone = inject(NgZone);
   private readonly destroy$ = new Subject<void>();
 
   private readonly searchFilter$ = new BehaviorSubject<string>("");
@@ -293,6 +323,13 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
   readonly pageLimit = 10;
   isLoading = false;
   errorMessage: string | null = null;
+
+  private runInView(update: () => void): void {
+    this.ngZone.run(() => {
+      update();
+      this.cdr.markForCheck();
+    });
+  }
 
   ngOnInit(): void {
     // Fetch initial data without debounce
@@ -352,10 +389,11 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          // Refresh users list
-          const currentPage = this.currentPage;
-          this.pageFilter$.next(1);
-          this.pageFilter$.next(currentPage);
+          this.runInView(() => {
+            const currentPage = this.currentPage;
+            this.pageFilter$.next(1);
+            this.pageFilter$.next(currentPage);
+          });
         },
         error: () => {
           window.alert("Failed to update user role");
@@ -375,10 +413,11 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          // Refresh users list
-          const currentPage = this.currentPage;
-          this.pageFilter$.next(1);
-          this.pageFilter$.next(currentPage);
+          this.runInView(() => {
+            const currentPage = this.currentPage;
+            this.pageFilter$.next(1);
+            this.pageFilter$.next(currentPage);
+          });
         },
         error: () => {
           window.alert("Failed to update user status");
@@ -418,8 +457,10 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
   }
 
   private fetchUsers(): void {
-    this.isLoading = true;
-    this.errorMessage = null;
+    this.runInView(() => {
+      this.isLoading = true;
+      this.errorMessage = null;
+    });
 
     this.usersService
       .fetchUsers({
@@ -431,7 +472,9 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
       })
       .pipe(
         finalize(() => {
-          this.isLoading = false;
+          this.runInView(() => {
+            this.isLoading = false;
+          });
         }),
         takeUntil(this.destroy$),
       )
@@ -441,16 +484,20 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
             return;
           }
 
-          this.users = response.data.data;
-          this.currentPage = response.data.meta.page;
-          this.totalPages = response.data.meta.totalPages;
-          this.totalUsers = response.data.meta.total;
+          this.runInView(() => {
+            this.users = response.data.data;
+            this.currentPage = response.data.meta.page;
+            this.totalPages = response.data.meta.totalPages;
+            this.totalUsers = response.data.meta.total;
+          });
         },
         error: (error) => {
-          console.error("Failed to load users:", error);
-          this.errorMessage = "Failed to load users. Please try again.";
-          this.users = [];
-          this.totalPages = 1;
+          this.runInView(() => {
+            console.error("Failed to load users:", error);
+            this.errorMessage = "Failed to load users. Please try again.";
+            this.users = [];
+            this.totalPages = 1;
+          });
         },
       });
   }
@@ -474,11 +521,13 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(([search, role, status, page]) => {
-        this.searchInput = search;
-        this.selectedRole = role;
-        this.selectedStatus = status;
-        this.currentPage = page;
-        this.fetchUsers();
+        this.runInView(() => {
+          this.searchInput = search;
+          this.selectedRole = role;
+          this.selectedStatus = status;
+          this.currentPage = page;
+          this.fetchUsers();
+        });
       });
   }
 }

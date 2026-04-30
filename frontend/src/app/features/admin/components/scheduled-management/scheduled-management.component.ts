@@ -1,5 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  inject,
+} from "@angular/core";
 import { BranchService } from "@core/services/branch.service";
 import {
   ViewingAppointmentsService,
@@ -57,6 +64,27 @@ type AppointmentFilters = {
   imports: [CommonModule, ViewingApprovalModalComponent, AdminSidebarComponent],
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+      <div
+        *ngIf="isLoading"
+        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+        style="background: #fef4df"
+      >
+        <img
+          src="assets/icons/logo.svg"
+          alt="HomeStay Dorm"
+          class="h-28 w-auto object-contain"
+        />
+        <p
+          class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
+          style="font-family: 'Afacad', sans-serif"
+        >
+          Nurturing Your Journey, Building Your Home.
+        </p>
+        <span
+          class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
+        ></span>
+      </div>
+
       <app-admin-sidebar></app-admin-sidebar>
 
       <div class="ml-0 flex min-h-screen flex-col md:ml-64">
@@ -129,6 +157,20 @@ type AppointmentFilters = {
                   </button>
                 </div>
               </div>
+            </div>
+
+            <div
+              *ngIf="isLoading"
+              class="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
+            >
+              Loading appointments...
+            </div>
+
+            <div
+              *ngIf="!isLoading && errorMessage"
+              class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+            >
+              {{ errorMessage }}
             </div>
 
             <section *ngIf="viewMode === 'calendar'" class="calendar-wrapper">
@@ -278,20 +320,6 @@ type AppointmentFilters = {
 
             <section *ngIf="viewMode === 'list'" class="calendar-wrapper">
               <div class="list-container">
-                <div
-                  *ngIf="isLoading"
-                  class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
-                >
-                  Loading appointments...
-                </div>
-
-                <div
-                  *ngIf="!isLoading && errorMessage"
-                  class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
-                >
-                  {{ errorMessage }}
-                </div>
-
                 <div
                   *ngIf="
                     !isLoading &&
@@ -708,6 +736,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   private readonly viewingAppointmentsService = inject(
     ViewingAppointmentsService,
   );
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ngZone = inject(NgZone);
   private readonly authToken = localStorage.getItem("auth_token") ?? "";
   private readonly destroy$ = new Subject<void>();
   private readonly monthFilter$ = new BehaviorSubject<string>("2026-03");
@@ -884,6 +914,13 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   selectedDate = "2026-03-14";
   selectedAppointment: ViewingApprovalModalAppointment | null = null;
   readonly todayIsoDate = this.formatIsoDate(new Date());
+
+  private runInView(update: () => void): void {
+    this.ngZone.run(() => {
+      update();
+      this.cdr.markForCheck();
+    });
+  }
 
   constructor() {
     this.rebuildCalendar();
@@ -1094,10 +1131,13 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
         ),
         switchMap(([month, branch, status, page]) => {
           if (!this.authToken) {
-            this.errorMessage = "Missing auth token. Please sign in again.";
-            this.appointments = [];
-            this.totalPages = 1;
-            this.rebuildCalendar();
+            this.runInView(() => {
+              this.errorMessage = "Missing auth token. Please sign in again.";
+              this.appointments = [];
+              this.totalPages = 1;
+              this.rebuildCalendar();
+              this.isLoading = false;
+            });
             return of(null);
           }
 
@@ -1111,11 +1151,19 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
           const cacheKey = this.getCacheKey(filters);
           const cached = this.appointmentsCache.get(cacheKey);
 
-          this.isLoading = true;
-          this.errorMessage = null;
+          this.runInView(() => {
+            this.isLoading = true;
+            this.errorMessage = null;
+          });
 
           if (cached) {
-            return of(cached).pipe(finalize(() => (this.isLoading = false)));
+            return of(cached).pipe(
+              finalize(() => {
+                this.runInView(() => {
+                  this.isLoading = false;
+                });
+              }),
+            );
           }
 
           return this.viewingAppointmentsService
@@ -1129,18 +1177,25 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
             })
             .pipe(
               tap((response) => {
-                this.appointmentsCache.set(cacheKey, response);
+                this.runInView(() => {
+                  this.appointmentsCache.set(cacheKey, response);
+                });
               }),
-              catchError(() => {
-                this.errorMessage =
-                  "Failed to load appointments. Please try again.";
-                this.appointments = [];
-                this.totalPages = 1;
-                this.rebuildCalendar();
+              catchError((error: unknown) => {
+                console.error("Failed to load appointments:", error);
+                this.runInView(() => {
+                  this.errorMessage =
+                    "Failed to load appointments. Please try again.";
+                  this.appointments = [];
+                  this.totalPages = 1;
+                  this.rebuildCalendar();
+                });
                 return of(null);
               }),
               finalize(() => {
-                this.isLoading = false;
+                this.runInView(() => {
+                  this.isLoading = false;
+                });
               }),
             );
         }),
@@ -1152,14 +1207,16 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
         }
 
         const records = response.data?.records ?? [];
-        this.appointments = records.map((record) =>
-          this.mapApiRecordToScheduleItem(record),
-        );
+        this.runInView(() => {
+          this.appointments = records.map((record) =>
+            this.mapApiRecordToScheduleItem(record),
+          );
 
-        const pagination = response.data?.pagination;
-        this.currentPage = pagination?.page ?? this.currentPage;
-        this.totalPages = Math.max(pagination?.totalPages ?? 1, 1);
-        this.rebuildCalendar();
+          const pagination = response.data?.pagination;
+          this.currentPage = pagination?.page ?? this.currentPage;
+          this.totalPages = Math.max(pagination?.totalPages ?? 1, 1);
+          this.rebuildCalendar();
+        });
       });
   }
 
@@ -1210,7 +1267,11 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
           : "Unassigned room"),
       customer:
         record.customerName ?? `Customer ${record.customerId.slice(0, 8)}`,
-      staff: record.saleName ?? (record.saleId ? `Sale ${record.saleId.slice(0, 8)}` : "Unassigned sale"),
+      staff:
+        record.saleName ??
+        (record.saleId
+          ? `Sale ${record.saleId.slice(0, 8)}`
+          : "Unassigned sale"),
     };
   }
 
