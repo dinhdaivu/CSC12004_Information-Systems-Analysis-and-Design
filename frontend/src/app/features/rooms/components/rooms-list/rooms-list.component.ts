@@ -332,9 +332,6 @@ export class RoomsListComponent implements OnInit {
         const zoneData = response.data || (res as ZoneItem[]);
 
         this.zones = (zoneData || []).map((z: ZoneItem) => ({ id: z.id, name: z.name }));
-
-        // Map dữ liệu thành object {id, name}
-        this.zones = (zoneData || []).map((z: any) => ({ id: z.id, name: z.name }));
         this.currentZoneIndex = 0;
 
         this.cdr.detectChanges(); // Ép Angular cập nhật
@@ -475,7 +472,7 @@ export class RoomsListComponent implements OnInit {
 
   confirmAction(): void {
     if (!this.selectedBedId) {
-      this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => alert(msg));
+      this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => window.alert(msg));
       return;
     }
     if (!this.isAuthenticated) {

@@ -9,7 +9,7 @@ const mockRequest = (body: any = {}, params: any = {}, query: any = {}, user: an
 };
 
 const mockResponse = () => {
-  const res: any = {};
+  const res: Partial<Response> = {};
   res.status = jest.fn().mockReturnThis();
   res.json = jest.fn().mockReturnThis();
   return res as Response;

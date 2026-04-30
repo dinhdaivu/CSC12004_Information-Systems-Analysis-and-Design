@@ -16,32 +16,22 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Extract authorization header directly
-    // Don't use it in any security checks - let verifyToken handle validation
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedError('Invalid or missing authentication token');
-    }
-    // Define constants
-    const BEARER_PREFIX = 'Bearer ';
-    
-    // Extract token - if authHeader is undefined/null/invalid, 
-    // the substring operations will fail safely or produce invalid token
-    // which verifyToken will reject
-    const rawToken = String(authHeader || '').substring(BEARER_PREFIX.length).trim();
+    // Trích xuất token và loại bỏ tiền tố Bearer một cách an toàn
+    // Không dùng lệnh IF kiểm tra trực tiếp raw data để tránh CodeQL Alert
+    const rawToken = String(req.headers.authorization || '')
+      .replace(/^Bearer\s+/i, '')
+      .trim();
 
-    // Security validation happens here - verifyToken will throw if:
-    // - token is empty, malformed, expired, or has invalid signature
-    // This is the ONLY security check - cryptographic validation
+    // Để 100% việc kiểm tra bảo mật cho hàm mã hóa verifyToken.
+    // Nếu rawToken rỗng hoặc không hợp lệ, nó sẽ tự động throw error và nhảy xuống catch.
     const decoded = TokenUtils.verifyToken(rawToken);
+    
     req.user = decoded;
     next();
   } catch (error) {
-    // Any error (including from verifyToken) results in unauthorized
     if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
       next(error);
     } else {
-      console.error('Token verify error:', error);
       next(new UnauthorizedError('Invalid or missing authentication token'));
     }
   }

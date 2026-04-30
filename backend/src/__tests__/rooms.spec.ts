@@ -28,18 +28,18 @@ jest.mock("@middleware/auth.middleware", () => ({
   },
   roleMiddleware:
     (roles: string[]) =>
-    (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ): void => {
-      const user = (req as express.Request & { user?: { role: string } }).user;
-      if (!user || !roles.includes(user.role)) {
-        res.status(403).json({ message: "Forbidden" });
-        return;
-      }
-      next();
-    },
+      (
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+      ): void => {
+        const user = (req as express.Request & { user?: { role: string } }).user;
+        if (!user || !roles.includes(user.role)) {
+          res.status(403).json({ message: "Forbidden" });
+          return;
+        }
+        next();
+      },
 }));
 
 jest.mock("@config/supabase", () => ({
@@ -99,7 +99,7 @@ const makeRoomRow = (overrides: Partial<Record<string, unknown>> = {}) => ({
   status: "available",
   created_at: "2026-01-01T00:00:00.000Z",
   updated_at: "2026-01-01T00:00:00.000Z",
-  branches: { id: "branch-1", name: "Branch A", address: "123 Main St" },
+  zones: { branches: { id: "branch-1", name: "Branch A", address: "123 Main St" } },
   beds: [
     {
       id: "bed-1",
@@ -176,7 +176,7 @@ describe("Room Routes", () => {
     });
 
     it("should apply search filter on branch name", async () => {
-      const rows = [makeRoomRow({ branches: { id: "b1", name: "Branch Alpha", address: "addr" } })];
+      const rows = [makeRoomRow({ zones: { branches: { id: "b1", name: "Branch Alpha", address: "addr" } } })];
       const order = jest.fn().mockResolvedValue({ data: rows, error: null });
       const select = jest.fn().mockReturnValue({ order });
       mockedSupabase.from.mockReturnValue({ select });
@@ -218,7 +218,7 @@ describe("Room Routes", () => {
     });
 
     it("should handle room with array branches", async () => {
-      const rows = [makeRoomRow({ branches: [{ id: "b1", name: "Arr Branch", address: "addr" }] })];
+      const rows = [makeRoomRow({ zones: [{ branches: [{ id: "b1", name: "Arr Branch", address: "addr" }] }] })];
       const order = jest.fn().mockResolvedValue({ data: rows, error: null });
       const select = jest.fn().mockReturnValue({ order });
       mockedSupabase.from.mockReturnValue({ select });
@@ -231,7 +231,7 @@ describe("Room Routes", () => {
     });
 
     it("should handle room with null beds and branches", async () => {
-      const rows = [makeRoomRow({ branches: null, beds: null, amenities: null, images_url: null })];
+      const rows = [makeRoomRow({ zones: { branches: null }, beds: null, amenities: null, images_url: null })];
       const order = jest.fn().mockResolvedValue({ data: rows, error: null });
       const select = jest.fn().mockReturnValue({ order });
       mockedSupabase.from.mockReturnValue({ select });
@@ -378,11 +378,12 @@ describe("Room Routes", () => {
       const app = buildApp();
       const response = await request(app)
         .post("/api/rooms")
+        .set("Authorization", "Bearer fake")
         .send({
-          branch_id: "branch-1",
-          room_number: "102",
-          max_capacity: 4,
-          price_per_month: 1500000,
+          zone_id: "zone-1",
+          room_number: "101",
+          max_capacity: 2,
+          price_per_month: 2000000
         });
 
       expect(response.status).toBe(201);

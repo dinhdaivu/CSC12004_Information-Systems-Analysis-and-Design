@@ -10,15 +10,15 @@ export class RoomService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/rooms`;
 
-  getRooms(filters: any): Observable<any> {
+  getRooms(filters: Record<string, string | number | boolean>): Observable<any> {
     let params = new HttpParams();
-    if (filters.search) params = params.set('search', filters.search);
-    if (filters.room_type) params = params.set('room_type', filters.room_type);
-    if (filters.capacity) params = params.set('capacity', filters.capacity);
-    if (filters.zone_id) params = params.set('zone_id', filters.zone_id);
-    if (filters.branch_id) params = params.set('branch_id', filters.branch_id);
-    if (filters.min_price) params = params.set('min_price', filters.min_price);
-    if (filters.max_price) params = params.set('max_price', filters.max_price);
+    if (filters['search']) params = params.set('search', filters['search']);
+    if (filters['room_type']) params = params.set('room_type', filters['room_type']);
+    if (filters['capacity']) params = params.set('capacity', filters['capacity']);
+    if (filters['zone_id']) params = params.set('zone_id', filters['zone_id']);
+    if (filters['branch_id']) params = params.set('branch_id', filters['branch_id']);
+    if (filters['min_price']) params = params.set('min_price', filters['min_price']);
+    if (filters['max_price']) params = params.set('max_price', filters['max_price']);
 
     return this.http.get<any>(this.apiUrl, { params });
   }
