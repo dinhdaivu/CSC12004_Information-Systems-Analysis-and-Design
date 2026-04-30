@@ -261,7 +261,6 @@ export class NewBookingComponent implements OnInit {
     // 1. NHẬN DỮ LIỆU TRUYỀN TỪ TRANG ROOMS (Nếu có)
     const stateData = window.history.state?.data;
     if (stateData) {
-      console.log('Đã nhận dữ liệu từ Rooms List:', stateData);
       this.bookingForm.patchValue({
         branch: stateData.branch_name,
         room_category: stateData.room_category

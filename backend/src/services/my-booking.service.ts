@@ -80,9 +80,6 @@ export class MyBookingService {
    * Lấy chi tiết một booking/request (Có kiểm tra quyền sở hữu)
    */
   static async getBookingById(customerId: string, bookingId: string) {
-    console.log('--- getBookingById DEBUG ---');
-    console.log('bookingId:', bookingId);
-    console.log('customerId:', customerId);
 
     const { data, error } = await supabase!
       .from('rental_requests')
@@ -95,9 +92,6 @@ export class MyBookingService {
       .eq('id', bookingId)
       .eq('customer_id', customerId)
       .maybeSingle(); // 🔥 đổi từ single -> maybeSingle
-
-    console.log('Query result:', data);
-    console.log('Query error:', error);
 
     if (error) {
       throw new AppError(500, 'DB_ERROR', error.message);

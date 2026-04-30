@@ -34,7 +34,7 @@ export interface Room {
         address: string;
     }
   };
-  beds?: any[];
+  beds?: Bed[];
 }
 
 export interface Bed {

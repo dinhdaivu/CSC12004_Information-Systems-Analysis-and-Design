@@ -13,6 +13,27 @@ import { BranchService } from '@core/services/branch.service';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { ZoneService } from '@core/services/zone.service';
 
+interface BranchItem { id: string; name: string; }
+interface ZoneItem { id: string; name: string; }
+interface BedItem { id: string; status: string; bedNumber?: string | number; }
+interface RoomItem {
+  id: string;
+  roomNumber: string;
+  roomType: string;
+  maxCapacity?: number;
+  pricePerMonth?: number;
+  status: string;
+  branch?: { id: string };
+  zone?: { name: string };
+  beds: BedItem[];
+  // Các field UI tự map thêm
+  availableBeds?: number;
+  totalBeds?: number;
+  capacity?: number;
+  price?: number;
+  branchId?: string;
+}
+
 @Component({
   selector: 'app-rooms-list',
   standalone: true,
@@ -221,30 +242,31 @@ export class RoomsListComponent implements OnInit {
   isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
-  
+
   // Interactive UI States
   isFilterOpen = false;
   isBranchMenuOpen = false;
 
-  
-  branches: any[] = [];
-  rooms: any[] = [];
+
+  branches: BranchItem[] = [];
+  rooms: RoomItem[] = [];
+
 
   // Search & Filter state
   searchText = '';
   filterType = '';
   filterCapacity: number | null = null;
   filterBranchId = '';
-  filterBranchName = 'Tô Hiến Thành'; 
+  filterBranchName = 'Tô Hiến Thành';
   filterStatus = '';
   filterMaxPrice: number | null = null;
-  
-  zones: any[] = []; // Thay đổi kiểu dữ liệu thành Object
-  currentZoneIndex = 0; 
+
+  zones: ZoneItem[] = []; // Thay đổi kiểu dữ liệu thành Object
+  currentZoneIndex = 0;
 
   // Selection state
   selectedRoomId: string | null = null;
-  selectedRoom: any = null;
+  selectedRoom: RoomItem | null = null;
   selectedBedId: string | null = null;
 
   // Responsive scaling
@@ -273,30 +295,27 @@ export class RoomsListComponent implements OnInit {
   }
 
   loadBranchesAndRooms() {
-    console.log("--- BẮT ĐẦU TẢI DỮ LIỆU TỪ BACKEND ---");
-    
+
     this.branchService.getBranches().subscribe({
-      next: (res: any) => {
-        console.log("1. Kết quả API Branches:", res);
-        
+      next: (res: unknown) => {
+
         // Trích xuất mảng dữ liệu (Hỗ trợ cả trường hợp bọc trong res.data)
-        const branchData = res.data || res;
-        this.branches = branchData || []; 
+        const response = res as { data?: BranchItem[] };
+        const branchData = response.data || (res as BranchItem[]);
+        this.branches = branchData || [];
 
         if (this.branches.length > 0) {
           const defaultBranch = this.branches.find(b => b.name === 'Tô Hiến Thành') || this.branches[0];
           this.filterBranchId = defaultBranch.id;
           this.filterBranchName = defaultBranch.name;
-          
-          console.log("=> Đã chọn chi nhánh:", this.filterBranchName);
           // Gọi tiếp API lấy Zone
           this.loadZonesForBranch(this.filterBranchId);
         } else {
           console.warn("=> CẢNH BÁO: API Branches trả về mảng rỗng!");
         }
-        
+
         // Ép Angular vẽ lại giao diện ngay lập tức
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error("❌ LỖI GỌI API BRANCHES:", err);
@@ -306,18 +325,20 @@ export class RoomsListComponent implements OnInit {
 
   loadZonesForBranch(branchId: string) {
     if (!branchId) return;
-    
+
     this.zoneService.getZones(branchId).subscribe({
-      next: (res: any) => {
-        console.log("2. Kết quả API Zones:", res);
-        const zoneData = res.data || res;
-        
+      next: (res: unknown) => {
+        const response = res as { data?: ZoneItem[] };
+        const zoneData = response.data || (res as ZoneItem[]);
+
+        this.zones = (zoneData || []).map((z: ZoneItem) => ({ id: z.id, name: z.name }));
+
         // Map dữ liệu thành object {id, name}
         this.zones = (zoneData || []).map((z: any) => ({ id: z.id, name: z.name }));
         this.currentZoneIndex = 0;
-        
+
         this.cdr.detectChanges(); // Ép Angular cập nhật
-        
+
         // Sau khi có Zone mới gọi tiếp API lấy Phòng
         this.loadRooms();
       },
@@ -336,7 +357,7 @@ export class RoomsListComponent implements OnInit {
     }
 
     const currentZoneId = this.zones[this.currentZoneIndex].id;
-    const params: any = { zone_id: currentZoneId };
+    const params: Record<string, string | number> = { zone_id: currentZoneId };
 
     if (this.searchText) params.search = this.searchText;
     if (this.filterType) params.room_type = this.filterType;
@@ -345,24 +366,24 @@ export class RoomsListComponent implements OnInit {
     if (this.filterMaxPrice) params.max_price = this.filterMaxPrice;
 
     this.roomService.getRooms(params).subscribe({
-      next: (res: any) => {
-        console.log("3. Kết quả API Rooms:", res);
-        const roomData = res.data || res;
+      next: (res: unknown) => {
+        const response = res as { data?: RoomItem[] };
+        const roomData = response.data || (res as RoomItem[]);
 
-        this.rooms = (roomData || []).map((r: any) => ({
+        this.rooms = (roomData || []).map((r: RoomItem) => ({
           id: r.id,
           roomNumber: r.roomNumber,
-          availableBeds: r.beds?.filter((b: any) => b.status === 'available').length || 0,
+          availableBeds: r.beds?.filter((b: BedItem) => b.status === 'available').length || 0,
           totalBeds: r.beds?.length || 0,
           status: r.status,
           roomType: r.roomType,
           capacity: r.maxCapacity,
           price: r.pricePerMonth,
           branchId: r.branch?.id || this.filterBranchId,
-          zone: r.zone?.name || this.zones[this.currentZoneIndex]?.name, 
-          beds: r.beds || [] 
+          zone: r.zone?.name || this.zones[this.currentZoneIndex]?.name,
+          beds: r.beds || []
         }));
-        
+
         this.cdr.detectChanges(); // Ép Angular cập nhật danh sách phòng
       },
       error: (err) => {
@@ -396,12 +417,12 @@ export class RoomsListComponent implements OnInit {
 
   toggleFilter() {
     this.isFilterOpen = !this.isFilterOpen;
-    if(this.isBranchMenuOpen) this.isBranchMenuOpen = false;
+    if (this.isBranchMenuOpen) this.isBranchMenuOpen = false;
   }
 
   toggleBranchMenu() {
     this.isBranchMenuOpen = !this.isBranchMenuOpen;
-    if(this.isFilterOpen) this.isFilterOpen = false;
+    if (this.isFilterOpen) this.isFilterOpen = false;
   }
 
   selectBranchFilter(branchId: string, branchName: string) {
@@ -422,7 +443,8 @@ export class RoomsListComponent implements OnInit {
     this.router.navigate([path]);
   }
 
-  selectRoom(room: any) {
+  // Thay (room: any) thành (room: RoomItem)
+  selectRoom(room: RoomItem) {
     this.selectedRoomId = room.id;
     this.selectedRoom = room;
   }
@@ -433,17 +455,17 @@ export class RoomsListComponent implements OnInit {
 
   goToDetail() {
     if (this.selectedRoom && this.selectedRoom.branchId) {
-    this.router.navigate(['/rooms', this.selectedRoom.branchId]);
-  } else {
-    alert('Vui lòng chọn một phòng để xem chi tiết.');
-  }
+      this.router.navigate(['/rooms', this.selectedRoom.branchId]);
+    } else {
+      window.alert('Vui lòng chọn một phòng để xem chi tiết.');
+    }
   }
 
   goToBedStep(): void {
     if (this.selectedRoomId) {
       this.step = 'bed';
     } else {
-      alert('Vui lòng chọn một phòng trước khi tiếp tục.');
+      window.alert('Vui lòng chọn một phòng trước khi tiếp tục.');
     }
   }
 
@@ -458,7 +480,7 @@ export class RoomsListComponent implements OnInit {
     }
     if (!this.isAuthenticated) {
       this.translate.get('ROOM_BED_SEARCH.MESSAGES.LOGIN_REQUIRED').subscribe(msg => {
-        alert(msg);
+        window.alert(msg);
         this.router.navigate(['/login']);
       });
       return;
@@ -478,15 +500,15 @@ export class RoomsListComponent implements OnInit {
 
   getStatusColor(status: string): string {
     const normalizedStatus = status ? status.toLowerCase() : '';
-    
+
     if (normalizedStatus.includes('occupied') || normalizedStatus === 'full') {
-      return '#7199FE'; 
+      return '#7199FE';
     }
     if (normalizedStatus.includes('reserved')) {
-      return '#FFA786'; 
+      return '#FFA786';
     }
-    
-    return '#92DD9D'; 
+
+    return '#92DD9D';
   }
 
   toggleLangMenu() {

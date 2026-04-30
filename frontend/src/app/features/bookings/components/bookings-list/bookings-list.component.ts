@@ -202,9 +202,6 @@ export class BookingsListComponent implements OnInit {
   loadBookings(): void {
     this.isLoading = true;
 
-    console.log('Auth check:', this.authService.isAuthenticated());
-    console.log('Token:', this.authService.getToken?.()); // nếu có
-
     this.myBookingService.getMyBookings({}).subscribe({
       next: (res: { data?: unknown[] }) => {
         const data = (res.data ?? []) as BookingRecord[];
