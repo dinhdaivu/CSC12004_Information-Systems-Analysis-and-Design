@@ -59,22 +59,22 @@ Customer homepage flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace `DashboardComponent` placeholder with homepage UI.
-- [ ] Add branch data model/view model.
-- [ ] Add branch carousel/selection state for the three Figma homepage variants.
-- [ ] Add search input and filtered branch list.
-- [ ] Add navigation from branch card to branch/room detail.
-- [ ] Add language/profile UI placeholders consistent with the app shell.
-- [ ] Use Tailwind or SCSS according to existing frontend conventions.
+- [x] Replace `DashboardComponent` placeholder with homepage UI.
+- [x] Add branch data model/view model.
+- [x] Add branch carousel/selection state for the three Figma homepage variants.
+- [x] Add search input and filtered branch list.
+- [x] Add navigation from branch card to branch/room detail.
+- [x] Add language/profile UI placeholders consistent with the app shell.
+- [x] Use Tailwind or SCSS according to existing frontend conventions.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `GET /api/branches`.
-- [ ] Implement `GET /api/branches/:id`.
-- [ ] Return branch name, address, description, hero image, and related room summary.
-- [ ] Add temporary mock data only if Supabase schema is not ready.
+- [x] Implement `GET /api/branches`.
+- [x] Implement `GET /api/branches/:id`.
+- [x] Return branch name, address, description, hero image, and related room summary.
+- [x] Add temporary mock data only if Supabase schema is not ready.
 
 ### Tests
 
@@ -151,5 +151,6 @@ Implement `docs/tasks/01-01-customer-homepage-branch-discovery.md`.
 
 ## Notes
 
-- Current implementation status: route exists, UI is placeholder, API is not wired.
-- Prefer data-driven branch variants instead of duplicating three homepage components.
+- Implemented: `DashboardComponent` with branch carousel, `BranchService` → `GET /api/branches`, search, auto-play, and "View more" navigation to `/rooms/:id`.
+- The three Figma homepage frames (Tô Hiến Thành, Trần Não, Nguyễn Cửu Vân) are handled data-driven through a single carousel — no duplicate components.
+- Backend `branch.controller.ts` queries `branches` table with joined room count via Supabase.

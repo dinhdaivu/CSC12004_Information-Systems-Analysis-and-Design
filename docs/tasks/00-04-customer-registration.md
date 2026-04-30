@@ -53,21 +53,21 @@ Customer registration flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace `RegisterComponent` placeholder with real registration form.
-- [ ] Add validation for email, password, and confirmation.
-- [ ] Wire submit to `AuthService.register()`.
-- [ ] Show loading, success, and error states.
-- [ ] Redirect after registration to `/confirm-email`.
+- [x] Replace `RegisterComponent` placeholder with real registration form.
+- [x] Add validation for email, password, and confirmation.
+- [x] Wire submit to `AuthService.register()`.
+- [x] Show loading, success, and error states.
+- [x] Redirect after registration to `/confirm-email`.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/auth/register`.
-- [ ] Create auth user through Supabase Auth or the chosen auth provider.
-- [ ] Return typed response with the pending email for the verification step.
-- [ ] Defer application profile creation until verification/login to keep registration responsive.
-- [ ] Reject duplicate email when required.
+- [x] Implement `POST /api/auth/register`.
+- [x] Create auth user through Supabase Auth or the chosen auth provider.
+- [x] Return typed response with the pending email for the verification step.
+- [x] Defer application profile creation until verification/login to keep registration responsive.
+- [x] Reject duplicate email when required.
 
 ### Tests
 

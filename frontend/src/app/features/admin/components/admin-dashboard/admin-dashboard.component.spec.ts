@@ -21,6 +21,8 @@ describe("AdminDashboardComponent", () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     await TestBed.configureTestingModule({
       imports: [
         AdminDashboardComponent,

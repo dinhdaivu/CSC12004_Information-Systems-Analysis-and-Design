@@ -92,6 +92,27 @@ type PaymentsVmData = {
           <div class="dashboard-card">
             <ng-container *ngIf="currentView === 'list'; else proofView">
               <ng-container *ngIf="vm$ | async as vm">
+                <div
+                  *ngIf="vm.loading"
+                  class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+                  style="background: #fef4df"
+                >
+                  <img
+                    src="assets/icons/logo.svg"
+                    alt="HomeStay Dorm"
+                    class="h-28 w-auto object-contain"
+                  />
+                  <p
+                    class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
+                    style="font-family: 'Afacad', sans-serif"
+                  >
+                    Nurturing Your Journey, Building Your Home.
+                  </p>
+                  <span
+                    class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
+                  ></span>
+                </div>
+
                 <header class="card-header">
                   <h1>Deposit Tracking Dashboard</h1>
                   <p>

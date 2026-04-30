@@ -166,6 +166,27 @@ type SearchCriteria = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+      <div
+        *ngIf="isRoomsLoading"
+        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+        style="background: #fef4df"
+      >
+        <img
+          src="assets/icons/logo.svg"
+          alt="HomeStay Dorm"
+          class="h-28 w-auto object-contain"
+        />
+        <p
+          class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
+          style="font-family: 'Afacad', sans-serif"
+        >
+          Nurturing Your Journey, Building Your Home.
+        </p>
+        <span
+          class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
+        ></span>
+      </div>
+
       <app-admin-sidebar></app-admin-sidebar>
 
       <div class="ml-0 flex min-h-screen flex-col md:ml-64">
@@ -253,7 +274,14 @@ type SearchCriteria = {
             >
               <div>
                 <div
-                  *ngIf="visibleRooms.length === 0"
+                  *ngIf="roomsErrorMessage"
+                  class="mb-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                >
+                  {{ roomsErrorMessage }}
+                </div>
+
+                <div
+                  *ngIf="!roomsErrorMessage && visibleRooms.length === 0"
                   class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
                 >
                   No rooms found for selected filters.
@@ -687,6 +715,7 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   isCreatingRoom = false;
   isDeletingRoom = false;
   isRoomsLoading = false;
+  roomsErrorMessage: string | null = null;
   createRoomError: string | null = null;
   createRoomSuccessMessage: string | null = null;
   readonly bedStatusOptions = BED_STATUS_OPTIONS;
@@ -1267,16 +1296,38 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
         tap(() => {
           this.runInView(() => {
             this.isRoomsLoading = true;
+            this.roomsErrorMessage = null;
           });
         }),
         switchMap((criteria) =>
-          this.getRoomsFromCache(criteria).pipe(catchError(() => of([]))),
+          this.getRoomsFromCache(criteria).pipe(
+            catchError((error: unknown) => {
+              this.runInView(() => {
+                this.roomsErrorMessage = this.extractApiErrorMessage(
+                  error,
+                  "Failed to load rooms. Please try again.",
+                );
+                this.rooms = [];
+                this.selectedRoomId = null;
+                this.selectedRoomDetail = null;
+              });
+
+              return of([]);
+            }),
+            finalize(() => {
+              this.runInView(() => {
+                this.isRoomsLoading = false;
+              });
+            }),
+          ),
         ),
         takeUntil(this.destroy$),
       )
       .subscribe((rooms) => {
         this.runInView(() => {
-          this.isRoomsLoading = false;
+          if (!this.roomsErrorMessage) {
+            this.roomsErrorMessage = null;
+          }
           this.rooms = rooms;
 
           if (

@@ -7,29 +7,70 @@
     "LANGUAGE": "Language",
     "ENGLISH": "English",
     "VIETNAMESE": "Vietnamese",
-    "ABOUT_US": "About us",
+    "ABOUT_US": "About Us",
     "GUIDELINES": "Guidelines",
     "CONTACT": "Contact",
     "PROFILE": "Profile",
     "BOOKING": "Booking",
     "CONTRACT": "Contract",
-    "LOGOUT": "Logout",
-    "LOADING": "Loading...",
-    "RETRY": "Retry",
-    "FETCH_ERROR": "Failed to load data. Please try again.",
+    "LOGOUT": "Log Out",
+    "LOADING": "Loading…",
+    "RETRY": "Try Again",
+    "FETCH_ERROR": "Failed to load content. Please try again.",
     "ROOM": "Room"
   },
   "CONTACT_INFO": {
     "TITLE": "Contact Information",
-    "HEADQUARTERS": "Headquarters: ",
+    "HEADQUARTERS": "Headquarters",
     "ADDRESS_1": "227 Nguyen Van Cu Street, Ward 4, ",
-    "ADDRESS_2": "District 5, HCMC.",
-    "PHONE_LABEL": "Phone: ",
-    "PHONE": "(08) 18.276.266.",
-    "EMAIL_LABEL": "Email:",
-    "EMAIL": " contact@homestaydorm.vn",
-    "HOURS_LABEL": "Office Hours:",
-    "HOURS": " Mon - Sat | 08:00 AM - 06:00 PM."
+    "ADDRESS_2": "District 5, HCMC",
+    "PHONE_LABEL": "Phone",
+    "PHONE": "(+84) 818.916.621",
+    "EMAIL_LABEL": "Email",
+    "EMAIL": "contact@homestaydorm.vn",
+    "HOURS_LABEL": "Office Hours",
+    "HOURS": "Mon – Sat | 08:00 – 18:00"
+  },
+  "NAV": {
+    "PUBLIC": {
+      "HOME": "Discover",
+      "ROOMS": "Room Catalog",
+      "BOOKINGS": "My Bookings",
+      "ADMIN": "Admin Workspace"
+    },
+    "ADMIN": {
+      "OVERVIEW": "Overview",
+      "ROOMS": "Room Management",
+      "PAYMENTS": "Payments",
+      "USERS": "User Management"
+    },
+    "HERO": {
+      "ABOUT": "About Us",
+      "GUIDELINES": "Guidelines",
+      "CONTACT": "Contact"
+    }
+  },
+  "SHELL": {
+    "PUBLIC": {
+      "TAGLINE": "Comfortable, transparent living — designed for students and young professionals."
+    },
+    "ADMIN": {
+      "TAGLINE": "Operations Hub",
+      "ACCESS_BADGE": "Authorized Account",
+      "ACCESS_FALLBACK": "Loading admin profile…",
+      "HEADER_BADGE": "Admin Navigation"
+    },
+    "USER": {
+      "SIGNED_IN": "Signed In",
+      "MY_BOOKINGS": "View My Bookings",
+      "ADMIN_WORKSPACE": "Go to Admin Workspace",
+      "LOGOUT": "Log Out",
+      "LOGIN": "Log In",
+      "REGISTER": "Sign Up",
+      "WELCOME_BADGE": "Guest Menu",
+      "GUEST_TITLE": "Welcome to HomeStay Dorm",
+      "GUEST_SUBTITLE": "Sign in to manage your bookings, payments, and residency."
+    }
   },
   "AUTH": {
     "FIELDS": {
@@ -46,199 +87,397 @@
     "SIGN_UP": "Sign Up",
     "LOG_IN": "Log In",
     "LOGIN": {
-      "TITLE": "LOG IN",
-      "SUBTITLE": "Welcome Back!",
+      "TITLE": "WELCOME BACK",
+      "SUBTITLE": "Sign in to your account",
       "SUBMIT": "Log In",
-      "SUBMITTING": "Logging in...",
+      "SUBMITTING": "Signing in…",
       "FORGOT_PASSWORD": "Forgot Password?",
       "REGISTER": "Sign Up",
       "NEW_USER_PROMPT": "New to HomeStay Dorm?",
-      "RESET_ERROR": "Unable to start password recovery. Please try again.",
-      "ERROR": "Unable to sign in. Please try again."
+      "RESET_ERROR": "Unable to initiate password recovery. Please try again.",
+      "ERROR": "Invalid credentials. Please check your email and password."
     },
     "REGISTER": {
-      "TITLE": "SIGN UP",
-      "SUBTITLE": "Join HomeStay Dorm Community",
+      "TITLE": "CREATE ACCOUNT",
+      "SUBTITLE": "Join the HomeStay Dorm community",
       "CONFIRM_PASSWORD": "Confirm Password",
-      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your password",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Re-enter your password",
       "TOGGLE_PASSWORD": "Toggle password visibility",
       "TOGGLE_CONFIRM_PASSWORD": "Toggle confirm password visibility",
       "SUBMIT": "Create Account",
-      "SUBMITTING": "Creating account...",
+      "SUBMITTING": "Creating account…",
       "HAS_ACCOUNT": "Already have an account?",
       "LOGIN_ACTION": "Log In",
-      "ERROR": "Unable to create account. Please try again.",
+      "ERROR": "Unable to create your account. Please try again.",
       "SIGN_UP": "Sign Up",
       "LOG_IN": "Log In"
     },
     "CONFIRM_EMAIL": {
-      "TITLE": "CONFIRM EMAIL",
-      "SUBTITLE": "Verify Your Email",
-      "DESCRIPTION": "We have sent a 6-digit verification code to your email.\nEnter the code below to activate your account.",
-      "VALIDATION": "Please enter the full 6-digit verification code.",
+      "TITLE": "VERIFY YOUR EMAIL",
+      "SUBTITLE": "One last step",
+      "DESCRIPTION": "We sent a 6-digit code to your email address.\nEnter it below to activate your account.",
+      "VALIDATION": "Please enter the complete 6-digit verification code.",
       "SUBMIT": "Verify & Activate",
-      "SUBMITTING": "Verifying...",
-      "SUCCESS": "Email verified successfully. You can sign in now.",
-      "ERROR": "Unable to verify the code. Please try again.",
+      "SUBMITTING": "Verifying…",
+      "SUCCESS": "Email verified. You can now sign in.",
+      "ERROR": "Incorrect or expired code. Please try again.",
       "RESEND_PROMPT": "Didn't receive the code?",
       "RESEND_ACTION": "Resend Code",
-      "RESENDING": "Resending...",
-      "RESEND_SUCCESS": "A new verification code has been sent.",
+      "RESENDING": "Sending…",
+      "RESEND_SUCCESS": "A new code has been sent to your email.",
       "LOGIN_ACTION": "Back to Log In"
     },
     "RESET_PASSWORD": {
       "TITLE": "RESET PASSWORD",
-      "SUBTITLE": "Recover Your Account",
-      "DESCRIPTION": "We sent a 6-digit recovery code to your email.\nEnter the code below and choose a new password.",
-      "VALIDATION": "Please enter the full 6-digit code and a valid new password.",
-      "SUBMIT": "Verify & Update Password",
-      "SUBMITTING": "Updating password...",
-      "SUCCESS": "Password updated successfully. You can sign in now.",
+      "SUBTITLE": "Recover your account",
+      "DESCRIPTION": "We sent a 6-digit recovery code to your email.\nEnter it below and choose a new password.",
+      "VALIDATION": "Please enter the complete 6-digit code and a valid new password.",
+      "SUBMIT": "Update Password",
+      "SUBMITTING": "Updating…",
+      "SUCCESS": "Password updated successfully. You can now sign in.",
       "ERROR": "Unable to reset your password. Please try again.",
       "RESEND_PROMPT": "Didn't receive the code?",
       "RESEND_ACTION": "Resend Code",
-      "RESENDING": "Resending...",
+      "RESENDING": "Sending…",
       "RESEND_SUCCESS": "A new recovery code has been sent."
     }
   },
   "DASHBOARD": {
-    "TITLE": "Discover HomeStay Dorm Branches",
-    "SEARCH_PLACEHOLDER": "Search by branch name or address...",
-    "VIEW_MORE": "View more",
+    "TITLE": "Discover HomeStay Dorm",
+    "SEARCH_PLACEHOLDER": "Search branches…",
+    "VIEW_MORE": "View Details",
     "ROOMS_AVAILABLE": "rooms available",
-    "EMPTY_STATE": "No matching branches found.",
-    "CONTACT_US": "Contact Us Now"
+    "EMPTY_STATE": "No branches match your search. Try a different keyword.",
+    "CONTACT_US": "Get in Touch",
+    "SECTIONS": {
+      "ABOUT": {
+        "TITLE": "Built for modern city living",
+        "BODY": "HomeStay Dorm combines branch discovery, student-friendly housing, and a guided booking journey into one seamless experience — transparent, professional, and designed with residents in mind.",
+        "CARD_ONE_LABEL": "Focus",
+        "CARD_ONE_VALUE": "Convenient branches in key city districts",
+        "CARD_TWO_LABEL": "Experience",
+        "CARD_TWO_VALUE": "Fast discovery with bilingual navigation"
+      },
+      "GUIDELINES": {
+        "CARD_ONE": {
+          "TITLE": "Explore Branches",
+          "BODY": "Use the search bar and branch switcher to compare locations before diving into room details."
+        },
+        "CARD_TWO": {
+          "TITLE": "Follow the Process",
+          "BODY": "Our flow guides you from discovery through room selection, booking, and account management — step by step."
+        },
+        "CARD_THREE": {
+          "TITLE": "Switch Language Anytime",
+          "BODY": "Toggle between English and Vietnamese instantly using the globe icon in the navigation bar."
+        }
+      },
+      "CONTACT": {
+        "TITLE": "Need help choosing a branch?",
+        "BODY": "Our team is ready to advise you on location, room type, or the next step in your booking journey.",
+        "CARD_ONE_LABEL": "Email",
+        "CARD_ONE_VALUE": "contact@homestaydorm.vn",
+        "CARD_TWO_LABEL": "Phone",
+        "CARD_TWO_VALUE": "(+84) 818.916.621"
+      }
+    }
   },
-  "NAV": {
-    "GUIDELINES": "Guidelines",
-    "ABOUT_US": "About us",
-    "CONTACT": "Contact"
+  "ABOUT": {
+    "HERO": {
+      "TITLE": "ABOUT US",
+      "TAGLINE": "HOMESTAY DORM — NURTURING YOUR JOURNEY, BUILDING YOUR HOME.",
+      "QUOTE": "\"More than just a dormitory, we provide a professional living ecosystem designed for the young generation to grow, connect, and thrive in a safe and transparent environment.\""
+    },
+    "STORY": {
+      "INTRO": "HomeStay Dorm was founded on a deep understanding of the challenges students and young professionals face when searching for a place to call home in a dynamic city. We reimagined the dormitory concept — combining the discipline of a professional residence with the warmth and flexibility of a true home.",
+      "BODY": "With three strategically located branches across the city, we deliver a standardized, transparent management process — from registration and deposit to room handover — so residents never have to worry about financial clarity or housing security."
+    },
+    "PILLARS": {
+      "HOM": {
+        "NAME": "Hôm — Dedicated",
+        "DESC": "We stand for fresh beginnings. From the very first question, we guide every resident into their new space with genuine care and attention."
+      },
+      "SA": {
+        "NAME": "Sa — Warmth",
+        "DESC": "We stand for community energy. We nurture belonging through kindness, turning shared spaces into a second family."
+      },
+      "DO": {
+        "NAME": "Đô — Transparency",
+        "DESC": "We stand for clarity in every transaction. From deposit to refund, every figure is documented, verified, and easy to trace."
+      }
+    },
+    "BRANCHES": {
+      "VALUE": "3 Branches",
+      "TITLE": "03 Strategic Branches",
+      "SUBTITLE": "Positioned in key districts to keep your commute short and your lifestyle convenient.",
+      "CARD_TITLE": "Network",
+      "CARD_DESC": "Operating across key locations to provide the best accessibility for students and young professionals."
+    },
+    "CONFIRMATION": {
+      "VALUE": "24-Hour",
+      "TITLE": "24-Hour Confirmation",
+      "CARD_TITLE": "Processing",
+      "CARD_DESC": "Our streamlined system ensures that all booking and deposit requests are processed within a strict 24-hour window."
+    },
+    "TRANSPARENCY": {
+      "VALUE": "100%",
+      "TITLE": "100% Financial Transparency",
+      "CARD_TITLE": "Clarity",
+      "CARD_DESC": "Every transaction, from the initial deposit to final refund reconciliation, is clearly documented and verified."
+    },
+    "FOOTER": {
+      "TAGLINE": "Nurturing your journey, building your home.",
+      "COPYRIGHT": "© 2026 HomeStay Dorm. All rights reserved.",
+      "CONTACT_TITLE": "Contact Information",
+      "HQ_LABEL": "Headquarters: ",
+      "HQ_VALUE": "227 Nguyen Van Cu St., Ward 4, District 5, HCMC",
+      "PHONE_LABEL": "Phone: ",
+      "PHONE_VALUE": "(+84) 818.916.621",
+      "EMAIL_LABEL": "Email: ",
+      "EMAIL_VALUE": "contact@homestaydorm.vn",
+      "HOURS_LABEL": "Office Hours: ",
+      "HOURS_VALUE": "Mon – Sat | 08:00 – 18:00"
+    }
+  },
+  "CONTACT": {
+    "HERO": {
+      "TITLE": "CONTACT",
+      "SUBTITLE": "Have a Question? We're Here to Help.",
+      "TAGLINE": "Whether you're looking for a new home, need to schedule a viewing, or have questions about our process — the HomeStay Dorm team is ready to assist."
+    },
+    "CARDS": {
+      "VISIT": {
+        "TITLE": "Visit Us",
+        "VALUE": "227 Nguyen Van Cu Street,\nWard 4, District 5, HCMC"
+      },
+      "CALL": {
+        "TITLE": "Call Us",
+        "VALUE": "(+84) 818.916.621"
+      },
+      "EMAIL": {
+        "TITLE": "Email Us",
+        "VALUE": "contact@homestaydorm.vn"
+      }
+    }
+  },
+  "GUIDELINES": {
+    "HERO": {
+      "TITLE": "GUIDELINES",
+      "SUBTITLE": "The Resident Journey",
+      "TAGLINE": "From your first room viewing to the final deposit reconciliation, our structured process ensures a seamless and secure stay. Follow this step-by-step guide to navigate every stage of your journey with HomeStay Dorm."
+    },
+    "STEPS": {
+      "STEP1": {
+        "NUMBER": "Step 1",
+        "TITLE": "Consultation & Room Viewing",
+        "ITEM1_LABEL": "Initial Inquiry: ",
+        "ITEM1_DESC": "Browse available rooms or beds across our 03 branches and provide your basic preferences (location, budget, gender-specific zones).",
+        "ITEM2_LABEL": "Scheduled Viewing: ",
+        "ITEM2_DESC": "Coordinate with our team to arrange a physical visit where you will be briefed on house rules, utility fees, and deposit regulations.",
+        "ITEM3_LABEL": "Selection: ",
+        "ITEM3_DESC": "Choose the specific room or shared bed arrangement that suits your lifestyle."
+      },
+      "STEP2": {
+        "NUMBER": "Step 2",
+        "TITLE": "Reservation & Deposit Confirmation",
+        "ITEM1_LABEL": "Deposit Calculation: ",
+        "ITEM1_DESC": "The required deposit is calculated as: (2 Months' Rent) × (Number of Beds).",
+        "ITEM2_LABEL": "24-Hour Payment Deadline: ",
+        "ITEM2_DESC": "Once a booking is initiated, you must complete the payment and upload proof (bank transfer or receipt) within 24 hours to prevent the request from being automatically cancelled.",
+        "ITEM3_LABEL": "Holding Status: ",
+        "ITEM3_DESC": "Upon confirmation, your selected space is officially locked in the system and will no longer be available to other customers."
+      },
+      "STEP3": {
+        "NUMBER": "Step 3",
+        "TITLE": "Contract Signing & Handover",
+        "ITEM1_LABEL": "Document Verification: ",
+        "ITEM1_DESC": "Provide valid identification (ID/Passport) for resident profile creation and contract preparation.",
+        "ITEM2_LABEL": "E-Contract Execution: ",
+        "ITEM2_DESC": "Review and sign the digital rental agreement, which details rent cycles, service fees, and refund conditions.",
+        "ITEM3_LABEL": "Physical Handover: ",
+        "ITEM3_DESC": "Complete the room handover process, including a signed report on the condition of your bed, mattress, locker, and keycard."
+      },
+      "STEP4": {
+        "NUMBER": "Step 4",
+        "TITLE": "Move-out & Refund Reconciliation",
+        "ITEM1_LABEL": "Termination Notice: ",
+        "ITEM1_DESC": "Register your move-out date through the system to begin the checkout process.",
+        "ITEM2_LABEL": "Asset & Facility Inspection: ",
+        "ITEM2_DESC": "A final check on room condition, cleanliness, and asset integrity will be performed.",
+        "ITEM3_LABEL": "Transparent Refund Policy: ",
+        "ITEM3_DESC": "Your deposit refund rate is determined by your contract status and length of stay:",
+        "ITEM3_SUB1": "100% Refund: Completion of the full contract term.",
+        "ITEM3_SUB2": "70% Refund: Stays exceeding 06 months but ending before the contract term.",
+        "ITEM3_SUB3": "50% Refund: Stays under 06 months.",
+        "ITEM3_SUB4": "80% Refund: Cancellations made after depositing but before signing the contract.",
+        "ITEM4_LABEL": "Final Settlement: ",
+        "ITEM4_DESC": "Any outstanding utility bills or asset damages will be deducted from the calculated refund amount before the final payment is issued."
+      }
+    }
+  },
+  "PAGES": {
+    "ROOMS_LIST": {
+      "TITLE": "Room Catalog",
+      "DESCRIPTION": "Browse available rooms across all branches. Filter by type, capacity, or location to find your perfect fit."
+    },
+    "ROOM_DETAIL": {
+      "TITLE": "Room Details",
+      "DESCRIPTION": "Explore amenities, policies, and room specifications — then book directly when you're ready."
+    },
+    "BOOKINGS_LIST": {
+      "TITLE": "My Bookings",
+      "DESCRIPTION": "Track your rental requests, deposits, and active contracts all in one place."
+    },
+    "BOOKINGS_NEW": {
+      "TITLE": "New Booking",
+      "DESCRIPTION": "Submit a rental request by filling in your preferences and uploading the required documents."
+    },
+    "BOOKINGS_DETAIL": {
+      "TITLE": "Booking Details",
+      "DESCRIPTION": "Review the full status of your booking, including payment progress and contract milestones."
+    },
+    "ADMIN_DASHBOARD": {
+      "TITLE": "Admin Overview",
+      "DESCRIPTION": "Monitor system-wide activity and navigate quickly to core operations."
+    },
+    "ADMIN_USERS": {
+      "TITLE": "User Management",
+      "DESCRIPTION": "View, manage, and assign roles to all registered users across the platform."
+    },
+    "ADMIN_ROOMS": {
+      "TITLE": "Room Management",
+      "DESCRIPTION": "Oversee room inventory, availability status, and branch assignments."
+    },
+    "ADMIN_PAYMENTS": {
+      "TITLE": "Payment Tracking",
+      "DESCRIPTION": "Monitor deposits, rent payments, and refund settlements across all active contracts."
+    }
   },
   "ROOM_DETAIL": {
-    "FOOTER_SLOGAN": "Your comfort, our priority.",
+    "FOOTER_SLOGAN": "Your comfort is our commitment.",
     "FOOTER_COPYRIGHT": "© 2026 HomeStay Dorm. All rights reserved.",
     "CONTACT_INFO": "Contact Information",
     "HEADQUARTERS": "Headquarters",
-    "ADDRESS_FOOTER": "227 Nguyen Van Cu Street, Ward 4, District 5, HCMC.",
+    "ADDRESS_FOOTER": "227 Nguyen Van Cu St., Ward 4, District 5, HCMC",
     "PHONE": "Phone",
     "EMAIL": "Email",
     "OFFICE_HOURS": "Office Hours",
-    "OFFICE_TIME": "Mon - Sat | 08:00 AM - 06:00 PM",
+    "OFFICE_TIME": "Mon – Sat | 08:00 – 18:00",
     "CONTACT_US": "Contact Us",
-    "POLICY_INTRO": "Please review our booking policies:",
+    "POLICY_INTRO": "Please review our booking and residency policies:",
     "POLICY_RENT": "Rent Payment",
-    "POLICY_RENT_DESC": "Rent must be paid within the first 5 days of the month.",
-    "POLICY_DEPOSIT": "Deposit",
-    "POLICY_DEPOSIT_DESC": "A deposit equivalent to 1 month's rent is required.",
+    "POLICY_RENT_DESC": "Rent is due within the first 5 days of each month.",
+    "POLICY_DEPOSIT": "Security Deposit",
+    "POLICY_DEPOSIT_DESC": "A deposit equivalent to one month's rent is required to confirm your booking.",
     "POLICY_CONFIRM": "Booking Confirmation",
-    "POLICY_CONFIRM_DESC": "Bookings are confirmed only after the deposit is received.",
+    "POLICY_CONFIRM_DESC": "Your room is reserved only after the deposit has been received.",
     "POLICY_REFUND": "Refund Policy",
-    "POLICY_REFUND_100": "100% refund if cancelled 14 days before move-in.",
-    "POLICY_REFUND_70": "70% refund if cancelled 7-13 days before move-in.",
-    "POLICY_REFUND_50": "50% refund if cancelled 3-6 days before move-in.",
-    "POLICY_REFUND_80": "No refund if cancelled less than 3 days before move-in.",
-    "TWIN_ROOM": "Twin Room (2)",
-    "QUAD_ROOM": "Quad Room (4)",
-    "CAPACITY": "Capacity:",
-    "AMENITIES": "Amenities:",
-    "ROOM_FACILITIES_TITLE": "Room Facilities",
+    "POLICY_REFUND_100": "Full refund (100%) if cancelled 14 or more days before move-in.",
+    "POLICY_REFUND_70": "70% refund if cancelled 7–13 days before move-in.",
+    "POLICY_REFUND_50": "50% refund if cancelled 3–6 days before move-in.",
+    "POLICY_REFUND_80": "No refund for cancellations within 3 days of move-in.",
+    "TWIN_ROOM": "Twin Room (2 persons)",
+    "QUAD_ROOM": "Quad Room (4 persons)",
+    "CAPACITY": "Capacity",
+    "AMENITIES": "Amenities",
+    "ROOM_FACILITIES_TITLE": "In-Room Facilities",
     "SHARED_COMMUNITY_TITLE": "Shared Community Spaces",
     "BRANCH_TITLE": "{{name}} Branch",
     "DINING_HALL": "DINING HALL",
-    "DINING_DESC": "Spacious and clean dining area for everyone.",
+    "DINING_DESC": "A spacious, clean dining area available to all residents.",
     "LIVING_LOUNGE": "LIVING LOUNGE",
-    "LIVING_DESC": "Comfortable lounge for relaxation and socializing.",
+    "LIVING_DESC": "A comfortable common area for relaxing and connecting with fellow residents.",
     "LAUNDRY_ZONE": "LAUNDRY ZONE",
-    "LAUNDRY_DESC": "Modern washing and drying machines available 24/7.",
+    "LAUNDRY_DESC": "Modern washers and dryers available 24 hours a day.",
     "TWIN_CAPACITY": "2 Persons",
     "TWIN_AMENITIES": "2 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
     "QUAD_CAPACITY": "4 Persons",
     "QUAD_AMENITIES": "4 Beds, Air Conditioning, Wardrobe, Study Desk, Private Bathroom",
-    "CONTACT_ACTION": "Contact request successfully sent to the management of: {{name}}",
-    "ADDRESS_DEFAULT": "123 Default Street, Default Ward, HCMC.",
-    "DESC_DEFAULT": "A great place to stay.",
+    "CONTACT_ACTION": "Your inquiry has been sent to the team at {{name}}.",
+    "ADDRESS_DEFAULT": "HomeStay Dorm, Ho Chi Minh City.",
+    "DESC_DEFAULT": "A welcoming space designed for study, growth, and community.",
     "ADDRESS_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "60/12 Nguyen Cuu Van Street, Ward 17, Binh Thanh District, HCMC",
-    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "The Nguyễn Cửu Vân Branch offers a unique living experience in the vibrant Binh Thanh District. Its proximity to District 1 makes it a highly sought-after location for those who want to be close to the city center while enjoying a cozy dormitory atmosphere.",
+    "DESC_2fa5d6dd-7b4d-45c6-aede-6924ffefca9c": "Our Nguyen Cuu Van Branch offers vibrant city living in Binh Thanh District — just minutes from District 1. Ideal for residents who want to stay close to the heart of the city while enjoying the warmth of a close-knit dormitory community.",
     "ADDRESS_8568e0de-0fb4-40d2-98e9-70721ab363ea": "163/5 To Hien Thanh Street, Ward 13, District 10, HCMC",
-    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Experience urban living at its finest in the heart of District 10. Our Tô Hiến Thành Branch is strategically located near major universities and vibrant shopping hubs, making it the ideal home for students who value convenience and a lively neighborhood.",
+    "DESC_8568e0de-0fb4-40d2-98e9-70721ab363ea": "Set in the heart of District 10, our To Hien Thanh Branch places you within easy reach of major universities and shopping hubs. A top choice for students who value location, convenience, and a lively neighborhood atmosphere.",
     "ADDRESS_c0775349-050b-4d57-a772-8d55553727a9": "153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City (District 2)",
-    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Nestled in a more peaceful and modern area, the Trần Não Branch offers a professional environment with spacious surroundings. This branch is perfect for young professionals and students who prefer a balance between focused work and community life."
+    "DESC_c0775349-050b-4d57-a772-8d55553727a9": "Tucked in the peaceful, modern enclave of Thao Dien, our Quoc Huong Branch offers a professional environment with generous space and greenery. Perfect for young professionals and students who thrive with a balance of focused work and community life."
   },
   "BOOKING": {
-    "TITLE": "Rental Registration Form",
-    "SUBTITLE": "Provide your details and preferences to help us find your perfect stay.",
-    "BRANCH_SELECTION": "Branch Selection",
-    "ROOM_CATEGORY": "Room Category",
-    "MOVE_IN_DATE": "Move-in Date",
+    "TITLE": "Rental Registration",
+    "SUBTITLE": "Share your preferences and we'll help match you with the ideal room.",
+    "BRANCH_SELECTION": "Preferred Branch",
+    "ROOM_CATEGORY": "Room Type",
+    "MOVE_IN_DATE": "Expected Move-In Date",
     "OCCUPANTS": "Number of Occupants",
     "DURATION": "Contract Duration",
-    "RENTAL_TYPE": "Rental Type",
-    "UPLOAD_ID": "Upload Your ID Photo",
-    "BROWSE": "Browse",
-    "SUBMIT": "Submit",
-    "SUCCESS": "Your rental request has been submitted successfully!",
-    "ERROR": "An error occurred. Please try again.",
-    "SHARED_FULL": "Shared bed / Full room",
-    "NEXT": "Next",
-    "VIEWING_TITLE": "My Viewing Appointment",
-    "VIEWING_SUBTITLE": "Review your scheduled tour details and meet our sales representative to explore the facilities in person.",
+    "RENTAL_TYPE": "Rental Arrangement",
+    "UPLOAD_ID": "Upload National ID Photo",
+    "BROWSE": "Choose File",
+    "SUBMIT": "Submit Request",
+    "SUCCESS": "Your rental request has been submitted. We'll be in touch shortly.",
+    "ERROR": "Something went wrong. Please try again.",
+    "SHARED_FULL": "Shared Bed / Full Room",
+    "NEXT": "Continue",
+    "VIEWING_TITLE": "Your Viewing Appointment",
+    "VIEWING_SUBTITLE": "Review your scheduled tour and meet our team to explore the space in person.",
     "CONFIRM_ATTENDANCE": "Confirm Attendance",
     "DATE": "Date",
     "TIME": "Time",
-    "TIME_VALUE": "9AM",
+    "TIME_VALUE": "9:00 AM",
     "LOCATION": "Location",
-    "ROOM_INTEREST": "Room Interest",
-    "ROOM_TWIN": "Twin Room (2)",
-    "ROOM_QUAD": "Quad Room (4)",
-    "PROCESSING": "* Your request is being processed"
+    "ROOM_INTEREST": "Room of Interest",
+    "ROOM_TWIN": "Twin Room (2 persons)",
+    "ROOM_QUAD": "Quad Room (4 persons)",
+    "PROCESSING": "Your request is being reviewed by our team."
   },
   "ADMIN_RENTAL": {
-    "TITLE": "Rental Inquiries Management",
-    "SUBTITLE": "Manage and process all incoming room requests from potential residents across all branches.",
-    "SEARCH_PLACEHOLDER": "Search ...",
+    "TITLE": "Rental Inquiries",
+    "SUBTITLE": "Review and process all incoming room requests from prospective residents across all branches.",
+    "SEARCH_PLACEHOLDER": "Search by name, branch, or status…",
     "FILTER": "Filter",
     "TABLE": {
-      "GUESS_ID": "Guess ID",
-      "GUESS_NAME": "Guess Name",
+      "GUESS_ID": "Guest ID",
+      "GUESS_NAME": "Guest Name",
       "GENDER": "Gender",
       "BRANCH": "Branch",
-      "ROOM_CATEGORY": "Room Category",
+      "ROOM_CATEGORY": "Room Type",
       "REQUEST_DATE": "Request Date",
       "STATUS": "Status",
-      "DETAIL": "Detail"
+      "DETAIL": "Details"
     },
     "PROFILE": {
       "TITLE": "Guest Inquiry Profile",
-      "SUBTITLE": "Review core residency requirements and identification to prepare for the direct consultation.",
-      "CORE_REQS": "Core Rental Requirements",
-      "TARGET_BRANCH": "Target Branch",
-      "ROOM_CATEGORY": "Room Category",
-      "RENTAL_TYPE": "Rental Type",
-      "MOVE_IN_DATE": "Expected Move-in Date",
-      "OCCUPANCY": "Occupancy",
-      "PERSONS": "Persons",
+      "SUBTITLE": "Review residency requirements and identification documents to prepare for the in-person consultation.",
+      "CORE_REQS": "Rental Requirements",
+      "TARGET_BRANCH": "Preferred Branch",
+      "ROOM_CATEGORY": "Room Type",
+      "RENTAL_TYPE": "Rental Arrangement",
+      "MOVE_IN_DATE": "Expected Move-In Date",
+      "OCCUPANCY": "Occupants",
+      "PERSONS": "persons",
       "CONTACT_INFO": "Contact Information",
       "FULL_NAME": "Full Name",
       "GENDER": "Gender",
       "PHONE": "Phone Number",
       "EMAIL": "Email Address",
-      "ID_NUMBER": "Identity Card Number",
+      "ID_NUMBER": "National ID Number",
       "RETURN": "Return",
       "REVIEW_QUALIFY": "Review & Qualify",
-      "BACK": "< Back"
+      "BACK": "Back"
     },
     "VERIFICATION": {
-      "TITLE": "Lead Eligibility Verification",
-      "SUBTITLE": "Confirm that the guest's profile and documentation meet the dormitory’s residency standards.",
-      "CHECKLIST_TITLE": "Mandatory Checklist",
-      "CHECK_1": "Name and ID number match the registration details.",
-      "CHECK_2": "Guest gender matches the designated room/zone.",
-      "CHECK_3": "Number of occupants does not exceed the capacity for the selected room type.",
-      "RESULTS_TITLE": "Verification Results",
-      "REVIEWER_NOTE": "Reviewer’s Note",
-      "NOTE_PLACEHOLDER": "Enter your review notes here...",
-      "REQ_MORE_INFO": "Request More Info",
-      "REJECT_LEAD": "Reject Lead",
+      "TITLE": "Eligibility Verification",
+      "SUBTITLE": "Confirm that the guest's profile and documents meet our residency standards before proceeding.",
+      "CHECKLIST_TITLE": "Verification Checklist",
+      "CHECK_1": "Name and ID number match the submitted registration details.",
+      "CHECK_2": "Guest gender is compatible with the designated room or zone.",
+      "CHECK_3": "Number of occupants does not exceed the selected room's capacity.",
+      "RESULTS_TITLE": "Verification Outcome",
+      "REVIEWER_NOTE": "Reviewer Notes",
+      "NOTE_PLACEHOLDER": "Add notes or observations for this review…",
+      "REQ_MORE_INFO": "Request More Information",
+      "REJECT_LEAD": "Decline",
       "APPROVE_PROCEED": "Approve & Proceed"
     },
     "SIDEBAR": {
@@ -249,18 +488,18 @@
       "CONTRACTS": "Contracts"
     },
     "ALERTS": {
-      "FETCH_ERROR": "Error loading data from API: ",
-      "UPDATE_SUCCESS": "Successfully updated status to: ",
-      "UPDATE_ERROR": "Error updating status from API: "
+      "FETCH_ERROR": "Failed to load data: ",
+      "UPDATE_SUCCESS": "Status updated to: ",
+      "UPDATE_ERROR": "Failed to update status: "
     }
   },
   "MY_BOOKINGS": {
-    "TITLE": "My Bookings & Requests",
+    "TITLE": "My Bookings",
     "SUBTITLE": "Track and manage your rental requests, deposits, and active stays.",
     "STATUS": {
-      "REQUESTED": "Requested",
+      "REQUESTED": "Submitted",
       "PENDING": "Pending",
-      "REVIEWING": "Reviewing",
+      "REVIEWING": "Under Review",
       "VIEWING_SCHEDULED": "Viewing Scheduled",
       "CONFIRMED": "Confirmed",
       "ACTIVE": "Active",
@@ -276,7 +515,7 @@
       "BRANCH": "Branch",
       "ROOM": "Room",
       "BED": "Bed",
-      "CREATED_AT": "Created Date",
+      "CREATED_AT": "Date Submitted",
       "STATUS": "Status",
       "ACTIONS": "Actions"
     },
@@ -284,36 +523,36 @@
       "VIEW_DETAILS": "View Details",
       "CANCEL_REQUEST": "Cancel Request",
       "CONFIRM_CANCEL_TITLE": "Confirm Cancellation",
-      "CONFIRM_CANCEL_MSG": "Are you sure you want to cancel this rental request? This action cannot be undone."
+      "CONFIRM_CANCEL_MSG": "Are you sure you want to cancel this request? This action cannot be undone."
     },
     "MESSAGES": {
-      "LOADING": "Loading your bookings...",
-      "EMPTY": "You don't have any bookings or rental requests yet.",
+      "LOADING": "Loading your bookings…",
+      "EMPTY": "You haven't made any booking requests yet.",
       "CANCEL_SUCCESS": "Request cancelled successfully.",
-      "CANCEL_ERROR": "Could not cancel the request at this time. Please try again later."
+      "CANCEL_ERROR": "Unable to cancel this request right now. Please try again later."
     },
     "TRACKING": {
-      "TITLE": "Request Tracking",
-      "SUBTITLE": "Stay updated on the real-time status of your application, from initial review to final approval for deposit .",
+      "TITLE": "Application Progress",
+      "SUBTITLE": "Follow your request in real time — from initial review through deposit confirmation.",
       "STEPS": {
         "PROCESSING": {
-          "LABEL": "Processing",
-          "DESC": "Sales team is checking availability and eligibility."
+          "LABEL": "Under Review",
+          "DESC": "Our team is verifying availability and your application details."
         },
         "ACCEPTED": {
-          "LABEL": "Accepted",
-          "DESC": "Viewing completed<br/>Room is available for reservation."
+          "LABEL": "Approved",
+          "DESC": "Viewing completed.<br/>Your room is ready to be reserved."
         },
         "REJECTED": {
-          "LABEL": "Rejected",
-          "DESC": "Room is unavailable <br/>or criteria not met."
+          "LABEL": "Declined",
+          "DESC": "The room is no longer available<br/>or the application criteria were not met."
         },
         "CANCELLED": {
           "LABEL": "Cancelled"
         },
         "PENDING_DEPOSIT": {
-          "LABEL": "Pending Deposit",
-          "DESC": "Awaiting payment <br/>to lock the room."
+          "LABEL": "Awaiting Deposit",
+          "DESC": "Please complete your deposit payment<br/>to secure the room."
         }
       }
     }
@@ -321,27 +560,27 @@
   "admin": {
     "dashboard": {
       "title": "Admin Dashboard",
-      "subtitle": "Monitor the latest system snapshot and navigate quickly to core admin operations.",
-      "loading": "Loading dashboard data...",
+      "subtitle": "Monitor real-time system activity and navigate quickly to core operations.",
+      "loading": "Loading dashboard…",
       "retry": "Retry",
-      "error": "Unable to load dashboard data. Please try again.",
-      "summarySection": "Summary",
+      "error": "Unable to load the dashboard. Please try again.",
+      "summarySection": "Overview",
       "users": "Total Users",
       "rooms": "Total Rooms",
-      "bookings": "Total Rental Requests",
+      "bookings": "Rental Requests",
       "revenue": "Total Revenue",
-      "quickNavigation": "Quick Navigation",
-      "usersManagement": "Users Management",
-      "roomsManagement": "Rooms Management",
+      "quickNavigation": "Quick Access",
+      "usersManagement": "User Management",
+      "roomsManagement": "Room Management",
       "rentalRequests": "Rental Requests",
       "payments": "Payments",
-      "scheduledManagement": "Scheduled Management",
+      "scheduledManagement": "Schedule Management",
       "recentActivity": "Recent Activity",
-      "emptyRecentActivity": "No recent activity available.",
+      "emptyRecentActivity": "No recent activity to display.",
       "activity": {
-        "newUserRegistered": "A new user account has been created.",
-        "paymentReceived": "A payment has been confirmed.",
-        "bookingApproved": "A rental request has been approved."
+        "newUserRegistered": "A new user account was created.",
+        "paymentReceived": "A payment was confirmed.",
+        "bookingApproved": "A rental request was approved."
       }
     }
   },

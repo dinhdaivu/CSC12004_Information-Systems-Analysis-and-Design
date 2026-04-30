@@ -177,4 +177,78 @@ describe('ResetPasswordComponent', () => {
 
     expect(component.errorMessage).toBe('Bad code');
   });
+
+  it('should toggle password visibility', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    expect(component.showPassword).toBe(false);
+    component.togglePasswordVisibility('password');
+    expect(component.showPassword).toBe(true);
+    component.togglePasswordVisibility('confirm_password');
+    expect(component.showConfirmPassword).toBe(true);
+  });
+
+  it('should handle onDigitInput with single digit', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    const input = document.createElement('input');
+    input.value = '7';
+    component.onDigitInput(0, { target: input } as unknown as Event);
+    expect(component.codeControls.at(0).value).toBe('7');
+  });
+
+  it('should handle onDigitInput with multi-digit value', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    const input = document.createElement('input');
+    input.value = '654321';
+    component.onDigitInput(0, { target: input } as unknown as Event);
+    expect(component.codeControls.value.join('')).toBe('654321');
+  });
+
+  it('should handle onKeyDown backspace on last non-empty index (no navigation)', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.codeControls.at(2).setValue('5');
+    expect(() => component.onKeyDown(2, { key: 'Backspace' } as KeyboardEvent)).not.toThrow();
+  });
+
+  it('should ignore paste with no digits', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    const preventDefault = jest.fn();
+    component.onCodePaste(0, {
+      clipboardData: { getData: () => 'xyz' },
+      preventDefault,
+    } as unknown as ClipboardEvent);
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should not submit when form is invalid', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.submit();
+    expect(authService.resetPasswordWithCode).not.toHaveBeenCalled();
+  });
+
+  it('should navigate to login via goToLogin', () => {
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    component.goToLogin();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should handle resend error', () => {
+    authService.forgotPassword.mockReturnValue(throwError(() => new Error('fail')));
+    const fixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.resendCode();
+    expect(component.errorMessage).toBeTruthy();
+  });
 });

@@ -386,9 +386,10 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.scaleFactor = screenWidth / 1920; 
   }
 
-  onImageError(event: any, fallbackUrl: string) {
-    if (event.target.src !== fallbackUrl) {
-      event.target.src = fallbackUrl;
+  onImageError(event: Event, fallbackUrl: string): void {
+    const target = event.target as HTMLImageElement;
+    if (target.src !== fallbackUrl) {
+      target.src = fallbackUrl;
     }
   }
 
@@ -405,7 +406,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.branchDetail = null;
 
     this.branchService.getBranchById(id).subscribe({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       next: (data) => {
         this.branchDetail = data;
         

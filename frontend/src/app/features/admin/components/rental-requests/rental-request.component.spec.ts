@@ -3,7 +3,8 @@ import { RentalRequestsComponent } from './rental-request.component';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { AuthService } from '@core/services/auth.service';
 
 describe('RentalRequestsComponent', () => {
   let component: RentalRequestsComponent;
@@ -25,6 +26,12 @@ describe('RentalRequestsComponent', () => {
       branches: { name: 'Tô Hiến Thành' }, preferred_room_type: 'Quad Room' 
     }
   ];
+
+  const mockAuthService = {
+    isAuthenticated: jest.fn(() => false),
+    getCurrentUser: jest.fn(() => null),
+    logout: jest.fn(() => of(void 0)),
+  };
 
   beforeEach(async () => {
     // Mock API responses
@@ -50,6 +57,7 @@ describe('RentalRequestsComponent', () => {
       providers: [
         { provide: RentalRequestService, useValue: mockRentalService },
         { provide: Router, useValue: mockRouter },
+        { provide: AuthService, useValue: mockAuthService },
         TranslateService
       ]
     }).compileComponents();
@@ -108,5 +116,88 @@ describe('RentalRequestsComponent', () => {
     expect(component.currentScreen).toBe(1);
     expect(component.check1).toBeFalsy();
     expect(component.reviewerNote).toBe('');
+  }));
+
+  it('should handle load request error', fakeAsync(() => {
+    mockRentalService.getAllRentalRequests.mockReturnValue(
+      throwError(() => ({ error: { message: 'API error' }, message: 'fail' }))
+    );
+    component.loadRequests();
+    tick();
+    expect(window.alert).toHaveBeenCalled();
+    expect(component.requests.length).toBe(0);
+  }));
+
+  it('should change page within valid range', () => {
+    component.totalPages = 3;
+    component.changePage(2);
+    expect(component.currentPage).toBe(2);
+  });
+
+  it('should not change page below minimum', () => {
+    component.totalPages = 3;
+    component.currentPage = 1;
+    component.changePage(0);
+    expect(component.currentPage).toBe(1);
+  });
+
+  it('should not change page above maximum', () => {
+    component.totalPages = 3;
+    component.currentPage = 1;
+    component.changePage(4);
+    expect(component.currentPage).toBe(1);
+  });
+
+  it('should return N/A for extractNote with undefined', () => {
+    expect(component.extractNote(undefined)).toBe('N/A');
+  });
+
+  it('should extract note after separator', () => {
+    expect(component.extractNote('info | Notes: great result')).toBe('great result');
+  });
+
+  it('should return full string when no separator in extractNote', () => {
+    expect(component.extractNote('just a note')).toBe('just a note');
+  });
+
+  it('should format id with leading zeros', () => {
+    expect(component.formatId(7)).toBe('007');
+    expect(component.formatId(42)).toBe('042');
+  });
+
+  it('should toggle lang menu and close user menu', () => {
+    component.isUserMenuOpen = true;
+    component.toggleLangMenu();
+    expect(component.isLangMenuOpen).toBe(true);
+    expect(component.isUserMenuOpen).toBe(false);
+  });
+
+  it('should toggle user menu and close lang menu', () => {
+    component.isLangMenuOpen = true;
+    component.toggleUserMenu();
+    expect(component.isUserMenuOpen).toBe(true);
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should navigate to given path', () => {
+    component.navigate('/admin/rooms');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/admin/rooms']);
+  });
+
+  it('should call logout and navigate to login', fakeAsync(() => {
+    component.logout();
+    tick();
+    expect(mockAuthService.logout).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  }));
+
+  it('should handle updateStatus error', fakeAsync(() => {
+    mockRentalService.updateRentalRequestStatus.mockReturnValue(
+      throwError(() => ({ error: { message: 'Update failed' }, message: 'fail' }))
+    );
+    component.selectedRequest = mockRequests[0];
+    component.updateStatus('rejected');
+    tick();
+    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Update failed'));
   }));
 });

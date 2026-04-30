@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { BookingDetailComponent } from './booking-detail.component';
 
 describe('BookingDetailComponent', () => {
   let component: BookingDetailComponent;
-  let fixture: any;
+  let fixture: ReturnType<typeof TestBed.createComponent<BookingDetailComponent>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BookingDetailComponent],
+      imports: [BookingDetailComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingDetailComponent);
@@ -25,7 +26,7 @@ describe('BookingDetailComponent', () => {
 
   it('should display booking information', () => {
     fixture.detectChanges();
-    const compiled = fixture.nativeElement;
+    const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled).toBeTruthy();
   });
 
