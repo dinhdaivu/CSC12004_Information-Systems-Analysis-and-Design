@@ -16,6 +16,14 @@ import { ZoneService } from '@core/services/zone.service';
 interface BranchItem { id: string; name: string; }
 interface ZoneItem { id: string; name: string; }
 interface BedItem { id: string; status: string; bedNumber?: string | number; }
+interface RoomRequestParams {
+  zone_id: string;
+  search?: string;
+  room_type?: string;
+  capacity?: number;
+  status?: string;
+  max_price?: number;
+}
 interface RoomItem {
   id: string;
   roomNumber: string;
