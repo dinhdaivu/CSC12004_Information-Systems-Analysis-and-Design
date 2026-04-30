@@ -16,6 +16,14 @@ import { ZoneService } from '@core/services/zone.service';
 interface BranchItem { id: string; name: string; }
 interface ZoneItem { id: string; name: string; }
 interface BedItem { id: string; status: string; bedNumber?: string | number; }
+interface RoomRequestParams {
+  zone_id: string;
+  search?: string;
+  room_type?: string;
+  capacity?: number;
+  status?: string;
+  max_price?: number;
+}
 interface RoomItem {
   id: string;
   roomNumber: string;
@@ -356,11 +364,11 @@ export class RoomsListComponent implements OnInit {
     const currentZoneId = this.zones[this.currentZoneIndex].id;
     const params: Record<string, string | number> = { zone_id: currentZoneId };
 
-    if (this.searchText) params.search = this.searchText;
-    if (this.filterType) params.room_type = this.filterType;
-    if (this.filterCapacity) params.capacity = this.filterCapacity;
-    if (this.filterStatus) params.status = this.filterStatus;
-    if (this.filterMaxPrice) params.max_price = this.filterMaxPrice;
+    if (this.searchText) params['search'] = this.searchText;
+    if (this.filterType) params['room_type'] = this.filterType;
+    if (this.filterCapacity) params['capacity'] = this.filterCapacity;
+    if (this.filterStatus) params['status'] = this.filterStatus;
+    if (this.filterMaxPrice) params['max_price'] = this.filterMaxPrice;
 
     this.roomService.getRooms(params).subscribe({
       next: (res: unknown) => {
@@ -377,7 +385,7 @@ export class RoomsListComponent implements OnInit {
           capacity: r.maxCapacity,
           price: r.pricePerMonth,
           branchId: r.branch?.id || this.filterBranchId,
-          zone: r.zone?.name || this.zones[this.currentZoneIndex]?.name,
+          zone: { name: r.zone?.name || this.zones[this.currentZoneIndex]?.name },
           beds: r.beds || []
         }));
 
@@ -471,10 +479,12 @@ export class RoomsListComponent implements OnInit {
   }
 
   confirmAction(): void {
-    if (!this.selectedBedId) {
+    // Thêm điều kiện !this.selectedRoom vào đây
+    if (!this.selectedBedId || !this.selectedRoom) {
       this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => window.alert(msg));
       return;
     }
+
     if (!this.isAuthenticated) {
       this.translate.get('ROOM_BED_SEARCH.MESSAGES.LOGIN_REQUIRED').subscribe(msg => {
         window.alert(msg);
@@ -483,10 +493,9 @@ export class RoomsListComponent implements OnInit {
       return;
     }
 
-    // Chuẩn bị dữ liệu theo đúng "ngôn ngữ" của trang NewBookingComponent
     const bookingData = {
       branch_name: this.filterBranchName,
-      // Map giá trị backend sang giá trị của radio button ở trang NewBooking
+      // TypeScript sẽ hết báo lỗi ở đây vì đã chắc chắn selectedRoom không bị null
       room_category: this.selectedRoom.roomType === 'twin' ? 'Twin Room (2)' : 'Quad Room (4)',
       room_id: this.selectedRoom.id,
       bed_id: this.selectedBedId
