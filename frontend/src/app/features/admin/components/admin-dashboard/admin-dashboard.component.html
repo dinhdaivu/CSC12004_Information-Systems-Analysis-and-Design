@@ -1,0 +1,139 @@
+<div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="ml-0 flex min-h-screen flex-col md:ml-64">
+    <main class="flex-1 px-6 py-6">
+      <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold text-[#264893]">
+            {{ "admin.dashboard.title" | translate }}
+          </h2>
+          <p class="mt-2 max-w-3xl text-sm text-[#264893]/80">
+            {{ "admin.dashboard.subtitle" | translate }}
+          </p>
+        </div>
+
+        <div
+          *ngIf="isLoading"
+          class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8"
+        >
+          <div
+            class="flex items-center justify-center gap-3 text-sm font-medium text-[#264893]/80"
+          >
+            <span
+              class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-[#264893]/30 border-t-[#264893]"
+            ></span>
+            <span>{{ "admin.dashboard.loading" | translate }}</span>
+          </div>
+        </div>
+
+        <div
+          *ngIf="!isLoading && errorMessage"
+          class="rounded-2xl border border-red-200 bg-red-50 px-4 py-4"
+        >
+          <p class="text-sm font-medium text-red-700">{{ errorMessage }}</p>
+          <button
+            type="button"
+            class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+            (click)="retryLoad()"
+          >
+            {{ "admin.dashboard.retry" | translate }}
+          </button>
+        </div>
+
+        <ng-container
+          *ngIf="!isLoading && !errorMessage && summary as dashboardSummary"
+        >
+          <section>
+            <h3 class="mb-4 text-xl font-semibold text-[#264893]">
+              {{ "admin.dashboard.summarySection" | translate }}
+            </h3>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-sm text-[#264893]/75">
+                  {{ "admin.dashboard.users" | translate }}
+                </p>
+                <p class="mt-2 text-3xl font-bold text-[#264893]">
+                  {{ dashboardSummary.usersCount | number }}
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-sm text-[#264893]/75">
+                  {{ "admin.dashboard.rooms" | translate }}
+                </p>
+                <p class="mt-2 text-3xl font-bold text-[#264893]">
+                  {{ dashboardSummary.roomsCount | number }}
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-sm text-[#264893]/75">
+                  {{ "admin.dashboard.bookings" | translate }}
+                </p>
+                <p class="mt-2 text-3xl font-bold text-[#264893]">
+                  {{ dashboardSummary.bookingsCount | number }}
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-sm text-[#264893]/75">
+                  {{ "admin.dashboard.revenue" | translate }}
+                </p>
+                <p class="mt-2 text-3xl font-bold text-[#264893]">
+                  {{ dashboardSummary.revenue | number }}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="mt-8">
+            <h3 class="mb-4 text-xl font-semibold text-[#264893]">
+              {{ "admin.dashboard.quickNavigation" | translate }}
+            </h3>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <a
+                *ngFor="let item of quickLinks"
+                [routerLink]="item.path"
+                class="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold text-[#264893] shadow-sm transition hover:-translate-y-0.5 hover:border-[#264893]/40 hover:shadow"
+              >
+                {{ item.labelKey | translate }}
+              </a>
+            </div>
+          </section>
+
+          <section class="mt-8">
+            <h3 class="mb-4 text-xl font-semibold text-[#264893]">
+              {{ "admin.dashboard.recentActivity" | translate }}
+            </h3>
+
+            <div
+              *ngIf="dashboardSummary.recentActivities.length === 0"
+              class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-600"
+            >
+              {{ "admin.dashboard.emptyRecentActivity" | translate }}
+            </div>
+
+            <ul
+              *ngIf="dashboardSummary.recentActivities.length > 0"
+              class="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            >
+              <li
+                *ngFor="let activity of dashboardSummary.recentActivities"
+                class="flex flex-col gap-2 border-b border-slate-200 px-4 py-3 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <span class="text-sm text-slate-700">{{
+                  activity.message | translate
+                }}</span>
+                <span class="text-xs text-slate-500">{{
+                  activity.createdAt | date: "short"
+                }}</span>
+              </li>
+            </ul>
+          </section>
+        </ng-container>
+      </div>
+    </main>
+  </div>
+</div>

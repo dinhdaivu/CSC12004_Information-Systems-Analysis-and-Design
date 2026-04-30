@@ -1,160 +1,177 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BranchService } from '../../../../core/services/branch.service';
-import { Branch } from '../../../../shared/models/branch.model';
-import { AuthService } from '../../../../core/services/auth.service';
+import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { BranchService } from '@core/services/branch.service';
+import { Branch } from '@shared/models/branch.model';
+
+type BranchVisualPreset = {
+  keys: string[];
+  heroImage: string;
+  displayAddress: string;
+};
+
+const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
+  {
+    keys: ['to hien thanh'],
+    heroImage: 'assets/pictures/Homepage Tô Hiến Thành.png',
+    displayAddress: '163/5 To Hien Thanh Street, Ward 13, District 10, Ho Chi Minh City',
+  },
+  {
+    keys: ['tran nao'],
+    heroImage: 'assets/pictures/Homepage Trần Não.png',
+    displayAddress: '153/8 Quoc Huong Street, Thao Dien Ward, Thu Duc City',
+  },
+  {
+    keys: ['nguyen cuu van'],
+    heroImage: 'assets/pictures/Homepage Nguyễn Cửu Vân.png',
+    displayAddress: '60/12 Nguyen Cuu Van Street, Ward 17, Binh Thanh District, Ho Chi Minh City',
+  },
+];
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   template: `
-    <div class="relative w-full h-screen overflow-hidden font-['Afacad'] bg-black">
-      
-      <img *ngIf="selectedBranch" [src]="getSafeUrl(selectedBranch.heroImage)" 
-           class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out" 
-           [class.opacity-0]="isTransitioning"
-           [class.scale-105]="isTransitioning"
-           alt="Background" />
+    @if (isLoading) {
+      <div class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df;">
+        <img
+          src="assets/icons/logo.svg"
+          alt="HomeStay Dorm"
+          class="h-28 w-auto object-contain"
+        />
+        <p class="text-[1.05rem] italic tracking-wide text-[#264893]/70" style="font-family: 'Afacad', sans-serif;">
+          Nurturing Your Journey, Building Your Home.
+        </p>
+        <span class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"></span>
+      </div>
+    }
 
-      <div class="absolute inset-y-0 right-0 w-full md:w-[55%] bg-gradient-to-l from-black/90 via-black/60 to-transparent pointer-events-none z-0"></div>
+    <section class="relative min-h-screen overflow-hidden font-['Afacad'] text-white" [class.invisible]="isLoading">
+      @if (selectedBranch) {
+        <img
+          [src]="getHeroImageUrl(selectedBranch)"
+          (error)="onHeroImageError($event)"
+          class="absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out"
+          [class.opacity-0]="isTransitioning"
+          [class.scale-105]="isTransitioning"
+          alt="HomeStay branch background"
+        />
+      }
 
-      <header class="absolute top-0 w-full px-12 py-8 flex justify-between items-start z-30">
-         <div class="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition-transform drop-shadow-2xl">
-           <img src="/assets/icons/Logo.png" alt="Homestay Dorm Logo" class="w-[185px] h-[165px] " />
-          
-         </div>
+      <div class="absolute inset-y-0 right-0 w-[51.46%] bg-[linear-gradient(270deg,_rgba(0,0,0,0.8)_0%,_rgba(0,0,0,0)_100%)]"></div>
 
-        <nav class="flex items-center gap-10 text-white text-[28px] font-semibold mt-4 drop-shadow-md">
-          <a href="#" class="hover:text-gray-300 transition-colors">About us</a>
-          <a href="#" class="hover:text-gray-300 transition-colors">Guidelines</a>
-          <a href="#" class="hover:text-gray-300 transition-colors">Contact</a>
-          
-          <div class="flex items-center gap-6 ml-4 relative">
-            <div class="relative">
-              <button (click)="toggleLangMenu()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
-                <i class="bi bi-globe2 text-2xl"></i>
+      <div class="relative z-10 min-h-screen px-5 pb-10 pt-32 sm:px-8 sm:pb-12 sm:pt-36 lg:px-0 lg:pb-0 lg:pt-0">
+        <div class="mx-auto flex min-h-screen max-w-[1920px] flex-col gap-10 lg:relative lg:block">
+          <div class="flex justify-start lg:absolute lg:left-[14.85%] lg:top-[36.76%]">
+            <div class="flex flex-col items-center gap-6 lg:gap-[3.125rem]">
+              <button
+                type="button"
+                (click)="manualPrev()"
+                class="inline-flex h-[clamp(2.5rem,6.25vw,4.5rem)] w-[clamp(2.5rem,6.25vw,4.5rem)] items-center justify-center rounded-full bg-white text-[clamp(1.8rem,2.35vw,3rem)] text-black shadow-[0_24px_60px_rgba(0,0,0,0.22)] transition hover:-translate-y-1"
+                aria-label="Previous branch"
+              >
+                <i class="bi bi-arrow-up"></i>
               </button>
-              
-              <div *ngIf="isUserMenuOpen" style="position: absolute; right: 0px; top: 60px; width: 100px; height: 150px; z-index: 100;">
-                <div style="width: 200px; height: 150px; left: 0px; top: 0px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
-
-                <ng-container *ngIf="!isAuthenticated">
-                  <div (mousedown)="navigate('/register')" style="width: 160px; height: 40px; left: 20px; top: 25px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 500; cursor: pointer; z-index: 101;">
-                    {{ 'AUTH.REGISTER.TITLE' | translate }}
-                  </div>
-                  <div (mousedown)="navigate('/login')" style="width: 160px; height: 40px; left: 20px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 500; cursor: pointer; z-index: 101;">
-                    {{ 'AUTH.LOGIN.TITLE' | translate }}
-                  </div>
-                </ng-container>
-
-                <ng-container *ngIf="isAuthenticated">
-                  <div (mousedown)="navigate('/profile')" style="width: 160px; height: 40px; left: 20px; top: 25px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 500; cursor: pointer; z-index: 101;">
-                    {{ 'COMMON.PROFILE' | translate }}
-                  </div>
-                  <div (mousedown)="logout()" style="width: 160px; height: 40px; left: 20px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 500; cursor: pointer; z-index: 101;">
-                    {{ 'COMMON.LOGOUT' | translate }}
-                  </div>
-                </ng-container>
-              </div>
-
-              <div *ngIf="isLangMenuOpen" class="absolute right-0 top-[70px] w-48 bg-black/60 backdrop-blur-md rounded-3xl border border-white/30 flex flex-col py-4 px-2 shadow-2xl animate-fade-in z-50">
-                <button (click)="changeLang('vi')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">{{ 'COMMON.VIETNAMESE' | translate }}</button>
-                <div class="h-px bg-white/20 my-1 mx-4"></div>
-                <button (click)="changeLang('en')" class="text-white text-2xl py-2 hover:bg-white/20 rounded-xl transition">{{ 'COMMON.ENGLISH' | translate }}</button>
-              </div>
-            </div>
-
-            <div class="relative">
-              <button (click)="toggleUserMenu()" class="w-[50px] h-[50px] rounded-full border-[3px] border-white flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm">
-                <i class="bi bi-person text-3xl"></i>
+              <button
+                type="button"
+                (click)="manualNext()"
+                class="inline-flex h-[clamp(2.5rem,6.25vw,4.5rem)] w-[clamp(2.5rem,6.25vw,4.5rem)] items-center justify-center rounded-full bg-white text-[clamp(1.8rem,2.35vw,3rem)] text-black shadow-[0_24px_60px_rgba(0,0,0,0.22)] transition hover:translate-y-1"
+                aria-label="Next branch"
+              >
+                <i class="bi bi-arrow-down"></i>
               </button>
             </div>
           </div>
-        </nav>
-      </header>
 
-      <div class="absolute left-16 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-20">
-        <button (click)="manualNext()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all">
-          <i class="bi bi-arrow-up text-3xl text-black"></i>
-        </button>
-        <button (click)="manualPrev()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all">
-          <i class="bi bi-arrow-down text-3xl text-black"></i>
-        </button>
+          <div
+            class="w-full max-w-[25.25rem] rounded-[1.5625rem] bg-[#d9d9d9]/[0.78] px-8 py-8 text-black shadow-[0_24px_80px_rgba(0,0,0,0.18)] backdrop-blur-[10px] transition-all duration-500 sm:ml-auto lg:absolute lg:left-[69.17%] lg:top-[28.89vh] lg:ml-0 lg:h-[clamp(20.5rem,41.57vh,26.0625rem)] lg:w-[clamp(22.5rem,41.57vh,28.0625rem)] lg:px-[clamp(2.35rem,4.44vh,3rem)] lg:pb-[clamp(3.8rem,7.04vh,4.8rem)] lg:pt-[clamp(4.6rem,8.7vh,5.875rem)]"
+            [class.translate-y-8]="isTransitioning"
+            [class.opacity-0]="isTransitioning"
+          >
+            @if (selectedBranch) {
+              <div class="flex h-full flex-col items-center text-center">
+                <h1 class="max-w-[19rem] font-['Afacad'] text-[1.8rem] font-medium leading-[1.38] lg:text-[clamp(1.4rem,2.59vh,1.75rem)]">
+                  <span class="block">HomeStay Dorm</span>
+                  <span class="block">{{ getBranchDisplayName(selectedBranch) }}</span>
+                </h1>
+
+                <p class="mt-[clamp(1.9rem,3.61vh,2.45rem)] max-w-[18rem] font-['Afacad'] text-[0.95rem] italic leading-[1.28] text-black/90 lg:text-[clamp(0.8rem,1.48vh,1rem)]">
+                  {{ getDisplayAddress(selectedBranch) }}
+                </p>
+
+                <div class="mt-10 lg:mt-auto">
+                  <button
+                    [routerLink]="['/rooms', selectedBranch.id]"
+                    class="group inline-flex items-center gap-4 rounded-full px-4 py-2 font-['Afacad'] text-[1.65rem] italic leading-[1.15] text-black transition hover:text-[#264893] lg:text-[clamp(1.35rem,2.59vh,1.75rem)]"
+                  >
+                    <span>{{ 'DASHBOARD.VIEW_MORE' | translate }}</span>
+                    <i class="bi bi-arrow-right text-[1.75rem] transition-transform group-hover:translate-x-1 lg:text-[clamp(1.4rem,2.78vh,1.875rem)]"></i>
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div class="flex h-full items-center justify-center text-center">
+                <h2 class="text-3xl font-medium">{{ 'DASHBOARD.EMPTY_STATE' | translate }}</h2>
+              </div>
+            }
+          </div>
+
+          <div class="flex justify-end lg:absolute lg:left-[70.16%] lg:top-[79.26vh] lg:w-[clamp(20rem,37.96vh,25.625rem)]">
+            <label class="relative block w-full max-w-[24rem] lg:max-w-none">
+              <span class="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-[1.7rem] text-white lg:text-[clamp(1.35rem,2.5vh,1.7rem)]">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearch()"
+                [placeholder]="'DASHBOARD.SEARCH_PLACEHOLDER' | translate"
+                class="h-[4.1rem] w-full rounded-full border-[3px] border-white bg-transparent pl-[4.05rem] pr-6 font-['Afacad'] text-[1.35rem] italic text-white outline-none placeholder:text-white/95 lg:h-[clamp(3.5rem,6.48vh,4.375rem)] lg:pl-[clamp(3.3rem,6vh,4.05rem)] lg:text-[clamp(1.2rem,2.31vh,1.55rem)]"
+              />
+            </label>
+          </div>
+        </div>
       </div>
-
-      <div *ngIf="selectedBranch" 
-           class="absolute right-16 md:right-32 top-1/2 -translate-y-1/2 w-[450px] bg-white/80 backdrop-blur-xl rounded-[30px] px-10 py-12 flex flex-col items-center text-center z-20 shadow-2xl transition-all duration-500 ease-in-out"
-           [class.opacity-0]="isTransitioning"
-           [class.translate-y-8]="isTransitioning">
-        
-        <h2 class="text-[36px] font-medium text-black mb-6 leading-tight">
-          HomeStay Dorm <br/>
-          <span class="font-bold">{{ selectedBranch.name.replace('HomeStay Dorm', '').trim() }}</span>
-        </h2>
-        
-        <p class="text-[18px] font-normal italic text-black/80 mb-10 px-2 leading-relaxed">
-          {{ selectedBranch.address }}
-        </p>
-
-        <button [routerLink]="['/rooms', selectedBranch.id]" class="group flex items-center gap-3 text-[32px] italic text-black font-normal hover:text-blue-700 transition-colors">
-          {{ 'DASHBOARD.VIEW_MORE' | translate }} 
-          <i class="bi bi-arrow-right transition-transform group-hover:translate-x-3"></i>
-        </button>
-      </div>
-
-      <div class="absolute right-16 md:right-32 bottom-16 w-[400px] h-[70px] rounded-[50px] border-[3px] border-white flex items-center px-6 z-20 bg-black/30 backdrop-blur-md">
-        <i class="bi bi-search text-white text-[28px] mr-4"></i>
-        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()"
-               [placeholder]="'DASHBOARD.SEARCH_PLACEHOLDER' | translate"
-               class="bg-transparent border-none outline-none text-white text-[30px] italic w-full placeholder-white/80">
-      </div>
-    </div>
+    </section>
   `
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  authService = inject(AuthService);
-  router = inject(Router);
-
-  private branchService = inject(BranchService);
-  private translate = inject(TranslateService);
-  private cdr = inject(ChangeDetectorRef);
+  private readonly branchService = inject(BranchService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   branches: Branch[] = [];
   filteredBranches: Branch[] = [];
   selectedBranch: Branch | null = null;
-  searchQuery: string = '';
+  searchQuery = '';
   currentIndex = 0;
-  
-  isLangMenuOpen = false;
-  isUserMenuOpen = false;
   isTransitioning = false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  autoPlayTimer: any;
-
-  isAuthenticated = false;
-
-  constructor() {
-    // Kích hoạt đa ngôn ngữ mặc định
-    this.translate.addLangs(['en', 'vi']);
-    this.translate.setDefaultLang('vi');
-    const browserLang = this.translate.getBrowserLang();
-    this.translate.use(browserLang?.match(/en|vi/) ? browserLang : 'vi');
-  }
+  isLoading = true;
+  autoPlayTimer: number | null = null;
 
   ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated();
-
-    this.branchService.getBranches().subscribe(data => {
+    this.branchService.getBranches().subscribe((data) => {
       this.branches = data;
       this.filteredBranches = data;
+
       if (data.length > 0) {
-        this.selectedBranch = data[0];
+        this.selectedBranch = this.getInitialBranch(data);
+        this.currentIndex = this.filteredBranches.findIndex((branch) => branch.id === this.selectedBranch?.id);
+        if (this.currentIndex < 0) {
+          this.currentIndex = 0;
+        }
         this.startAutoPlay();
+
+        const img = new window.Image();
+        img.onload = () => { this.isLoading = false; this.cdr.detectChanges(); };
+        img.onerror = () => { this.isLoading = false; this.cdr.detectChanges(); };
+        img.src = this.getHeroImageUrl(this.selectedBranch);
+      } else {
+        this.isLoading = false;
       }
+
       this.cdr.detectChanges();
     });
   }
@@ -163,48 +180,48 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.stopAutoPlay();
   }
 
-
-  logout(): void {
-    this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
-      this.isUserMenuOpen = false;
-      this.router.navigate(['/login']);
-    });
-  }
-  navigate(path: string): void {
-    this.router.navigate([path]);
-    this.isUserMenuOpen = false;
-  }
-  
-  startAutoPlay() {
+  startAutoPlay(): void {
     this.stopAutoPlay();
     this.autoPlayTimer = window.setInterval(() => {
       this.nextBranch();
     }, 5000);
   }
 
-
-  stopAutoPlay() {
-    if (this.autoPlayTimer) window.clearInterval(this.autoPlayTimer);
+  stopAutoPlay(): void {
+    if (this.autoPlayTimer !== null) {
+      window.clearInterval(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
   }
 
-
-  triggerTransition(callback: () => void) {
+  triggerTransition(callback: () => void): void {
     this.isTransitioning = true;
     this.cdr.detectChanges();
+
     window.setTimeout(() => {
       callback();
       this.isTransitioning = false;
       this.cdr.detectChanges();
-    }, 400); 
+    }, 400);
   }
 
+  manualNext(): void {
+    this.stopAutoPlay();
+    this.nextBranch();
+    this.startAutoPlay();
+  }
 
-  manualNext() { this.stopAutoPlay(); this.nextBranch(); this.startAutoPlay(); }
-  manualPrev() { this.stopAutoPlay(); this.prevBranch(); this.startAutoPlay(); }
+  manualPrev(): void {
+    this.stopAutoPlay();
+    this.prevBranch();
+    this.startAutoPlay();
+  }
 
   nextBranch(): void {
-    if (this.filteredBranches.length === 0) return;
+    if (this.filteredBranches.length === 0) {
+      return;
+    }
+
     this.triggerTransition(() => {
       this.currentIndex = (this.currentIndex + 1) % this.filteredBranches.length;
       this.selectedBranch = this.filteredBranches[this.currentIndex];
@@ -212,7 +229,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   prevBranch(): void {
-    if (this.filteredBranches.length === 0) return;
+    if (this.filteredBranches.length === 0) {
+      return;
+    }
+
     this.triggerTransition(() => {
       this.currentIndex = (this.currentIndex - 1 + this.filteredBranches.length) % this.filteredBranches.length;
       this.selectedBranch = this.filteredBranches[this.currentIndex];
@@ -220,46 +240,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getSafeUrl(url: string | undefined): string {
-    if (!url) return '';
-    // Fix lỗi đường dẫn từ public folder
-    let cleanUrl = url.replace(/.*public\//, '').replace(/.*assets\//, 'assets/');
-    const finalUrl = cleanUrl.startsWith('/') ? cleanUrl : '/' + cleanUrl;
+    if (!url) {
+      return '';
+    }
+
+    const cleanUrl = url.replace(/.*public\//, '').replace(/.*assets\//, 'assets/');
+    const finalUrl = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
     return encodeURI(finalUrl);
   }
 
-  toggleLangMenu() { this.isLangMenuOpen = !this.isLangMenuOpen; }
-  toggleUserMenu() { this.isUserMenuOpen = !this.isUserMenuOpen; }
-  
-  changeLang(lang: string) {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
-    this.cdr.detectChanges();
-  }
-
-  
-  closeMenusDelay() {
-    window.setTimeout(() => {
-      this.isLangMenuOpen = false;
-      this.isUserMenuOpen = false;
-      this.cdr.detectChanges();
-    }, 200);
-  }
-
   onSearch(): void {
-    const q = this.searchQuery.toLowerCase().trim();
-    this.filteredBranches = q ? this.branches.filter(b => 
-      b.name.toLowerCase().includes(q) || b.address.toLowerCase().includes(q)
-    ) : this.branches;
-    
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredBranches = query
+      ? this.branches.filter((branch) => branch.name.toLowerCase().includes(query) || branch.address.toLowerCase().includes(query))
+      : this.branches;
+
     if (this.filteredBranches.length > 0) {
-      // 1. Cập nhật data NGAY LẬP TỨC để qua mặt bài test đồng bộ
       this.currentIndex = 0;
       this.selectedBranch = this.filteredBranches[0];
-      
-      // 2. Chạy hiệu ứng animation
       this.isTransitioning = true;
-      
-      // SỬA Ở ĐÂY: Thêm chữ window. vào trước setTimeout
+
       window.setTimeout(() => {
         this.isTransitioning = false;
         this.cdr.detectChanges();
@@ -269,12 +269,70 @@ export class DashboardComponent implements OnInit, OnDestroy {
     } else {
       this.selectedBranch = null;
     }
-    
+
     this.cdr.detectChanges();
   }
-  // Hàm dùng để xóa nhanh thanh tìm kiếm (Giúp pass test)
+
   clearSearch(): void {
     this.searchQuery = '';
     this.onSearch();
+  }
+
+  getHeroImageUrl(branch: Branch): string {
+    const heroImage = branch.heroImage?.trim();
+    const preset = this.getBranchVisualPreset(branch);
+
+    if (!heroImage || this.isKnownMissingHeroImage(heroImage)) {
+      return this.getSafeUrl(preset?.heroImage ?? BRANCH_VISUAL_PRESETS[0].heroImage);
+    }
+
+    return this.getSafeUrl(heroImage);
+  }
+
+  onHeroImageError(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+
+    if (!image || image.dataset['fallbackApplied'] === 'true') {
+      return;
+    }
+
+    image.dataset['fallbackApplied'] = 'true';
+    image.src = this.getSafeUrl(this.getBranchVisualPreset(this.selectedBranch)?.heroImage ?? BRANCH_VISUAL_PRESETS[0].heroImage);
+  }
+
+  getBranchDisplayName(branch: Branch): string {
+    return branch.name.replace(/^homestay\s+dorm\s*/i, '').trim() || branch.name;
+  }
+
+  getDisplayAddress(branch: Branch): string {
+    return this.getBranchVisualPreset(branch)?.displayAddress ?? branch.address;
+  }
+
+  private getInitialBranch(branches: Branch[]): Branch {
+    const preferredBranch = branches.find((branch) => this.normalizeText(branch.name).includes('to hien thanh'));
+    return preferredBranch ?? branches[0];
+  }
+
+  private getBranchVisualPreset(branch: Branch | null): BranchVisualPreset | undefined {
+    if (!branch) {
+      return undefined;
+    }
+
+    const searchableText = this.normalizeText(`${branch.name} ${branch.address} ${branch.heroImage ?? ''}`);
+    return BRANCH_VISUAL_PRESETS.find((preset) => preset.keys.some((key) => searchableText.includes(key)));
+  }
+
+  private isKnownMissingHeroImage(heroImage: string): boolean {
+    const KNOWN_MISSING: string[] = [
+      'Homepage To Hien Thanh.png',
+    ];
+    return KNOWN_MISSING.some((bad) => heroImage.trim() === bad);
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
   }
 }

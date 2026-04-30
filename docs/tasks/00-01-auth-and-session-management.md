@@ -60,21 +60,21 @@ Auth flow:
 
 ### Frontend (Angular)
 
-- [ ] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
+- [x] Use existing `ngx-translate` i18n pattern for all user-facing copy; add/update matching keys in `frontend/src/assets/i18n/en.json` and `frontend/src/assets/i18n/vi.json`.
 
-- [ ] Replace login, confirm-email, and reset-password placeholders with real forms.
-- [ ] Add validation and error messages.
-- [ ] Wire `AuthService` to login/logout/current-user/reset/verification APIs.
-- [ ] Add role-based redirect after login.
-- [ ] Add auth guard for protected routes.
+- [x] Replace login, confirm-email, and reset-password placeholders with real forms.
+- [x] Add validation and error messages.
+- [x] Wire `AuthService` to login/logout/current-user/reset/verification APIs.
+- [x] Add role-based redirect after login.
+- [x] Add auth guard for protected routes.
 
 ### Backend (Express/Supabase)
 
-- [ ] Implement `POST /api/auth/login`.
-- [ ] Implement `POST /api/auth/logout`.
-- [ ] Implement `GET /api/auth/me`.
-- [ ] Implement `PATCH /api/auth/me`.
-- [ ] Implement signup verification, resend-verification, and reset-password entry points if Supabase Auth is used.
+- [x] Implement `POST /api/auth/login`.
+- [x] Implement `POST /api/auth/logout`.
+- [x] Implement `GET /api/auth/me`.
+- [x] Implement `PATCH /api/auth/me`.
+- [x] Implement signup verification, resend-verification, and reset-password entry points if Supabase Auth is used.
 
 ### Tests
 

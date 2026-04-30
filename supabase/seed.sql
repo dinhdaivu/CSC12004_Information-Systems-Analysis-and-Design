@@ -12,29 +12,33 @@
 -- ============================================
 -- 1. Branches
 -- ============================================
-INSERT INTO public.branches (name, address, description, phone)
+INSERT INTO public.branches (name, address, description, hero_image_url, phone)
 VALUES
     (
         'Tô Hiến Thành',
         'Tô Hiến Thành, District 10, Ho Chi Minh City',
         'HomeStay Dorm branch used by homepage and room detail flows.',
+        'assets/pictures/Homepage Tô Hiến Thành.png',
         '0900000001'
     ),
     (
         'Trần Não',
         'Tran Nao, Thu Duc City, Ho Chi Minh City',
         'HomeStay Dorm branch used by homepage and room discovery flows.',
+        'assets/pictures/Homepage Trần Não.png',
         '0900000002'
     ),
     (
         'Nguyễn Cửu Vân',
         'Nguyen Cuu Van, Binh Thanh District, Ho Chi Minh City',
         'HomeStay Dorm branch used by homepage and room detail flows.',
+        'assets/pictures/Homepage Nguyễn Cửu Vân.png',
         '0900000003'
     )
 ON CONFLICT (name) DO UPDATE
 SET address = EXCLUDED.address,
     description = EXCLUDED.description,
+    hero_image_url = EXCLUDED.hero_image_url,
     phone = EXCLUDED.phone,
     updated_at = now();
 

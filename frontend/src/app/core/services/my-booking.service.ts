@@ -16,25 +16,25 @@ export class MyBookingService {
   /**
    * Lấy danh sách bookings / rental requests của Customer đang đăng nhập
    */
-  getMyBookings(filters?: { status?: string; type?: string }): Observable<ApiResponse<any[]>> {
+  getMyBookings(filters?: { status?: string; type?: string }): Observable<ApiResponse<unknown[]>> {
     let params = new HttpParams();
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.type) params = params.set('type', filters.type);
 
-    return this.http.get<ApiResponse<any[]>>(this.apiUrl, { params });
+    return this.http.get<ApiResponse<unknown[]>>(this.apiUrl, { params });
   }
 
   /**
    * Lấy chi tiết một booking
    */
-  getBookingById(id: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/${id}`);
+  getBookingById(id: string): Observable<ApiResponse<unknown>> {
+    return this.http.get<ApiResponse<unknown>>(`${this.apiUrl}/${id}`);
   }
 
   /**
    * Thực hiện hành động (VD: Hủy yêu cầu)
    */
-  performAction(id: string, action: string): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/${id}/actions`, { action });
+  performAction(id: string, action: string): Observable<ApiResponse<unknown>> {
+    return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/${id}/actions`, { action });
   }
 }
