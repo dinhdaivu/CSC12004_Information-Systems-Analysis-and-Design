@@ -43,7 +43,7 @@ function mapBranch(branch: BranchWithRooms) {
     address: branch.address,
     description: branch.description,
     heroImage: branch.hero_image_url || resolveBranchHeroImage(branch),
-    roomCount: branch.rooms?.length ?? 0,
+    roomCount: totalRooms,
   };
 }
 
