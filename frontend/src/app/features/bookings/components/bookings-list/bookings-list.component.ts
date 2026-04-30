@@ -201,7 +201,7 @@ export class BookingsListComponent implements OnInit {
 
   loadBookings(): void {
     this.isLoading = true;
-    
+
     this.myBookingService.getMyBookings({}).subscribe({
       next: (res: { data?: unknown[] }) => {
         const data = (res.data ?? []) as BookingRecord[];
@@ -247,7 +247,7 @@ export class BookingsListComponent implements OnInit {
   }
 
   cancelBooking(id: string): void {
-    if (window.confirm(this.translate.instant('ACTIONS.CONFIRM_CANCEL_MSG'))) {
+    if (window.confirm(this.translate.instant('MY_BOOKINGS.ACTIONS.CONFIRM_CANCEL_MSG'))) {
       this.myBookingService.performAction(id, 'cancel').subscribe({
         next: () => {
           const target = this.allBookings.find(b => b.id === id);

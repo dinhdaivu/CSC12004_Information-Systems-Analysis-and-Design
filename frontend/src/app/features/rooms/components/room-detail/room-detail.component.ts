@@ -306,7 +306,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   activeRoomType: RoomType = 'twin';
   activeRoomIndex = 0;
   
-  private autoPlayTimer: ReturnType<typeof window.setInterval> | undefined;
+  private autoPlayTimer: number | undefined;
 
   // Giữ lại khung mảng dữ liệu với Key dịch thuật để đảm bảo cấu trúc HTML render không lỗi
   // Khi API load xong, data này sẽ bị thay thế bằng data từ API

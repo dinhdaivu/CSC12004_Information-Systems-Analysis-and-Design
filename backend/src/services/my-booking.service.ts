@@ -80,6 +80,7 @@ export class MyBookingService {
    * Lấy chi tiết một booking/request (Có kiểm tra quyền sở hữu)
    */
   static async getBookingById(customerId: string, bookingId: string) {
+
     const { data, error } = await supabase!
       .from('rental_requests')
       .select(`
@@ -90,10 +91,16 @@ export class MyBookingService {
       `)
       .eq('id', bookingId)
       .eq('customer_id', customerId)
-      .single();
+      .maybeSingle(); // 🔥 đổi từ single -> maybeSingle
 
-    if (error || !data) {
-      throw new NotFoundError('Không tìm thấy yêu cầu thuê hoặc bạn không có quyền truy cập.');
+    if (error) {
+      throw new AppError(500, 'DB_ERROR', error.message);
+    }
+
+    if (!data) {
+      throw new NotFoundError(
+        `Không tìm thấy booking. bookingId=${bookingId}, customerId=${customerId}`
+      );
     }
 
     return data;

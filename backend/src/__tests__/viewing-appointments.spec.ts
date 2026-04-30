@@ -196,6 +196,13 @@ describe("Viewing Appointments Routes", () => {
       createdAt: "2026-05-01T00:00:00.000Z",
       updatedAt: "2026-05-02T00:00:00.000Z",
     });
+
+    expect(response.body.data.pagination).toEqual({
+      page: 1,
+      limit: 5,
+      total: 1,
+      totalPages: 1
+    });
   });
 
   it("PATCH /api/viewing-appointments/:id/outcome should update status and result note", async () => {

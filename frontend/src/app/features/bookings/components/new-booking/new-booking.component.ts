@@ -258,7 +258,25 @@ export class NewBookingComponent implements OnInit {
       note: ['']
     });
 
-    // Gọi API lấy Branch ID
+    // 1. NHẬN DỮ LIỆU TRUYỀN TỪ TRANG ROOMS (Nếu có)
+    const stateData = window.history.state?.data;
+    if (stateData) {
+      this.bookingForm.patchValue({
+        branch: stateData.branch_name,
+        room_category: stateData.room_category
+      });
+      this.preSelectedRoomId = stateData.room_id;
+      // Lưu thêm bed_id nếu cần xử lý đặc biệt
+    }
+
+    // 2. NHẬN DỮ LIỆU TỪ QUERY PARAMS (Giữ nguyên logic cũ của bạn)[cite: 4]
+    this.route.queryParams.subscribe(params => {
+      if (params['roomId']) {
+        this.preSelectedRoomId = params['roomId'];
+      }
+    });
+
+    // 3. TẢI DANH SÁCH CHI NHÁNH (Giữ nguyên logic cũ của bạn)[cite: 4]
     this.branchService.getBranches().subscribe({
       next: (branches: { id: string; name: string }[]) => {
         branches.forEach(b => {
@@ -268,12 +286,6 @@ export class NewBookingComponent implements OnInit {
         });
       },
       error: (err: unknown) => console.error('Failed to load branches', err)
-    });
-
-    this.route.queryParams.subscribe(params => {
-      if (params['roomId']) {
-        this.preSelectedRoomId = params['roomId'];
-      }
     });
   }
 
