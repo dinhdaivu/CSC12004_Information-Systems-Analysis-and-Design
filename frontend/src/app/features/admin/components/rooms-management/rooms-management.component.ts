@@ -253,7 +253,14 @@ type SearchCriteria = {
             >
               <div>
                 <div
-                  *ngIf="visibleRooms.length === 0"
+                  *ngIf="roomsErrorMessage"
+                  class="mb-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                >
+                  {{ roomsErrorMessage }}
+                </div>
+
+                <div
+                  *ngIf="!roomsErrorMessage && visibleRooms.length === 0"
                   class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
                 >
                   No rooms found for selected filters.
@@ -687,6 +694,7 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
   isCreatingRoom = false;
   isDeletingRoom = false;
   isRoomsLoading = false;
+  roomsErrorMessage: string | null = null;
   createRoomError: string | null = null;
   createRoomSuccessMessage: string | null = null;
   readonly bedStatusOptions = BED_STATUS_OPTIONS;
@@ -1267,16 +1275,38 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
         tap(() => {
           this.runInView(() => {
             this.isRoomsLoading = true;
+            this.roomsErrorMessage = null;
           });
         }),
         switchMap((criteria) =>
-          this.getRoomsFromCache(criteria).pipe(catchError(() => of([]))),
+          this.getRoomsFromCache(criteria).pipe(
+            catchError((error: unknown) => {
+              this.runInView(() => {
+                this.roomsErrorMessage = this.extractApiErrorMessage(
+                  error,
+                  "Failed to load rooms. Please try again.",
+                );
+                this.rooms = [];
+                this.selectedRoomId = null;
+                this.selectedRoomDetail = null;
+              });
+
+              return of([]);
+            }),
+            finalize(() => {
+              this.runInView(() => {
+                this.isRoomsLoading = false;
+              });
+            }),
+          ),
         ),
         takeUntil(this.destroy$),
       )
       .subscribe((rooms) => {
         this.runInView(() => {
-          this.isRoomsLoading = false;
+          if (!this.roomsErrorMessage) {
+            this.roomsErrorMessage = null;
+          }
           this.rooms = rooms;
 
           if (
