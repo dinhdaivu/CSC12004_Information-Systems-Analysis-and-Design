@@ -37,6 +37,12 @@ function parseStringQueryParam(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function parseOptionalNumber(value: unknown): number | undefined {
+  if (!value) return undefined;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
 function parsePathId(value: unknown): string {
   if (typeof value !== "string") {
     throw new ValidationError("Invalid room id");
@@ -103,13 +109,13 @@ function mapCapacityToRoomType(capacity: number): string {
 }
 
 function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
-  const branch_id = parseStringQueryParam(body.branch_id);
+  const zone_id = parseStringQueryParam(body.zone_id);
   const room_number = parseStringQueryParam(body.room_number);
   const max_capacity = parseNumber(body.max_capacity, "max_capacity");
   const price_per_month = parseNumber(body.price_per_month, "price_per_month");
 
-  if (!branch_id) {
-    throw new ValidationError("branch_id is required");
+  if (!zone_id) {
+    throw new ValidationError("zone_id is required");
   }
 
   if (!room_number) {
@@ -137,7 +143,7 @@ function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
     : undefined;
 
   return {
-    branch_id,
+    zone_id,
     room_number,
     room_type,
     max_capacity,
@@ -270,10 +276,13 @@ export class RoomController {
     const query = req.query as Record<string, unknown>;
 
     const filters: RoomFilters = {
-      branch_id: parseStringQueryParam(query.branch_id),
+      zone_id: parseStringQueryParam(query.zone_id),
       room_status: validateRoomStatus(parseStringQueryParam(query.room_status)),
       bed_status: validateBedStatus(parseStringQueryParam(query.bed_status)),
       room_type: parseStringQueryParam(query.room_type),
+      capacity: parseOptionalNumber(query.capacity),
+      min_price: parseOptionalNumber(query.min_price),
+      max_price: parseOptionalNumber(query.max_price),
       search: parseStringQueryParam(query.search),
     };
 

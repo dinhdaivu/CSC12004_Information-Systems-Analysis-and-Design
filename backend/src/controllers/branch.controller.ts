@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import { supabase } from '@config/supabase';
 
+// Bổ sung thêm zones vào type để hứng dữ liệu từ DB mới
 type BranchWithRooms = {
   id: string;
   name: string;
   address: string;
   description: string;
   hero_image_url?: string | null;
-  rooms?: Array<{ id: string | number }> | null;
+  rooms?: Array<{ id: string | number }> | null; 
+  zones?: Array<{ rooms?: Array<{ id: string | number }> | null }> | null;
 };
 
 const DEFAULT_BRANCH_HERO_IMAGE = 'assets/pictures/Homepage To Hien Thanh.png';
@@ -21,13 +23,21 @@ function getSupabaseClient() {
 }
 
 function mapBranch(branch: BranchWithRooms) {
+  // Tính tổng số lượng phòng thông qua bảng zones
+  let totalRooms = 0;
+  if (branch.zones) {
+    totalRooms = branch.zones.reduce((sum, zone) => sum + (zone.rooms?.length || 0), 0);
+  } else if (branch.rooms) {
+    totalRooms = branch.rooms.length;
+  }
+
   return {
     id: branch.id,
     name: branch.name,
     address: branch.address,
     description: branch.description,
     heroImage: branch.hero_image_url || DEFAULT_BRANCH_HERO_IMAGE,
-    roomCount: branch.rooms?.length ?? 0,
+    roomCount: totalRooms,
   };
 }
 
@@ -36,7 +46,8 @@ export const getBranches = async (req: Request, res: Response) => {
 
   try {
     const client = getSupabaseClient();
-    const { data: branches, error } = await client.from('branches').select('*, rooms(id)');
+    // Thay đổi query: truy vấn lồng qua zones để lấy danh sách rooms
+    const { data: branches, error } = await client.from('branches').select('*, zones(rooms(id))');
 
     if (error) {
       throw error;
@@ -54,9 +65,10 @@ export const getBranchById = async (req: Request, res: Response) => {
   try {
     const client = getSupabaseClient();
     const { id } = req.params;
+    // Thay đổi query: truy vấn lồng qua zones để lấy danh sách rooms
     const { data: branch, error } = await client
       .from('branches')
-      .select('*, rooms(id)')
+      .select('*, zones(rooms(id))')
       .eq('id', id)
       .single();
 

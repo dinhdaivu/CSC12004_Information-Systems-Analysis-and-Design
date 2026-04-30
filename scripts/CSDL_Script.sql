@@ -170,9 +170,21 @@ CREATE TABLE IF NOT EXISTS public.branches (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS public.rooms (
+CREATE TABLE IF NOT EXISTS public.zones (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     branch_id UUID NOT NULL REFERENCES public.branches(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    gender_type TEXT,
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (branch_id, name)
+);
+
+-- [Thay thế] Bảng Rooms mới tham chiếu zone_id
+CREATE TABLE IF NOT EXISTS public.rooms (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    zone_id UUID NOT NULL REFERENCES public.zones(id) ON DELETE CASCADE,
     room_number TEXT NOT NULL,
     room_type TEXT,
     max_capacity INT NOT NULL CHECK (max_capacity > 0),
@@ -182,7 +194,7 @@ CREATE TABLE IF NOT EXISTS public.rooms (
     status public.room_status NOT NULL DEFAULT 'available',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (branch_id, room_number)
+    UNIQUE (zone_id, room_number)
 );
 
 CREATE TABLE IF NOT EXISTS public.beds (
@@ -375,6 +387,11 @@ CREATE TRIGGER update_branches_updated_at
 BEFORE UPDATE ON public.branches
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+DROP TRIGGER IF EXISTS update_zones_updated_at ON public.zones;
+CREATE TRIGGER update_zones_updated_at
+BEFORE UPDATE ON public.zones
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
 DROP TRIGGER IF EXISTS update_rooms_updated_at ON public.rooms;
 CREATE TRIGGER update_rooms_updated_at
 BEFORE UPDATE ON public.rooms
@@ -442,7 +459,8 @@ FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 CREATE INDEX IF NOT EXISTS idx_users_role ON public.users(role);
 CREATE INDEX IF NOT EXISTS idx_users_status ON public.users(status);
 CREATE INDEX IF NOT EXISTS idx_branches_manager ON public.branches(manager_id);
-CREATE INDEX IF NOT EXISTS idx_rooms_branch_status ON public.rooms(branch_id, status);
+CREATE INDEX IF NOT EXISTS idx_zones_branch ON public.zones(branch_id);
+CREATE INDEX IF NOT EXISTS idx_rooms_zone_status ON public.rooms(zone_id, status);
 CREATE INDEX IF NOT EXISTS idx_rooms_price ON public.rooms(price_per_month);
 CREATE INDEX IF NOT EXISTS idx_beds_room_status ON public.beds(room_id, status);
 CREATE INDEX IF NOT EXISTS idx_rental_requests_customer_status ON public.rental_requests(customer_id, status);
@@ -471,6 +489,7 @@ GRANT USAGE ON SCHEMA public TO anon, authenticated;
 
 GRANT SELECT ON
     public.branches,
+    public.zones,
     public.rooms,
     public.beds,
     public.services
@@ -484,6 +503,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authentic
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.branches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.zones ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rooms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.beds ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rental_requests ENABLE ROW LEVEL SECURITY;
@@ -522,6 +542,17 @@ USING (true);
 
 DROP POLICY IF EXISTS branches_staff_manage ON public.branches;
 CREATE POLICY branches_staff_manage ON public.branches
+FOR ALL TO authenticated
+USING (public.is_staff())
+WITH CHECK (public.is_staff());
+
+DROP POLICY IF EXISTS zones_public_read ON public.zones;
+CREATE POLICY zones_public_read ON public.zones
+FOR SELECT
+USING (true);
+
+DROP POLICY IF EXISTS zones_staff_manage ON public.zones;
+CREATE POLICY zones_staff_manage ON public.zones
 FOR ALL TO authenticated
 USING (public.is_staff())
 WITH CHECK (public.is_staff());

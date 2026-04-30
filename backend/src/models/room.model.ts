@@ -15,7 +15,7 @@ export type BedStatus =
 
 export interface Room {
   id: string;
-  branchId: string;
+  zoneId: string;
   roomNumber: string;
   roomType?: string;
   maxCapacity: number;
@@ -25,6 +25,16 @@ export interface Room {
   status: RoomStatus;
   createdAt: string;
   updatedAt: string;
+  zones?: {
+    id: string;
+    name: string;
+    branches?: {
+        id: string;
+        name: string;
+        address: string;
+    }
+  };
+  beds?: any[];
 }
 
 export interface Bed {
@@ -43,19 +53,27 @@ export interface RoomWithBeds extends Room {
     name: string;
     address: string;
   } | null;
+  zone?: {
+    id: string;
+    name: string;
+  } | null;
   beds: Bed[];
 }
 
 export interface RoomFilters {
-  branch_id?: string;
+  zone_id?: string;
   room_status?: RoomStatus;
   bed_status?: BedStatus;
   room_type?: string;
+
+  capacity?: number;
+  min_price?: number;
+  max_price?: number;
   search?: string;
 }
 
 export interface CreateRoomDTO {
-  branch_id: string;
+  zone_id: string;
   room_number: string;
   room_type?: string;
   max_capacity: number;

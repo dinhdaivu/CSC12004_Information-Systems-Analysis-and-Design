@@ -26,6 +26,21 @@ jest.mock("@middleware/auth.middleware", () => ({
 
     next();
   },
+  roleMiddleware: (roles: string[]) => {
+    return (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ): void => {
+      const userRole = (req as any).user?.role;
+      // Nếu role không nằm trong danh sách cho phép, trả về 403 để pass test case cuối cùng
+      if (!userRole || !roles.includes(userRole)) {
+        res.status(403).json({ message: "Forbidden" });
+        return;
+      }
+      next();
+    };
+  },
 }));
 
 jest.mock("@config/supabase", () => ({
@@ -152,7 +167,8 @@ describe("Viewing Appointments Routes", () => {
       updated_at: "2026-05-02T00:00:00.000Z",
     };
 
-    const lt = jest.fn().mockResolvedValue({ data: [singleRow], error: null });
+    const range = jest.fn().mockResolvedValue({ data: [singleRow], error: null, count: 1 });
+    const lt = jest.fn().mockReturnValue({ range });
     const gte = jest.fn().mockReturnValue({ lt });
     const order = jest.fn().mockReturnValue({ gte });
     const select = jest.fn().mockReturnValue({ order });
@@ -166,7 +182,8 @@ describe("Viewing Appointments Routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data[0]).toEqual({
+    
+    expect(response.body.data.records[0]).toEqual({
       id: "appt-1",
       rentalRequestId: "req-1",
       customerId: "cus-1",
@@ -178,6 +195,13 @@ describe("Viewing Appointments Routes", () => {
       status: "scheduled",
       createdAt: "2026-05-01T00:00:00.000Z",
       updatedAt: "2026-05-02T00:00:00.000Z",
+    });
+
+    expect(response.body.data.pagination).toEqual({
+      page: 1,
+      limit: 5,
+      total: 1,
+      totalPages: 1
     });
   });
 

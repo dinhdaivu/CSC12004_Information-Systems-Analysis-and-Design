@@ -346,5 +346,44 @@
         "bookingApproved": "A rental request has been approved."
       }
     }
+  },
+  "ROOM_BED_SEARCH": {
+    "TITLE": "Room & Bed Search",
+    "SUBTITLE": "Choose your room and bed to help us find your perfect stay.",
+    "SEARCH_PLACEHOLDER": "Search ...",
+    "FILTER": "Filter",
+    "FILTERS": {
+      "ROOM_TYPE": "Room Type",
+      "ALL": "All",
+      "TWIN": "Twin (2 pax)",
+      "QUAD": "Quad (4 pax)",
+      "CAPACITY": "Capacity",
+      "CAPACITY_PLACEHOLDER": "Ex: 2"
+    },
+    "STATUS": {
+      "OCCUPIED": "Occupied",
+      "OCCUPIED_DESC": "All beds in this room are currently occupied.",
+      "RESERVED": "Reserved",
+      "RESERVED_DESC": "The remaining beds are currently on hold for a 24h deposit.",
+      "AVAILABLE": "Available",
+      "AVAILABLE_DESC": "The room has at least one vacant bed.",
+      "AVAILABLE_COUNT": "Available"
+    },
+    "ROOM": {
+      "VACANT": "Vacant & Clean",
+      "OCCUPIED_BED": "Occupied",
+      "VIEW_DETAIL": "View details for this room ↗",
+      "ROOM_LABEL": "Room",
+      "BRANCH_LABEL": "Branch",
+      "ZONE_LABEL": "Zone",
+      "TYPE_LABEL": "Type",
+      "FLOOR_ZONE": "Floor {{floor}} - {{zone}} Zone"
+    },
+    "BUTTONS": {
+      "NEXT": "Next >",
+      "BACK": "< Back",
+      "BACK_VN": "< Back",
+      "CONFIRM": "Confirm"
+    }
   }
 }

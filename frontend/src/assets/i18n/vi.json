@@ -346,5 +346,44 @@
         "bookingApproved": "Một yêu cầu thuê đã được phê duyệt."
       }
     }
+  },
+  "ROOM_BED_SEARCH": {
+    "TITLE": "Tìm kiếm phòng và giường",
+    "SUBTITLE": "Tìm kiếm phòng và giường trống theo số lượng người ở, loại phòng hoặc chi nhánh.",
+    "SEARCH_PLACEHOLDER": "Tìm kiếm ...",
+    "FILTER": "Bộ lọc",
+    "FILTERS": {
+      "ROOM_TYPE": "Loại phòng",
+      "ALL": "Tất cả",
+      "TWIN": "Twin (2 người)",
+      "QUAD": "Quad (4 người)",
+      "CAPACITY": "Sức chứa",
+      "CAPACITY_PLACEHOLDER": "VD: 2"
+    },
+    "STATUS": {
+      "OCCUPIED": "Đã có người ở",
+      "OCCUPIED_DESC": "Tất cả các giường trong phòng này đều đã có người ở.",
+      "RESERVED": "Đã đặt",
+      "RESERVED_DESC": "Các giường còn lại hiện đang được giữ lại cho một khoản cọc 24h.",
+      "AVAILABLE": "Còn trống",
+      "AVAILABLE_DESC": "Phòng có ít nhất một giường trống.",
+      "AVAILABLE_COUNT": "Còn trống"
+    },
+    "ROOM": {
+      "VACANT": "Còn trống & Sạch sẽ",
+      "OCCUPIED_BED": "Đã có người ở",
+      "VIEW_DETAIL": "Xem chi tiết phòng này ↗",
+      "ROOM_LABEL": "Phòng",
+      "BRANCH_LABEL": "Chi nhánh",
+      "ZONE_LABEL": "Khu vực",
+      "TYPE_LABEL": "Loại",
+      "FLOOR_ZONE": "Tầng {{floor}} - {{zone}} Khu vực"
+    },
+    "BUTTONS": {
+      "NEXT": "Tiếp theo >",
+      "BACK": "< Quay lại",
+      "BACK_VN": "< Quay lại",
+      "CONFIRM": "Xác nhận"
+    }
   }
 }

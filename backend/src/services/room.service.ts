@@ -19,6 +19,12 @@ type BranchJoin = {
   address: string;
 };
 
+type ZoneJoin = {
+  id: string;
+  name: string;
+  branches?: BranchJoin | BranchJoin[] | null;
+};
+
 type BedRow = {
   id: string;
   room_id: string;
@@ -31,7 +37,7 @@ type BedRow = {
 
 type RoomRow = {
   id: string;
-  branch_id: string;
+  zone_id: string;
   room_number: string;
   room_type: string | null;
   max_capacity: number;
@@ -41,7 +47,7 @@ type RoomRow = {
   status: RoomStatus;
   created_at: string;
   updated_at: string;
-  branches?: BranchJoin | BranchJoin[] | null;
+  zones?: ZoneJoin | ZoneJoin[] | null;
   beds?: BedRow[] | null;
 };
 
@@ -84,13 +90,13 @@ function mapBed(row: BedRow): Bed {
 }
 
 function mapRoom(row: RoomRow): RoomWithBeds {
-  const branchValue = Array.isArray(row.branches)
-    ? row.branches[0]
-    : row.branches;
+  const zoneValue = Array.isArray(row.zones) ? row.zones[0] : row.zones;
+  const branchValue = zoneValue?.branches ? (Array.isArray(zoneValue.branches) ? zoneValue.branches[0] : zoneValue.branches) : null;
 
   return {
     id: row.id,
-    branchId: row.branch_id,
+    zoneId: row.zone_id,
+    zone: zoneValue ? { id: zoneValue.id, name: zoneValue.name } : null,
     roomNumber: row.room_number,
     roomType: row.room_type ?? undefined,
     maxCapacity: row.max_capacity,
@@ -133,7 +139,7 @@ export class RoomService {
         .select(
           `
             id,
-            branch_id,
+            zone_id,
             room_number,
             room_type,
             max_capacity,
@@ -143,14 +149,14 @@ export class RoomService {
             status,
             created_at,
             updated_at,
-            branches(id, name, address),
+            zones(id, name, branches(id, name, address)),
             beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
           `,
         )
         .order("room_number", { ascending: true });
 
-      if (filters.branch_id) {
-        query = query.eq("branch_id", filters.branch_id);
+      if (filters.zone_id) {
+        query = query.eq("zone_id", filters.zone_id);
       }
 
       if (filters.room_status) {
@@ -163,6 +169,18 @@ export class RoomService {
 
       if (filters.bed_status) {
         query = query.eq("beds.status", filters.bed_status);
+      }
+
+      if (filters.capacity) {
+        query = query.eq("max_capacity", filters.capacity);
+      }
+
+      if (filters.min_price !== undefined) {
+        query = query.gte("price_per_month", filters.min_price);
+      }
+
+      if (filters.max_price !== undefined) {
+        query = query.lte("price_per_month", filters.max_price);
       }
 
       return query;
@@ -213,11 +231,13 @@ export class RoomService {
       const inRoomNumber = room.roomNumber.toLowerCase().includes(keyword);
       const inBranchName =
         room.branch?.name.toLowerCase().includes(keyword) ?? false;
+      const inRoomType = 
+        room.roomType?.toLowerCase().includes(keyword) ?? false;
       const inBedNumber = room.beds.some((bed) =>
         bed.bedNumber.toLowerCase().includes(keyword),
       );
 
-      return inRoomNumber || inBranchName || inBedNumber;
+      return inRoomNumber || inBranchName || inRoomType || inBedNumber; 
     });
   }
 
@@ -229,7 +249,7 @@ export class RoomService {
       .select(
         `
           id,
-          branch_id,
+          zone_id,
           room_number,
           room_type,
           max_capacity,
@@ -239,7 +259,7 @@ export class RoomService {
           status,
           created_at,
           updated_at,
-          branches(id, name, address),
+          zones(id, name, branches(id, name, address)),
           beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
         `,
       )
@@ -261,7 +281,7 @@ export class RoomService {
     const client = getSupabaseClient();
 
     const insertPayload = {
-      branch_id: payload.branch_id,
+      zone_id: payload.zone_id,
       room_number: payload.room_number,
       room_type: payload.room_type ?? null,
       max_capacity: payload.max_capacity,
@@ -277,7 +297,7 @@ export class RoomService {
       .select(
         `
           id,
-          branch_id,
+          zone_id,
           room_number,
           room_type,
           max_capacity,
@@ -287,7 +307,7 @@ export class RoomService {
           status,
           created_at,
           updated_at,
-          branches(id, name, address),
+          zones(id, name, branches(id, name, address)),
           beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
         `,
       )
@@ -349,7 +369,7 @@ export class RoomService {
       .select(
         `
           id,
-          branch_id,
+          zone_id,
           room_number,
           room_type,
           max_capacity,
@@ -359,7 +379,7 @@ export class RoomService {
           status,
           created_at,
           updated_at,
-          branches(id, name, address),
+          zones(id, name, branches(id, name, address)),
           beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
         `,
       )
