@@ -12,12 +12,13 @@ export class ZoneService {
   // Trỏ tới API /api/zones vừa tạo ở Backend
   private apiUrl = `${environment.apiUrl}/zones`;
 
-  // Hàm gọi API lấy danh sách Zones (có lọc theo branch_id)
-  getZones(branchId?: string): Observable<any> {
+  // 1. Đổi Observable<any> thành Observable<unknown>
+  getZones(branchId?: string): Observable<unknown> {
     let params = new HttpParams();
     if (branchId) {
       params = params.set('branch_id', branchId);
     }
-    return this.http.get<any>(this.apiUrl, { params });
+    // 2. Đổi get<any> thành get<unknown>
+    return this.http.get<unknown>(this.apiUrl, { params });
   }
 }

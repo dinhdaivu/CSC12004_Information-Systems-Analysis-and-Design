@@ -22,6 +22,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, 
 });
 
+router.use(apiLimiter);
 // Yêu cầu xác thực cho tất cả endpoints
 router.use(authMiddleware);
 
@@ -30,7 +31,7 @@ router.use(authMiddleware);
 // ==========================================
 // Gắn limiter CHỈ cho phương thức POST (tạo mới)
 router.post('/', apiLimiter, createRentalRequest);
-router.get('/my-requests', getMyRentalRequests);
+router.get('/my-requests', apiLimiter, getMyRentalRequests);
 
 // ==========================================
 // Routes cho Staff/Admin (Task 01-04)
