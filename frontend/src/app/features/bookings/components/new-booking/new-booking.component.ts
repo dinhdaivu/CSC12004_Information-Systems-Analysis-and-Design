@@ -22,7 +22,7 @@ import { AuthService } from '@core/services/auth.service';
           
           <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute" src="assets/pictures/Background.png" />
           
-          <div style="width: 2000px; height: 619px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+          <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
           <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
           
           <div (click)="navigate('/guidelines')" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.GUIDELINES' | translate }}</div>
@@ -40,19 +40,19 @@ import { AuthService } from '@core/services/auth.service';
             <div style="width: 200px; height: 150px; left: 0px; top: 0px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
 
             <ng-container *ngIf="!isAuthenticated">
-              <div (mousedown)="navigate('/register')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-                {{ 'AUTH.REGISTER.TITLE' | translate }}
+              <div (mousedown)="navigate('/register')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+                {{ 'AUTH.SIGN_UP' | translate }}
               </div>
-              <div (mousedown)="navigate('/login')" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-                {{ 'AUTH.LOGIN.TITLE' | translate }}
+              <div (mousedown)="navigate('/login')" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+                {{ 'AUTH.LOG_IN' | translate }}
               </div>
             </ng-container>
 
             <ng-container *ngIf="isAuthenticated">
-              <div (mousedown)="navigate('/profile')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              <div (mousedown)="navigate('/profile')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
                 {{ 'COMMON.PROFILE' | translate }}
               </div>
-              <div (mousedown)="logout()" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              <div (mousedown)="logout()" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
                 {{ 'COMMON.LOGOUT' | translate }}
               </div>
             </ng-container>
@@ -179,6 +179,23 @@ import { AuthService } from '@core/services/auth.service';
               <div style="width: 100%; height: 100%; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 600; word-wrap: break-word">{{ 'BOOKING.PROCESSING' | translate }}</div>
             </div>
             <div *ngIf="errorMessage" style="width: 600px; height: 50px; position: absolute; left: 855px; top: 810px; justify-content: center; display: flex; flex-direction: column; color: #991B1B; font-size: 24px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ errorMessage }}</div>
+          </ng-container>
+
+          <ng-container *ngIf="currentPage === 4">
+            <div style="position: absolute; left: 500px; top: 250px; width: 1317px; height: 730px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
+              <div style="width: 120px; height: 120px; background: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div style="color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; margin-bottom: 10px;">
+                {{ 'BOOKING.SUCCESS' | translate }}
+              </div>
+              <div style="color: #595959; font-size: 24px; font-family: Afacad; font-weight: 500; margin-bottom: 40px; text-align: center; max-width: 600px;">
+                Your rental request has been successfully submitted. Our team will review it and contact you shortly.
+              </div>
+              <button type="button" (click)="navigate('/bookings')" style="padding: 16px 48px; background: #264893; border-radius: 40px; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; cursor: pointer; border: none; outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                {{ 'NAV.PUBLIC.BOOKINGS' | translate }} &rarr;
+              </button>
+            </div>
           </ng-container>
 
           <ng-container *ngIf="currentPage < 3">
@@ -387,18 +404,7 @@ export class NewBookingComponent implements OnInit {
     this.rentalRequestService.createRentalRequest(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
-        window.alert('Attendance Confirmed! Thank you.');
-        
-        // Reset form và quay lại trang 1
-        this.bookingForm.reset({ 
-          branch: 'Tô Hiến Thành', 
-          room_category: 'Twin Room (2)', 
-          rental_duration_months: 6, 
-          people_count: 2 
-        });
-        this.selectedFile = null;
-        this.selectedFileName = '';
-        this.currentPage = 1;
+        this.currentPage = 4;
         this.cdr.detectChanges();
       },
       error: (err: unknown) => {

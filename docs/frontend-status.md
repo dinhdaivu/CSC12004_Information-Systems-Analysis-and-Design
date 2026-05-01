@@ -62,6 +62,14 @@
 
 ---
 
+## Customer Screens — Room & Bed Search — task `01-05`
+
+| # | Figma Screen | Figma Link | Angular Route | UI | API | Notes |
+|---|-------------|------------|---------------|----|-----|-------|
+| 1 | Room & Bed Search | Figma | `/rooms` | Done | Done | Customer filters and selects a specific room/bed before booking |
+
+---
+
 ## Customer Screens — Booking & Request List — task `01-06`
 
 | # | Figma Screen | Figma Link | Angular Route | UI | API | Notes |
@@ -224,3 +232,4 @@
 - Backend auth routes are live for `/api/auth/register`, `/api/auth/login`, `/api/auth/verify-email`, `/api/auth/resend-verification`, `/api/auth/forgot-password`, `/api/auth/reset-password/verify`, and `/api/auth/me`; most feature APIs outside auth are still documented ahead of implementation.
 - The app already has English/Vietnamese i18n support through `@ngx-translate/core`, `LanguageService`, `LanguageSwitcherComponent`, and `frontend/src/assets/i18n/{en,vi}.json`; every implemented screen should use translation keys instead of hard-coded user-facing copy.
 - **Figma node IDs corrected:** View Detail Nguyễn Cửu Vân is `275:572` (not `270:435`); Deposit Payment screens replaced old stale IDs `331:305`/`341:xxx` with correct current IDs `425:xxx`/`426:xxx`; Viewing Schedule now includes Calendar View (`490:888`) in addition to Approve and List View.
+- **Epic 01 Completed:** Tasks `01-01` through `01-06` are fully implemented: Room Discovery, Detail, Bed Search, Rental Request, Request Tracking, and Admin Request Management are successfully integrated with Supabase and i18n support.
