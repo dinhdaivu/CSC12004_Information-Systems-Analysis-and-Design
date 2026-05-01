@@ -54,7 +54,7 @@ export class AdminSidebarComponent {
   private readonly router = inject(Router);
 
   readonly sidebarNavItems: SidebarNavItem[] = [
-    { label: "Inquiries", path: "/admin" },
+    { label: "Inquiries", path: "/admin/rental-requests" },
     { label: "Schedules", path: "/admin/scheduled" },
     { label: "Rooms", path: "/admin/rooms" },
     { label: "Reservations", path: "/admin/payments" },

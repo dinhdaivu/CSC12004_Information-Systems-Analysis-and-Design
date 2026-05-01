@@ -48,7 +48,7 @@ Branch detail flow:
 2. Frontend loads branch/room detail data.
 3. Page renders branch header, address, description, facility sections, and policies.
 4. User clicks Contact Us Now.
-5. System routes to booking/contact flow or displays contact information.
+5. System routes to the room and bed search flow (/rooms).
 ```
 
 ---

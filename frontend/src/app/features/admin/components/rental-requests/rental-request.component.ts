@@ -20,6 +20,14 @@ import { AuthService } from "@core/services/auth.service";
   selector: "app-rental-requests",
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
+  styles: [`
+    .hover-effect {
+      transition: all 0.2s ease-in-out;
+    }
+    .hover-effect:hover {
+      opacity: 0.9;
+    }
+  `],
   template: `
     <div
       [style.height.px]="1080 * scaleFactor"
@@ -62,7 +70,9 @@ import { AuthService } from "@core/services/auth.service";
               src="assets/pictures/Background.png"
             />
             <div
-              style="width: 2000px; height: 619px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
+              style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
+              style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
+              style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
             ></div>
             <div
               style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"
@@ -169,10 +179,9 @@ import { AuthService } from "@core/services/auth.service";
               <img
                 (click)="openDetail(req)"
                 [style.top.px]="567 + i * 33"
+                class="hover-effect"
                 src="assets/icons/Details.png"
-                style="width: 14px; height: 14px; left: 1698px; position: absolute; cursor: pointer; transition: transform 0.2s;"
-                onmouseover="this.style.transform='scale(1.3)'"
-                onmouseout="this.style.transform='scale(1)'"
+                style="width: 14px; height: 14px; left: 1698px; position: absolute; cursor: pointer;"
               />
             </ng-container>
 
@@ -200,7 +209,7 @@ import { AuthService } from "@core/services/auth.service";
               style="width: 129px; height: 46px; left: 1593px; top: 446px; position: absolute; background: rgba(38, 72, 147, 0); border-radius: 50px; border: 2px black solid; pointer-events: none;"
             ></div>
             <img
-              src="assets/icons/Filter.png"
+              src="assets/icons/BlackFilter.png"
               style="width: 24px; height: 24px; left: 1612px; top: 457px; position: absolute; pointer-events: none;"
             />
 
@@ -391,9 +400,8 @@ import { AuthService } from "@core/services/auth.service";
 
             <div
               (click)="currentScreen = 1"
-              style="width: 198.87px; height: 70px; left: 576px; top: 835px; position: absolute; border-radius: 40px; border: 3px #264893 solid; cursor: pointer; transition: 0.2s;"
-              onmouseover="this.style.background='#f0f0f0'"
-              onmouseout="this.style.background='transparent'"
+              class="hover-effect"
+              style="width: 198.87px; height: 70px; left: 576px; top: 835px; position: absolute; border-radius: 40px; border: 3px #264893 solid; cursor: pointer;"
             ></div>
             <div
               style="width: 180.37px; height: 54px; left: 585.25px; top: 843px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 28px; font-family: Afacad; font-weight: 600; pointer-events: none;"
@@ -403,9 +411,8 @@ import { AuthService } from "@core/services/auth.service";
 
             <div
               (click)="goToVerification()"
-              style="width: 266px; height: 70px; left: 1454px; top: 835px; position: absolute; background: #264893; border-radius: 40px; cursor: pointer; transition: 0.2s;"
-              onmouseover="this.style.opacity='0.9'"
-              onmouseout="this.style.opacity='1'"
+              class="hover-effect"
+              style="width: 266px; height: 70px; left: 1454px; top: 835px; position: absolute; background: #264893; border-radius: 40px; cursor: pointer;"
             ></div>
             <div
               style="width: 266px; height: 54px; left: 1454px; top: 843px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; pointer-events: none;"
@@ -521,9 +528,8 @@ import { AuthService } from "@core/services/auth.service";
 
             <div
               (click)="updateStatus('reviewing')"
-              style="width: 266px; height: 70px; left: 876px; top: 835px; position: absolute; background: #264893; border-radius: 40px; cursor: pointer; transition: 0.2s;"
-              onmouseover="this.style.opacity='0.9'"
-              onmouseout="this.style.opacity='1'"
+              class="hover-effect"
+              style="width: 266px; height: 70px; left: 876px; top: 835px; position: absolute; background: #264893; border-radius: 40px; cursor: pointer;"
             ></div>
             <div
               style="width: 266px; height: 54px; left: 876px; top: 843px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; pointer-events: none;"
@@ -533,9 +539,8 @@ import { AuthService } from "@core/services/auth.service";
 
             <div
               (click)="updateStatus('rejected')"
-              style="width: 266px; height: 70px; left: 1165px; top: 835px; position: absolute; background: #D32F2F; border-radius: 40px; cursor: pointer; transition: 0.2s;"
-              onmouseover="this.style.opacity='0.9'"
-              onmouseout="this.style.opacity='1'"
+              class="hover-effect"
+              style="width: 266px; height: 70px; left: 1165px; top: 835px; position: absolute; background: #D32F2F; border-radius: 40px; cursor: pointer;"
             ></div>
             <div
               style="width: 266px; height: 54px; left: 1165px; top: 843px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; pointer-events: none;"
@@ -549,9 +554,8 @@ import { AuthService } from "@core/services/auth.service";
                 check1 && check2 && check3 ? 'auto' : 'none'
               "
               [style.opacity]="check1 && check2 && check3 ? '1' : '0.5'"
-              style="width: 266px; height: 70px; left: 1454px; top: 835px; position: absolute; background: #2E7D32; border-radius: 40px; cursor: pointer; transition: 0.2s;"
-              onmouseover="this.style.opacity='0.9'"
-              onmouseout="this.style.opacity='1'"
+              class="hover-effect"
+              style="width: 266px; height: 70px; left: 1454px; top: 835px; position: absolute; background: #2E7D32; border-radius: 40px; cursor: pointer;"
             ></div>
             <div
               style="width: 266px; height: 54px; left: 1454px; top: 843px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; pointer-events: none;"
@@ -641,53 +645,63 @@ import { AuthService } from "@core/services/auth.service";
           />
 
           <div
-            style="width: 196px; height: 54.75px; left: 166px; top: 331px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+            (click)="navigate('/admin/rental-requests')"
+            style="cursor: pointer; width: 196px; height: 54.75px; left: 166px; top: 331px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.INQUIRIES" | translate }}
           </div>
           <img
+            (click)="navigate('/admin/rental-requests')"
             src="assets/icons/Inquiries.png"
-            style="width: 32px; height: 29px; left: 107px; top: 344px; position: absolute;"
+            style="cursor: pointer; width: 32px; height: 29px; left: 107px; top: 344px; position: absolute;"
           />
 
           <div
-            style="width: 126px; height: 54.75px; left: 166px; top: 417.54px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+            (click)="navigate('/admin/schedules-management')"
+            style="cursor: pointer; width: 126px; height: 54.75px; left: 166px; top: 417.54px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.SCHEDULES" | translate }}
           </div>
           <img
+            (click)="navigate('/admin/schedules-management')"
             src="assets/icons/Schedules.png"
-            style="width: 40px; height: 35px; left: 107px; top: 427px; position: absolute;"
+            style="cursor: pointer; width: 40px; height: 35px; left: 107px; top: 427px; position: absolute;"
           />
 
           <div
-            style="width: 195px; height: 54.75px; left: 161px; top: 504.07px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+            (click)="navigate('/admin/rooms-management')"
+            style="cursor: pointer; width: 195px; height: 54.75px; left: 161px; top: 504.07px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}
           </div>
           <img
+            (click)="navigate('/admin/rooms-management')"
             src="assets/icons/Rooms.png"
-            style="width: 36px; height: 32px; left: 107px; top: 515px; position: absolute;"
+            style="cursor: pointer; width: 36px; height: 32px; left: 107px; top: 515px; position: absolute;"
           />
 
           <div
-            style="width: 175px; height: 54.75px; left: 166px; top: 589.72px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+            (click)="navigate('/admin/payments')"
+            style="cursor: pointer; width: 175px; height: 54.75px; left: 166px; top: 589.72px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}
           </div>
           <img
+            (click)="navigate('/admin/payments')"
             src="assets/icons/Reservation.png"
-            style="width: 30px; height: 30px; left: 107px; top: 600px; position: absolute;"
+            style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 600px; position: absolute;"
           />
 
           <div
-            style="width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+            (click)="navigate('/admin/contracts')"
+            style="cursor: pointer; width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
           </div>
           <img
+            (click)="navigate('/admin/contracts')"
             src="assets/icons/Contract.png"
-            style="width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;"
+            style="cursor: pointer; width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;"
           />
 
           <div
@@ -789,15 +803,15 @@ export class RentalRequestsComponent implements OnInit {
     this.rentalService.getAllRentalRequests().subscribe({
       next: (res) => {
         this.requests = res.data || [];
-        this.onSearch();
         this.isLoading = false;
+        this.onSearch(); // Triggers change detection
       },
       error: (err) => {
         console.error("Failed to load requests from API:", err);
         window.alert("Lỗi: " + (err.error?.message || err.message));
         this.requests = [];
-        this.onSearch();
         this.isLoading = false;
+        this.onSearch(); // Triggers change detection
       },
     });
   }

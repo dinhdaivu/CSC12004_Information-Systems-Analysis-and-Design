@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BranchService } from '@core/services/branch.service';
+import { AuthService } from '@core/services/auth.service';
 import { Branch } from '@shared/models/branch.model';
 
 type BranchVisualPreset = {
@@ -33,7 +34,7 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
   template: `
     @if (isLoading) {
       <div class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df;">
@@ -48,6 +49,108 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
         <span class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"></span>
       </div>
     }
+
+    <header class="absolute inset-x-0 top-0 z-50" [class.invisible]="isLoading">
+      <div class="mx-auto flex max-w-[1920px] items-start justify-between px-6 pt-8 sm:px-10 lg:hidden">
+        <a routerLink="/dashboard" class="shrink-0">
+          <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="aspect-[185/165] h-auto w-[8rem] object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.18)] sm:w-[9rem]">
+        </a>
+        <div class="flex items-center gap-3">
+          <button type="button" aria-label="Toggle navigation" (click)="toggleMobileMenu()" class="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/95 text-white transition hover:bg-white/10">
+            <i class="bi" [class.bi-list]="!isMobileMenuOpen" [class.bi-x-lg]="isMobileMenuOpen"></i>
+          </button>
+          
+          <div class="relative">
+            <button type="button" (click)="toggleLangMenu()" class="inline-flex h-[clamp(3rem,3.9vw,4.6875rem)] w-[clamp(3rem,3.9vw,4.6875rem)] items-center justify-center rounded-full transition hover:opacity-85">
+              <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
+            </button>
+            @if (isLangMenuOpen) {
+              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60]">
+                <button (click)="changeLang('vi')" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
+                <div class="h-px bg-slate-100"></div>
+                <button (click)="changeLang('en')" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">English</button>
+              </div>
+            }
+          </div>
+
+          <div class="relative">
+            <button type="button" (click)="toggleUserMenu()" aria-label="Open user menu" class="inline-flex h-[clamp(3rem,3.9vw,4.6875rem)] w-[clamp(3rem,3.9vw,4.6875rem)] items-center justify-center rounded-full transition hover:opacity-85">
+              <img src="assets/icons/account.svg" aria-hidden="true" class="h-full w-full object-contain">
+              <span class="sr-only">Account</span>
+            </button>
+            @if (isUserMenuOpen) {
+              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60]">
+                @if (isAuthenticated) {
+                  <button routerLink="/profile" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Profile</button>
+                  <button routerLink="/bookings" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">My Bookings</button>
+                  <div class="h-px bg-slate-100"></div>
+                  <button (click)="logout()" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-red-50 text-red-600">Logout</button>
+                } @else {
+                  <button routerLink="/login" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Login</button>
+                  <button routerLink="/register" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Register</button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="relative mx-auto hidden max-w-[1920px] lg:block lg:h-[14.5rem]">
+        <a routerLink="/dashboard" class="absolute left-[5.2%] top-[clamp(4.5rem,9.26vh,6.25rem)] block">
+          <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="h-auto w-[clamp(8.75rem,17.13vh,11.5625rem)] object-contain drop-shadow-[0_8px_30px_rgba(0,0,0,0.18)]">
+        </a>
+        <div class="absolute right-[5.47%] top-[clamp(4.5rem,9.26vh,6.25rem)] flex items-center gap-[clamp(2rem,4vw,4rem)]">
+          <nav class="flex items-center gap-[clamp(2.1rem,6.2vh,4rem)]">
+            <a routerLink="/about" routerLinkActive="border-b-2 border-white" class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200 pb-0.5"> {{ 'NAV.HERO.ABOUT' | translate }} </a>
+            <a routerLink="/guidelines" routerLinkActive="border-b-2 border-white" class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200 pb-0.5"> {{ 'NAV.HERO.GUIDELINES' | translate }} </a>
+            <a routerLink="/contact" routerLinkActive="border-b-2 border-white" class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200 pb-0.5"> {{ 'NAV.HERO.CONTACT' | translate }} </a>
+          </nav>
+          <div class="flex items-center gap-[clamp(0.9rem,1.8vh,1.35rem)]">
+            <div class="relative">
+              <button type="button" (click)="toggleLangMenu()" class="inline-flex h-[clamp(3.5rem,6.48vh,4.375rem)] w-[clamp(3.5rem,6.48vh,4.375rem)] items-center justify-center rounded-full transition hover:opacity-85">
+                <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
+              </button>
+              @if (isLangMenuOpen) {
+                <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
+                  <button (click)="changeLang('vi')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
+                  <div class="h-px bg-slate-100"></div>
+                  <button (click)="changeLang('en')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
+                </div>
+              }
+            </div>
+            <div class="relative">
+              <button type="button" (click)="toggleUserMenu()" aria-label="Open user menu" class="inline-flex h-[clamp(3.5rem,6.48vh,4.375rem)] w-[clamp(3.5rem,6.48vh,4.375rem)] items-center justify-center rounded-full transition hover:opacity-85">
+                <img src="assets/icons/account.svg" aria-hidden="true" class="h-full w-full object-contain">
+                <span class="sr-only">Account</span>
+              </button>
+              @if (isUserMenuOpen) {
+                <div class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
+                  @if (isAuthenticated) {
+                    <button routerLink="/profile" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Profile</button>
+                    <button routerLink="/bookings" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">My Bookings</button>
+                    <div class="h-px bg-slate-100"></div>
+                    <button (click)="logout()" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">Logout</button>
+                  } @else {
+                    <button routerLink="/login" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Login</button>
+                    <button routerLink="/register" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Register</button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @if (isMobileMenuOpen) {
+        <div class="mx-6 mt-6 rounded-[1.75rem] border border-white/15 bg-slate-950/60 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:mx-10 lg:hidden">
+          <nav class="flex flex-col gap-1">
+            <a routerLink="/about" class="rounded-2xl px-4 py-3 text-xl font-semibold text-white transition hover:bg-white/10 font-['Afacad']" (click)="toggleMobileMenu()">{{ 'NAV.HERO.ABOUT' | translate }}</a>
+            <a routerLink="/guidelines" class="rounded-2xl px-4 py-3 text-xl font-semibold text-white transition hover:bg-white/10 font-['Afacad']" (click)="toggleMobileMenu()">{{ 'NAV.HERO.GUIDELINES' | translate }}</a>
+            <a routerLink="/contact" class="rounded-2xl px-4 py-3 text-xl font-semibold text-white transition hover:bg-white/10 font-['Afacad']" (click)="toggleMobileMenu()">{{ 'NAV.HERO.CONTACT' | translate }}</a>
+          </nav>
+        </div>
+      }
+    </header>
 
     <section class="relative min-h-screen overflow-hidden font-['Afacad'] text-white" [class.invisible]="isLoading">
       @if (selectedBranch) {
@@ -141,6 +244,14 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly branchService = inject(BranchService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+
+  isLangMenuOpen = false;
+  isUserMenuOpen = false;
+  isMobileMenuOpen = false;
+  isAuthenticated = false;
 
   branches: Branch[] = [];
   filteredBranches: Branch[] = [];
@@ -152,6 +263,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   autoPlayTimer: number | null = null;
 
   ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated();
+
     this.branchService.getBranches().subscribe((data) => {
       this.branches = data;
       this.filteredBranches = data;
@@ -334,5 +447,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
+  }
+
+  toggleLangMenu(): void {
+    this.isLangMenuOpen = !this.isLangMenuOpen;
+    this.isUserMenuOpen = false;
+  }
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+    this.isLangMenuOpen = false;
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  changeLang(lang: string): void {
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe(() => {
+      this.isAuthenticated = false;
+      this.isUserMenuOpen = false;
+      this.router.navigate(['/login']);
+    });
   }
 }

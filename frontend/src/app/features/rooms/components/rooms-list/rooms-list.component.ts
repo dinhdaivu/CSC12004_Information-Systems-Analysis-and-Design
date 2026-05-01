@@ -45,7 +45,7 @@ interface RoomItem {
 
           <div style="width: 1920px; height: 644px; left: 0px; top: -5px; position: absolute; background: #503D2E"></div>
           <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute" src="assets/pictures/Background.png" />
-          <div style="width: 2000px; height: 619px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+          <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
           <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
 
           <div (click)="navigate('/guidelines')" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.GUIDELINES' | translate }}</div>
@@ -62,18 +62,18 @@ interface RoomItem {
           <div *ngIf="isUserMenuOpen" style="position: absolute; left: 1680px; top: 180px; width: 200px; height: 150px; z-index: 100;">
             <div style="width: 200px; height: 150px; left: 0px; top: 0px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
             <ng-container *ngIf="!isAuthenticated">
-              <div (mousedown)="navigate('/register')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-                {{ 'AUTH.REGISTER.TITLE' | translate }}
+              <div (mousedown)="navigate('/register')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+                {{ 'AUTH.SIGN_UP' | translate }}
               </div>
-              <div (mousedown)="navigate('/login')" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-                {{ 'AUTH.LOGIN.TITLE' | translate }}
+              <div (mousedown)="navigate('/login')" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+                {{ 'AUTH.LOG_IN' | translate }}
               </div>
             </ng-container>
             <ng-container *ngIf="isAuthenticated">
-              <div (mousedown)="navigate('/profile')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              <div (mousedown)="navigate('/profile')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
                 {{ 'COMMON.PROFILE' | translate }}
               </div>
-              <div (mousedown)="logout()" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              <div (mousedown)="logout()" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
                 {{ 'COMMON.LOGOUT' | translate }}
               </div>
             </ng-container>
@@ -116,7 +116,7 @@ interface RoomItem {
             <div (click)="toggleFilter()" style="cursor: pointer; width: 52px; height: 25px; left: 1650px; top: 471px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 400; word-wrap: break-word; z-index: 10;">{{ 'ROOM_BED_SEARCH.FILTER' | translate }}</div>
             <div (click)="toggleFilter()" style="cursor: pointer; width: 129px; height: 46px; left: 1593px; top: 460px; position: absolute; background: rgba(38, 72, 147, 0); border-radius: 50px; border: 2px black solid; z-index: 5;"></div>
             <div (click)="toggleFilter()" style="cursor: pointer; width: 28px; height: 28px; left: 1612px; top: 469px; position: absolute; overflow: hidden; z-index: 10;">
-              <img src="assets/icons/Filter.png" style="width: 23.33px; height: 21px; left: 2.33px; top: 3.50px; position: absolute; pointer-events: none;">
+              <img src="assets/icons/BlackFilter.png" style="width: 23.33px; height: 21px; left: 2.33px; top: 3.50px; position: absolute; pointer-events: none;">
             </div>
 
             <div *ngIf="isFilterOpen" style="position: absolute; left: 1593px; top: 510px; width: 250px; background: white; border: 2px solid black; border-radius: 15px; padding: 15px; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -203,20 +203,24 @@ interface RoomItem {
             <div style="width: 350.26px; height: 30px; left: 754px; top: 290px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }} {{ selectedRoom?.roomNumber || 'THT.204' }}</div>
             <div style="width: 509px; height: 30px; left: 754px; top: 347px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.BRANCH_LABEL' | translate }} {{ filterBranchName }} | {{ 'ROOM_BED_SEARCH.ROOM.ZONE_LABEL' | translate }}: {{ zones.length > 0 ? zones[currentZoneIndex]?.name : '' }} | {{ 'ROOM_BED_SEARCH.ROOM.TYPE_LABEL' | translate }}: {{ selectedRoom?.roomType | titlecase }} {{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }}</div>
 
-            <ng-container *ngFor="let bed of selectedRoom?.beds; let i = index">
-               <div (click)="bed.status === 'available' ? selectBed(bed.id) : null" [style.top.px]="440 + i * 111" style="width: 463px; height: 94.99px; left: 803px; position: absolute; background: #F6F6F6; box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.10); border-radius: 25px; cursor: pointer;" [style.border]="selectedBedId === bed.id ? '3px solid #264893' : 'none'" [style.opacity]="bed.status === 'available' ? '1' : '0.7'"></div>
-               
-               <div [style.top.px]="460.93 + i * 111" style="width: 57.31px; height: 57px; left: 864.56px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{ number: (bed.bedNumber || i+1) } }}</div>
-               
-               <div [style.top.px]="461 + i * 111" style="width: 216.75px; height: 56.99px; left: 1024.88px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bed.status === 'available' ? ('ROOM_BED_SEARCH.ROOM.VACANT' | translate) : ('ROOM_BED_SEARCH.ROOM.OCCUPIED_BED' | translate) }}</div>
-               
-               <div [style.top.px]="479.76 + i * 111" [style.background]="getStatusColor(bed.status)" style="width: 16.55px; height: 16.55px; left: 838.33px; position: absolute; border-radius: 9999px"></div>
-               
-               <div [style.top.px]="519.49 + i * 111" style="width: 62.93px; height: 0px; left: 998.59px; position: absolute; transform: rotate(-90deg); transform-origin: top left; outline: 2.50px black solid; outline-offset: -1.25px"></div>
-               
-               <div [style.top.px]="477 + i * 111" [style.background]="bed.status === 'available' ? '#373737' : '#ADADAD'" style="width: 20px; height: 20px; left: 752px; position: absolute; border-radius: 9999px; border: 1px #ADADAD solid"></div>
-               <div [style.top.px]="473 + i * 111" style="width: 28px; height: 28px; left: 748px; position: absolute; border-radius: 9999px; border: 2px #ADADAD solid"></div>
-            </ng-container>
+            <div style="position: absolute; left: 730px; top: 410px; width: 560px; height: 290px; overflow-y: auto; overflow-x: hidden; padding: 10px 10px 10px 18px;">
+              <ng-container *ngFor="let bed of selectedRoom?.beds; let i = index">
+                 <div style="position: relative; width: 100%; height: 95px; margin-bottom: 16px;">
+                   <div (click)="bed.status === 'available' ? selectBed(bed.id) : null" style="width: 463px; height: 94.99px; left: 55px; top: 0px; position: absolute; background: #F6F6F6; box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.10); border-radius: 25px; cursor: pointer;" [style.border]="selectedBedId === bed.id ? '3px solid #264893' : 'none'" [style.opacity]="bed.status === 'available' ? '1' : '0.7'"></div>
+                   
+                   <div style="width: 57.31px; height: 57px; left: 116.56px; top: 20.93px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-weight: 700; word-wrap: break-word; pointer-events: none;">{{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{ number: (bed.bedNumber || i+1) } }}</div>
+                   
+                   <div style="width: 216.75px; height: 56.99px; left: 276.88px; top: 21px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; pointer-events: none;">{{ bed.status === 'available' ? ('ROOM_BED_SEARCH.ROOM.VACANT' | translate) : ('ROOM_BED_SEARCH.ROOM.OCCUPIED_BED' | translate) }}</div>
+                   
+                   <div [style.background]="getStatusColor(bed.status)" style="width: 16.55px; height: 16.55px; left: 90.33px; top: 39.76px; position: absolute; border-radius: 9999px; pointer-events: none;"></div>
+                   
+                   <div style="width: 62.93px; height: 0px; left: 250.59px; top: 79.49px; position: absolute; transform: rotate(-90deg); transform-origin: top left; outline: 2.50px black solid; outline-offset: -1.25px; pointer-events: none;"></div>
+                   
+                   <div [style.background]="bed.status === 'available' ? '#373737' : '#ADADAD'" style="width: 20px; height: 20px; left: 4px; top: 37px; position: absolute; border-radius: 9999px; border: 1px #ADADAD solid; pointer-events: none;"></div>
+                   <div style="width: 28px; height: 28px; left: 0px; top: 33px; position: absolute; border-radius: 9999px; border: 2px #ADADAD solid; pointer-events: none;"></div>
+                 </div>
+              </ng-container>
+            </div>
 
             <div (click)="goToDetail()" style="cursor: pointer; left: 754px; top: 380px; position: absolute; color: #264893; font-size: 20px; text-decoration: underline; font-family: Afacad;">{{ 'ROOM_BED_SEARCH.ROOM.VIEW_DETAIL' | translate }}</div>
 
