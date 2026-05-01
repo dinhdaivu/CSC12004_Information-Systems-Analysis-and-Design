@@ -71,8 +71,6 @@ import { AuthService } from "@core/services/auth.service";
             />
             <div
               style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
-              style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
-              style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"
             ></div>
             <div
               style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"
