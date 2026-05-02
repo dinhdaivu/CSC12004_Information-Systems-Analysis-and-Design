@@ -320,7 +320,7 @@ export class RefundExecutionComponent implements OnInit {
       const label = this.selectedPayment === 'momo' ? 'Momo' : this.selectedPayment === 'vietqr' ? 'VietQR' : 'VISA';
       this.selected.status = 'Completed';
       this.selected.paymentMethod = label;
-      this.selected.refundDate = new Date().toLocaleDateString('vi-VN').replace(/\//g, '/');
+      this.selected.refundDate = new Date().toLocaleDateString('vi-VN');
     }
   }
 
