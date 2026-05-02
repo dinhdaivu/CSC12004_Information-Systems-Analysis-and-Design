@@ -46,6 +46,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/bookings/bookings.routes').then((m) => m.BOOKINGS_ROUTES)
       },
       {
+        path: 'contracts',
+        loadChildren: () => import('./features/contracts/contracts.routes').then((m) => m.CONTRACTS_ROUTES)
+      },
+      {
         path: 'about',
         loadChildren: () => import('./features/about/about.routes').then((m) => m.ABOUT_ROUTES)
       },
@@ -58,6 +62,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/contact/contact.routes').then((m) => m.CONTACT_ROUTES)
       }
     ]
+  },
+  {
+    path: 'accountant',
+    loadChildren: () => import('./features/accountant/accountant.routes').then((m) => m.ACCOUNTANT_ROUTES)
   },
   {
     path: '**',
