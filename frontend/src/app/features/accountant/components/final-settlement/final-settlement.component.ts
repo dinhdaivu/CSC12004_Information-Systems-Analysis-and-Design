@@ -15,11 +15,6 @@ interface Settlement {
   status: 'Refundable' | 'Arrears';
 }
 
-function calcBalance(s: Settlement): number {
-  const refundable = s.deposit * s.refundRate / 100;
-  return refundable - s.damageFee - s.outstandingRent;
-}
-
 const MOCK_SETTLEMENTS: Settlement[] = [
   { id: '1', residentInfo: 'Nguyễn Ngọc Linh Chi', room: 'THT204', checkoutDate: '15/04/2026', deposit: 6000000, refundRate: 100, damageFee: 500000, outstandingRent: 0,       status: 'Refundable' },
   { id: '2', residentInfo: 'Nguyễn Ngọc Linh Chi', room: 'THT204', checkoutDate: '15/04/2026', deposit: 3000000, refundRate: 50,  damageFee: 350000,  outstandingRent: 0,       status: 'Refundable' },
