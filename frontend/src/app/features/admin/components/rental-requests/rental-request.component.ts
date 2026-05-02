@@ -580,7 +580,7 @@ import { AuthService } from "@core/services/auth.service";
             {{ "COMMON.GUIDELINES" | translate }}
           </div>
           <div
-            (click)="navigate('/about-us')"
+            (click)="navigate('/about')"
             style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;"
           >
             {{ "COMMON.ABOUT_US" | translate }}

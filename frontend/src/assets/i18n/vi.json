@@ -336,6 +336,10 @@
       "TITLE": "Chi tiết đơn",
       "DESCRIPTION": "Xem trạng thái đầy đủ của đơn, bao gồm tiến trình thanh toán và các mốc hợp đồng."
     },
+    "CONTRACTS": {
+      "TITLE": "Hợp đồng và lưu trú của tôi",
+      "DESCRIPTION": "Xem hợp đồng thuê, biên bản bàn giao, yêu cầu trả phòng và đối soát hoàn cọc."
+    },
     "ADMIN_DASHBOARD": {
       "TITLE": "Tổng quan quản trị",
       "DESCRIPTION": "Theo dõi hoạt động toàn hệ thống và điều hướng nhanh đến các tác vụ quản trị chính."
