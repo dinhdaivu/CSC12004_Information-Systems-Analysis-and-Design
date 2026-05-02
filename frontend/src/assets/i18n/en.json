@@ -336,6 +336,10 @@
       "TITLE": "Booking Details",
       "DESCRIPTION": "Review the full status of your booking, including payment progress and contract milestones."
     },
+    "CONTRACTS": {
+      "TITLE": "My Residency & Contract",
+      "DESCRIPTION": "Review your active rental agreement, handover records, checkout request, and refund settlement."
+    },
     "ADMIN_DASHBOARD": {
       "TITLE": "Admin Overview",
       "DESCRIPTION": "Monitor system-wide activity and navigate quickly to core operations."
