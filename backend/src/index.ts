@@ -10,6 +10,8 @@ import bedRoutes from "@routes/bed.routes";
 import viewingAppointmentsRoutes from "@routes/viewing-appointments.routes";
 import depositRoutes from "@routes/deposit.routes";
 import paymentRoutes from "@routes/payment.routes";
+import contractsRoutes from "@routes/contracts.routes";
+import lodgingEligibilityRoutes from "@routes/lodging-eligibility.routes";
 import rentalRequestRoutes from "@routes/rental-request.routes";
 import myBookingRoutes from "@routes/my-booking.routes";
 import usersRoutes from "@routes/users.routes";
@@ -50,6 +52,8 @@ app.use("/api/bed", bedRoutes);
 app.use("/api/viewing-appointments", viewingAppointmentsRoutes);
 app.use("/api/deposits", depositRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/contracts", contractsRoutes);
+app.use("/api/lodging-eligibility", lodgingEligibilityRoutes);
 
 // main routes
 app.use("/api/rental-requests", rentalRequestRoutes);
