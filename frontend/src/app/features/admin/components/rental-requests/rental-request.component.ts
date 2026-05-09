@@ -655,25 +655,25 @@ import { AuthService } from "@core/services/auth.service";
           />
 
           <div
-            (click)="navigate('/admin/schedules-management')"
+            (click)="navigate('/admin/scheduled')"
             style="cursor: pointer; width: 126px; height: 54.75px; left: 166px; top: 417.54px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.SCHEDULES" | translate }}
           </div>
           <img
-            (click)="navigate('/admin/schedules-management')"
+            (click)="navigate('/admin/scheduled')"
             src="assets/icons/Schedules.png"
             style="cursor: pointer; width: 40px; height: 35px; left: 107px; top: 427px; position: absolute;"
           />
 
           <div
-            (click)="navigate('/admin/rooms-management')"
+            (click)="navigate('/admin/rooms')"
             style="cursor: pointer; width: 195px; height: 54.75px; left: 161px; top: 504.07px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}
           </div>
           <img
-            (click)="navigate('/admin/rooms-management')"
+            (click)="navigate('/admin/rooms')"
             src="assets/icons/Rooms.png"
             style="cursor: pointer; width: 36px; height: 32px; left: 107px; top: 515px; position: absolute;"
           />
@@ -691,13 +691,13 @@ import { AuthService } from "@core/services/auth.service";
           />
 
           <div
-            (click)="navigate('/admin/contracts')"
+            (click)="navigate('/admin/users')"
             style="cursor: pointer; width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
           >
             {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
           </div>
           <img
-            (click)="navigate('/admin/contracts')"
+            (click)="navigate('/admin/users')"
             src="assets/icons/Contract.png"
             style="cursor: pointer; width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;"
           />

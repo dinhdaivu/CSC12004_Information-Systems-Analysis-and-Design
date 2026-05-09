@@ -62,7 +62,7 @@ export class AdminSidebarComponent {
   ];
 
   isNavActive(path: string): boolean {
-    if (path === "/admin") {
+    if (path === "/admin/rental-requests") {
       return this.router.url === path;
     }
 

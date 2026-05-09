@@ -12,6 +12,11 @@ import { RentalRequestsComponent } from "./components/rental-requests/rental-req
 export const ADMIN_ROUTES: Routes = [
   {
     path: "",
+    redirectTo: "rental-requests",
+    pathMatch: "full",
+  },
+  {
+    path: "dashboard",
     component: AdminDashboardComponent,
     canActivate: [authGuard, roleGuard],
     data: {

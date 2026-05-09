@@ -489,7 +489,7 @@
       "SCHEDULES": "Schedules",
       "ROOMS": "Rooms",
       "RESERVATIONS": "Reservations",
-      "CONTRACTS": "Contracts"
+      "CONTRACTS": "Users"
     },
     "ALERTS": {
       "FETCH_ERROR": "Failed to load data: ",

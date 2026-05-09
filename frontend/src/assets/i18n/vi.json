@@ -489,7 +489,7 @@
       "SCHEDULES": "Lịch hẹn",
       "ROOMS": "Quản lý phòng",
       "RESERVATIONS": "Đặt phòng",
-      "CONTRACTS": "Hợp đồng"
+      "CONTRACTS": "Người dùng"
     },
     "ALERTS": {
       "FETCH_ERROR": "Không thể tải dữ liệu: ",
