@@ -42,6 +42,7 @@
       "OVERVIEW": "Tổng quan",
       "ROOMS": "Quản lý phòng",
       "PAYMENTS": "Thanh toán",
+      "CONTRACTS": "Hợp đồng",
       "USERS": "Quản lý người dùng"
     },
     "HERO": {
@@ -351,6 +352,10 @@
     "ADMIN_PAYMENTS": {
       "TITLE": "Theo dõi thanh toán",
       "DESCRIPTION": "Quản lý đặt cọc, tiền thuê và hoàn trả trên tất cả hợp đồng đang hoạt động."
+    },
+    "ADMIN_CONTRACTS": {
+      "TITLE": "Quản lý hợp đồng",
+      "DESCRIPTION": "Kiểm tra điều kiện lưu trú, lập hợp đồng và hoàn tất ký hợp đồng thuê."
     }
   },
   "ROOM_DETAIL": {

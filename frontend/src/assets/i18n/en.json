@@ -42,6 +42,7 @@
       "OVERVIEW": "Overview",
       "ROOMS": "Room Management",
       "PAYMENTS": "Payments",
+      "CONTRACTS": "Contracts",
       "USERS": "User Management"
     },
     "HERO": {
@@ -351,6 +352,10 @@
     "ADMIN_PAYMENTS": {
       "TITLE": "Payment Tracking",
       "DESCRIPTION": "Monitor deposits, rent payments, and refund settlements across all active contracts."
+    },
+    "ADMIN_CONTRACTS": {
+      "TITLE": "Contract Management",
+      "DESCRIPTION": "Review eligibility, create contracts, and complete contract signing workflows."
     }
   },
   "ROOM_DETAIL": {
