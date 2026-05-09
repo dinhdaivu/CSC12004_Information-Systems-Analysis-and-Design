@@ -9,6 +9,7 @@ export type RoomStatus =
 export interface Room {
   id: string;
   branch_id: string;
+  zone_id: string;
   room_number: string;
   room_type?: string;
   max_capacity: number;
@@ -22,6 +23,7 @@ export interface Room {
 
 export interface RoomFilter {
   branch_id?: string;
+  zone_id?: string;
   status?: RoomStatus;
   min_capacity?: number;
   max_capacity?: number;

@@ -16,6 +16,7 @@ import rentalRequestRoutes from "@routes/rental-request.routes";
 import myBookingRoutes from "@routes/my-booking.routes";
 import usersRoutes from "@routes/users.routes";
 import adminRoutes from "@routes/admin.routes";
+import zoneRoutes from "./routes/zone.routes";
 
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
@@ -54,6 +55,7 @@ app.use("/api/deposits", depositRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contracts", contractsRoutes);
 app.use("/api/lodging-eligibility", lodgingEligibilityRoutes);
+app.use("/api/zones", zoneRoutes);
 
 // main routes
 app.use("/api/rental-requests", rentalRequestRoutes);

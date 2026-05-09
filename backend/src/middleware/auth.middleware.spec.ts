@@ -42,15 +42,15 @@ describe('Auth Middleware', () => {
       (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {
         throw new Error('Invalid token');
       });
-
       await authMiddleware(req as AuthRequest, res as Response, next);
-
       expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+      
+      // Trả lại chuỗi thông báo lỗi mặc định
       expect(((next as jest.Mock).mock.calls[0][0] as UnauthorizedError).message).toBe(
         'Invalid or missing authentication token'
       );
     });
-
+    
     it('should reject request with invalid authorization header format', async () => {
       req.headers = { authorization: 'InvalidFormat token' };
       (TokenUtils.verifyToken as jest.Mock).mockImplementation(() => {

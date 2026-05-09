@@ -2,13 +2,16 @@ import { CommonModule } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
+  HostListener,
   NgZone,
   OnDestroy,
   OnInit,
   inject,
 } from "@angular/core";
+import { Router } from "@angular/router";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { AuthService } from "@core/services/auth.service";
 import { FormsModule } from "@angular/forms";
-import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { BehaviorSubject, Subject, combineLatest } from "rxjs";
 import {
   debounceTime,
@@ -36,9 +39,29 @@ type UserRow = {
 @Component({
   selector: "app-users-management",
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, TranslateModule],
+  styles: [`
+    .hover-effect { transition: all 0.2s ease-in-out; cursor: pointer; }
+    .hover-effect:hover { opacity: 0.9; }
+    .users-core {
+      background: #fdf6e9;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    .users-header h2, .users-header p {
+      color: #2b4c9b;
+    }
+    .users-toolbar { color: #2b4c9b; }
+    select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%232b4c9b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
+    table { border-collapse: collapse; }
+    tbody tr:last-child { border-bottom: none; }
+  `],
   template: `
-    <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
+    <div
+      [style.height.px]="1080 * scaleFactor"
+      style="width: 100%; overflow: hidden; position: relative; background: #FEF4DF;"
+    >
       <div
         *ngIf="isLoading"
         class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
@@ -60,21 +83,25 @@ type UserRow = {
         ></span>
       </div>
 
-      <app-admin-sidebar></app-admin-sidebar>
+      <div
+        [style.transform]="'scale(' + scaleFactor + ')'"
+        style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;"
+      >
+        <div style="width: 1920px; height: 1080px; position: relative; background: #FEF4DF; overflow: hidden">
+          <div style="width: 1920px; height: 644px; left: 0px; top: -5px; position: absolute; background: #503D2E"></div>
+          <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute" src="assets/pictures/Background.png" />
+          <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+          <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
+          <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
-      <div class="ml-0 flex min-h-screen flex-col md:ml-64">
-        <main class="flex-1 px-6 py-6">
-          <div class="users-core">
-            <div class="users-header mb-6">
-              <div>
-                <h2 class="text-3xl font-bold">User Management</h2>
-                <p class="mt-2 max-w-3xl text-sm">
-                  Manage system users, assign roles, and control access
-                  permissions.
-                </p>
-              </div>
-            </div>
+          <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
+            {{ "PAGES.ADMIN_USERS.TITLE" | translate }}
+          </div>
+          <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
+            {{ "PAGES.ADMIN_USERS.DESCRIPTION" | translate }}
+          </div>
 
+          <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
             <div class="users-toolbar mb-6 flex flex-wrap gap-4">
               <!-- Search Bar -->
               <input
@@ -259,49 +286,86 @@ type UserRow = {
               </div>
             </div>
           </div>
-        </main>
+          
+          <ng-container *ngTemplateOutlet="sidebarAndMenus"></ng-container>
+        </div>
       </div>
     </div>
+
+    <ng-template #sidebarAndMenus>
+      <div (click)="navigate('/guidelines')" class="hover-effect" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.GUIDELINES" | translate }}
+      </div>
+      <div (click)="navigate('/about')" class="hover-effect" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.ABOUT_US" | translate }}
+      </div>
+      <div (click)="navigate('/contact')" class="hover-effect" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.CONTACT" | translate }}
+      </div>
+
+      <img (click)="toggleLangMenu()" class="hover-effect" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
+      <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+        <div (click)="changeLang('en')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.ENGLISH" | translate }}</div>
+        <div (click)="changeLang('vi')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.VIETNAMESE" | translate }}</div>
+      </div>
+
+      <img (click)="toggleUserMenu()" class="hover-effect" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Account.png" />
+      <div *ngIf="isUserMenuOpen" style="position: absolute; left: 1680px; top: 180px; width: 150px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+        <div (mousedown)="logout()" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.LOGOUT" | translate }}</div>
+      </div>
+
+      <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/UsersUnion.png" />
+      <img (click)="navigate('/')" class="hover-effect" style="width: 185px; height: 165px; left: 107px; top: 81px; position: absolute; cursor: pointer;" src="assets/icons/BookingLogo.png" />
+
+      <div (click)="navigate('/admin/rental-requests')" class="hover-effect" style="cursor: pointer; width: 196px; height: 54.75px; left: 166px; top: 331px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.INQUIRIES" | translate }}
+      </div>
+      <img (click)="navigate('/admin/rental-requests')" class="hover-effect" src="assets/icons/WhiteInquiries.png" style="cursor: pointer; width: 32px; height: 29px; left: 107px; top: 344px; position: absolute;" />
+
+      <div (click)="navigate('/admin/scheduled')" class="hover-effect" style="cursor: pointer; width: 126px; height: 54.75px; left: 166px; top: 417.54px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.SCHEDULES" | translate }}
+      </div>
+      <img (click)="navigate('/admin/scheduled')" class="hover-effect" src="assets/icons/Schedules.png" style="cursor: pointer; width: 40px; height: 35px; left: 107px; top: 427px; position: absolute;" />
+
+      <div (click)="navigate('/admin/rooms')" class="hover-effect" style="cursor: pointer; width: 195px; height: 54.75px; left: 161px; top: 504.07px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/rooms')" class="hover-effect" src="assets/icons/Rooms.png" style="cursor: pointer; width: 36px; height: 32px; left: 107px; top: 515px; position: absolute;" />
+
+      <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 54.75px; left: 166px; top: 589.72px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 600px; position: absolute;" />
+
+      <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/BlueUsers.png" style="cursor: pointer; width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;" />
+
+      <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
+        <span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.TITLE" | translate }}<br /><br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HEADQUARTERS" | translate }} </span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.ADDRESS_1" | translate }}<br />{{ "CONTACT_INFO.ADDRESS_2" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.PHONE_LABEL" | translate }} </span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.PHONE" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL_LABEL" | translate }}</span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HOURS_LABEL" | translate }}</span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.HOURS" | translate }}</span>
+      </div>
+    </ng-template>
   `,
-  styles: [
-    `
-      .users-core {
-        background: #fdf6e9;
-        border-radius: 24px;
-        padding: 28px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-      }
-
-      .users-header h2,
-      .users-header p {
-        color: #2b4c9b;
-      }
-
-      .users-toolbar {
-        color: #2b4c9b;
-      }
-
-      select {
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%232b4c9b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        background-position: right 0.5rem center;
-        background-repeat: no-repeat;
-        background-size: 1.5em 1.5em;
-        padding-right: 2.5rem;
-      }
-
-      table {
-        border-collapse: collapse;
-      }
-
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-    `,
-  ],
 })
 export class UsersManagementComponent implements OnInit, OnDestroy {
+
+  scaleFactor = typeof window !== 'undefined' ? window.innerWidth / 1920 : 1;
+  isLangMenuOpen = false;
+  isUserMenuOpen = false;
+  currentLang = "vi";
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly authService = inject(AuthService);
+  
   private readonly usersService = inject(UsersService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ngZone = inject(NgZone);
@@ -323,6 +387,45 @@ export class UsersManagementComponent implements OnInit, OnDestroy {
   readonly pageLimit = 10;
   isLoading = false;
   errorMessage: string | null = null;
+
+  @HostListener("window:resize")
+  onResize() {
+    if (typeof window !== 'undefined') {
+      this.scaleFactor = window.innerWidth / 1920;
+    }
+  }
+
+  toggleLangMenu() {
+    this.isLangMenuOpen = !this.isLangMenuOpen;
+    this.isUserMenuOpen = false;
+  }
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+    this.isLangMenuOpen = false;
+  }
+  changeLang(lang: string) {
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+  }
+  navigate(path: string) {
+    this.router.navigate([path]);
+    this.isUserMenuOpen = false;
+  }
+  changeLanguage(lang: string): void {
+    this.currentLang = lang;
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+  }
+
+  goToProfile(): void {
+    this.router.navigate(["/profile"]);
+    this.isUserMenuOpen = false;
+  }
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(["/login"]);
+    });
+  }
 
   private runInView(update: () => void): void {
     this.ngZone.run(() => {

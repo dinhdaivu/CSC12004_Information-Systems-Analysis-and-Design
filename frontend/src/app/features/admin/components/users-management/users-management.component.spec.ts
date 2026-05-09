@@ -32,7 +32,6 @@ describe('UsersManagementComponent', () => {
         { provide: UsersService, useValue: usersServiceMock },
       ],
     }).compileComponents();
-
     fixture = TestBed.createComponent(UsersManagementComponent);
     component = fixture.componentInstance;
   });

@@ -11,7 +11,7 @@ import { ChangeDetectorRef } from '@angular/core';
 describe('NewBookingComponent', () => {
   let component: NewBookingComponent;
   let fixture: ComponentFixture<NewBookingComponent>;
-  
+
   // Mock Services
   let mockRentalService: any;
   let mockBranchService: any;
@@ -70,10 +70,10 @@ describe('NewBookingComponent', () => {
   it('should initialize form and fetch branches on load', () => {
     expect(component.bookingForm).toBeDefined();
     expect(mockBranchService.getBranches).toHaveBeenCalled();
-    
+
     // Kiểm tra xem mapping branchId có hoạt động không
     expect(component.branchIdMap['Tô Hiến Thành']).toBe('11111111-1111-1111-1111-111111111111');
-    
+
     // Kiểm tra roomId từ URL đã được lưu chưa
     expect(component.preSelectedRoomId).toBe('test-room-id-123');
   });
@@ -89,7 +89,7 @@ describe('NewBookingComponent', () => {
     // Để trống form và không có file
     component.selectedFile = null;
     component.onSubmit();
-    
+
     // Đảm bảo hàm createRentalRequest không bao giờ được gọi
     expect(mockRentalService.createRentalRequest).not.toHaveBeenCalled();
     expect(component.currentPage).toBe(1); // Bị đẩy về trang 1
@@ -97,7 +97,7 @@ describe('NewBookingComponent', () => {
 
   it('should submit successfully, show alert and reset to page 1', async () => {
     // 1. Chặn lỗi window.alert của JSDOM
-    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest.spyOn(window, 'alert').mockImplementation(() => { });
 
     // 2. Điền form hợp lệ
     component.bookingForm.setValue({
@@ -121,13 +121,13 @@ describe('NewBookingComponent', () => {
     // 6. Kiểm chứng kết quả
     expect(mockRentalService.createRentalRequest).toHaveBeenCalled();
     expect(component.isSubmitting).toBeFalsy();
-    expect(window.alert).toHaveBeenCalledWith('Attendance Confirmed! Thank you.');
-    expect(component.currentPage).toBe(1);
-    expect(component.selectedFile).toBeNull();
+    // We now transition to the success screen instead of alerting
+    expect(component.currentPage).toBe(4);
   });
 
+
   it('should handle API error gracefully and show error message', async () => {
-    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest.spyOn(window, 'alert').mockImplementation(() => { });
 
     // 1. Điền form và cấp file giả
     component.bookingForm.setValue({
@@ -156,7 +156,7 @@ describe('NewBookingComponent', () => {
 
   it('should toggle language menu and change language', () => {
     const translateSpy = jest.spyOn(component['translate'], 'use');
-    
+
     // Mở menu
     component.toggleLangMenu();
     expect(component.isLangMenuOpen).toBeTruthy();
@@ -166,5 +166,44 @@ describe('NewBookingComponent', () => {
     component.changeLang('en');
     expect(translateSpy).toHaveBeenCalledWith('en');
     expect(component.isLangMenuOpen).toBeFalsy(); // Menu lang phải đóng sau khi chọn
+  });
+
+  it('should toggle user menu', () => {
+    component.toggleUserMenu();
+    expect(component.isUserMenuOpen).toBeTruthy();
+    expect(component.isLangMenuOpen).toBeFalsy();
+  });
+
+  it('should navigate', () => {
+    component.navigate('/test');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/test']);
+  });
+
+  it('should logout', () => {
+    const authSpy = jest.spyOn(component.authService, 'logout').mockReturnValue(of(void 0));
+    component.logout();
+    expect(authSpy).toHaveBeenCalled();
+    expect(component.isAuthenticated).toBe(false);
+    expect(component.isUserMenuOpen).toBe(false);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should select branch and room', () => {
+    component.selectBranch('Trần Não');
+    expect(component.bookingForm.get('branch')?.value).toBe('Trần Não');
+
+    component.selectRoom('Quad Room (4)');
+    expect(component.bookingForm.get('room_category')?.value).toBe('Quad Room (4)');
+  });
+
+  it('should handle file selection', () => {
+    const file = new File(['dummy'], 'dummy.png', { type: 'image/png' });
+    const event = { target: { files: [file] } } as unknown as Event;
+    component.onFileSelected(event);
+    expect(component.selectedFile).toBe(file);
+    expect(component.selectedFileName).toBe('dummy.png');
+    
+    const emptyEvent = { target: { files: [] } } as unknown as Event;
+    component.onFileSelected(emptyEvent);
   });
 });

@@ -15,6 +15,19 @@ interface BookingRecord {
   selector: 'app-bookings-list',
   standalone: true,
   imports: [CommonModule, RouterModule, TranslateModule],
+  styles: [`
+    .booking-scroll-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .booking-scroll-container::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+    .booking-scroll-container::-webkit-scrollbar-thumb {
+      background: #9ca3af;
+      border-radius: 10px;
+    }
+  `],
   template: `
     <div [style.height.px]="1080 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: #FEF4DF;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;">
@@ -24,13 +37,13 @@ interface BookingRecord {
           
           <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute; object-fit: cover" src="assets/pictures/Background.png" alt="Background" />
           
-          <div style="width: 2000px; height: 619px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+          <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
           <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
           
           <img src="assets/pictures/Union.png" style="position: absolute; left: 0px; top: 0px; height: 1080px; object-fit: cover; pointer-events: none" alt="Sidebar Background" />
 
           <div (click)="navigate('/guidelines')" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer; z-index: 50;">{{ 'COMMON.GUIDELINES' | translate }}</div>
-          <div (click)="navigate('/about-us')" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer; z-index: 50;">{{ 'COMMON.ABOUT_US' | translate }}</div>
+          <div (click)="navigate('/about')" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer; z-index: 50;">{{ 'COMMON.ABOUT_US' | translate }}</div>
           <div (click)="navigate('/contact')" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer; z-index: 50;">{{ 'COMMON.CONTACT' | translate }}</div>
           
           <img (click)="toggleLangMenu()" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
@@ -71,55 +84,61 @@ interface BookingRecord {
             <button (click)="filterStatus('cancelled')" [style.background]="currentFilter === 'cancelled' ? '#264893' : 'white'" [style.color]="currentFilter === 'cancelled' ? 'white' : '#264893'" style="padding: 10px 20px; border-radius: 20px; border: 2px solid #264893; font-family: Afacad; font-weight: bold; cursor: pointer;">{{ 'MY_BOOKINGS.TRACKING.STEPS.CANCELLED.LABEL' | translate }}</button>
           </div>
 
-          <div *ngIf="bookings.length === 0 && !isLoading" style="width: 1317px; left: 500px; top: 250px; position: absolute; text-align: center; color: #595959; font-size: 32px; font-family: Big Shoulders Text; font-weight: bold;">
-            {{ 'MY_BOOKINGS.MESSAGES.EMPTY' | translate }}
+          <div *ngIf="bookings.length === 0 && !isLoading" style="width: 1317px; left: 500px; top: 350px; position: absolute; display: flex; flex-direction: column; align-items: center; gap: 24px; z-index: 50;">
+            <div style="text-align: center; color: #595959; font-size: 32px; font-family: Big Shoulders Text; font-weight: bold;">
+              {{ 'MY_BOOKINGS.MESSAGES.EMPTY' | translate }}
+            </div>
+            <button (click)="navigate('/dashboard')" style="padding: 12px 32px; background-color: #264893; color: white; border: none; border-radius: 20px; font-family: Afacad; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              {{ 'NAV.PUBLIC.HOME' | translate }} &rarr;
+            </button>
           </div>
 
-          <div *ngFor="let booking of bookings; let i = index" 
-              [style.transform]="'translateY(' + (i * 780) + 'px)'" 
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
-            
-            <div style="pointer-events: auto;">
-                <div style="width: 1317px; height: 730px; left: 500px; top: 250px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
+          <!-- Scrollable Container -->
+          <div class="booking-scroll-container" style="position: absolute; left: 500px; top: 250px; width: 1317px; height: 730px; overflow-y: auto; z-index: 10; padding-right: 15px;">
+            <div *ngFor="let booking of bookings; let i = index" style="position: relative; width: 100%; margin-bottom: 30px;">
+              <!-- Card for each booking -->
+              <div style="width: 100%; height: 730px; position: relative; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px">
                 
-                <div style="width: 684px; height: 30px; left: 593px; top: 336px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
+                <!-- Card Content with relative positions -->
+                <div style="width: 684px; height: 30px; left: 93px; top: 86px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
                   {{ 'MY_BOOKINGS.TRACKING.TITLE' | translate }} {{ booking.rooms?.room_number ? '- ' + ('COMMON.ROOM' | translate) + ' ' + booking.rooms?.room_number : '' }}
                 </div>
-                <div style="width: 889px; height: 30px; left: 593px; top: 393px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
+                <div style="width: 889px; height: 30px; left: 93px; top: 143px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
                   {{ 'MY_BOOKINGS.TRACKING.SUBTITLE' | translate }}
                 </div>
                 
-                <button *ngIf="canCancel(booking.status)" (click)="cancelBooking(booking.id)" style="position: absolute; left: 1550px; top: 336px; padding: 12px 24px; background-color: #ff4d4f; color: white; border: none; border-radius: 12px; font-family: Afacad; font-size: 20px; cursor: pointer; font-weight: bold; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <button *ngIf="canCancel(booking.status)" (click)="cancelBooking(booking.id)" style="position: absolute; left: 1050px; top: 86px; padding: 12px 24px; background-color: #ff4d4f; color: white; border: none; border-radius: 12px; font-family: Afacad; font-size: 20px; cursor: pointer; font-weight: bold; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                   {{ 'MY_BOOKINGS.ACTIONS.CANCEL_REQUEST' | translate }}
                 </button>
                 
-                <div style="width: 746px; height: 0px; left: 768px; top: 557px; position: absolute; outline: 3px #D9D9D9 solid; outline-offset: -1.50px"></div>
+                <div style="width: 746px; height: 0px; left: 268px; top: 307px; position: absolute; outline: 3px #D9D9D9 solid; outline-offset: -1.50px"></div>
                 
-                <div [style.width.px]="getLineWidth(booking.status)" style="height: 0px; left: 768px; top: 557px; position: absolute; outline: 3px #264893 solid; outline-offset: -1.50px; transition: width 0.3s ease;"></div>
+                <div [style.width.px]="getLineWidth(booking.status)" style="height: 0px; left: 268px; top: 307px; position: absolute; outline: 3px #264893 solid; outline-offset: -1.50px; transition: width 0.3s ease;"></div>
                 
-                <div [style.background]="getStepBg(booking.status, 1)" style="width: 60px; height: 60px; left: 738px; top: 527px; position: absolute; border-radius: 9999px"></div>
-                <div [style.color]="getStepColor(booking.status, 1)" style="width: 29px; height: 60px; left: 753px; top: 527px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">1</div>
-                <div [style.color]="getTextColor(booking.status, 1)" style="width: 176px; height: 30px; left: 680px; top: 655px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 1)" style="width: 177px; height: 30px; left: 679px; top: 700px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.DESC' | translate"></div>
+                <div [style.background]="getStepBg(booking.status, 1)" style="width: 60px; height: 60px; left: 238px; top: 277px; position: absolute; border-radius: 9999px"></div>
+                <div [style.color]="getStepColor(booking.status, 1)" style="width: 29px; height: 60px; left: 253px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">1</div>
+                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 40px; left: 148px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.LABEL' | translate }}</div>
+                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 50px; left: 148px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.DESC' | translate"></div>
 
-                <div [style.background]="getStepBg(booking.status, 2)" style="width: 60px; height: 60px; left: 985px; top: 527px; position: absolute; border-radius: 9999px"></div>
-                <div [style.color]="getStepColor(booking.status, 2)" style="width: 29px; height: 60px; left: 1000px; top: 527px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">2</div>
-                <div [style.color]="getTextColor(booking.status, 2)" style="width: 196px; height: 30px; left: 927px; top: 656px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 2)" style="width: 215px; height: 30px; left: 907px; top: 701px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.DESC' | translate"></div>
+                <div [style.background]="getStepBg(booking.status, 2)" style="width: 60px; height: 60px; left: 485px; top: 277px; position: absolute; border-radius: 9999px"></div>
+                <div [style.color]="getStepColor(booking.status, 2)" style="width: 29px; height: 60px; left: 500px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">2</div>
+                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 40px; left: 395px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.LABEL' | translate }}</div>
+                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 50px; left: 395px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.DESC' | translate"></div>
 
-                <div [style.background]="getStepBg(booking.status, 3)" style="width: 60px; height: 60px; left: 1237px; top: 527px; position: absolute; border-radius: 9999px"></div>
-                <div [style.color]="getStepColor(booking.status, 3)" style="width: 29px; height: 60px; left: 1252px; top: 527px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">3</div>
-                <div [style.color]="getTextColor(booking.status, 3)" style="width: 176px; height: 30px; left: 1179px; top: 655px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ booking.status === 'cancelled' ? ('MY_BOOKINGS.TRACKING.STEPS.CANCELLED.LABEL' | translate) : ('MY_BOOKINGS.TRACKING.STEPS.REJECTED.LABEL' | translate) }}</div>
-                <div [style.color]="getTextColor(booking.status, 3)" style="width: 177px; height: 30px; left: 1178px; top: 700px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.REJECTED.DESC' | translate"></div>
+                <div [style.background]="getStepBg(booking.status, 3)" style="width: 60px; height: 60px; left: 737px; top: 277px; position: absolute; border-radius: 9999px"></div>
+                <div [style.color]="getStepColor(booking.status, 3)" style="width: 29px; height: 60px; left: 752px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">3</div>
+                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 40px; left: 647px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ booking.status === 'cancelled' ? ('MY_BOOKINGS.TRACKING.STEPS.CANCELLED.LABEL' | translate) : ('MY_BOOKINGS.TRACKING.STEPS.REJECTED.LABEL' | translate) }}</div>
+                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 50px; left: 647px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.REJECTED.DESC' | translate"></div>
 
-                <div [style.background]="getStepBg(booking.status, 4)" style="width: 60px; height: 60px; left: 1485px; top: 527px; position: absolute; border-radius: 9999px"></div>
-                <div [style.color]="getStepColor(booking.status, 4)" style="width: 29px; height: 60px; left: 1500px; top: 527px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">4</div>
-                <div [style.color]="getTextColor(booking.status, 4)" style="width: 248px; height: 30px; left: 1390px; top: 657px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 4)" style="width: 177px; height: 30px; left: 1425px; top: 702px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.DESC' | translate"></div>
+                <div [style.background]="getStepBg(booking.status, 4)" style="width: 60px; height: 60px; left: 985px; top: 277px; position: absolute; border-radius: 9999px"></div>
+                <div [style.color]="getStepColor(booking.status, 4)" style="width: 29px; height: 60px; left: 1000px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">4</div>
+                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 40px; left: 895px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.LABEL' | translate }}</div>
+                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 50px; left: 895px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.DESC' | translate"></div>
 
-                <a (click)="navigate('/bookings/' + booking.id)" style="position: absolute; left: 1550px; top: 850px; font-family: Afacad; font-size: 24px; font-weight: bold; color: #264893; cursor: pointer; text-decoration: none; z-index: 20;">
+                <a (click)="navigate('/bookings/' + booking.id)" style="position: absolute; left: 1050px; top: 600px; font-family: Afacad; font-size: 24px; font-weight: bold; color: #264893; cursor: pointer; text-decoration: none; z-index: 20;">
                   {{ 'MY_BOOKINGS.ACTIONS.VIEW_DETAILS' | translate }} &rarr;
                 </a>
+              </div>
             </div>
           </div>
           
@@ -201,7 +220,7 @@ export class BookingsListComponent implements OnInit {
 
   loadBookings(): void {
     this.isLoading = true;
-    
+
     this.myBookingService.getMyBookings({}).subscribe({
       next: (res: { data?: unknown[] }) => {
         const data = (res.data ?? []) as BookingRecord[];
@@ -247,7 +266,7 @@ export class BookingsListComponent implements OnInit {
   }
 
   cancelBooking(id: string): void {
-    if (window.confirm(this.translate.instant('ACTIONS.CONFIRM_CANCEL_MSG'))) {
+    if (window.confirm(this.translate.instant('MY_BOOKINGS.ACTIONS.CONFIRM_CANCEL_MSG'))) {
       this.myBookingService.performAction(id, 'cancel').subscribe({
         next: () => {
           const target = this.allBookings.find(b => b.id === id);

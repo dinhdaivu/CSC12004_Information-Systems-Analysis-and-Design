@@ -75,14 +75,12 @@ describe('RoomDetailComponent', () => {
   });
 
   // [x] Kiểm tra hành vi của nút liên hệ
-  it('should trigger contact action on click', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+  it('should trigger contact action and navigate to room search', () => {
+    const routerSpy = jest.spyOn(component['router'], 'navigate').mockImplementation();
 
     component.onContactAction();
 
-    // Đảm bảo hàm alert được gọi
-    expect(alertSpy).toHaveBeenCalled();
-    alertSpy.mockRestore();
+    expect(routerSpy).toHaveBeenCalledWith(['/rooms']);
   });
 
   it('should return empty string for getSafeUrl with undefined', () => {
@@ -171,5 +169,49 @@ describe('RoomDetailComponent', () => {
     component.retryFetch();
     expect(component.isLoading).toBe(false);
     expect(component.errorMessage).toBeTruthy();
+  });
+
+  it('should trigger transition', () => {
+    jest.useFakeTimers();
+    const callback = jest.fn();
+    component.triggerTransition(callback);
+    expect(component.isTransitioning).toBe(true);
+    jest.advanceTimersByTime(300);
+    expect(callback).toHaveBeenCalled();
+    expect(component.isTransitioning).toBe(false);
+    jest.useRealTimers();
+  });
+
+  it('should go home', () => {
+    const routerSpy = jest.spyOn(component['router'], 'navigate').mockImplementation();
+    component.goHome();
+    expect(routerSpy).toHaveBeenCalledWith(['/']);
+  });
+
+  it('should change lang', () => {
+    const translateSpy = jest.spyOn(component['translate'], 'use');
+    component.changeLang('en');
+    expect(translateSpy).toHaveBeenCalledWith('en');
+    expect(component.isLangMenuOpen).toBe(false);
+  });
+
+  it('should close menus with delay', () => {
+    jest.useFakeTimers();
+    component.isLangMenuOpen = true;
+    component.isUserMenuOpen = true;
+    component.closeMenusDelay();
+    jest.advanceTimersByTime(200);
+    expect(component.isLangMenuOpen).toBe(false);
+    expect(component.isUserMenuOpen).toBe(false);
+    jest.useRealTimers();
+  });
+
+  it('should handle logout', () => {
+    const routerSpy = jest.spyOn(component['router'], 'navigate').mockImplementation();
+    const authSpy = jest.spyOn(component.authService, 'logout').mockReturnValue(of({}));
+    component.logout();
+    expect(authSpy).toHaveBeenCalled();
+    expect(component.isAuthenticated).toBe(false);
+    expect(routerSpy).toHaveBeenCalledWith(['/login']);
   });
 });

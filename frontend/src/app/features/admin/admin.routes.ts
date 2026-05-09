@@ -13,6 +13,11 @@ import { ContractsComponent } from "./components/contracts/contracts.component";
 export const ADMIN_ROUTES: Routes = [
   {
     path: "",
+    redirectTo: "rental-requests",
+    pathMatch: "full",
+  },
+  {
+    path: "dashboard",
     component: AdminDashboardComponent,
     canActivate: [authGuard, roleGuard],
     data: {

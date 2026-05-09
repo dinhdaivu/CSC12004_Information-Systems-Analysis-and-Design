@@ -96,7 +96,7 @@ export class AdminSidebarComponent {
   isOpen = signal(false);
 
   readonly sidebarNavItems: SidebarNavItem[] = [
-    { label: "Inquiries", path: "/admin" },
+    { label: "Inquiries", path: "/admin/rental-requests" },
     { label: "Schedules", path: "/admin/scheduled" },
     { label: "Rooms", path: "/admin/rooms" },
     { label: "Reservations", path: "/admin/payments" },
@@ -131,7 +131,7 @@ export class AdminSidebarComponent {
    * Check if nav item is active
    */
   isNavActive(path: string): boolean {
-    if (path === "/admin") {
+    if (path === "/admin/rental-requests") {
       return this.router.url === path;
     }
     return this.router.url.startsWith(path);

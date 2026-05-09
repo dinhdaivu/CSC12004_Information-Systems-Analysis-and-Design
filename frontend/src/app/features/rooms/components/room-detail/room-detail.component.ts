@@ -11,14 +11,14 @@ import { AuthService } from '../../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, TranslateModule],
   template: `
-    <div class="relative w-full overflow-hidden bg-white" [style.height.px]="4913 * scaleFactor" *ngIf="!isLoading && branchDetail; else loadingOrError">
+    <div class="relative w-full overflow-hidden bg-[#FEF4DF]" [style.height.px]="4913 * scaleFactor" *ngIf="!isLoading && branchDetail; else loadingOrError">
       
       <div class="absolute top-0 left-0 origin-top-left w-[1920px] h-[4913px]" [style.transform]="'scale(' + scaleFactor + ')'">
         
         <img style="width: 1920px; height: 1080px; left: 0px; top: -225px; position: absolute; object-fit: cover;" [src]="getSafeUrl(branchDetail.heroImage)" (error)="onImageError($event, 'assets/pictures/Homepage Tô Hiến Thành.png')" />
         
         <div style="width: 505px; height: 2106px; left: -93px; top: 384px; position: absolute; transform: rotate(-90deg); transform-origin: top left; background: linear-gradient(270deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0) 100%);"></div>
-        <div style="width: 2000px; height: 1593px; left: -53px; top: -938px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0) 0%, #FEF4DF 100%);"></div>
+        <div style="width: 2000px; height: 1596px; left: -53px; top: -938px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0) 0%, #FEF4DF 100%);"></div>
         <div style="width: 2096px; height: 5075px; left: -83px; top: 655px; position: absolute; background: #FEF4DF;"></div>
         
         <div style="width: 1920px; height: 400px; left: 0px; top: 4513px; position: absolute; background: #264893;"></div>
@@ -48,6 +48,8 @@ import { AuthService } from '../../../../core/services/auth.service';
         <div (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 480px; height: 135px; left: 720px; top: 4153px; position: absolute; background: #264893; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 100px;"></div>
         <div (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 393px; height: 46px; left: 763px; top: 4198px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 48px; font-family: Afacad; font-weight: 600; pointer-events: none;">{{ 'ROOM_DETAIL.CONTACT_US' | translate }}</div>
         
+        
+
         <div style="
           width: 1500px;
           left: 210px;
@@ -212,9 +214,9 @@ import { AuthService } from '../../../../core/services/auth.service';
           {{ ('ROOM_DETAIL.DESC_' + branchDetail.id) | translate }}
         </div>
 
-        <div class="hover-text" style="width: 152px; left: 1243px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.GUIDELINES' | translate }}</div>
-        <div class="hover-text" style="width: 126px; left: 1076px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.ABOUT_US' | translate }}</div>
-        <div class="hover-text" style="width: 135px; left: 1436px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.CONTACT' | translate }}</div>
+        <div class="hover-text" style="width: 152px; left: 1243px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.HERO.GUIDELINES' | translate }}</div>
+        <div class="hover-text" style="width: 126px; left: 1076px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.HERO.ABOUT' | translate }}</div>
+        <div class="hover-text" style="width: 135px; left: 1436px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.HERO.CONTACT' | translate }}</div>
         
         <div (click)="toggleLangMenu()" tabindex="0" (blur)="closeMenusDelay()" class="hover-scale" style="width: 75px; height: 75px; left: 1625px; top: 85px; position: absolute; cursor: pointer; outline: none; z-index: 60;">
           <img style="width: 100%; height: 100%; border-radius: 50%;" src="assets/icons/earth.png" (error)="onImageError($event, 'https://placehold.co/75x75/000/FFF?text=EN/VI')"/>
@@ -232,19 +234,19 @@ import { AuthService } from '../../../../core/services/auth.service';
           <div style="width: 200px; height: 150px; left: 0px; top: 0px; position: absolute; background: #D9D9D9; border-radius: 25px"></div>
 
           <ng-container *ngIf="!isAuthenticated">
-            <div (mousedown)="navigate('/register')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-              {{ 'AUTH.REGISTER.TITLE' | translate }}
+            <div (mousedown)="navigate('/register')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'AUTH.SIGN_UP' | translate }}
             </div>
-            <div (mousedown)="navigate('/login')" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
-              {{ 'AUTH.LOGIN.TITLE' | translate }}
+            <div (mousedown)="navigate('/login')" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+              {{ 'AUTH.LOG_IN' | translate }}
             </div>
           </ng-container>
 
           <ng-container *ngIf="isAuthenticated">
-            <div (mousedown)="navigate('/profile')" style="width: 129px; height: 46px; left: 35px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+            <div (mousedown)="navigate('/profile')" style="width: 180px; height: 46px; left: 10px; top: 19px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
               {{ 'COMMON.PROFILE' | translate }}
             </div>
-            <div (mousedown)="logout()" style="width: 129px; height: 46px; left: 35px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 32px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
+            <div (mousedown)="logout()" style="width: 180px; height: 46px; left: 10px; top: 85px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #ff4d4f; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 101;">
               {{ 'COMMON.LOGOUT' | translate }}
             </div>
           </ng-container>
@@ -297,7 +299,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage = '';
 
-  isTransitioning = false; 
+  isTransitioning = false;
   isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
@@ -305,8 +307,8 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   activeSharedIndex = 0;
   activeRoomType: RoomType = 'twin';
   activeRoomIndex = 0;
-  
-  private autoPlayTimer: ReturnType<typeof window.setInterval> | undefined;
+
+  private autoPlayTimer: number | undefined;
 
   // Giữ lại khung mảng dữ liệu với Key dịch thuật để đảm bảo cấu trúc HTML render không lỗi
   // Khi API load xong, data này sẽ bị thay thế bằng data từ API
@@ -325,9 +327,9 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
       capacity: 'ROOM_DETAIL.TWIN_CAPACITY',
       amenities: 'ROOM_DETAIL.TWIN_AMENITIES',
       images: [
-        'assets/pictures/twin1.png', 
-        'assets/pictures/twin2.png', 
-        'assets/pictures/twin3.png', 
+        'assets/pictures/twin1.png',
+        'assets/pictures/twin2.png',
+        'assets/pictures/twin3.png',
         'assets/pictures/twin4.png'
       ]
     },
@@ -336,8 +338,8 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
       capacity: 'ROOM_DETAIL.QUAD_CAPACITY',
       amenities: 'ROOM_DETAIL.QUAD_AMENITIES',
       images: [
-        'assets/pictures/quad1.png', 
-        'assets/pictures/quad2.png', 
+        'assets/pictures/quad1.png',
+        'assets/pictures/quad2.png',
         'assets/pictures/quad3.png',
         'assets/pictures/quad4.png'
       ]
@@ -349,7 +351,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     const browserLang = this.translate.getBrowserLang();
     this.translate.use(browserLang?.match(/en|vi/) ? browserLang : 'vi');
   }
-  
+
   ngOnInit(): void {
     this.onResize();
     this.isAuthenticated = this.authService.isAuthenticated();
@@ -383,7 +385,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   private calculateScale() {
     const screenWidth = document.documentElement.clientWidth;
-    this.scaleFactor = screenWidth / 1920; 
+    this.scaleFactor = screenWidth / 1920;
   }
 
   onImageError(event: Event, fallbackUrl: string): void {
@@ -408,26 +410,26 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
     this.branchService.getBranchById(id).subscribe({
       next: (data) => {
         this.branchDetail = data;
-        
+
         // Ghi đè dữ liệu rỗng ban đầu bằng dữ liệu API nếu có
         // Data API cần chứa các Key dạng "ROOM_DETAIL.TWIN_CAPACITY" để UI có thể tự động dịch
         if (data.sharedFacilities?.length) {
-            // Mapping từ model Backend sang model giao diện cũ (nếu cấu trúc Model khác nhau)
-            // Nếu Backend trả về đúng y chang Interface 'SharedFacility' thì chỉ cần gán thẳng:
-            // this.sharedFacilitiesList = data.sharedFacilities;
+          // Mapping từ model Backend sang model giao diện cũ (nếu cấu trúc Model khác nhau)
+          // Nếu Backend trả về đúng y chang Interface 'SharedFacility' thì chỉ cần gán thẳng:
+          // this.sharedFacilitiesList = data.sharedFacilities;
         }
         if (data.roomFacilities) {
-            // Tương tự, mapping cấu trúc nếu có
+          // Tương tự, mapping cấu trúc nếu có
         }
 
         this.isLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Lỗi khi tải chi nhánh:', err);
         this.errorMessage = 'COMMON.FETCH_ERROR';
         this.isLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       }
     });
   }
@@ -441,12 +443,12 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   triggerTransition(callback: () => void) {
     this.isTransitioning = true;
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
 
     window.setTimeout(() => {
       callback();
       this.isTransitioning = false;
-      this.cdr.detectChanges(); 
+      this.cdr.detectChanges();
     }, 300);
   }
 
@@ -458,7 +460,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
         const maxRoomImgs = this.roomData[this.activeRoomType].images.length;
         this.activeRoomIndex = (this.activeRoomIndex + 1) % maxRoomImgs;
       });
-    }, 5000); 
+    }, 5000);
   }
 
   stopAutoPlay() {
@@ -491,36 +493,37 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   goHome(): void { this.router.navigate(['/']); }
-  
-  toggleLangMenu(): void { 
-    this.isLangMenuOpen = !this.isLangMenuOpen; 
-    this.isUserMenuOpen = false; 
-    this.cdr.detectChanges(); 
+
+  toggleLangMenu(): void {
+    this.isLangMenuOpen = !this.isLangMenuOpen;
+    this.isUserMenuOpen = false;
+    this.cdr.detectChanges();
   }
-  
-  toggleUserMenu(): void { 
-    this.isUserMenuOpen = !this.isUserMenuOpen; 
-    this.isLangMenuOpen = false; 
-    this.cdr.detectChanges(); 
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+    this.isLangMenuOpen = false;
+    this.cdr.detectChanges();
   }
-  
-  changeLang(lang: string): void { 
-    this.translate.use(lang); 
-    this.isLangMenuOpen = false; 
-    this.cdr.detectChanges(); 
+
+  changeLang(lang: string): void {
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+    this.cdr.detectChanges();
   }
-  
-  closeMenusDelay(): void { 
-    window.setTimeout(() => { 
-      this.isLangMenuOpen = false; 
-      this.isUserMenuOpen = false; 
-      this.cdr.detectChanges(); 
-    }, 200); 
+
+  closeMenusDelay(): void {
+    window.setTimeout(() => {
+      this.isLangMenuOpen = false;
+      this.isUserMenuOpen = false;
+      this.cdr.detectChanges();
+    }, 200);
   }
-  
-  onContactAction(): void { 
+
+  onContactAction(): void {
     const branchName = this.branchDetail?.name || '';
     const alertMsg = this.translate.instant('ROOM_DETAIL.CONTACT_ACTION', { name: branchName });
-    window.alert(alertMsg ? alertMsg : `Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: ${branchName}`); 
+    window.alert(alertMsg ? alertMsg : `Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: ${branchName}`);
+    this.router.navigate(['/rooms']);
   }
 }

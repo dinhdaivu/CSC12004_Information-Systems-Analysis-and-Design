@@ -22,24 +22,24 @@ export class AdminDashboardComponent implements OnInit {
 
   readonly quickLinks: ReadonlyArray<{ path: string; labelKey: string }> = [
     {
-      path: "/admin/users-management",
-      labelKey: "admin.dashboard.usersManagement",
+      path: "/admin/users",
+      labelKey: "Users",
     },
     {
-      path: "/admin/rooms-management",
-      labelKey: "admin.dashboard.roomsManagement",
+      path: "/admin/rooms",
+      labelKey: "Rooms",
     },
     {
       path: "/admin/rental-requests",
-      labelKey: "admin.dashboard.rentalRequests",
+      labelKey: "Inquiries",
     },
     {
       path: "/admin/payments",
-      labelKey: "admin.dashboard.payments",
+      labelKey: "Reservations",
     },
     {
-      path: "/admin/scheduled-management",
-      labelKey: "admin.dashboard.scheduledManagement",
+      path: "/admin/scheduled",
+      labelKey: "Schedules",
     },
   ];
 
