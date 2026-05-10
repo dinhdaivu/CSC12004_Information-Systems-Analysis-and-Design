@@ -9,6 +9,7 @@ import { UsersManagementComponent } from "./components/users-management/users-ma
 import { ScheduledManagementComponent } from "./components/scheduled-management/scheduled-management.component";
 import { RentalRequestsComponent } from "./components/rental-requests/rental-request.component";
 import { ContractsComponent } from "./components/contracts/contracts.component";
+import { ChatInboxComponent } from "./components/chat-inbox/chat-inbox.component";
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -117,6 +118,17 @@ export const ADMIN_ROUTES: Routes = [
       access: ["sale", "manager", "admin"],
       navLabelKey: "NAV.ADMIN.CONTRACTS",
       pageTitleKey: "PAGES.ADMIN_CONTRACTS.TITLE",
+    } satisfies AppRouteData,
+  },
+  {
+    path: "chat",
+    component: ChatInboxComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "accountant", "manager", "admin"],
+      access: ["sale", "accountant", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.CHAT",
+      pageTitleKey: "PAGES.ADMIN_CHAT.TITLE",
     } satisfies AppRouteData,
   },
 ];

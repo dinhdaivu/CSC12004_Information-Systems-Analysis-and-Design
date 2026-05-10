@@ -246,7 +246,7 @@
   "CONTACT": {
     "HERO": {
       "TITLE": "CONTACT",
-      "SUBTITLE": "Have a Question? We're Here to Help.",
+      "SUBTITLE": "HAVE A QUESTION? WE'RE HERE TO HELP.",
       "TAGLINE": "Whether you're looking for a new home, need to schedule a viewing, or have questions about our process — the HomeStay Dorm team is ready to assist."
     },
     "CARDS": {
@@ -267,7 +267,7 @@
   "GUIDELINES": {
     "HERO": {
       "TITLE": "GUIDELINES",
-      "SUBTITLE": "The Resident Journey",
+      "SUBTITLE": "THE RESIDENT JOURNEY",
       "TAGLINE": "From your first room viewing to the final deposit reconciliation, our structured process ensures a seamless and secure stay. Follow this step-by-step guide to navigate every stage of your journey with HomeStay Dorm."
     },
     "STEPS": {
@@ -518,7 +518,9 @@
       "SCHEDULES": "Schedules",
       "ROOMS": "Rooms",
       "RESERVATIONS": "Reservations",
-      "CONTRACTS": "Users"
+      "CONTRACTS": "Users",
+      "CHAT": "Chat"
+
     },
     "ALERTS": {
       "FETCH_ERROR": "Failed to load data: ",

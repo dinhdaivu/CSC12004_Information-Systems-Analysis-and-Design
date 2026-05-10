@@ -66,7 +66,7 @@ type SidebarNavItem = {
         </button>
 
         <!-- Navigation -->
-        <nav class="space-y-2 text-base font-medium">
+        <nav class="flex-1 overflow-y-auto space-y-2 text-base font-medium">
           <a
             *ngFor="let item of sidebarNavItems"
             [routerLink]="item.path"
@@ -102,6 +102,7 @@ export class AdminSidebarComponent {
     { label: "Reservations", path: "/admin/payments" },
     { label: "Contracts", path: "/admin/contracts" },
     { label: "Users", path: "/admin/users" },
+    { label: "Chat", path: "/admin/chat" },
   ];
 
   /**

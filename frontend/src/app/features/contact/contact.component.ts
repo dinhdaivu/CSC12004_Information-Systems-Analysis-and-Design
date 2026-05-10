@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@core/services/auth.service';
+import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.component';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ChatWidgetComponent],
   template: `
     <div [style.height.px]="2066 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: white;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 2066px;">
@@ -16,10 +17,6 @@ import { AuthService } from '@core/services/auth.service';
           <div style="width: 505px; height: 1920px; left: 0px; top: 505px; position: absolute; transform: rotate(-90deg); transform-origin: top left; background: linear-gradient(270deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0) 100%)"></div>
           <div style="width: 1920px; height: 905px; left: 0px; top: 0px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0) 0%, #FEF4DF 100%)"></div>
           <div style="width: 1920px; height: 1928px; left: 0px; top: 902px; position: absolute; background: #FEF4DF"></div>
-          <div style="width: 132px; height: 132px; left: 1689px; top: 1408px; position: absolute; background: #264893; border-radius: 9999px"></div>
-          <div style="width: 90px; height: 90px; left: 1710px; top: 1429px; position: absolute; overflow: hidden; display: flex; justify-content: center; align-items: center; cursor: pointer;">
-            <img style="width: 100%; height: 100%; object-fit: contain" src="assets/icons/Chat.png" />
-          </div>
           <div style="width: 1920px; height: 400px; left: 0px; top: 1666px; position: absolute; background: #264893"></div>
           <div style="left: 263px; top: 1916px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column"><span style="color: #FEF4DF; font-size: 28px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ 'ABOUT.FOOTER.TAGLINE' | translate }}<br/></span><span style="color: #FEF4DF; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word"><br/>{{ 'ABOUT.FOOTER.COPYRIGHT' | translate }}</span></div>
           <img style="width: 200px; height: 178px; left: 406px; top: 1725px; position: absolute" src="assets/icons/FooterLogo.png" />
@@ -39,7 +36,7 @@ import { AuthService } from '@core/services/auth.service';
           <div style="width: 70px; height: 70px; left: 925px; top: 1063px; position: absolute; overflow: hidden">
             <img style="width: 100%; height: 100%; object-fit: contain" src="assets/icons/Phone.png" />
           </div>
-          <div style="left: 743px; top: 520px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 128px; font-family： Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'CONTACT.HERO.TITLE' | translate }}</div>
+          <div style="left: 743px; top: 520px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 128px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'CONTACT.HERO.TITLE' | translate }}</div>
           <div style="left: 604px; top: 710px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'CONTACT.HERO.SUBTITLE' | translate }}</div>
           <div style="width: 1284px; left: 318px; top: 805px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 36px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ 'CONTACT.HERO.TAGLINE' | translate }}</div>
           <img (click)="navigate('/')" style="width: 185px; height: 165px; left: 100px; top: 100px; position: absolute; cursor: pointer;" src="assets/icons/logo.svg" />
@@ -79,6 +76,8 @@ import { AuthService } from '@core/services/auth.service';
         </div>
       </div>
     </div>
+
+    <app-chat-widget />
   `
 })
 export class ContactComponent implements OnInit {

@@ -715,6 +715,18 @@ import { AuthService } from "@core/services/auth.service";
           />
 
           <div
+            (click)="navigate('/admin/chat')"
+            style="cursor: pointer; width: 168px; height: 54.75px; left: 163px; top: 762px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word"
+          >
+            {{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}
+          </div>
+          <img
+            (click)="navigate('/admin/chat')"
+            src="assets/icons/Chat.png"
+            style="cursor: pointer; width: 32px; height: 32px; left: 110px; top: 770px; position: absolute;"
+          />
+
+          <div
             style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center"
           >
             <span
