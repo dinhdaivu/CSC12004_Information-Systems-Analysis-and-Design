@@ -290,7 +290,7 @@ describe('ScheduledManagementComponent', () => {
   });
 
   it('should return branch name when branch is in list', () => {
-    component.branches = [{ id: 'b1', name: 'Hanoi Branch', address: '', phone: '' }];
+    component.branches = [{ id: 'b1', name: 'Hanoi Branch', address: '', description: '', heroImage: '', roomCount: 0 }];
     component.selectedBranchId = 'b1';
     expect(component.selectedBranchLabel).toBe('Hanoi Branch');
   });

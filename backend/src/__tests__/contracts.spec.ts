@@ -10,6 +10,10 @@ jest.mock("@middleware/auth.middleware", () => ({
     res: express.Response,
     next: express.NextFunction,
   ): void => {
+    if (req.headers["x-no-auth"]) {
+      next();
+      return;
+    }
     void res;
     const roleHeader = req.headers["x-test-role"];
     const role = typeof roleHeader === "string" ? roleHeader : "manager";
@@ -388,5 +392,135 @@ describe("Contracts routes", () => {
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(contractUpdate).toHaveBeenCalled();
+  });
+
+  describe("Validations", () => {
+    it("GET /api/contracts should validate pagination limit", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/contracts?limit=200");
+      expect(response.status).toBe(400);
+    });
+
+    it("GET /api/contracts should validate positive integers", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/contracts?page=-1");
+      expect(response.status).toBe(400);
+    });
+
+    it("GET /api/contracts/:id should validate id", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/contracts/   ");
+      expect(response.status).toBe(400);
+    });
+
+    it("PATCH /api/contracts/:id/sign should validate contractDocumentUrl string", async () => {
+      const app = buildApp();
+      const response = await request(app).patch("/api/contracts/c1/sign").send({ contractDocumentUrl: 123 });
+      expect(response.status).toBe(400);
+    });
+
+    it("PATCH /api/contracts/:id/sign should validate notes string", async () => {
+      const app = buildApp();
+      const response = await request(app).patch("/api/contracts/c1/sign").send({ notes: 123 });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should validate customer_id", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({ customer_id: 123 });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should validate room_id", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({ customer_id: "c1", room_id: "" });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should validate start_date", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({ customer_id: "c1", room_id: "r1", start_date: "" });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should validate end_date", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({ customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "" });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should validate monthly_price", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({ customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "2026-12-31", monthly_price: "abc" });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should throw if unauthenticated", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").set("x-no-auth", "true").send({ customer_id: "c1" });
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe("Contracts Service Logic", () => {
+    it("POST /api/contracts should validate end_date > start_date", async () => {
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({
+        customer_id: "c1", room_id: "r1", start_date: "2026-12-31", end_date: "2026-01-01", monthly_price: 1000
+      });
+      expect(response.status).toBe(400);
+    });
+
+    it("POST /api/contracts should throw if deposit request not found", async () => {
+      mockedSupabase.from.mockImplementation(() => ({
+        select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }) }) })
+      }));
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({
+        customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "2026-12-31", monthly_price: 1000, deposit_request_id: "d1"
+      });
+      expect(response.status).toBe(404);
+    });
+
+    it("POST /api/contracts should throw if deposit is not paid", async () => {
+      mockedSupabase.from.mockImplementation(() => ({
+        select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ maybeSingle: jest.fn().mockResolvedValue({ data: { status: "pending" }, error: null }) }) })
+      }));
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({
+        customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "2026-12-31", monthly_price: 1000, deposit_request_id: "d1"
+      });
+      expect(response.status).toBe(409);
+    });
+
+    it("POST /api/contracts should throw if deposit customer mismatch", async () => {
+      mockedSupabase.from.mockImplementation(() => ({
+        select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ maybeSingle: jest.fn().mockResolvedValue({ data: { status: "paid", customer_id: "c2" }, error: null }) }) })
+      }));
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({
+        customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "2026-12-31", monthly_price: 1000, deposit_request_id: "d1"
+      });
+      expect(response.status).toBe(409);
+    });
+
+    it("POST /api/contracts should throw if duplicate contract exists for deposit", async () => {
+      mockedSupabase.from.mockImplementation((table: string) => {
+        if (table === "deposit_requests") {
+          return { select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ maybeSingle: jest.fn().mockResolvedValue({ data: { status: "paid", customer_id: "c1", room_id: "r1" }, error: null }) }) }) };
+        }
+        if (table === "lodging_eligibility_checks") {
+          return { select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ order: jest.fn().mockReturnValue({ limit: jest.fn().mockReturnValue({ maybeSingle: jest.fn().mockResolvedValue({ data: { decision: "eligible" }, error: null }) }) }) }) }) };
+        }
+        if (table === "contracts") {
+          return { select: jest.fn().mockReturnValue({ eq: jest.fn().mockReturnValue({ limit: jest.fn().mockResolvedValue({ data: [{ id: "c1" }], error: null }) }) }) };
+        }
+      });
+      const app = buildApp();
+      const response = await request(app).post("/api/contracts").send({
+        customer_id: "c1", room_id: "r1", start_date: "2026-01-01", end_date: "2026-12-31", monthly_price: 1000, deposit_request_id: "d1"
+      });
+      expect(response.status).toBe(409);
+    });
   });
 });
