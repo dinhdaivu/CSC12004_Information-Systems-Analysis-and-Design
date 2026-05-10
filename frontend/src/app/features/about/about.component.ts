@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@core/services/auth.service';
+import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.component';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ChatWidgetComponent],
   template: `
     <div [style.height.px]="3277 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: white;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 3277px;">
@@ -93,6 +94,8 @@ import { AuthService } from '@core/services/auth.service';
         </div>
       </div>
     </div>
+
+    <app-chat-widget />
   `
 })
 export class AboutComponent implements OnInit {

@@ -17,6 +17,7 @@ import myBookingRoutes from "@routes/my-booking.routes";
 import usersRoutes from "@routes/users.routes";
 import adminRoutes from "@routes/admin.routes";
 import zoneRoutes from "./routes/zone.routes";
+import chatRoutes from "@routes/chat.routes";
 
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
@@ -60,6 +61,9 @@ app.use("/api/zones", zoneRoutes);
 // main routes
 app.use("/api/rental-requests", rentalRequestRoutes);
 app.use("/api/my-bookings", myBookingRoutes);
+
+// chat
+app.use("/api/chat", chatRoutes);
 
 // admin routes
 app.use("/api/users", usersRoutes);

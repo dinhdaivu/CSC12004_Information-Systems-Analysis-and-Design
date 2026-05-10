@@ -246,7 +246,7 @@
   "CONTACT": {
     "HERO": {
       "TITLE": "LIÊN HỆ",
-      "SUBTITLE": "Bạn có câu hỏi? Chúng tôi luôn sẵn sàng.",
+      "SUBTITLE": "BẠN CÓ CÂU HỎI? CHÚNG TÔI LUÔN SẴN SÀNG.",
       "TAGLINE": "Dù bạn đang tìm ngôi nhà mới, muốn đặt lịch xem phòng hay có thắc mắc về quy trình — đội ngũ HomeStay Dorm luôn ở đây để hỗ trợ."
     },
     "CARDS": {
@@ -267,7 +267,7 @@
   "GUIDELINES": {
     "HERO": {
       "TITLE": "HƯỚNG DẪN",
-      "SUBTITLE": "Hành trình của cư dân",
+      "SUBTITLE": "HÀNH TRÌNH CỦA CƯ DÂN",
       "TAGLINE": "Từ lần xem phòng đầu tiên đến khi đối soát hoàn trả cuối cùng, quy trình có cấu trúc của chúng tôi đảm bảo một hành trình lưu trú liền mạch và an toàn. Hãy làm theo hướng dẫn từng bước này để nắm rõ mọi giai đoạn khi ở tại HomeStay Dorm."
     },
     "STEPS": {
@@ -518,7 +518,9 @@
       "SCHEDULES": "Lịch hẹn",
       "ROOMS": "Quản lý phòng",
       "RESERVATIONS": "Đặt phòng",
-      "CONTRACTS": "Người dùng"
+      "CONTRACTS": "Người dùng",
+      "CHAT": "Trò chuyện"
+
     },
     "ALERTS": {
       "FETCH_ERROR": "Không thể tải dữ liệu: ",
