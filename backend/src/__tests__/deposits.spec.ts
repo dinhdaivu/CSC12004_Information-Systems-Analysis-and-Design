@@ -343,7 +343,7 @@ describe("Deposit Routes", () => {
   describe("Validations", () => {
     it("should validate deposit id", async () => {
       const app = buildApp();
-      const response = await request(app).get("/api/deposits/   ").set("Authorization", "Bearer fake");
+      const response = await request(app).get("/api/deposits/%20%20%20").set("Authorization", "Bearer fake");
       expect(response.status).toBe(400);
     });
 

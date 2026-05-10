@@ -409,7 +409,7 @@ describe("Contracts routes", () => {
 
     it("GET /api/contracts/:id should validate id", async () => {
       const app = buildApp();
-      const response = await request(app).get("/api/contracts/   ");
+      const response = await request(app).get("/api/contracts/%20%20%20");
       expect(response.status).toBe(400);
     });
 
@@ -458,7 +458,7 @@ describe("Contracts routes", () => {
     it("POST /api/contracts should throw if unauthenticated", async () => {
       const app = buildApp();
       const response = await request(app).post("/api/contracts").set("x-no-auth", "true").send({ customer_id: "c1" });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(403);
     });
   });
 
