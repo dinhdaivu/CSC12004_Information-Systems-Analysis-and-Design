@@ -17,7 +17,9 @@
     "LOADING": "Đang tải…",
     "RETRY": "Thử lại",
     "FETCH_ERROR": "Không thể tải nội dung. Vui lòng thử lại.",
-    "ROOM": "Phòng"
+    "ROOM": "Phòng",
+    "CANCEL": "Hủy",
+    "CONFIRM": "Xác nhận"
   },
   "CONTACT_INFO": {
     "TITLE": "Thông tin liên hệ",
@@ -355,7 +357,32 @@
     "ADMIN_PAYMENTS": {
       "TITLE": "Theo dõi thanh toán",
       "DESCRIPTION": "Quản lý đặt cọc, tiền thuê và hoàn trả trên tất cả hợp đồng đang hoạt động."
+    },
+    "PROFILE": {
+      "TITLE": "Hồ sơ của tôi",
+      "DESCRIPTION": "Xem và cập nhật thông tin cá nhân và thông tin lưu trú của bạn."
     }
+  },
+  "PROFILE": {
+    "RESIDENT_ID": "Mã cư dân",
+    "FULL_NAME": "Họ và tên",
+    "GENDER": "Giới tính",
+    "GENDER_SELECT": "Chọn giới tính",
+    "GENDER_MALE": "Nam",
+    "GENDER_FEMALE": "Nữ",
+    "PERSONAL_INFO": "Thông Tin Cá Nhân",
+    "EMAIL": "Địa chỉ email",
+    "PASSWORD": "Mật khẩu",
+    "PHONE": "Số điện thoại",
+    "IDENTITY_CARD": "Số chứng minh thư",
+    "STAYING_INFO": "Thông Tin Lưu Trú",
+    "BRANCH": "Chi nhánh",
+    "ROOM_ID": "Mã phòng",
+    "CONTRACT_TERM": "Thời hạn hợp đồng",
+    "EDIT_PROFILE": "Chỉnh sửa hồ sơ",
+    "SAVE_CHANGES": "Lưu thay đổi",
+    "CONFIRM_SAVE_TITLE": "Lưu thay đổi",
+    "CONFIRM_SAVE_MSG": "Bạn có chắc muốn lưu các thay đổi không?"
   },
   "ROOM_DETAIL": {
     "FOOTER_SLOGAN": "Sự thoải mái của bạn là cam kết của chúng tôi.",
