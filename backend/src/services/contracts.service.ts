@@ -211,7 +211,7 @@ export class ContractsService {
       );
     }
 
-    const rows = ((data as ContractRow[] | null) ?? []).map(mapContractRow);
+    const rows = ((data as unknown as ContractRow[] | null) ?? []).map(mapContractRow);
     const total = count ?? 0;
 
     return {
@@ -244,7 +244,7 @@ export class ContractsService {
       throw new NotFoundError("Contract not found");
     }
 
-    const contract = mapContractRow(data as ContractRow);
+    const contract = mapContractRow(data as unknown as ContractRow);
     const latestEligibility = await LodgingEligibilityService.getLatestResult(
       contract.customerId,
     );

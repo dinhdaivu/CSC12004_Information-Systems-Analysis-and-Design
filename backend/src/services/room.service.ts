@@ -318,13 +318,7 @@ export class RoomService {
     });
   }
 
-  static async getRoomById(id: string): Promise<RoomWithBeds> {
-    const client = getSupabaseClient();
-
-    const { data, error } = await client
-      .from("rooms")
-      .select(
-        `
+  private static readonly FULL_SELECT = `
           id,
           branch_id,
           zone_id,
@@ -337,26 +331,21 @@ export class RoomService {
           status,
           created_at,
           updated_at,
-
           branches(id, name, address),
-
           zones(
             id,
             name,
             branches(id, name, address)
           ),
+          beds(id, room_id, bed_number, price_per_month, status, created_at, updated_at)
+        `;
 
-          beds(
-            id,
-            room_id,
-            bed_number,
-            price_per_month,
-            status,
-            created_at,
-            updated_at
-          )
-        `,
-      )
+  static async getRoomById(id: string): Promise<RoomWithBeds> {
+    const client = getSupabaseClient();
+
+    const { data, error } = await client
+      .from("rooms")
+      .select(this.FULL_SELECT)
       .eq("id", id)
       .single();
 
@@ -397,14 +386,14 @@ export class RoomService {
     const { data, error } = await client
       .from("rooms")
       .insert(insertPayload)
-      .select()
+      .select(this.FULL_SELECT)
       .single();
 
     if (error) {
       throw new ValidationError(`Failed to create room: ${error.message}`);
     }
 
-    return this.getRoomById(data.id);
+    return mapRoom(data as RoomRow);
   }
 
   static async updateRoom(
@@ -449,16 +438,21 @@ export class RoomService {
       updatePayload.status = payload.status;
     }
 
-    const { error } = await client
+    const { data, error } = await client
       .from("rooms")
       .update(updatePayload)
-      .eq("id", id);
+      .eq("id", id)
+      .select(this.FULL_SELECT)
+      .single();
 
     if (error) {
+      if (error.code === "PGRST116") {
+        throw new NotFoundError("Room not found");
+      }
       throw new ValidationError(`Failed to update room: ${error.message}`);
     }
 
-    return this.getRoomById(id);
+    return mapRoom(data as RoomRow);
   }
 
   static async deleteRoom(id: string): Promise<void> {

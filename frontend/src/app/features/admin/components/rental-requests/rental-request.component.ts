@@ -393,7 +393,19 @@ import { AuthService } from "@core/services/auth.service";
             <div
               style="width: 308.75px; height: 42px; left: 1413.25px; top: 747px; position: absolute; background: #D9D9D9; border-radius: 10px; display: flex; align-items: center; padding-left: 15px; font-size: 20px; font-family: Afacad;"
             >
-              {{ selectedRequest?.users?.identity_number || "N/A" }}
+              <ng-container *ngIf="selectedRequest?.identity_card_url; else textId">
+                <a 
+                  [href]="selectedRequest?.identity_card_url" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="color: #264893; text-decoration: underline;"
+                >
+                  {{ selectedRequest?.users?.identity_number || "View ID Card" }}
+                </a>
+              </ng-container>
+              <ng-template #textId>
+                {{ selectedRequest?.users?.identity_number || "N/A" }}
+              </ng-template>
             </div>
 
             <div

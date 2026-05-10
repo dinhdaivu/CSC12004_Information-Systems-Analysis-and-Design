@@ -19,7 +19,8 @@
     "FETCH_ERROR": "Failed to load content. Please try again.",
     "ROOM": "Room",
     "CANCEL": "Cancel",
-    "CONFIRM": "Confirm"
+    "CONFIRM": "Confirm",
+    "RETURN": "Return"
   },
   "CONTACT_INFO": {
     "TITLE": "Contact Information",
@@ -664,6 +665,63 @@
     "MESSAGES": {
       "SELECT_BED": "Please select an available bed before proceeding.",
       "LOGIN_REQUIRED": "Please login to make a booking."
+    }
+  },
+  "ADMIN_SCHEDULED": {
+    "TITLE": "Scheduled Management",
+    "SUBTITLE": "Track and arrange physical room viewing schedules for customers.",
+    "ALL_BRANCHES": "All Branches",
+    "CALENDAR_VIEW": "Calendar View",
+    "LIST_VIEW": "List View",
+    "LOADING": "Loading appointments...",
+    "NO_APPOINTMENTS": "No appointments found for the selected filters.",
+    "STATUS": {
+      "CANCELLED": "Cancelled",
+      "PENDING": "Pending Approval",
+      "SCHEDULED": "Scheduled"
+    },
+    "STATUS_DESC": {
+      "CANCELLED": "Guest or Sales team cancelled the tour.",
+      "PENDING": "The appointment is not yet approved.",
+      "SCHEDULED": "Appointment confirmed with the guest."
+    }
+  },
+  "ADMIN_PAYMENTS": {
+    "TITLE": "Payment Tracking",
+    "SUBTITLE": "Manage deposits, rent, and refunds across all active contracts.",
+    "ALL_BRANCHES": "All Branches",
+    "SEARCH": "Search ...",
+    "FILTER": "Filter",
+    "TABLE": {
+      "GUEST_ID": "Guest ID",
+      "NAME": "Name",
+      "ROOM_BED": "Room & Bed ID",
+      "AMOUNT": "Amount",
+      "TIME_REMAINING": "Time Remaining",
+      "STATUS": "Status",
+      "PROOF": "Proof"
+    },
+    "NO_REQUESTS": "No deposit requests found.",
+    "ADD_REQUEST": "+ Add Request",
+    "PROOF": {
+      "TITLE": "Deposit Proof",
+      "STATUS": "Status:",
+      "REJECT": "Reject Proof",
+      "VERIFY": "Verify & Forward"
+    },
+    "MODAL": {
+      "REJECT_TITLE": "Reject Proof",
+      "REJECT_REASON": "Enter the reason for rejection",
+      "VERIFY_TITLE": "Verified and Forward",
+      "VERIFY_DESC": "Are you sure you want to verify and forward this request to the Manager for final approval?",
+      "FORWARD_TITLE": "Create Deposit Request",
+      "GUEST_NAME_ID": "Guest Name/ID",
+      "BRANCH": "Branch",
+      "ROOM": "Room",
+      "BED": "Bed",
+      "AMOUNT": "Deposit Amount",
+      "FINAL_FORWARD_TITLE": "Create Deposit Request",
+      "FINAL_FORWARD_DESC": "Are you sure you want to send payment link to guest ?"
     }
   }
 }

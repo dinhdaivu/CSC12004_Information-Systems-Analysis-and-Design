@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { ScheduledManagementComponent } from './scheduled-management.component';
 import { BranchService } from '@core/services/branch.service';
@@ -35,10 +36,12 @@ describe('ScheduledManagementComponent', () => {
         ScheduledManagementComponent,
         HttpClientTestingModule,
         RouterTestingModule,
+        TranslateModule.forRoot(),
       ],
       providers: [
         { provide: BranchService, useValue: branchServiceMock },
         { provide: ViewingAppointmentsService, useValue: viewingServiceMock },
+        TranslateService,
       ],
     }).compileComponents();
 
@@ -277,13 +280,13 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return "All Branches" when no branch selected', () => {
     component.selectedBranchId = null;
-    expect(component.selectedBranchLabel).toBe('All Branches');
+    expect(component.selectedBranchLabel).toBe('ADMIN_SCHEDULED.ALL_BRANCHES');
   });
 
   it('should return "All Branches" when selected branch not in list', () => {
     component.selectedBranchId = 'non-existent';
     component.branches = [];
-    expect(component.selectedBranchLabel).toBe('All Branches');
+    expect(component.selectedBranchLabel).toBe('ADMIN_SCHEDULED.ALL_BRANCHES');
   });
 
   it('should return branch name when branch is in list', () => {

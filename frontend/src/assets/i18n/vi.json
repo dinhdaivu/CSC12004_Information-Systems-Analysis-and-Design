@@ -19,7 +19,8 @@
     "FETCH_ERROR": "Không thể tải nội dung. Vui lòng thử lại.",
     "ROOM": "Phòng",
     "CANCEL": "Hủy",
-    "CONFIRM": "Xác nhận"
+    "CONFIRM": "Xác nhận",
+    "RETURN": "Quay lại"
   },
   "CONTACT_INFO": {
     "TITLE": "Thông tin liên hệ",
@@ -664,6 +665,63 @@
     "MESSAGES": {
       "SELECT_BED": "Vui lòng chọn một giường trống trước khi tiếp tục.",
       "LOGIN_REQUIRED": "Vui lòng đăng nhập để thực hiện đặt phòng."
+    }
+  },
+  "ADMIN_SCHEDULED": {
+    "TITLE": "Quản lý Lịch hẹn",
+    "SUBTITLE": "Theo dõi và sắp xếp lịch xem phòng thực tế cho khách hàng.",
+    "ALL_BRANCHES": "Tất cả chi nhánh",
+    "CALENDAR_VIEW": "Xem Lịch",
+    "LIST_VIEW": "Xem Danh sách",
+    "LOADING": "Đang tải lịch hẹn...",
+    "NO_APPOINTMENTS": "Không tìm thấy lịch hẹn cho các bộ lọc đã chọn.",
+    "STATUS": {
+      "CANCELLED": "Đã hủy",
+      "PENDING": "Chờ duyệt",
+      "SCHEDULED": "Đã lên lịch"
+    },
+    "STATUS_DESC": {
+      "CANCELLED": "Khách hoặc đội ngũ bán hàng đã hủy chuyến xem phòng.",
+      "PENDING": "Lịch hẹn chưa được phê duyệt.",
+      "SCHEDULED": "Lịch hẹn đã được xác nhận với khách."
+    }
+  },
+  "ADMIN_PAYMENTS": {
+    "TITLE": "Theo dõi thanh toán",
+    "SUBTITLE": "Quản lý đặt cọc, tiền thuê và hoàn trả trên tất cả hợp đồng đang hoạt động.",
+    "ALL_BRANCHES": "Tất cả chi nhánh",
+    "SEARCH": "Tìm kiếm ...",
+    "FILTER": "Lọc",
+    "TABLE": {
+      "GUEST_ID": "Mã khách",
+      "NAME": "Tên",
+      "ROOM_BED": "Phòng & Giường",
+      "AMOUNT": "Số tiền",
+      "TIME_REMAINING": "Thời gian còn lại",
+      "STATUS": "Trạng thái",
+      "PROOF": "Bằng chứng"
+    },
+    "NO_REQUESTS": "Không tìm thấy yêu cầu đặt cọc nào.",
+    "ADD_REQUEST": "+ Thêm Yêu cầu",
+    "PROOF": {
+      "TITLE": "Bằng chứng Đặt cọc",
+      "STATUS": "Trạng thái:",
+      "REJECT": "Từ chối",
+      "VERIFY": "Xác minh & Chuyển tiếp"
+    },
+    "MODAL": {
+      "REJECT_TITLE": "Từ chối Bằng chứng",
+      "REJECT_REASON": "Nhập lý do từ chối",
+      "VERIFY_TITLE": "Đã xác minh và Chuyển tiếp",
+      "VERIFY_DESC": "Bạn có chắc chắn muốn xác minh và chuyển yêu cầu này đến Quản lý để phê duyệt cuối cùng không?",
+      "FORWARD_TITLE": "Tạo Yêu cầu Đặt cọc",
+      "GUEST_NAME_ID": "Tên/ID Khách",
+      "BRANCH": "Chi nhánh",
+      "ROOM": "Phòng",
+      "BED": "Giường",
+      "AMOUNT": "Số tiền Đặt cọc",
+      "FINAL_FORWARD_TITLE": "Tạo Yêu cầu Đặt cọc",
+      "FINAL_FORWARD_DESC": "Bạn có chắc chắn muốn gửi liên kết thanh toán cho khách không?"
     }
   }
 }

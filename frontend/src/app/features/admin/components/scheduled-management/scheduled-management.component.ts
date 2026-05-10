@@ -103,10 +103,10 @@ type AppointmentFilters = {
           <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
           <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
-            Quản lý Lịch hẹn (Schedules)
+            {{ "ADMIN_SCHEDULED.TITLE" | translate }}
           </div>
           <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
-            Theo dõi và sắp xếp lịch xem phòng thực tế cho khách hàng.
+            {{ "ADMIN_SCHEDULED.SUBTITLE" | translate }}
           </div>
 
           <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
@@ -132,7 +132,7 @@ type AppointmentFilters = {
                       class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium transition"
                       (click)="selectBranch(null)"
                     >
-                      All Branches
+                      {{ "ADMIN_SCHEDULED.ALL_BRANCHES" | translate }}
                     </button>
 
                     <button
@@ -153,7 +153,7 @@ type AppointmentFilters = {
                     [class.active]="viewMode === 'calendar'"
                     (click)="setViewMode('calendar')"
                   >
-                    Calendar View
+                    {{ "ADMIN_SCHEDULED.CALENDAR_VIEW" | translate }}
                   </button>
 
                   <button
@@ -162,7 +162,7 @@ type AppointmentFilters = {
                     [class.active]="viewMode === 'list'"
                     (click)="setViewMode('list')"
                   >
-                    List View
+                    {{ "ADMIN_SCHEDULED.LIST_VIEW" | translate }}
                   </button>
                 </div>
               </div>
@@ -171,7 +171,7 @@ type AppointmentFilters = {
               *ngIf="isLoading"
               class="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
             >
-              Loading appointments...
+              {{ "ADMIN_SCHEDULED.LOADING" | translate }}
             </div>
 
             <div
@@ -280,9 +280,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['cancelled']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Cancelled</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.CANCELLED" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        Guest or Sales team cancelled the tour.
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.CANCELLED" | translate }}
                       </p>
                     </div>
                   </button>
@@ -298,9 +298,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['pending']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Pending Approval</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.PENDING" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        The appointment is not yet approved
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.PENDING" | translate }}
                       </p>
                     </div>
                   </button>
@@ -316,9 +316,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['scheduled']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Scheduled</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.SCHEDULED" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        Appointment confirmed with the guest.
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.SCHEDULED" | translate }}
                       </p>
                     </div>
                   </button>
@@ -336,7 +336,7 @@ type AppointmentFilters = {
                   "
                   class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
                 >
-                  No appointments found for the selected filters.
+                  {{ "ADMIN_SCHEDULED.NO_APPOINTMENTS" | translate }}
                 </div>
 
                 <article
@@ -436,9 +436,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['cancelled']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Cancelled</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.CANCELLED" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        Guest or Sales team cancelled the tour.
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.CANCELLED" | translate }}
                       </p>
                     </div>
                   </button>
@@ -454,9 +454,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['pending']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Pending Approval</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.PENDING" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        The appointment is not yet approved
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.PENDING" | translate }}
                       </p>
                     </div>
                   </button>
@@ -472,9 +472,9 @@ type AppointmentFilters = {
                       [class]="statusDotClass['scheduled']"
                     ></span>
                     <div>
-                      <p class="text-sm font-bold">Scheduled</p>
+                      <p class="text-sm font-bold">{{ "ADMIN_SCHEDULED.STATUS.SCHEDULED" | translate }}</p>
                       <p class="mt-1 text-xs text-[#264893]/70">
-                        Appointment confirmed with the guest.
+                        {{ "ADMIN_SCHEDULED.STATUS_DESC.SCHEDULED" | translate }}
                       </p>
                     </div>
                   </button>
@@ -1058,12 +1058,12 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
   get selectedBranchLabel(): string {
     if (!this.selectedBranchId) {
-      return "All Branches";
+      return this.translate.instant("ADMIN_SCHEDULED.ALL_BRANCHES");
     }
 
     return (
       this.branches.find((branch) => branch.id === this.selectedBranchId)
-        ?.name || "All Branches"
+        ?.name || this.translate.instant("ADMIN_SCHEDULED.ALL_BRANCHES")
     );
   }
 

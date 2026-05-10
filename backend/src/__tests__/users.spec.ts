@@ -61,7 +61,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.listUsers({
         page: 1,
@@ -103,7 +103,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.listUsers({
         role: "admin",
@@ -152,7 +152,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.getUserById("user-1");
 
@@ -171,7 +171,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       await expect(UsersService.getUserById("nonexistent")).rejects.toThrow(
         NotFoundError,
@@ -206,7 +206,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.updateUser("user-1", {
         role: "manager",
@@ -241,7 +241,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.updateUser("user-1", {
         status: "banned",
@@ -286,7 +286,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       const result = await UsersService.deleteUser("user-1");
 
@@ -304,7 +304,7 @@ describe("UsersService", () => {
         }),
       };
 
-      mockSupabase.from = jest.fn().mockReturnValue(mockChain);
+      mockSupabase!.from = jest.fn().mockReturnValue(mockChain);
 
       await expect(UsersService.deleteUser("nonexistent")).rejects.toThrow(
         NotFoundError,

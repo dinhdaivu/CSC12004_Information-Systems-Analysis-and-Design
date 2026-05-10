@@ -220,10 +220,10 @@ type PaymentsVmData = {
             <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
             <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
-              Theo dõi thanh toán
+              {{ "ADMIN_PAYMENTS.TITLE" | translate }}
             </div>
             <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
-              Quản lý đặt cọc, tiền thuê và hoàn trả trên tất cả hợp đồng đang hoạt động.
+              {{ "ADMIN_PAYMENTS.SUBTITLE" | translate }}
             </div>
 
             <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
@@ -242,7 +242,7 @@ type PaymentsVmData = {
 
                     <div *ngIf="isBranchDropdownOpen" class="branch-dropdown">
                       <button type="button" (click)="selectBranch(null)">
-                        All Branches
+                        {{ "ADMIN_PAYMENTS.ALL_BRANCHES" | translate }}
                       </button>
 
                       <button
@@ -264,11 +264,11 @@ type PaymentsVmData = {
                         class="fa-solid fa-magnifying-glass"
                         aria-hidden="true"
                       ></i>
-                      <input type="text" placeholder="Search ..." />
+                      <input type="text" [placeholder]="'ADMIN_PAYMENTS.SEARCH' | translate" />
                     </label>
                     <button type="button" class="btn-filter">
                       <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-                      <span>Filter</span>
+                      <span>{{ "ADMIN_PAYMENTS.FILTER" | translate }}</span>
                     </button>
                   </div>
                 </div>
@@ -277,13 +277,13 @@ type PaymentsVmData = {
                   <table>
                     <thead>
                       <tr>
-                        <th>Guest ID</th>
-                        <th>Name</th>
-                        <th>Room & Bed ID</th>
-                        <th>Amount</th>
-                        <th>Time Remaining</th>
-                        <th>Status</th>
-                        <th>Proof</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.GUEST_ID" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.NAME" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.ROOM_BED" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.AMOUNT" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.TIME_REMAINING" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.STATUS" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.PROOF" | translate }}</th>
                       </tr>
                     </thead>
 
@@ -313,7 +313,7 @@ type PaymentsVmData = {
 
                         <tr *ngIf="!vm.error && vm.data.deposits.length === 0">
                           <td colspan="7" class="state-row">
-                            No deposit requests found.
+                            {{ "ADMIN_PAYMENTS.NO_REQUESTS" | translate }}
                           </td>
                         </tr>
 
@@ -392,16 +392,16 @@ type PaymentsVmData = {
                   <span>&gt;</span>
                 </div>
 
-                <button type="button" class="btn-add">+ Add Request</button>
+                <button type="button" class="btn-add">{{ "ADMIN_PAYMENTS.ADD_REQUEST" | translate }}</button>
               </ng-container>
             </div>
 
             <ng-template #proofView>
               <header class="proof-modal-header">
-                <h3 class="proof-title">Deposit Proof</h3>
+                <h3 class="proof-title">{{ "ADMIN_PAYMENTS.PROOF.TITLE" | translate }}</h3>
                 <p class="proof-subtitle">{{ proofModalSubtitle }}</p>
                 <p class="proof-status-text">
-                  Status:
+                  {{ "ADMIN_PAYMENTS.PROOF.STATUS" | translate }}
                   <span
                     [class.status-pending]="
                       isStatusPending(selectedDepositProof?.status)
@@ -415,7 +415,7 @@ type PaymentsVmData = {
                   >
                     {{
                       proofDetailLoading
-                        ? "loading..."
+                        ? ("COMMON.LOADING" | translate)
                         : (selectedDepositProof?.status ?? "N/A")
                     }}
                   </span>
@@ -475,7 +475,7 @@ type PaymentsVmData = {
                   class="btn-return"
                   (click)="closeProofPage()"
                 >
-                  Return
+                  {{ "COMMON.RETURN" | translate }}
                 </button>
 
                 <div class="action-group">
@@ -485,7 +485,7 @@ type PaymentsVmData = {
                     [disabled]="isProofActionDisabled"
                     (click)="openRejectModal()"
                   >
-                    Reject Proof
+                    {{ "ADMIN_PAYMENTS.PROOF.REJECT" | translate }}
                   </button>
                   <button
                     type="button"
@@ -493,18 +493,17 @@ type PaymentsVmData = {
                     [disabled]="isProofActionDisabled"
                     (click)="openVerifyConfirmModal()"
                   >
-                    Verify & Forward
+                    {{ "ADMIN_PAYMENTS.PROOF.VERIFY" | translate }}
                   </button>
                 </div>
               </footer>
 
               <div *ngIf="isRejectModalOpen" class="reject-modal-overlay">
                 <div class="modal-reject" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Reject Proof</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.REJECT_TITLE" | translate }}</h1>
 
                   <div class="input-group">
-                    <label for="reject-reason"
-                      >Enter the reason for rejection</label
+                    <label for="reject-reason">{{ "ADMIN_PAYMENTS.MODAL.REJECT_REASON" | translate }}</label
                     >
                     <textarea
                       id="reject-reason"
@@ -520,7 +519,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeRejectModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -528,7 +527,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="confirmRejectProof()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
@@ -543,10 +542,9 @@ type PaymentsVmData = {
                   role="dialog"
                   aria-modal="true"
                 >
-                  <h1 class="modal-title">Verified and Forward</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.VERIFY_TITLE" | translate }}</h1>
                   <p class="modal-description">
-                    Are you sure you want to verify and forward this request to
-                    the Manager for final approval?
+                    {{ "ADMIN_PAYMENTS.MODAL.VERIFY_DESC" | translate }}
                   </p>
 
                   <div class="button-group">
@@ -556,7 +554,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeVerifyConfirmModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -564,7 +562,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="openForwardRequestModal()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
@@ -575,11 +573,11 @@ type PaymentsVmData = {
                 class="reject-modal-overlay"
               >
                 <div class="modal-request" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Create Deposit Request</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FORWARD_TITLE" | translate }}</h1>
 
                   <form class="request-form" (ngSubmit)="submitVerifyForward()">
                     <div class="form-group">
-                      <label for="guest-id">Guest Name/ID</label>
+                      <label for="guest-id">{{ "ADMIN_PAYMENTS.MODAL.GUEST_NAME_ID" | translate }}</label>
                       <input
                         type="text"
                         id="guest-id"
@@ -590,7 +588,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="branch">Branch</label>
+                      <label for="branch">{{ "ADMIN_PAYMENTS.MODAL.BRANCH" | translate }}</label>
                       <input
                         type="text"
                         id="branch"
@@ -601,7 +599,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="room">Room</label>
+                      <label for="room">{{ "ADMIN_PAYMENTS.MODAL.ROOM" | translate }}</label>
                       <input
                         type="text"
                         id="room"
@@ -612,7 +610,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="bed">Bed</label>
+                      <label for="bed">{{ "ADMIN_PAYMENTS.MODAL.BED" | translate }}</label>
                       <input
                         type="text"
                         id="bed"
@@ -623,7 +621,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="amount">Deposit Amount</label>
+                      <label for="amount">{{ "ADMIN_PAYMENTS.MODAL.AMOUNT" | translate }}</label>
                       <input
                         type="number"
                         id="amount"
@@ -640,14 +638,14 @@ type PaymentsVmData = {
                         [disabled]="proofActionLoading"
                         (click)="closeForwardRequestModal()"
                       >
-                        Cancel
+                        {{ "COMMON.CANCEL" | translate }}
                       </button>
                       <button
                         type="submit"
                         class="btn-confirm"
                         [disabled]="proofActionLoading"
                       >
-                        Confirm
+                        {{ "COMMON.CONFIRM" | translate }}
                       </button>
                     </div>
                   </form>
@@ -659,10 +657,10 @@ type PaymentsVmData = {
                 class="reject-modal-overlay"
               >
                 <div class="modal-confirm" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Create Deposit Request</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_TITLE" | translate }}</h1>
 
                   <div class="modal-content">
-                    <p>Are you sure you want to send payment link to guest ?</p>
+                    <p>{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_DESC" | translate }}</p>
                   </div>
 
                   <div class="button-group">
@@ -672,7 +670,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeFinalForwardConfirmModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -680,7 +678,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="confirmFinalForward()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
@@ -904,12 +902,12 @@ export class PaymentsComponent implements OnDestroy {
 
   selectedBranchLabel(branches: Branch[]): string {
     if (!this.selectedBranchId) {
-      return "All Branches";
+      return this.translate.instant("ADMIN_PAYMENTS.ALL_BRANCHES");
     }
 
     return (
       branches.find((branch) => branch.id === this.selectedBranchId)?.name ??
-      "All Branches"
+      this.translate.instant("ADMIN_PAYMENTS.ALL_BRANCHES")
     );
   }
 
