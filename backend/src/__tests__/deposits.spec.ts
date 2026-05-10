@@ -339,4 +339,30 @@ describe("Deposit Routes", () => {
     expect(response.body.data[0].status).toBe("pending");
     expect(eq).toHaveBeenCalledWith("status", "pending");
   });
+
+  describe("Validations", () => {
+    it("should validate deposit id", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/deposits/%20%20%20").set("Authorization", "Bearer fake");
+      expect(response.status).toBe(400);
+    });
+
+    it("should validate status filter", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/deposits?status=invalid").set("Authorization", "Bearer fake");
+      expect(response.status).toBe(400);
+    });
+
+    it("should validate date filter formats", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/deposits?fromDate=abc").set("Authorization", "Bearer fake");
+      expect(response.status).toBe(400);
+    });
+
+    it("should validate fromDate <= toDate", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/deposits?fromDate=2026-12-31&toDate=2026-01-01").set("Authorization", "Bearer fake");
+      expect(response.status).toBe(400);
+    });
+  });
 });

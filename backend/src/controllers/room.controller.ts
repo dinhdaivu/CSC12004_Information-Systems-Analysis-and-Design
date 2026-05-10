@@ -1,6 +1,10 @@
+// room.controller.ts
+
 import { Request, Response } from "express";
 import cloudinary from "@config/cloudinary";
+
 import { ApiResponseBuilder } from "@models/api.model";
+
 import {
   BedStatus,
   CreateRoomDTO,
@@ -8,7 +12,9 @@ import {
   RoomStatus,
   UpdateRoomDTO,
 } from "@models/room.model";
+
 import { RoomService } from "@services/room.service";
+
 import { ValidationError } from "@utils/errors";
 
 const ALLOWED_ROOM_STATUS: RoomStatus[] = [
@@ -34,12 +40,17 @@ function parseStringQueryParam(value: unknown): string | undefined {
   }
 
   const trimmed = value.trim();
+
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
 function parseOptionalNumber(value: unknown): number | undefined {
-  if (!value) return undefined;
+  if (!value) {
+    return undefined;
+  }
+
   const parsed = Number(value);
+
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
@@ -49,6 +60,7 @@ function parsePathId(value: unknown): string {
   }
 
   const id = value.trim();
+
   if (!id) {
     throw new ValidationError("Invalid room id");
   }
@@ -109,13 +121,19 @@ function mapCapacityToRoomType(capacity: number): string {
 }
 
 function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
+  // support both branch_id & zone_id
+  const branch_id = parseStringQueryParam(body.branch_id);
+
   const zone_id = parseStringQueryParam(body.zone_id);
+
   const room_number = parseStringQueryParam(body.room_number);
+
   const max_capacity = parseNumber(body.max_capacity, "max_capacity");
+
   const price_per_month = parseNumber(body.price_per_month, "price_per_month");
 
-  if (!zone_id) {
-    throw new ValidationError("zone_id is required");
+  if (!branch_id && !zone_id) {
+    throw new ValidationError("branch_id or zone_id is required");
   }
 
   if (!room_number) {
@@ -143,13 +161,21 @@ function validateCreatePayload(body: Record<string, unknown>): CreateRoomDTO {
     : undefined;
 
   return {
+    branch_id,
     zone_id,
+
     room_number,
+
     room_type,
+
     max_capacity,
+
     price_per_month,
+
     amenities,
+
     images_url,
+
     status: "available",
   };
 }
@@ -159,32 +185,39 @@ function validateUpdatePayload(body: Record<string, unknown>): UpdateRoomDTO {
 
   if (body.room_number !== undefined) {
     const roomNumber = parseStringQueryParam(body.room_number);
+
     if (!roomNumber) {
       throw new ValidationError("room_number must be a non-empty string");
     }
+
     payload.room_number = roomNumber;
   }
 
   if (body.room_type !== undefined) {
     const roomType = parseStringQueryParam(body.room_type);
+
     payload.room_type = roomType;
   }
 
   if (body.max_capacity !== undefined) {
     const maxCapacity = parseNumber(body.max_capacity, "max_capacity");
+
     if (maxCapacity <= 0) {
       throw new ValidationError("max_capacity must be greater than 0");
     }
+
     payload.max_capacity = maxCapacity;
   }
 
   if (body.price_per_month !== undefined) {
     const pricePerMonth = parseNumber(body.price_per_month, "price_per_month");
+
     if (pricePerMonth < 0) {
       throw new ValidationError(
         "price_per_month must be greater than or equal to 0",
       );
     }
+
     payload.price_per_month = pricePerMonth;
   }
 
@@ -226,6 +259,7 @@ function parseUploadPayload(
   body: Record<string, unknown>,
 ): UploadRoomImagePayload {
   const fileData = parseStringQueryParam(body.file_data);
+
   const fileName = parseStringQueryParam(body.file_name);
 
   if (!fileData) {
@@ -251,11 +285,14 @@ function sanitizePublicId(value: string): string {
 export class RoomController {
   static async uploadRoomImage(req: Request, res: Response): Promise<void> {
     const body = req.body as Record<string, unknown>;
+
     const payload = parseUploadPayload(body);
 
     const uploadResult = await cloudinary.uploader.upload(payload.file_data, {
       folder: "homestay-dorm/rooms",
+
       resource_type: "image",
+
       public_id: payload.file_name
         ? `room-${Date.now()}-${sanitizePublicId(payload.file_name)}`
         : undefined,
@@ -265,6 +302,7 @@ export class RoomController {
       ApiResponseBuilder.success(
         {
           image_url: uploadResult.secure_url,
+
           public_id: uploadResult.public_id,
         },
         "Room image uploaded successfully",
@@ -276,28 +314,42 @@ export class RoomController {
     const query = req.query as Record<string, unknown>;
 
     const filters: RoomFilters = {
+      // support both
+      branch_id: parseStringQueryParam(query.branch_id),
+
       zone_id: parseStringQueryParam(query.zone_id),
+
       room_status: validateRoomStatus(parseStringQueryParam(query.room_status)),
+
       bed_status: validateBedStatus(parseStringQueryParam(query.bed_status)),
+
       room_type: parseStringQueryParam(query.room_type),
+
       capacity: parseOptionalNumber(query.capacity),
+
       min_price: parseOptionalNumber(query.min_price),
+
       max_price: parseOptionalNumber(query.max_price),
+
       search: parseStringQueryParam(query.search),
     };
 
     const rooms = await RoomService.getRooms(filters);
+
     res.status(200).json(ApiResponseBuilder.success(rooms));
   }
 
   static async getRoomById(req: Request, res: Response): Promise<void> {
     const roomId = parsePathId(req.params.id);
+
     const room = await RoomService.getRoomById(roomId);
+
     res.status(200).json(ApiResponseBuilder.success(room));
   }
 
   static async createRoom(req: Request, res: Response): Promise<void> {
     const payload = validateCreatePayload(req.body as Record<string, unknown>);
+
     const room = await RoomService.createRoom(payload);
 
     res
@@ -307,7 +359,9 @@ export class RoomController {
 
   static async updateRoom(req: Request, res: Response): Promise<void> {
     const roomId = parsePathId(req.params.id);
+
     const payload = validateUpdatePayload(req.body as Record<string, unknown>);
+
     const room = await RoomService.updateRoom(roomId, payload);
 
     res
@@ -317,7 +371,9 @@ export class RoomController {
 
   static async deleteRoom(req: Request, res: Response): Promise<void> {
     const roomId = parsePathId(req.params.id);
+
     await RoomService.deleteRoom(roomId);
+
     res
       .status(200)
       .json(

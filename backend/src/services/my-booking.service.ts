@@ -17,7 +17,8 @@ export class MyBookingService {
         *,
         branches ( id, name, address ),
         rooms ( id, room_number, room_type ),
-        beds ( id, bed_number )
+        beds ( id, bed_number ),
+        users ( full_name, gender, phone_number, email, identity_number )
       `)
       .eq('customer_id', customerId)
       .order('created_at', { ascending: false });
@@ -87,7 +88,8 @@ export class MyBookingService {
         *,
         branches ( id, name, address, phone ),
         rooms ( id, room_number, room_type, price_per_month, max_capacity ),
-        beds ( id, bed_number, price_per_month )
+        beds ( id, bed_number, price_per_month ),
+        users ( full_name, gender, phone_number, email, identity_number )
       `)
       .eq('id', bookingId)
       .eq('customer_id', customerId)

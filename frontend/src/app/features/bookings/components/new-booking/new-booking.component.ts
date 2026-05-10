@@ -9,6 +9,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HostListener } from '@angular/core';
 import { inject } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
+import type { User } from '@shared/models/auth.model';
 
 @Component({
   selector: 'app-new-booking',
@@ -231,6 +232,7 @@ export class NewBookingComponent implements OnInit {
   isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
+  user: User | null = null;
 
   // Variables for Map API
   branchIdMap: { [key: string]: string } = {};
@@ -266,6 +268,9 @@ export class NewBookingComponent implements OnInit {
   ngOnInit(): void {
     this.onResize();
     this.isAuthenticated = this.authService.isAuthenticated();
+    if (this.isAuthenticated) {
+      this.user = this.authService.getCurrentUser();
+    }
     this.bookingForm = this.fb.group({
       branch: ['Tô Hiến Thành', Validators.required],
       room_category: ['Twin Room (2)', Validators.required],
@@ -385,7 +390,11 @@ export class NewBookingComponent implements OnInit {
       rental_duration_months: Number(formValues.rental_duration_months),
       people_count: Number(formValues.people_count),
       preferred_room_type: formValues.room_category,
-      note: `Branch: ${formValues.branch} | Notes: ${formValues.note}`
+      note: `Branch: ${formValues.branch} | Notes: ${formValues.note}`,
+      full_name: this.user?.full_name,
+      phone_number: this.user?.phone_number,
+      gender: this.user?.gender,
+      identity_number: this.user?.identity_number
     };
 
     if (mappedBranchId) {

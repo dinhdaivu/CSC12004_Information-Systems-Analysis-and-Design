@@ -43,6 +43,23 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
             delete requestData.identity_card_base64; 
         }
 
+        // Lấy thông tin cá nhân đính kèm để cập nhật profile khách hàng (nếu có)
+        const userUpdates: Record<string, unknown> = {};
+        if (requestData.full_name) userUpdates['full_name'] = requestData.full_name;
+        if (requestData.phone_number) userUpdates['phone_number'] = requestData.phone_number;
+        if (requestData.gender) userUpdates['gender'] = requestData.gender;
+        if (requestData.identity_number) userUpdates['identity_number'] = requestData.identity_number;
+
+        if (Object.keys(userUpdates).length > 0) {
+            await supabase.from('users').update(userUpdates).eq('id', customerId);
+        }
+
+        // Xóa các trường tạm khỏi payload để không gây lỗi khi insert vào bảng rental_requests
+        delete requestData.full_name;
+        delete requestData.phone_number;
+        delete requestData.gender;
+        delete requestData.identity_number;
+
         // Gọi supabase insert data với requestData như bình thường...
         const { data, error } = await supabase
             .from('rental_requests')
@@ -70,7 +87,7 @@ export const getMyRentalRequests = async (req: AuthRequest, res: Response, next:
         
         const { data, error } = await supabase
             .from('rental_requests')
-            .select('*, branches(name), rooms(room_number)')
+            .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .eq('customer_id', customerId)
             .order('created_at', { ascending: false });
 
@@ -91,7 +108,7 @@ export const getAllRentalRequests = async (req: AuthRequest, res: Response, next
 
         const { data, error } = await supabase
             .from('rental_requests')
-            .select('*, branches(name), rooms(room_number)')
+            .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .order('created_at', { ascending: false });
 
         if (error) throw new AppError(500, 'SUPABASE_QUERY_ERROR', error.message);
@@ -108,7 +125,7 @@ export const getRentalRequestById = async (req: AuthRequest, res: Response, next
 
         const { data, error } = await supabase
             .from('rental_requests')
-            .select('*, branches(name), rooms(room_number)')
+            .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .eq('id', id)
             .single();
 

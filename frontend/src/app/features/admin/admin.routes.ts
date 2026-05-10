@@ -1,36 +1,42 @@
-import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards/auth.guard';
-import { roleGuard } from '@core/guards/role.guard';
-import type { AppRouteData } from '@shared/models/route-shell.model';
-import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
-import { PaymentsComponent } from './components/payments/payments.component';
-import { RoomsManagementComponent } from './components/rooms-management/rooms-management.component';
-import { UsersManagementComponent } from './components/users-management/users-management.component';
+import { Routes } from "@angular/router";
+import { authGuard } from "@core/guards/auth.guard";
+import { roleGuard } from "@core/guards/role.guard";
+import type { AppRouteData } from "@shared/models/route-shell.model";
+import { AdminDashboardComponent } from "./components/admin-dashboard/admin-dashboard.component";
+import { PaymentsComponent } from "./components/payments/payments.component";
+import { RoomsManagementComponent } from "./components/rooms-management/rooms-management.component";
+import { UsersManagementComponent } from "./components/users-management/users-management.component";
 import { ScheduledManagementComponent } from "./components/scheduled-management/scheduled-management.component";
 import { RentalRequestsComponent } from "./components/rental-requests/rental-request.component";
+import { ContractsComponent } from "./components/contracts/contracts.component";
 
 export const ADMIN_ROUTES: Routes = [
   {
     path: "",
+    redirectTo: "rental-requests",
+    pathMatch: "full",
+  },
+  {
+    path: "dashboard",
     component: AdminDashboardComponent,
     canActivate: [authGuard, roleGuard],
     data: {
-      roles: ['sale', 'accountant', 'manager', 'admin'],
-      access: ['sale', 'accountant', 'manager', 'admin'],
-      navLabelKey: 'NAV.ADMIN.OVERVIEW',
-      pageTitleKey: 'PAGES.ADMIN_DASHBOARD.TITLE',
-    } satisfies AppRouteData
+      roles: ["sale", "accountant", "manager", "admin"],
+      access: ["sale", "accountant", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.OVERVIEW",
+      pageTitleKey: "PAGES.ADMIN_DASHBOARD.TITLE",
+    } satisfies AppRouteData,
   },
   {
     path: "users",
     component: UsersManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
-      roles: ['manager', 'admin'],
-      access: ['manager', 'admin'],
-      navLabelKey: 'NAV.ADMIN.USERS',
-      pageTitleKey: 'PAGES.ADMIN_USERS.TITLE',
-    } satisfies AppRouteData
+      roles: ["manager", "admin"],
+      access: ["manager", "admin"],
+      navLabelKey: "NAV.ADMIN.USERS",
+      pageTitleKey: "PAGES.ADMIN_USERS.TITLE",
+    } satisfies AppRouteData,
   },
   {
     path: "users-management",
@@ -42,11 +48,11 @@ export const ADMIN_ROUTES: Routes = [
     component: RoomsManagementComponent,
     canActivate: [authGuard, roleGuard],
     data: {
-      roles: ['sale', 'accountant', 'manager', 'admin'],
-      access: ['sale', 'accountant', 'manager', 'admin'],
-      navLabelKey: 'NAV.ADMIN.ROOMS',
-      pageTitleKey: 'PAGES.ADMIN_ROOMS.TITLE',
-    } satisfies AppRouteData
+      roles: ["sale", "accountant", "manager", "admin"],
+      access: ["sale", "accountant", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.ROOMS",
+      pageTitleKey: "PAGES.ADMIN_ROOMS.TITLE",
+    } satisfies AppRouteData,
   },
   {
     path: "rooms-management",
@@ -58,11 +64,11 @@ export const ADMIN_ROUTES: Routes = [
     component: PaymentsComponent,
     canActivate: [authGuard, roleGuard],
     data: {
-      roles: ['sale', 'accountant', 'manager', 'admin'],
-      access: ['sale', 'accountant', 'manager', 'admin'],
-      navLabelKey: 'NAV.ADMIN.PAYMENTS',
-      pageTitleKey: 'PAGES.ADMIN_PAYMENTS.TITLE',
-    } satisfies AppRouteData
+      roles: ["sale", "accountant", "manager", "admin"],
+      access: ["sale", "accountant", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.PAYMENTS",
+      pageTitleKey: "PAGES.ADMIN_PAYMENTS.TITLE",
+    } satisfies AppRouteData,
   },
   {
     path: "scheduled-management",
@@ -89,6 +95,28 @@ export const ADMIN_ROUTES: Routes = [
       access: ["sale", "manager", "admin"],
       navLabelKey: "NAV.ADMIN.RENTAL_REQUESTS",
       pageTitleKey: "PAGES.ADMIN_RENTAL_REQUESTS.TITLE",
+    } satisfies AppRouteData,
+  },
+  {
+    path: "contracts",
+    component: ContractsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "manager", "admin"],
+      access: ["sale", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.CONTRACTS",
+      pageTitleKey: "PAGES.ADMIN_CONTRACTS.TITLE",
+    } satisfies AppRouteData,
+  },
+  {
+    path: "contracts/:id/eligibility",
+    component: ContractsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "manager", "admin"],
+      access: ["sale", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.CONTRACTS",
+      pageTitleKey: "PAGES.ADMIN_CONTRACTS.TITLE",
     } satisfies AppRouteData,
   },
 ];

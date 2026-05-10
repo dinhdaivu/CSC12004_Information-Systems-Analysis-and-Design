@@ -66,7 +66,7 @@ describe('PaymentsComponent', () => {
 
   it('should return "All Branches" label when no branch selected', () => {
     component.selectedBranchId = null;
-    expect(component.selectedBranchLabel([])).toBe('All Branches');
+    expect(component.selectedBranchLabel([])).toBe('ADMIN_PAYMENTS.ALL_BRANCHES');
   });
 
   it('should return branch name when branch is selected', () => {
@@ -77,7 +77,7 @@ describe('PaymentsComponent', () => {
 
   it('should return "All Branches" when selected branch not found in list', () => {
     component.selectedBranchId = 'unknown';
-    expect(component.selectedBranchLabel([])).toBe('All Branches');
+    expect(component.selectedBranchLabel([])).toBe('ADMIN_PAYMENTS.ALL_BRANCHES');
   });
 
   it('should return true for isProofActionDisabled when no proof loaded', () => {

@@ -7,6 +7,10 @@ export interface RentalPayload {
   branch_id?: string;
   room_id?: string;
   identity_card_base64?: string;
+  full_name?: string;
+  phone_number?: string;
+  gender?: string;
+  identity_number?: string;
 }
 
 export interface RentalRequestResponse {
@@ -31,6 +35,7 @@ export interface StaffRentalRequestResponse extends RentalRequestResponse {
   people_count?: number;
   preferred_room_type?: string;
   note?: string;
+  identity_card_url?: string;
   users?: {
     full_name: string;
     gender: string;

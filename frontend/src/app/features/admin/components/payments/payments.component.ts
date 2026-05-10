@@ -1,6 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { AuthService } from "@core/services/auth.service";
 import { FormsModule } from "@angular/forms";
 import { environment } from "@environments/environment";
 import { BranchService } from "@core/services/branch.service";
@@ -10,7 +13,6 @@ import {
   type ViewState,
 } from "@shared/utils/loading-state.util";
 import { handleRequest } from "@shared/utils/request-handler.util";
-import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import {
   BehaviorSubject,
   Observable,
@@ -82,48 +84,150 @@ type PaymentsVmData = {
 @Component({
   selector: "app-payments",
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, TranslateModule],
+  styles: [
+    `
+      .hover-effect { transition: all 0.2s ease-in-out; cursor: pointer; }
+      .hover-effect:hover { opacity: 0.9; }
+      
+      .reject-modal-overlay {
+        position: fixed;
+        z-index: 999;
+        inset: 0;
+        background: rgba(20, 30, 50, 0.35);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        border-radius: 30px;
+      }
+
+      /* Keep original styles below */
+      .dashboard-card {
+        background-color: #f9f8f3;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        position: relative;
+      }
+      
+      .card-header h1 { color: #1a3a6c; margin: 0; font-size: 2.1rem; font-weight: 800; }
+      .card-header p { color: #2b4c8c; margin: 10px 0 30px; font-size: 0.95rem; }
+      .summary-text { margin-top: -16px; margin-bottom: 22px; font-size: 0.88rem; font-weight: 600; color: #264893; }
+      .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
+      .btn-branch { background-color: #2b4c8c; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+      .branch-dropdown { position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 220px; border-radius: 12px; border: 1px solid #d9dde7; background: #fff; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); padding: 6px; }
+      .branch-dropdown button { width: 100%; text-align: left; border: none; background: transparent; border-radius: 8px; padding: 8px 10px; color: #264893; cursor: pointer; font-weight: 600; }
+      .branch-dropdown button:hover { background: #f2f5fb; }
+      .search-filter-group { display: flex; gap: 10px; }
+      .search-box { background: #eeebe3; border: 1px solid #333; border-radius: 20px; padding: 7px 15px; display: flex; align-items: center; gap: 8px; }
+      .search-box input { background: transparent; border: none; outline: none; min-width: 150px; }
+      .btn-filter { background: transparent; border: 1px solid #333; border-radius: 20px; padding: 7px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+      .table-container { width: 100%; overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; }
+      th { text-align: left; color: #2b4c8c; font-size: 0.85rem; padding: 12px 6px; white-space: nowrap; }
+      td { padding: 12px 6px; font-size: 0.86rem; color: #333; font-weight: 500; white-space: nowrap; }
+      .state-row { text-align: center; font-weight: 600; color: #264893; }
+      .state-row-error { color: #b12222; }
+      .skeleton-row td { padding-top: 15px; padding-bottom: 15px; }
+      .skeleton-line, .skeleton-chip { display: inline-block; height: 14px; border-radius: 8px; background: linear-gradient( 90deg, #e6e9f2 25%, #f2f5fb 50%, #e6e9f2 75% ); background-size: 200% 100%; animation: skeleton-shimmer 1.2s ease-in-out infinite; }
+      .skeleton-chip { width: 28px; height: 28px; border-radius: 10px; }
+      .w-16 { width: 4rem; }
+      .w-20 { width: 5rem; }
+      .w-24 { width: 6rem; }
+      .w-28 { width: 7rem; }
+      .w-36 { width: 9rem; }
+      @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      .status-badge { font-weight: 700; }
+      .status-pending { color: #8d6300; }
+      .status-paid { color: #1f7a2f; }
+      .status-cancelled { color: #b12222; }
+      .pagination { display: flex; justify-content: center; gap: 15px; margin-top: 28px; color: #555; cursor: pointer; }
+      .pagination .active { font-weight: 700; text-decoration: underline; }
+      .btn-add { margin-top: 24px; margin-left: auto; display: block; background-color: #2b4c8c; color: #fff; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(43, 76, 140, 0.3); }
+      .proof-btn { border: none; background: transparent; cursor: pointer; color: #264893; width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
+      .proof-btn:hover { background: #eff3fb; }
+      .proof-icon { width: 18px; height: 18px; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+      .proof-modal-header { margin-bottom: 32px; }
+      .proof-title { color: #1a3a6c; font-size: 2rem; margin: 0; font-weight: 800; }
+      .proof-subtitle { color: #1a3a6c; font-size: 1rem; margin: 6px 0 0; font-weight: 500; }
+      .proof-status-text { margin: 10px 0 0; color: #264893; font-size: 0.9rem; font-weight: 700; }
+      .proof-error-text { margin: 10px 0 0; color: #b12222; font-size: 0.9rem; font-weight: 600; }
+      .proof-upload-area { display: flex; justify-content: center; align-items: center; margin-bottom: 42px; }
+      .dashed-border { border: 2px dashed #aab4c8; border-radius: 20px; padding: 15px; width: 100%; max-width: 450px; }
+      .image-placeholder { background-color: #e2e2e2; border-radius: 15px; height: 250px; display: flex; justify-content: center; align-items: center; }
+      .proof-image { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; }
+      .proof-modal-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+      .btn-return, .btn-reject, .btn-verify { padding: 12px 30px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; }
+      .btn-return { background-color: transparent; color: #1a3a6c; border: 2px solid #1a3a6c; }
+      .action-group { display: flex; gap: 14px; }
+      .btn-reject, .btn-verify { background-color: #2b4c8c; color: #fff; }
+      .btn-reject:disabled, .btn-verify:disabled { opacity: 0.65; cursor: not-allowed; }
+      .modal-reject { background-color: #f5f5f5; width: min(450px, 100%); padding: 40px; border-radius: 25px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); text-align: center; }
+      .modal-title { color: #1a3a6c; font-size: 2rem; margin-top: 0; margin-bottom: 30px; font-weight: 800; }
+      .modal-description { margin: -6px 0 28px; color: #1a3a6c; font-size: 1rem; line-height: 1.45; }
+      .modal-verify-confirm { max-width: 560px; }
+      .input-group { text-align: left; margin-bottom: 35px; }
+      .input-group label { display: block; color: #1a3a6c; margin-bottom: 8px; font-size: 0.95rem; font-weight: 500; }
+      .input-group textarea { width: 100%; background-color: #d9d9d9; border: none; border-radius: 12px; padding: 15px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 1rem; }
+      .input-group textarea:focus { outline: 2px solid #2b4c8c; }
+      .button-group { display: flex; justify-content: center; gap: 20px; }
+      .btn-cancel, .btn-confirm { padding: 12px 0; width: 140px; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+      .btn-cancel { background-color: transparent; color: #1a3a6c; border: 2px solid #1a3a6c; }
+      .btn-cancel:hover { background-color: #e8e8e8; }
+      .btn-confirm { background-color: #2b4c8c; color: #fff; border: none; }
+      .btn-confirm:hover { background-color: #1e3666; transform: translateY(-1px); }
+      .btn-cancel:disabled, .btn-confirm:disabled { opacity: 0.65; cursor: not-allowed; }
+      .modal-request { background-color: #f5f5f5; width: min(500px, 100%); padding: 40px 50px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+      .modal-confirm { background-color: #f5f5f5; width: min(450px, 100%); padding: 50px 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); text-align: center; }
+      .modal-content p { color: #5b76a7; font-size: 1.2rem; line-height: 1.5; margin-bottom: 50px; padding: 0 20px; font-weight: 500; }
+      .request-form { display: flex; flex-direction: column; gap: 15px; }
+      .form-group { display: grid; grid-template-columns: 1fr 1.5fr; align-items: center; gap: 20px; margin-bottom: 0; }
+      .form-group label { color: #000; font-weight: 700; font-size: 0.9rem; }
+      .form-group input, .form-group select { background-color: #d9d9d9; border: none; border-radius: 10px; padding: 12px; height: 40px; box-sizing: border-box; outline: none; color: #1a3a6c; }
+      .form-group input:focus, .form-group select:focus { background-color: #cecece; }
+      .form-group input[readonly], .form-group select[disabled] { opacity: 1; cursor: default; }
+    `
+  ],
   template: `
-    <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#264893]">
-      <app-admin-sidebar></app-admin-sidebar>
+    <ng-container *ngIf="vm$ | async as vm">
+      <div
+        [style.height.px]="1080 * scaleFactor"
+        style="width: 100%; overflow: hidden; position: relative; background: #FEF4DF;"
+      >
+        <div
+          *ngIf="vm.loading"
+          class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
+          style="background: #fef4df;"
+        >
+          <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="h-28 w-auto object-contain" />
+          <p class="text-[1.05rem] italic tracking-wide text-[#264893]/70" style="font-family: 'Afacad', sans-serif;">
+            Nurturing Your Journey, Building Your Home.
+          </p>
+          <span class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"></span>
+        </div>
 
-      <div class="ml-0 flex min-h-screen flex-col md:ml-64">
-        <main class="flex-1 px-6 py-6">
-          <div class="dashboard-card">
+        <div
+          [style.transform]="'scale(' + scaleFactor + ')'"
+          style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;"
+        >
+          <div style="width: 1920px; height: 1080px; position: relative; background: #FEF4DF; overflow: hidden">
+            <div style="width: 1920px; height: 644px; left: 0px; top: -5px; position: absolute; background: #503D2E"></div>
+            <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute" src="assets/pictures/Background.png" />
+            <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+            <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
+            <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
+
+            <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
+              {{ "ADMIN_PAYMENTS.TITLE" | translate }}
+            </div>
+            <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
+              {{ "ADMIN_PAYMENTS.SUBTITLE" | translate }}
+            </div>
+
+            <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
             <ng-container *ngIf="currentView === 'list'; else proofView">
-              <ng-container *ngIf="vm$ | async as vm">
-                <div
-                  *ngIf="vm.loading"
-                  class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
-                  style="background: #fef4df"
-                >
-                  <img
-                    src="assets/icons/logo.svg"
-                    alt="HomeStay Dorm"
-                    class="h-28 w-auto object-contain"
-                  />
-                  <p
-                    class="text-[1.05rem] italic tracking-wide text-[#264893]/70"
-                    style="font-family: 'Afacad', sans-serif"
-                  >
-                    Nurturing Your Journey, Building Your Home.
-                  </p>
-                  <span
-                    class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
-                  ></span>
-                </div>
-
-                <header class="card-header">
-                  <h1>Deposit Tracking Dashboard</h1>
-                  <p>
-                    Create deposit requests, monitor payment windows, and
-                    coordinate with Management for confirmation.
-                  </p>
-                  <p class="summary-text">
-                    Completed deposit payments:
-                    {{ vm.data.completedDepositPayments }}
-                  </p>
-                </header>
 
                 <div class="toolbar">
                   <div class="relative">
@@ -138,7 +242,7 @@ type PaymentsVmData = {
 
                     <div *ngIf="isBranchDropdownOpen" class="branch-dropdown">
                       <button type="button" (click)="selectBranch(null)">
-                        All Branches
+                        {{ "ADMIN_PAYMENTS.ALL_BRANCHES" | translate }}
                       </button>
 
                       <button
@@ -160,11 +264,11 @@ type PaymentsVmData = {
                         class="fa-solid fa-magnifying-glass"
                         aria-hidden="true"
                       ></i>
-                      <input type="text" placeholder="Search ..." />
+                      <input type="text" [placeholder]="'ADMIN_PAYMENTS.SEARCH' | translate" />
                     </label>
                     <button type="button" class="btn-filter">
                       <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-                      <span>Filter</span>
+                      <span>{{ "ADMIN_PAYMENTS.FILTER" | translate }}</span>
                     </button>
                   </div>
                 </div>
@@ -173,13 +277,13 @@ type PaymentsVmData = {
                   <table>
                     <thead>
                       <tr>
-                        <th>Guest ID</th>
-                        <th>Name</th>
-                        <th>Room & Bed ID</th>
-                        <th>Amount</th>
-                        <th>Time Remaining</th>
-                        <th>Status</th>
-                        <th>Proof</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.GUEST_ID" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.NAME" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.ROOM_BED" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.AMOUNT" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.TIME_REMAINING" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.STATUS" | translate }}</th>
+                        <th>{{ "ADMIN_PAYMENTS.TABLE.PROOF" | translate }}</th>
                       </tr>
                     </thead>
 
@@ -209,7 +313,7 @@ type PaymentsVmData = {
 
                         <tr *ngIf="!vm.error && vm.data.deposits.length === 0">
                           <td colspan="7" class="state-row">
-                            No deposit requests found.
+                            {{ "ADMIN_PAYMENTS.NO_REQUESTS" | translate }}
                           </td>
                         </tr>
 
@@ -288,16 +392,16 @@ type PaymentsVmData = {
                   <span>&gt;</span>
                 </div>
 
-                <button type="button" class="btn-add">+ Add Request</button>
+                <button type="button" class="btn-add">{{ "ADMIN_PAYMENTS.ADD_REQUEST" | translate }}</button>
               </ng-container>
-            </ng-container>
+            </div>
 
             <ng-template #proofView>
               <header class="proof-modal-header">
-                <h3 class="proof-title">Deposit Proof</h3>
+                <h3 class="proof-title">{{ "ADMIN_PAYMENTS.PROOF.TITLE" | translate }}</h3>
                 <p class="proof-subtitle">{{ proofModalSubtitle }}</p>
                 <p class="proof-status-text">
-                  Status:
+                  {{ "ADMIN_PAYMENTS.PROOF.STATUS" | translate }}
                   <span
                     [class.status-pending]="
                       isStatusPending(selectedDepositProof?.status)
@@ -311,7 +415,7 @@ type PaymentsVmData = {
                   >
                     {{
                       proofDetailLoading
-                        ? "loading..."
+                        ? ("COMMON.LOADING" | translate)
                         : (selectedDepositProof?.status ?? "N/A")
                     }}
                   </span>
@@ -371,7 +475,7 @@ type PaymentsVmData = {
                   class="btn-return"
                   (click)="closeProofPage()"
                 >
-                  Return
+                  {{ "COMMON.RETURN" | translate }}
                 </button>
 
                 <div class="action-group">
@@ -381,7 +485,7 @@ type PaymentsVmData = {
                     [disabled]="isProofActionDisabled"
                     (click)="openRejectModal()"
                   >
-                    Reject Proof
+                    {{ "ADMIN_PAYMENTS.PROOF.REJECT" | translate }}
                   </button>
                   <button
                     type="button"
@@ -389,18 +493,17 @@ type PaymentsVmData = {
                     [disabled]="isProofActionDisabled"
                     (click)="openVerifyConfirmModal()"
                   >
-                    Verify & Forward
+                    {{ "ADMIN_PAYMENTS.PROOF.VERIFY" | translate }}
                   </button>
                 </div>
               </footer>
 
               <div *ngIf="isRejectModalOpen" class="reject-modal-overlay">
                 <div class="modal-reject" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Reject Proof</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.REJECT_TITLE" | translate }}</h1>
 
                   <div class="input-group">
-                    <label for="reject-reason"
-                      >Enter the reason for rejection</label
+                    <label for="reject-reason">{{ "ADMIN_PAYMENTS.MODAL.REJECT_REASON" | translate }}</label
                     >
                     <textarea
                       id="reject-reason"
@@ -416,7 +519,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeRejectModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -424,7 +527,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="confirmRejectProof()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
@@ -439,10 +542,9 @@ type PaymentsVmData = {
                   role="dialog"
                   aria-modal="true"
                 >
-                  <h1 class="modal-title">Verified and Forward</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.VERIFY_TITLE" | translate }}</h1>
                   <p class="modal-description">
-                    Are you sure you want to verify and forward this request to
-                    the Manager for final approval?
+                    {{ "ADMIN_PAYMENTS.MODAL.VERIFY_DESC" | translate }}
                   </p>
 
                   <div class="button-group">
@@ -452,7 +554,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeVerifyConfirmModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -460,7 +562,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="openForwardRequestModal()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
@@ -471,11 +573,11 @@ type PaymentsVmData = {
                 class="reject-modal-overlay"
               >
                 <div class="modal-request" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Create Deposit Request</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FORWARD_TITLE" | translate }}</h1>
 
                   <form class="request-form" (ngSubmit)="submitVerifyForward()">
                     <div class="form-group">
-                      <label for="guest-id">Guest Name/ID</label>
+                      <label for="guest-id">{{ "ADMIN_PAYMENTS.MODAL.GUEST_NAME_ID" | translate }}</label>
                       <input
                         type="text"
                         id="guest-id"
@@ -486,7 +588,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="branch">Branch</label>
+                      <label for="branch">{{ "ADMIN_PAYMENTS.MODAL.BRANCH" | translate }}</label>
                       <input
                         type="text"
                         id="branch"
@@ -497,7 +599,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="room">Room</label>
+                      <label for="room">{{ "ADMIN_PAYMENTS.MODAL.ROOM" | translate }}</label>
                       <input
                         type="text"
                         id="room"
@@ -508,7 +610,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="bed">Bed</label>
+                      <label for="bed">{{ "ADMIN_PAYMENTS.MODAL.BED" | translate }}</label>
                       <input
                         type="text"
                         id="bed"
@@ -519,7 +621,7 @@ type PaymentsVmData = {
                     </div>
 
                     <div class="form-group">
-                      <label for="amount">Deposit Amount</label>
+                      <label for="amount">{{ "ADMIN_PAYMENTS.MODAL.AMOUNT" | translate }}</label>
                       <input
                         type="number"
                         id="amount"
@@ -536,14 +638,14 @@ type PaymentsVmData = {
                         [disabled]="proofActionLoading"
                         (click)="closeForwardRequestModal()"
                       >
-                        Cancel
+                        {{ "COMMON.CANCEL" | translate }}
                       </button>
                       <button
                         type="submit"
                         class="btn-confirm"
                         [disabled]="proofActionLoading"
                       >
-                        Confirm
+                        {{ "COMMON.CONFIRM" | translate }}
                       </button>
                     </div>
                   </form>
@@ -555,10 +657,10 @@ type PaymentsVmData = {
                 class="reject-modal-overlay"
               >
                 <div class="modal-confirm" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">Create Deposit Request</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_TITLE" | translate }}</h1>
 
                   <div class="modal-content">
-                    <p>Are you sure you want to send payment link to guest ?</p>
+                    <p>{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_DESC" | translate }}</p>
                   </div>
 
                   <div class="button-group">
@@ -568,7 +670,7 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="closeFinalForwardConfirmModal()"
                     >
-                      Cancel
+                      {{ "COMMON.CANCEL" | translate }}
                     </button>
                     <button
                       type="button"
@@ -576,625 +678,100 @@ type PaymentsVmData = {
                       [disabled]="proofActionLoading"
                       (click)="confirmFinalForward()"
                     >
-                      Confirm
+                      {{ "COMMON.CONFIRM" | translate }}
                     </button>
                   </div>
                 </div>
               </div>
             </ng-template>
           </div>
-        </main>
+          <ng-container *ngTemplateOutlet="sidebarAndMenus"></ng-container>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-template #sidebarAndMenus>
+      <div (click)="navigate('/guidelines')" class="hover-effect" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.GUIDELINES" | translate }}
+      </div>
+      <div (click)="navigate('/about')" class="hover-effect" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.ABOUT_US" | translate }}
+      </div>
+      <div (click)="navigate('/contact')" class="hover-effect" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">
+        {{ "COMMON.CONTACT" | translate }}
+      </div>
+
+      <img (click)="toggleLangMenu()" class="hover-effect" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
+      <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+        <div (click)="changeLang('en')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.ENGLISH" | translate }}</div>
+        <div (click)="changeLang('vi')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.VIETNAMESE" | translate }}</div>
+      </div>
+
+      <img (click)="toggleUserMenu()" class="hover-effect" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Account.png" />
+      <div *ngIf="isUserMenuOpen" style="position: absolute; left: 1680px; top: 180px; width: 150px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+        <div (mousedown)="logout()" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.LOGOUT" | translate }}</div>
+      </div>
+
+      <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/ReservationUnion.png" />
+      <img (click)="navigate('/')" class="hover-effect" style="width: 185px; height: 165px; left: 107px; top: 81px; position: absolute; cursor: pointer;" src="assets/icons/BookingLogo.png" />
+
+      <div (click)="navigate('/admin/rental-requests')" class="hover-effect" style="cursor: pointer; width: 196px; height: 54.75px; left: 166px; top: 331px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.INQUIRIES" | translate }}
+      </div>
+      <img (click)="navigate('/admin/rental-requests')" class="hover-effect" src="assets/icons/WhiteInquiries.png" style="cursor: pointer; width: 32px; height: 29px; left: 107px; top: 344px; position: absolute;" />
+
+      <div (click)="navigate('/admin/scheduled')" class="hover-effect" style="cursor: pointer; width: 126px; height: 54.75px; left: 166px; top: 417.54px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.SCHEDULES" | translate }}
+      </div>
+      <img (click)="navigate('/admin/scheduled')" class="hover-effect" src="assets/icons/Schedules.png" style="cursor: pointer; width: 40px; height: 35px; left: 107px; top: 427px; position: absolute;" />
+
+      <div (click)="navigate('/admin/rooms')" class="hover-effect" style="cursor: pointer; width: 195px; height: 54.75px; left: 161px; top: 504.07px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/rooms')" class="hover-effect" src="assets/icons/Rooms.png" style="cursor: pointer; width: 36px; height: 32px; left: 107px; top: 515px; position: absolute;" />
+
+      <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 54.75px; left: 166px; top: 589.72px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/BlueReservation.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 600px; position: absolute;" />
+
+      <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 54.75px; left: 163px; top: 676.25px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
+      </div>
+      <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/Contract.png" style="cursor: pointer; width: 38px; height: 38px; left: 107px; top: 684px; position: absolute;" />
+
+      <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
+        <span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.TITLE" | translate }}<br /><br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HEADQUARTERS" | translate }} </span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.ADDRESS_1" | translate }}<br />{{ "CONTACT_INFO.ADDRESS_2" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.PHONE_LABEL" | translate }} </span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.PHONE" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL_LABEL" | translate }}</span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL" | translate }}<br/></span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HOURS_LABEL" | translate }}</span>
+        <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.HOURS" | translate }}</span>
+      </div>
+    </ng-template>
   `,
-  styles: [
-    `
-      .dashboard-card {
-        background-color: #f9f8f3;
-        border-radius: 30px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        position: relative;
-        min-height: calc(100vh - 72px);
-      }
-
-      .card-header h1 {
-        color: #1a3a6c;
-        margin: 0;
-        font-size: 2.1rem;
-        font-weight: 800;
-      }
-
-      .card-header p {
-        color: #2b4c8c;
-        margin: 10px 0 30px;
-        font-size: 0.95rem;
-      }
-
-      .summary-text {
-        margin-top: -16px;
-        margin-bottom: 22px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: #264893;
-      }
-
-      .toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 22px;
-      }
-
-      .btn-branch {
-        background-color: #2b4c8c;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 600;
-      }
-
-      .branch-dropdown {
-        position: absolute;
-        top: calc(100% + 6px);
-        left: 0;
-        z-index: 20;
-        min-width: 220px;
-        border-radius: 12px;
-        border: 1px solid #d9dde7;
-        background: #fff;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        padding: 6px;
-      }
-
-      .branch-dropdown button {
-        width: 100%;
-        text-align: left;
-        border: none;
-        background: transparent;
-        border-radius: 8px;
-        padding: 8px 10px;
-        color: #264893;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      .branch-dropdown button:hover {
-        background: #f2f5fb;
-      }
-
-      .search-filter-group {
-        display: flex;
-        gap: 10px;
-      }
-
-      .search-box {
-        background: #eeebe3;
-        border: 1px solid #333;
-        border-radius: 20px;
-        padding: 7px 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .search-box input {
-        background: transparent;
-        border: none;
-        outline: none;
-        min-width: 150px;
-      }
-
-      .btn-filter {
-        background: transparent;
-        border: 1px solid #333;
-        border-radius: 20px;
-        padding: 7px 18px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .table-container {
-        width: 100%;
-        overflow-x: auto;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th {
-        text-align: left;
-        color: #2b4c8c;
-        font-size: 0.85rem;
-        padding: 12px 6px;
-        white-space: nowrap;
-      }
-
-      td {
-        padding: 12px 6px;
-        font-size: 0.86rem;
-        color: #333;
-        font-weight: 500;
-        white-space: nowrap;
-      }
-
-      .state-row {
-        text-align: center;
-        font-weight: 600;
-        color: #264893;
-      }
-
-      .state-row-error {
-        color: #b12222;
-      }
-
-      .skeleton-row td {
-        padding-top: 15px;
-        padding-bottom: 15px;
-      }
-
-      .skeleton-line,
-      .skeleton-chip {
-        display: inline-block;
-        height: 14px;
-        border-radius: 8px;
-        background: linear-gradient(
-          90deg,
-          #e6e9f2 25%,
-          #f2f5fb 50%,
-          #e6e9f2 75%
-        );
-        background-size: 200% 100%;
-        animation: skeleton-shimmer 1.2s ease-in-out infinite;
-      }
-
-      .skeleton-chip {
-        width: 28px;
-        height: 28px;
-        border-radius: 10px;
-      }
-
-      .w-16 {
-        width: 4rem;
-      }
-
-      .w-20 {
-        width: 5rem;
-      }
-
-      .w-24 {
-        width: 6rem;
-      }
-
-      .w-28 {
-        width: 7rem;
-      }
-
-      .w-36 {
-        width: 9rem;
-      }
-
-      @keyframes skeleton-shimmer {
-        0% {
-          background-position: 200% 0;
-        }
-
-        100% {
-          background-position: -200% 0;
-        }
-      }
-
-      .status-badge {
-        font-weight: 700;
-      }
-
-      .status-pending {
-        color: #8d6300;
-      }
-
-      .status-paid {
-        color: #1f7a2f;
-      }
-
-      .status-cancelled {
-        color: #b12222;
-      }
-
-      .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 28px;
-        color: #555;
-        cursor: pointer;
-      }
-
-      .pagination .active {
-        font-weight: 700;
-        text-decoration: underline;
-      }
-
-      .btn-add {
-        margin-top: 24px;
-        margin-left: auto;
-        display: block;
-        background-color: #2b4c8c;
-        color: #fff;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 25px;
-        font-weight: 700;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(43, 76, 140, 0.3);
-      }
-
-      .proof-btn {
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        color: #264893;
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .proof-btn:hover {
-        background: #eff3fb;
-      }
-
-      .proof-icon {
-        width: 18px;
-        height: 18px;
-      }
-
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-
-      .proof-modal-header {
-        margin-bottom: 32px;
-      }
-
-      .proof-title {
-        color: #1a3a6c;
-        font-size: 2rem;
-        margin: 0;
-        font-weight: 800;
-      }
-
-      .proof-subtitle {
-        color: #1a3a6c;
-        font-size: 1rem;
-        margin: 6px 0 0;
-        font-weight: 500;
-      }
-
-      .proof-status-text {
-        margin: 10px 0 0;
-        color: #264893;
-        font-size: 0.9rem;
-        font-weight: 700;
-      }
-
-      .proof-error-text {
-        margin: 10px 0 0;
-        color: #b12222;
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-
-      .proof-upload-area {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 42px;
-      }
-
-      .dashed-border {
-        border: 2px dashed #aab4c8;
-        border-radius: 20px;
-        padding: 15px;
-        width: 100%;
-        max-width: 450px;
-      }
-
-      .image-placeholder {
-        background-color: #e2e2e2;
-        border-radius: 15px;
-        height: 250px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .proof-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 15px;
-      }
-
-      .proof-modal-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-      }
-
-      .btn-return,
-      .btn-reject,
-      .btn-verify {
-        padding: 12px 30px;
-        border-radius: 50px;
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-      }
-
-      .btn-return {
-        background-color: transparent;
-        color: #1a3a6c;
-        border: 2px solid #1a3a6c;
-      }
-
-      .action-group {
-        display: flex;
-        gap: 14px;
-      }
-
-      .btn-reject,
-      .btn-verify {
-        background-color: #2b4c8c;
-        color: #fff;
-      }
-
-      .btn-reject:disabled,
-      .btn-verify:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-      }
-
-      .reject-modal-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(20, 30, 50, 0.35);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 16px;
-        border-radius: 30px;
-      }
-
-      .modal-reject {
-        background-color: #f5f5f5;
-        width: min(450px, 100%);
-        padding: 40px;
-        border-radius: 25px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
-
-      .modal-title {
-        color: #1a3a6c;
-        font-size: 2rem;
-        margin-top: 0;
-        margin-bottom: 30px;
-        font-weight: 800;
-      }
-
-      .modal-description {
-        margin: -6px 0 28px;
-        color: #1a3a6c;
-        font-size: 1rem;
-        line-height: 1.45;
-      }
-
-      .modal-verify-confirm {
-        max-width: 560px;
-      }
-
-      .input-group {
-        text-align: left;
-        margin-bottom: 35px;
-      }
-
-      .input-group label {
-        display: block;
-        color: #1a3a6c;
-        margin-bottom: 8px;
-        font-size: 0.95rem;
-        font-weight: 500;
-      }
-
-      .input-group textarea {
-        width: 100%;
-        background-color: #d9d9d9;
-        border: none;
-        border-radius: 12px;
-        padding: 15px;
-        box-sizing: border-box;
-        resize: none;
-        font-family: inherit;
-        font-size: 1rem;
-      }
-
-      .input-group textarea:focus {
-        outline: 2px solid #2b4c8c;
-      }
-
-      .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-      }
-
-      .btn-cancel,
-      .btn-confirm {
-        padding: 12px 0;
-        width: 140px;
-        border-radius: 50px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .btn-cancel {
-        background-color: transparent;
-        color: #1a3a6c;
-        border: 2px solid #1a3a6c;
-      }
-
-      .btn-cancel:hover {
-        background-color: #e8e8e8;
-      }
-
-      .btn-confirm {
-        background-color: #2b4c8c;
-        color: #fff;
-        border: none;
-      }
-
-      .btn-confirm:hover {
-        background-color: #1e3666;
-        transform: translateY(-1px);
-      }
-
-      .btn-cancel:disabled,
-      .btn-confirm:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-      }
-
-      .modal-request {
-        background-color: #f5f5f5;
-        width: min(500px, 100%);
-        padding: 40px 50px;
-        border-radius: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      }
-
-      .modal-confirm {
-        background-color: #f5f5f5;
-        width: min(450px, 100%);
-        padding: 50px 40px;
-        border-radius: 30px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
-
-      .modal-content p {
-        color: #5b76a7;
-        font-size: 1.2rem;
-        line-height: 1.5;
-        margin-bottom: 50px;
-        padding: 0 20px;
-        font-weight: 500;
-      }
-
-      .request-form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .form-group {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 0;
-      }
-
-      .form-group label {
-        color: #000;
-        font-weight: 700;
-        font-size: 0.9rem;
-      }
-
-      .form-group input,
-      .form-group select {
-        background-color: #d9d9d9;
-        border: none;
-        border-radius: 10px;
-        padding: 12px;
-        height: 40px;
-        box-sizing: border-box;
-        outline: none;
-        color: #1a3a6c;
-      }
-
-      .form-group input:focus,
-      .form-group select:focus {
-        background-color: #cecece;
-      }
-
-      .form-group input[readonly],
-      .form-group select[disabled] {
-        opacity: 1;
-        cursor: default;
-      }
-
-      @media (max-width: 960px) {
-        .dashboard-card {
-          padding: 24px;
-          min-height: auto;
-        }
-
-        .toolbar {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .search-filter-group {
-          width: 100%;
-        }
-
-        .search-box {
-          flex: 1;
-        }
-
-        .proof-modal-footer {
-          flex-direction: column-reverse;
-          align-items: stretch;
-        }
-
-        .action-group {
-          flex-direction: column;
-        }
-
-        .btn-return,
-        .btn-reject,
-        .btn-verify {
-          width: 100%;
-        }
-      }
-    `,
-  ],
+  
 })
+
 export class PaymentsComponent implements OnDestroy {
+  scaleFactor = 1;
+
+  isLangMenuOpen = false;
+  isUserMenuOpen = false;
+
+  currentLang = "vi";
+
+  constructor() {
+    this.updateScaleFactor();
+  }
+
+  private readonly router = inject(Router);
+  readonly translate = inject(TranslateService);
+  readonly authService = inject(AuthService);
+  
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly branchService = inject(BranchService);
@@ -1274,6 +851,48 @@ export class PaymentsComponent implements OnDestroy {
     );
   }
 
+  @HostListener("window:resize")
+  onResize(): void {
+    this.updateScaleFactor();
+  }
+
+  private updateScaleFactor(): void {
+    this.scaleFactor = Math.min(window.innerWidth / 1920, 1);
+  }
+
+  toggleLangMenu() {
+    this.isLangMenuOpen = !this.isLangMenuOpen;
+    this.isUserMenuOpen = false;
+  }
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+    this.isLangMenuOpen = false;
+  }
+  changeLang(lang: string) {
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+  }
+  navigate(path: string) {
+    this.router.navigate([path]);
+    this.isUserMenuOpen = false;
+  }
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(["/login"]);
+    });
+  }
+
+  changeLanguage(lang: string): void {
+    this.currentLang = lang;
+    this.translate.use(lang);
+    this.isLangMenuOpen = false;
+  }
+
+  goToProfile(): void {
+    this.router.navigate(["/profile"]);
+    this.isUserMenuOpen = false;
+  }
+
   // Cập nhật ngOnDestroy để complete cả cancelProofRequest$
   ngOnDestroy(): void {
     this.cancelProofRequest$.complete();
@@ -1283,12 +902,12 @@ export class PaymentsComponent implements OnDestroy {
 
   selectedBranchLabel(branches: Branch[]): string {
     if (!this.selectedBranchId) {
-      return "All Branches";
+      return this.translate.instant("ADMIN_PAYMENTS.ALL_BRANCHES");
     }
 
     return (
       branches.find((branch) => branch.id === this.selectedBranchId)?.name ??
-      "All Branches"
+      this.translate.instant("ADMIN_PAYMENTS.ALL_BRANCHES")
     );
   }
 

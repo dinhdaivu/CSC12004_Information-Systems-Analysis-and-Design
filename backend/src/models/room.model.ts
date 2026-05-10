@@ -1,3 +1,5 @@
+// room.model.ts
+
 export type RoomStatus =
   | "available"
   | "holding"
@@ -13,28 +15,16 @@ export type BedStatus =
   | "occupied"
   | "maintenance";
 
-export interface Room {
+export interface Branch {
   id: string;
-  zoneId: string;
-  roomNumber: string;
-  roomType?: string;
-  maxCapacity: number;
-  pricePerMonth: number;
-  amenities: string[];
-  imagesUrl: string[];
-  status: RoomStatus;
-  createdAt: string;
-  updatedAt: string;
-  zones?: {
-    id: string;
-    name: string;
-    branches?: {
-        id: string;
-        name: string;
-        address: string;
-    }
-  };
-  beds?: Bed[];
+  name: string;
+  address: string;
+}
+
+export interface Zone {
+  id: string;
+  name: string;
+  branches?: Branch;
 }
 
 export interface Bed {
@@ -47,48 +37,95 @@ export interface Bed {
   updatedAt: string;
 }
 
+export interface Room {
+  id: string;
+
+  // Support both old & new structure
+  branchId?: string;
+  zoneId?: string;
+
+  roomNumber: string;
+  roomType?: string;
+  maxCapacity: number;
+  pricePerMonth: number;
+
+  amenities: string[];
+  imagesUrl: string[];
+
+  status: RoomStatus;
+
+  createdAt: string;
+  updatedAt: string;
+
+  // Relations
+  branch?: Branch | null;
+
+  zones?: Zone;
+
+  beds?: Bed[];
+}
+
 export interface RoomWithBeds extends Room {
-  branch: {
-    id: string;
-    name: string;
-    address: string;
-  } | null;
+  branch: Branch | null;
+
   zone?: {
     id: string;
     name: string;
   } | null;
+
   beds: Bed[];
 }
 
 export interface RoomFilters {
+  // Support both APIs
+  branch_id?: string;
   zone_id?: string;
+
   room_status?: RoomStatus;
   bed_status?: BedStatus;
+
   room_type?: string;
 
   capacity?: number;
+
   min_price?: number;
   max_price?: number;
+
   search?: string;
 }
 
 export interface CreateRoomDTO {
-  zone_id: string;
+  // Support both APIs
+  branch_id?: string;
+  zone_id?: string;
+
   room_number: string;
+
   room_type?: string;
+
   max_capacity: number;
+
   price_per_month: number;
+
   amenities?: string[];
+
   images_url?: string[];
+
   status?: RoomStatus;
 }
 
 export interface UpdateRoomDTO {
   room_number?: string;
+
   room_type?: string;
+
   max_capacity?: number;
+
   price_per_month?: number;
+
   amenities?: string[];
+
   images_url?: string[];
+
   status?: RoomStatus;
 }
