@@ -17,7 +17,9 @@
     "LOADING": "Loading…",
     "RETRY": "Try Again",
     "FETCH_ERROR": "Failed to load content. Please try again.",
-    "ROOM": "Room"
+    "ROOM": "Room",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm"
   },
   "CONTACT_INFO": {
     "TITLE": "Contact Information",
@@ -355,7 +357,32 @@
     "ADMIN_PAYMENTS": {
       "TITLE": "Payment Tracking",
       "DESCRIPTION": "Monitor deposits, rent payments, and refund settlements across all active contracts."
+    },
+    "PROFILE": {
+      "TITLE": "My Profile",
+      "DESCRIPTION": "View and update your personal details and residency information."
     }
+  },
+  "PROFILE": {
+    "RESIDENT_ID": "Resident ID",
+    "FULL_NAME": "Full name",
+    "GENDER": "Gender",
+    "GENDER_SELECT": "Select gender",
+    "GENDER_MALE": "Male",
+    "GENDER_FEMALE": "Female",
+    "PERSONAL_INFO": "Personal Information",
+    "EMAIL": "Email Address",
+    "PASSWORD": "Password",
+    "PHONE": "Phone Number",
+    "IDENTITY_CARD": "Identity Card Number",
+    "STAYING_INFO": "Staying Information",
+    "BRANCH": "Branch",
+    "ROOM_ID": "Room ID",
+    "CONTRACT_TERM": "Contract Term",
+    "EDIT_PROFILE": "Edit Profile",
+    "SAVE_CHANGES": "Save Changes",
+    "CONFIRM_SAVE_TITLE": "Save Changes",
+    "CONFIRM_SAVE_MSG": "Are you sure you want to save your changes ?"
   },
   "ROOM_DETAIL": {
     "FOOTER_SLOGAN": "Your comfort is our commitment.",
