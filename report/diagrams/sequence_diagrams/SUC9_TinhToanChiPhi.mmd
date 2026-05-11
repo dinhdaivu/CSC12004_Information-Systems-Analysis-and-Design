@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant UC as Use Case gọi (SUC4/SUC7/SUC8)
+    participant HT as Hệ thống
+    participant DB as Database
+
+    UC->>HT: Yêu cầu tính toán chi phí
+    HT->>DB: Xác định loại nghiệp vụ và truy xuất dữ liệu
+    DB-->>HT: Giá phòng, thời gian thuê, thông tin hợp đồng
+
+    alt Loại: Đặt cọc
+        HT->>HT: Tính tiền cọc theo tỷ lệ
+    else Loại: Ký hợp đồng
+        HT->>HT: Tính tiền thuê tháng đầu + phí
+    else Loại: Trả phòng
+        HT->>HT: Tính chi phí phát sinh, khấu hao, hoàn cọc
+    end
+
+    alt Đủ dữ liệu
+        HT->>HT: Tổng hợp kết quả chi phí
+        HT-->>UC: Trả kết quả tính toán
+    else A1 - Thiếu dữ liệu
+        HT-->>UC: Thông báo lỗi thiếu thông tin
+    else A2 - Dữ liệu không hợp lệ
+        HT-->>UC: Thông báo dữ liệu sai, yêu cầu kiểm tra lại
+    end

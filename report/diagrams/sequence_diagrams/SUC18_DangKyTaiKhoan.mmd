@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    KH->>HT: Mở màn hình đăng ký tài khoản
+    HT-->>KH: Hiển thị biểu mẫu đăng ký
+    KH->>HT: Nhập họ tên, email, số điện thoại, mật khẩu
+    HT->>HT: Kiểm tra tính hợp lệ dữ liệu
+    HT->>DB: Kiểm tra trùng email/số điện thoại
+    DB-->>HT: Kết quả kiểm tra
+
+    alt Thông tin hợp lệ và không trùng
+        HT->>DB: Tạo tài khoản và hồ sơ khách hàng
+        DB-->>HT: Tài khoản đã tạo thành công
+        HT-->>KH: Thông báo đăng ký thành công, chuyển đến trang đăng nhập
+    else A1 - Email/SĐT đã tồn tại
+        HT-->>KH: Thông báo lỗi trùng thông tin, yêu cầu dùng thông tin khác
+    else A2 - Dữ liệu không hợp lệ
+        HT-->>KH: Hiển thị lỗi validation, không tạo tài khoản
+    else A3 - Lỗi dịch vụ xác thực
+        HT-->>KH: Thông báo đăng ký chưa thành công, yêu cầu thử lại
+    end

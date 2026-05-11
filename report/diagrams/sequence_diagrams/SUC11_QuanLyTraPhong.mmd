@@ -1,0 +1,43 @@
+sequenceDiagram
+    actor QL as Quản lý
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở danh sách yêu cầu trả phòng
+    HT->>DB: Truy vấn danh sách yêu cầu trả phòng
+    DB-->>HT: Danh sách yêu cầu
+    HT-->>QL: Hiển thị danh sách yêu cầu trả phòng
+    QL->>HT: Chọn yêu cầu trả phòng cần xử lý
+    HT->>DB: Truy vấn thông tin thuê, hợp đồng, tiền cọc và tình trạng phòng
+    DB-->>HT: Thông tin đầy đủ
+    HT-->>QL: Hiển thị thông tin thuê, hợp đồng và tiền cọc
+
+    Note over QL,DB: Thực hiện SUC8 - Đối soát chi phí trả phòng
+    HT-->>QL: Kết quả đối soát (số tiền cần thu thêm hoặc số tiền hoàn lại)
+
+    opt Có phát sinh thanh toán hoặc hoàn tiền
+        Note over KH,HT: Thực hiện SUC5 - Thanh toán hoặc hoàn tiền
+        KH->>HT: Thực hiện thanh toán hoặc nhận hoàn tiền
+        alt A1 - Thanh toán hoặc hoàn tiền chưa hoàn tất
+            HT-->>QL: Giữ trạng thái đang xử lý, chưa cho phép thanh lý hợp đồng
+        end
+    end
+
+    QL->>HT: Ký xác nhận biên bản trả phòng và thanh lý hợp đồng với khách hàng
+    QL->>HT: Ghi nhận thu hồi chìa khóa, thẻ ra vào và cập nhật bàn giao tài sản
+
+    alt A2 - Khách chưa bàn giao đủ chìa khóa, thẻ hoặc tài sản
+        QL->>HT: Ghi nhận thiếu sót bàn giao
+        HT-->>QL: Yêu cầu khách hoàn tất bàn giao trước khi tiếp tục
+    else Bàn giao đầy đủ
+        HT->>DB: Cập nhật trạng thái hợp đồng → Đã thanh lý
+        HT->>DB: Cập nhật trạng thái phòng/giường → Trống
+        DB-->>HT: Xác nhận cập nhật
+        alt A3 - Lỗi cập nhật trạng thái hợp đồng hoặc phòng
+            HT-->>QL: Thông báo lỗi, trả phòng chưa được hoàn tất
+        else Cập nhật thành công
+            HT-->>QL: Thông báo hoàn tất trả phòng
+            HT-->>KH: Xác nhận trả phòng thành công
+        end
+    end

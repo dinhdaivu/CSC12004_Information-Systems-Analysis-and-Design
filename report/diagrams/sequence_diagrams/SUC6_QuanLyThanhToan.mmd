@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor KT as Kế toán
+    participant HT as Hệ thống
+    participant DB as Database
+
+    HT-->>KT: Thông báo có giao dịch thanh toán mới
+    KT->>HT: Mở màn hình quản lý thanh toán
+    HT->>DB: Truy vấn danh sách giao dịch
+    DB-->>HT: Danh sách giao dịch
+    HT-->>KT: Hiển thị danh sách giao dịch
+    KT->>HT: Kiểm tra và đối chiếu thông tin giao dịch
+    HT->>DB: Đối chiếu dữ liệu giao dịch
+    DB-->>HT: Kết quả đối chiếu
+
+    alt Giao dịch hợp lệ
+        KT->>HT: Xác nhận giao dịch
+        HT->>DB: Lưu xác nhận giao dịch
+        DB-->>HT: Xác nhận lưu
+        HT-->>KT: Thông báo ghi nhận thành công
+    else A1 - Sai lệch giao dịch
+        HT-->>KT: Thông báo sai lệch, yêu cầu kiểm tra lại
+    else A2 - Giao dịch bị hủy
+        KT->>HT: Cập nhật trạng thái hủy
+        HT->>DB: Lưu trạng thái đã hủy
+        DB-->>HT: Xác nhận
+    end

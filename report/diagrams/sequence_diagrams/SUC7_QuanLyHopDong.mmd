@@ -1,0 +1,42 @@
+sequenceDiagram
+    actor NV as Nhân viên Sales
+    actor QL as Quản lý
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    NV->>HT: Chọn tạo hợp đồng
+    HT->>DB: Truy vấn thông tin khách, phòng/giường, trạng thái đặt cọc và hồ sơ lưu trú
+    DB-->>HT: Thông tin đầy đủ
+    HT-->>NV: Hiển thị thông tin khách hàng, phòng và hồ sơ
+
+    Note over QL,HT: Thực hiện SUC16 - Kiểm tra điều kiện lưu trú
+    QL->>HT: Xác nhận kết quả kiểm tra điều kiện lưu trú
+
+    alt A2 - Khách hàng không đủ điều kiện lưu trú
+        HT-->>NV: Thông báo không cho phép lập hợp đồng, ghi nhận và kết thúc
+    else Đủ điều kiện lưu trú
+        Note over HT,DB: Thực hiện SUC9 - Tính toán chi phí
+        HT->>DB: Tính các khoản chi phí cần thu khi ký hợp đồng
+        DB-->>HT: Kết quả chi phí
+        HT-->>NV: Hiển thị chi phí cần thu
+
+        NV->>HT: Nhập các thông tin hợp đồng
+
+        alt A1 - Thông tin hợp đồng không hợp lệ
+            HT-->>NV: Thông báo lỗi, yêu cầu nhập lại thông tin
+        else Thông tin hợp đồng hợp lệ
+            opt Cần thu thêm tiền khi ký hợp đồng
+                Note over KH,HT: Thực hiện SUC5 - Thanh toán
+                KH->>HT: Thực hiện thanh toán khi ký hợp đồng
+                alt A3 - Thanh toán khi ký hợp đồng không thành công
+                    HT-->>NV: Thông báo lỗi thanh toán, hợp đồng chưa được kích hoạt
+                end
+            end
+
+            HT->>DB: Sinh mã hợp đồng và lưu hợp đồng
+            DB-->>HT: Hợp đồng đã được lưu
+            HT-->>NV: Xác nhận hợp đồng tạo thành công
+            HT-->>QL: Thông báo sẵn sàng thực hiện bàn giao phòng (SUC17)
+        end
+    end

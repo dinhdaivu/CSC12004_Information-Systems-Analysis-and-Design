@@ -1,0 +1,45 @@
+sequenceDiagram
+    actor NV as Nhân viên Sales
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    HT-->>NV: Có yêu cầu thuê phòng mới từ khách hàng
+    NV->>HT: Mở danh sách yêu cầu thuê
+    HT->>DB: Truy vấn danh sách yêu cầu thuê
+    DB-->>HT: Danh sách yêu cầu
+    HT-->>NV: Hiển thị danh sách yêu cầu thuê
+    NV->>HT: Chọn yêu cầu thuê cần xử lý
+
+    Note over NV,DB: Thực hiện SUC13 - Tra cứu phòng/giường phù hợp
+    HT->>DB: Truy vấn phòng/giường khả dụng theo nhu cầu
+    DB-->>HT: Kết quả phòng khả dụng
+
+    alt A1 - Không còn phòng/giường phù hợp
+        HT-->>NV: Thông báo không còn phòng phù hợp
+        NV->>HT: Tư vấn lại phòng/giường khác hoặc kết thúc yêu cầu
+        HT->>DB: Cập nhật trạng thái yêu cầu
+        DB-->>HT: Xác nhận
+    else Có phòng phù hợp
+        HT-->>NV: Hiển thị danh sách phòng/giường phù hợp
+
+        Note over NV,KH: Thực hiện SUC14 - Sắp xếp lịch xem phòng
+        NV->>HT: Tạo lịch xem phòng với khách hàng
+        HT->>DB: Lưu lịch hẹn xem phòng
+        DB-->>HT: Xác nhận lưu lịch
+        HT-->>KH: Gửi thông tin lịch hẹn xem phòng
+
+        Note over NV,DB: Thực hiện SUC15 - Ghi nhận kết quả xem phòng
+        NV->>HT: Ghi nhận kết quả sau buổi xem phòng
+
+        alt Khách hàng đồng ý thuê
+            NV->>HT: Xác nhận nhu cầu thuê trên hệ thống
+            HT->>DB: Cập nhật trạng thái yêu cầu, tạo cơ sở cho SUC4
+            DB-->>HT: Xác nhận cập nhật
+            HT-->>NV: Thông báo thành công, chuyển sang xử lý đặt cọc (SUC4)
+        else A2 - Khách không tham gia hoặc không đồng ý sau khi xem phòng
+            NV->>HT: Ghi nhận kết quả không tiếp tục thuê
+            HT->>DB: Cập nhật trạng thái yêu cầu → Không tiếp tục
+            DB-->>HT: Xác nhận cập nhật
+        end
+    end

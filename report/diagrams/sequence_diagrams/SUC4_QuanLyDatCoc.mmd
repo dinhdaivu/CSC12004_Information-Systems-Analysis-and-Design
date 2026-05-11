@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor NV as Nhân viên Sales
+    actor KT as Kế toán
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    NV->>HT: Tạo yêu cầu đặt cọc
+    Note over HT,DB: Thực hiện SUC9 - Tính toán chi phí cọc
+    HT->>DB: Truy vấn dữ liệu tính chi phí
+    DB-->>HT: Dữ liệu giá phòng, điều khoản
+    HT-->>KT: Hiển thị thông tin đặt cọc và số tiền
+    KT->>HT: Kiểm tra và xác nhận số tiền cọc
+    HT-->>KH: Yêu cầu thực hiện thanh toán cọc
+
+    Note over KH,HT: Thực hiện SUC5 - Thanh toán
+    KH->>HT: Thực hiện thanh toán
+
+    alt Thanh toán thành công
+        HT->>DB: Lưu trạng thái đặt cọc → Đã thanh toán
+        DB-->>HT: Xác nhận
+        HT-->>NV: Thông báo đặt cọc thành công
+        HT-->>KH: Xác nhận đặt cọc
+    else A1 - Thanh toán thất bại
+        HT-->>KH: Thông báo lỗi, cho phép thực hiện lại
+    end

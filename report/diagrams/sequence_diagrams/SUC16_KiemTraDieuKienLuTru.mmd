@@ -1,0 +1,27 @@
+sequenceDiagram
+    actor QL as Quản lý
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở hồ sơ khách hàng cần kiểm tra
+    HT->>DB: Truy vấn thông tin cá nhân, giấy tờ, phòng đăng ký
+    DB-->>HT: Hồ sơ khách hàng
+    HT-->>QL: Hiển thị thông tin và giấy tờ lưu trú
+    QL->>HT: Kiểm tra tính đầy đủ và hợp lệ của hồ sơ
+
+    alt Đủ điều kiện
+        QL->>HT: Xác nhận hồ sơ đạt yêu cầu
+        HT->>DB: Lưu kết quả kiểm tra → Đạt
+        DB-->>HT: Xác nhận lưu
+        HT-->>QL: Cho phép tiếp tục lập hợp đồng (SUC7)
+    else A1 - Thiếu giấy tờ hoặc thông tin
+        QL->>HT: Ghi nhận thiếu hồ sơ
+        HT->>DB: Lưu kết quả → Chưa đủ hồ sơ
+        DB-->>HT: Xác nhận
+        HT-->>QL: Thông báo chưa cho phép lập hợp đồng
+    else A2 - Không đủ điều kiện lưu trú
+        QL->>HT: Xác nhận hồ sơ không đạt
+        HT->>DB: Lưu kết quả → Không đạt
+        DB-->>HT: Xác nhận
+        HT-->>QL: Thông báo dừng luồng lập hợp đồng
+    end

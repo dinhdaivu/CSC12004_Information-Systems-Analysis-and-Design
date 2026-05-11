@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    KH->>HT: Chọn Đăng ký thuê phòng
+    HT->>DB: Truy vấn danh sách phòng/giường
+    DB-->>HT: Danh sách phòng
+    HT-->>KH: Hiển thị danh sách phòng (SUC13)
+    KH->>HT: Nhập tiêu chí tìm kiếm
+    HT->>DB: Lọc phòng theo tiêu chí
+    DB-->>HT: Kết quả lọc
+
+    alt Có phòng phù hợp
+        HT-->>KH: Hiển thị kết quả tìm kiếm
+        KH->>HT: Chọn phòng/giường
+        KH->>HT: Nhập thông tin thuê (ngày, nhu cầu)
+        HT->>DB: Lưu yêu cầu thuê
+        DB-->>HT: Xác nhận lưu thành công
+        HT-->>KH: Thông báo yêu cầu đã được gửi
+    else A1 - Không có phòng phù hợp
+        HT-->>KH: Thông báo không có phòng, kết thúc
+    end

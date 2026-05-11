@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor ND as Người dùng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    ND->>HT: Chọn chức năng Đăng nhập
+    HT-->>ND: Hiển thị màn hình đăng nhập
+    ND->>HT: Nhập username và password
+    HT->>DB: Kiểm tra thông tin đăng nhập
+
+    alt Thông tin hợp lệ
+        DB-->>HT: Xác thực thành công
+        HT-->>ND: Cấp token, chuyển màn hình chính
+    else A1 - Sai thông tin
+        DB-->>HT: Xác thực thất bại
+        HT-->>ND: Hiển thị thông báo lỗi, yêu cầu nhập lại
+    else A2 - Quên mật khẩu
+        ND->>HT: Chọn Quên mật khẩu
+        HT-->>ND: Hiển thị form nhập email
+        ND->>HT: Nhập email
+        HT->>DB: Kiểm tra email tồn tại
+        DB-->>HT: Xác nhận email
+        HT-->>ND: Gửi link/mã reset mật khẩu
+    end

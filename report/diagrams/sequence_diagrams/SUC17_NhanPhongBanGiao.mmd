@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor QL as Quản lý
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở hợp đồng cần bàn giao phòng
+    HT->>DB: Truy vấn thông tin hợp đồng, phòng, tài sản bàn giao
+    DB-->>HT: Thông tin hợp đồng và danh sách tài sản
+    HT-->>QL: Hiển thị thông tin hợp đồng và tài sản cần bàn giao
+
+    alt Hợp đồng hợp lệ
+        QL->>HT: Kiểm tra thực tế tình trạng phòng/giường
+        QL->>HT: Nhập/xác nhận biên bản bàn giao tài sản
+        QL->>KH: Bàn giao chìa khóa/thẻ ra vào
+        QL->>HT: Xác nhận đã bàn giao và hướng dẫn lưu trú
+        HT->>DB: Cập nhật trạng thái phòng/giường → Đang sử dụng
+        HT->>DB: Ghi nhận khách đã nhận phòng
+        DB-->>HT: Xác nhận cập nhật
+        HT-->>QL: Thông báo nhận phòng thành công
+        HT-->>KH: Xác nhận nhận phòng thành công
+    else A1 - Hợp đồng chưa hiệu lực
+        HT-->>QL: Thông báo không cho phép bàn giao phòng
+    else A2 - Dữ liệu bàn giao chưa đầy đủ
+        HT-->>QL: Yêu cầu cập nhật biên bản trước khi hoàn tất
+    end
