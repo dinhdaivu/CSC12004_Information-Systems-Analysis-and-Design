@@ -2,7 +2,7 @@ import { CheckoutController } from '../controllers/checkout.controller';
 import { CheckoutService } from '../services/checkout.service';
 import { ValidationError } from '../utils/errors';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { Response, NextFunction } from 'express';
+import { Response } from 'express';
 
 jest.mock('../services/checkout.service');
 
