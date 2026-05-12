@@ -1,5 +1,4 @@
 import { requireAdmin } from "../middleware/require-admin";
-import { AppError } from "../utils/errors";
 
 describe("Require Admin Middleware", () => {
   const executeMiddleware = async (req: any, res: any, next: any) => {
