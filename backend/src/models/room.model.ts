@@ -76,6 +76,8 @@ export interface RoomWithBeds extends Room {
   beds: Bed[];
 }
 
+export type GenderPolicy = "male" | "female" | "mixed";
+
 export interface RoomFilters {
   // Support both APIs
   branch_id?: string;
@@ -90,6 +92,9 @@ export interface RoomFilters {
 
   min_price?: number;
   max_price?: number;
+
+  // UC1: customer gender — matches rooms where gender_policy IN (gender, 'mixed')
+  gender?: "male" | "female";
 
   search?: string;
 }

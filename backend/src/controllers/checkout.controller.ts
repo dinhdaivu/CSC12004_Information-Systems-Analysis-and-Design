@@ -177,4 +177,60 @@ export class CheckoutController {
       next(err);
     }
   }
+
+  // ============ Inspection sub-resource (UC4) ============
+
+  static async getInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await CheckoutService.getInspectionByCheckoutId(parseId(req));
+      res.status(200).json(ApiResponseBuilder.success(data));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async createInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const checkoutId = parseId(req);
+      const body = req.body as Record<string, unknown>;
+      const data = await CheckoutService.createInspection(checkoutId, {
+        managerId: typeof body.managerId === 'string' ? body.managerId : req.user?.id,
+        cleanlinessNote: typeof body.cleanlinessNote === 'string' ? body.cleanlinessNote : undefined,
+        overallCondition: typeof body.overallCondition === 'string' ? body.overallCondition : undefined,
+        notes: typeof body.notes === 'string' ? body.notes : undefined,
+        damageReports: Array.isArray(body.damageReports)
+          ? (body.damageReports as { itemName: string; description?: string; estimatedCost?: number; imageUrl?: string }[])
+          : undefined,
+        keyReturns: Array.isArray(body.keyReturns)
+          ? (body.keyReturns as { itemName: string; returned?: boolean; replacementCost?: number; notes?: string }[])
+          : undefined,
+      });
+      res.status(201).json(ApiResponseBuilder.success(data, 'Inspection created'));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async completeInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await CheckoutService.completeInspection(parseId(req));
+      res.status(200).json(ApiResponseBuilder.success(data, 'Inspection completed'));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async signSettlement(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const settlementId = parseId(req, 'settlementId');
+      const { customerSignatureUrl } = req.body as { customerSignatureUrl?: string };
+      if (typeof customerSignatureUrl !== 'string' || !customerSignatureUrl.trim()) {
+        throw new ValidationError('customerSignatureUrl is required');
+      }
+      const data = await CheckoutService.signSettlement(settlementId, customerSignatureUrl);
+      res.status(200).json(ApiResponseBuilder.success(data, 'Settlement signed'));
+    } catch (err) {
+      next(err);
+    }
+  }
 }

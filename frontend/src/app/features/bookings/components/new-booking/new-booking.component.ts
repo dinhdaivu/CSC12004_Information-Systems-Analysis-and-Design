@@ -129,6 +129,35 @@ import type { User } from '@shared/models/auth.model';
               <div style="width: 247px; height: 30px; left: 1474px; top: 644px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'BOOKING.RENTAL_TYPE' | translate }}</div>
               <input type="text" formControlName="note" [placeholder]="'BOOKING.SHARED_FULL' | translate" style="width: 250px; height: 50px; left: 1474px; top: 674px; position: absolute; background: #D9D9D9; border-radius: 10px; border: none; padding: 0 25px; color: black; font-size: 20px; font-family: Afacad; outline: none; z-index: 10;">
               
+              <!-- UC1 §3.1.1: rental mode + preference criteria -->
+              <div style="position: absolute; left: 593px; top: 740px; width: 1130px;">
+                <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 24px; font-family: Afacad; font-size: 18px; color: black;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="radio" formControlName="rental_mode" value="whole_room" /> Whole Room
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="radio" formControlName="rental_mode" value="shared_bed" /> Shared Bed
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <span>Preferred gender:</span>
+                    <select formControlName="preferred_gender" style="background:#D9D9D9; border-radius:6px; padding: 4px 8px; border: none; font-family: Afacad;">
+                      <option value="">Any</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" formControlName="prefers_quiet" /> Quiet
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" formControlName="needs_parking" /> Parking
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" formControlName="needs_air_conditioner" /> Air Con
+                  </label>
+                </div>
+              </div>
+
               <div (click)="currentPage = 2" style="width: 215px; height: 70px; left: 1470px; top: 824px; position: absolute; background: #264893; border-radius: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; z-index: 10;">{{ 'BOOKING.NEXT' | translate }}</div>
             </ng-container>
 
@@ -277,6 +306,12 @@ export class NewBookingComponent implements OnInit {
       rental_duration_months: [6, [Validators.required, Validators.min(1)]],
       people_count: [2, [Validators.required, Validators.min(1)]],
       note: [''],
+      // UC1 §3.1.1 explicit rental mode + matching criteria
+      rental_mode: ['shared_bed' as 'whole_room' | 'shared_bed', Validators.required],
+      preferred_gender: [''],
+      prefers_quiet: [false],
+      needs_parking: [false],
+      needs_air_conditioner: [false],
       viewing_date: [this.getTomorrowDateString(), Validators.required],
       viewing_time: ['09:00', Validators.required]
     });
@@ -406,6 +441,13 @@ export class NewBookingComponent implements OnInit {
       phone_number: this.user?.phone_number,
       gender: this.user?.gender,
       identity_number: this.user?.identity_number,
+      // UC1 §3.1.1 fields
+      rental_mode: formValues.rental_mode,
+      preferred_gender: formValues.preferred_gender || undefined,
+      prefers_quiet: !!formValues.prefers_quiet,
+      needs_parking: !!formValues.needs_parking,
+      needs_air_conditioner: !!formValues.needs_air_conditioner,
+      schedule_note: formValues.note || undefined,
       scheduled_at: scheduledAt
     };
 

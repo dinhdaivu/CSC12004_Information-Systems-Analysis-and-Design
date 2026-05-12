@@ -85,8 +85,61 @@ export interface SettlementDTO {
   paymentMethod: PaymentMethod | null;
   status: SettlementStatus;
   notes: string | null;
+  // UC4 §3.1.4 — customer-signed settlement report
+  customerSignatureUrl: string | null;
+  signedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface SignSettlementDTO {
+  customerSignatureUrl: string;
+}
+
+export type CheckoutInspectionStatus = 'pending' | 'completed';
+
+export interface CheckoutInspectionDTO {
+  id: string;
+  checkoutRequestId: string;
+  managerId: string | null;
+  inspectedAt: string;
+  cleanlinessNote: string | null;
+  overallCondition: string | null;
+  status: CheckoutInspectionStatus;
+  notes: string | null;
+  damageReports: DamageReportDTO[];
+  keyReturns: KeyReturnDTO[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DamageReportDTO {
+  id: string;
+  checkoutInspectionId: string;
+  itemName: string;
+  description: string | null;
+  estimatedCost: number;
+  imageUrl: string | null;
+  createdAt: string;
+}
+
+export interface KeyReturnDTO {
+  id: string;
+  checkoutInspectionId: string;
+  itemName: string;
+  returned: boolean;
+  replacementCost: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CreateCheckoutInspectionDTO {
+  managerId?: string;
+  cleanlinessNote?: string;
+  overallCondition?: string;
+  notes?: string;
+  damageReports?: { itemName: string; description?: string; estimatedCost?: number; imageUrl?: string }[];
+  keyReturns?: { itemName: string; returned?: boolean; replacementCost?: number; notes?: string }[];
 }
 
 export interface CheckoutListResponse {

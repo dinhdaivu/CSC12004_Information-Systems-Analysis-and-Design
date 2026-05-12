@@ -1,3 +1,5 @@
+export type RentalMode = 'whole_room' | 'shared_bed';
+
 // Các thuộc tính có sẵn của bạn ở trên
 export interface RentalRequest {
     id?: string;
@@ -12,6 +14,13 @@ export interface RentalRequest {
     budget_max?: number;
     people_count: number;
     note?: string;
+    // UC1 §3.1.1 — rental mode & matching criteria
+    rental_mode?: RentalMode;
+    preferred_gender?: 'male' | 'female';
+    prefers_quiet?: boolean;
+    needs_parking?: boolean;
+    needs_air_conditioner?: boolean;
+    schedule_note?: string;
     status?: 'requested' | 'reviewing' | 'viewing_scheduled' | 'accepted' | 'rejected' | 'cancelled' | 'deposit_pending' | 'completed';
     created_at?: string;
     updated_at?: string;

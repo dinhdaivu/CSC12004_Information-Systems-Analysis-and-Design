@@ -377,6 +377,16 @@ export class DepositRepository {
     return data ? toNumber((data as { price_per_month: number | string }).price_per_month) : null;
   }
 
+  static async getRoomCapacity(roomId: string): Promise<number | null> {
+    const client = ensureClient();
+    const { data } = await client
+      .from('rooms')
+      .select('max_capacity')
+      .eq('id', roomId)
+      .maybeSingle();
+    return data ? Number((data as { max_capacity: number }).max_capacity) : null;
+  }
+
   static async createDeposit(input: {
     rentalRequestId?: string;
     customerId: string;

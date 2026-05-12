@@ -17,6 +17,10 @@ export interface Handover {
   handoverAt: string;
   status: HandoverStatus;
   notes: string | null;
+  // UC3 §3.1.3 — signed handover minutes
+  managerSignatureUrl: string | null;
+  customerSignatureUrl: string | null;
+  signedAt: string | null;
   createdAt: string;
   updatedAt: string;
   items?: HandoverItem[];
@@ -28,6 +32,11 @@ export interface Handover {
     startDate: string;
     endDate: string;
   } | null;
+}
+
+export interface SignHandoverInput {
+  managerSignatureUrl?: string;
+  customerSignatureUrl?: string;
 }
 
 export interface CreateHandoverInput {

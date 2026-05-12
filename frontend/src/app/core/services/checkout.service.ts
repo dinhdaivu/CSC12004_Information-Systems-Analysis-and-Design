@@ -19,8 +19,60 @@ export interface SettlementDTO {
   paymentMethod: PaymentMethod | null;
   status: SettlementStatus;
   notes: string | null;
+  customerSignatureUrl: string | null;
+  signedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export type CheckoutInspectionStatus = 'pending' | 'completed';
+
+export interface DamageReportDTO {
+  id: string;
+  checkoutInspectionId: string;
+  itemName: string;
+  description: string | null;
+  estimatedCost: number;
+  imageUrl: string | null;
+  createdAt: string;
+}
+
+export interface KeyReturnDTO {
+  id: string;
+  checkoutInspectionId: string;
+  itemName: string;
+  returned: boolean;
+  replacementCost: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CheckoutInspectionDTO {
+  id: string;
+  checkoutRequestId: string;
+  managerId: string | null;
+  inspectedAt: string;
+  cleanlinessNote: string | null;
+  overallCondition: string | null;
+  status: CheckoutInspectionStatus;
+  notes: string | null;
+  damageReports: DamageReportDTO[];
+  keyReturns: KeyReturnDTO[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateInspectionPayload {
+  cleanlinessNote?: string;
+  overallCondition?: string;
+  notes?: string;
+  damageReports?: { itemName: string; description?: string; estimatedCost?: number; imageUrl?: string }[];
+  keyReturns?: { itemName: string; returned?: boolean; replacementCost?: number; notes?: string }[];
+}
+
+export interface InspectionResponse {
+  success: boolean;
+  data: CheckoutInspectionDTO | null;
 }
 
 export interface CheckoutRequestDTO {
@@ -138,5 +190,25 @@ export class CheckoutService {
     notes?: string;
   }): Observable<SettlementResponse> {
     return this.http.patch<SettlementResponse>(`${this.baseUrl}/${checkoutId}/settlement/${settlementId}/complete`, payload);
+  }
+
+  signSettlement(checkoutId: string, settlementId: string, customerSignatureUrl: string): Observable<SettlementResponse> {
+    return this.http.patch<SettlementResponse>(
+      `${this.baseUrl}/${checkoutId}/settlement/${settlementId}/sign`,
+      { customerSignatureUrl },
+    );
+  }
+
+  // ============ Checkout inspection (UC4 §3.1.4) ============
+  getInspection(checkoutId: string): Observable<InspectionResponse> {
+    return this.http.get<InspectionResponse>(`${this.baseUrl}/${checkoutId}/inspection`);
+  }
+
+  createInspection(checkoutId: string, payload: CreateInspectionPayload): Observable<InspectionResponse> {
+    return this.http.post<InspectionResponse>(`${this.baseUrl}/${checkoutId}/inspection`, payload);
+  }
+
+  completeInspection(checkoutId: string): Observable<InspectionResponse> {
+    return this.http.patch<InspectionResponse>(`${this.baseUrl}/${checkoutId}/inspection/complete`, {});
   }
 }

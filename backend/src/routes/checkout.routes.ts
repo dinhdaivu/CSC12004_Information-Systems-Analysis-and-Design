@@ -29,5 +29,12 @@ router.post('/:id/settlement', roleMiddleware(ACCOUNTANT_ROLES), CheckoutControl
 router.patch('/:id/settlement/:settlementId', roleMiddleware(ACCOUNTANT_ROLES), CheckoutController.updateSettlementDeduction.bind(CheckoutController));
 router.patch('/:id/settlement/:settlementId/confirm', roleMiddleware(MANAGER_ROLES), CheckoutController.confirmSettlement.bind(CheckoutController));
 router.patch('/:id/settlement/:settlementId/complete', roleMiddleware(ACCOUNTANT_ROLES), CheckoutController.completeSettlement.bind(CheckoutController));
+// Customer signs settlement after confirmation, before completion
+router.patch('/:id/settlement/:settlementId/sign', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.signSettlement.bind(CheckoutController));
+
+// Inspection sub-resource (UC4 §3.1.4)
+router.get('/:id/inspection', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.getInspection.bind(CheckoutController));
+router.post('/:id/inspection', roleMiddleware(MANAGER_ROLES), CheckoutController.createInspection.bind(CheckoutController));
+router.patch('/:id/inspection/complete', roleMiddleware(MANAGER_ROLES), CheckoutController.completeInspection.bind(CheckoutController));
 
 export default router;

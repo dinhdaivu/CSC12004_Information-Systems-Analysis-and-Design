@@ -22,6 +22,9 @@ export interface HandoverDTO {
   handoverAt: string;
   status: HandoverStatus;
   notes: string | null;
+  managerSignatureUrl: string | null;
+  customerSignatureUrl: string | null;
+  signedAt: string | null;
   createdAt: string;
   updatedAt: string;
   items?: HandoverItem[];
@@ -61,5 +64,9 @@ export class HandoverService {
 
   addItem(handoverId: string, item: { itemName: string; itemCondition?: string; notes?: string }): Observable<{ success: boolean; data: HandoverItem }> {
     return this.http.post<{ success: boolean; data: HandoverItem }>(`${this.base}/${handoverId}/items`, item);
+  }
+
+  sign(handoverId: string, body: { managerSignatureUrl?: string; customerSignatureUrl?: string }): Observable<{ success: boolean; data: HandoverDTO }> {
+    return this.http.patch<{ success: boolean; data: HandoverDTO }>(`${this.base}/${handoverId}/sign`, body);
   }
 }

@@ -62,4 +62,14 @@ export class HandoverController {
       res.status(201).json({ success: true, data });
     } catch (e) { next(e); }
   }
+
+  static async sign(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await HandoverService.sign(String(req.params.id), {
+        managerSignatureUrl: req.body.managerSignatureUrl,
+        customerSignatureUrl: req.body.customerSignatureUrl,
+      });
+      res.json({ success: true, data });
+    } catch (e) { next(e); }
+  }
 }

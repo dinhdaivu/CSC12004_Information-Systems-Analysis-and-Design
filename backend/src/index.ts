@@ -20,6 +20,8 @@ import zoneRoutes from "./routes/zone.routes";
 import chatRoutes from "@routes/chat.routes";
 import checkoutRoutes from "@routes/checkout.routes";
 import handoverRoutes from "@routes/handover.routes";
+import disputeRoutes from "@routes/dispute.routes";
+import defaultHandoverItemRoutes from "@routes/default-handover-item.routes";
 import { startScheduler } from "./scheduler";
 
 import { ApiResponseBuilder } from "@models/api.model";
@@ -61,6 +63,8 @@ app.use("/api/contracts", contractsRoutes);
 app.use("/api/lodging-eligibility", lodgingEligibilityRoutes);
 app.use("/api/checkout-requests", checkoutRoutes);
 app.use("/api/handovers", handoverRoutes);
+app.use("/api/disputes", disputeRoutes);
+app.use("/api/default-handover-items", defaultHandoverItemRoutes);
 app.use("/api/zones", zoneRoutes);
 
 // main routes

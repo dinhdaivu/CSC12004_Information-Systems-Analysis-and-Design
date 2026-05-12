@@ -9,6 +9,8 @@ import * as QRCode from 'qrcode';
 import { AuthService } from '@core/services/auth.service';
 import { CheckoutService, SettlementDTO } from '@core/services/checkout.service';
 import { ContractsService, ContractListItem } from '@core/services/contracts.service';
+import { HandoverService, HandoverDTO } from '@core/services/handover.service';
+import { DisputeService } from '@core/services/dispute.service';
 
 type ContractScreen =
   | 'residency'
@@ -233,25 +235,43 @@ interface AssetGroup {
                 <div class="title-text" style="left: 77px; top: 60px; position: absolute; color: #264893; font-size: 52px; font-weight: 900;">My Contract</div>
                 <div class="title-text" style="left: 77px; top: 171px; position: absolute; color: #264893; font-size: 31px; font-weight: 900;">Assets Retrieved</div>
 
-                <div *ngFor="let group of assetGroups; let groupIndex = index" class="page-text" [style.left.px]="110 + groupIndex * 360" style="top: 230px; position: absolute; color: #111; font-size: 18px; line-height: 35px;">
-                  <div *ngFor="let asset of group.items" style="display: grid; grid-template-columns: 155px 32px 1fr; align-items: center; width: 340px;">
-                    <strong *ngIf="asset === group.items[0]">{{ group.label }}</strong>
-                    <span *ngIf="asset !== group.items[0]"></span>
-                    <span style="color: #0b9b4b; font-size: 24px;">&#10003;</span>
-                    <span>{{ asset }}</span>
+                <!-- Real items from activeHandover.items (UC3 §3.1.3) -->
+                <div *ngIf="handoverItemColumns.length > 0" style="left: 110px; top: 230px; position: absolute; display: flex; gap: 40px;">
+                  <div *ngFor="let col of handoverItemColumns" class="page-text" style="color: #111; font-size: 18px; line-height: 35px; width: 340px;">
+                    <div *ngFor="let item of col" style="display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 8px;">
+                      <span [style.color]="isAssetOk(item.itemCondition) ? '#0b9b4b' : '#b91c1c'" style="font-size: 24px;">
+                        {{ isAssetOk(item.itemCondition) ? '&#10003;' : '&#10007;' }}
+                      </span>
+                      <span [title]="item.notes || ''">{{ item.itemName }}</span>
+                      <span *ngIf="item.itemCondition" style="font-size: 13px; color: #777;">{{ item.itemCondition }}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div (click)="showImageModal = true" class="clickable" style="width: 1164px; height: 112px; left: 77px; top: 383px; position: absolute; border: 3px dashed #9eb1d6; display: flex; align-items: center; justify-content: center;">
-                  <span class="page-text" style="font-size: 18px; font-weight: 700; color: #111;">Room204_BedA.png</span>
+                <div *ngIf="handoverItemColumns.length === 0" class="page-text" style="left: 110px; top: 230px; position: absolute; color: #777; font-size: 18px; font-style: italic;">
+                  No handover record yet — the manager will populate the asset list at check-in.
+                </div>
+
+                <div *ngIf="activeHandover" (click)="showImageModal = true" class="clickable" style="width: 1164px; height: 112px; left: 77px; top: 383px; position: absolute; border: 3px dashed #9eb1d6; display: flex; align-items: center; justify-content: center;">
+                  <span class="page-text" style="font-size: 18px; font-weight: 700; color: #111;">
+                    Handover scheduled at {{ activeHandover.handoverAt | date:'mediumDate' }}
+                  </span>
                 </div>
 
                 <label class="page-text clickable" style="left: 110px; top: 552px; position: absolute; display: flex; align-items: flex-start; gap: 16px; color: #111;">
-                  <input type="checkbox" [(ngModel)]="signatureAcknowledged" style="width: 20px; height: 20px; margin-top: 3px; accent-color: #264893;" />
-                  <span style="font-size: 18px;"><strong>Resident Signature</strong><br/><span style="color: #777;">I acknowledge receipt of room in stated condition</span></span>
+                  <input type="checkbox" [(ngModel)]="signatureAcknowledged" [disabled]="!!activeHandover?.customerSignatureUrl" style="width: 20px; height: 20px; margin-top: 3px; accent-color: #264893;" />
+                  <span style="font-size: 18px;">
+                    <strong>Resident Signature</strong><br/>
+                    <span *ngIf="!activeHandover?.customerSignatureUrl" style="color: #777;">I acknowledge receipt of room in stated condition</span>
+                    <span *ngIf="activeHandover?.customerSignatureUrl" style="color: #0b9b4b;">Signed at {{ activeHandover?.signedAt || activeHandover?.updatedAt | date:'short' }}</span>
+                  </span>
                 </label>
 
-                <button (click)="openSignatureConfirm()" [disabled]="!signatureAcknowledged" class="primary-btn" style="position: absolute; left: 1025px; top: 553px;">Confirm</button>
+                <div *ngIf="signError" class="page-text" style="left: 110px; top: 605px; position: absolute; color: #b91c1c; font-size: 16px; font-weight: 700;">{{ signError }}</div>
+
+                <button (click)="openSignatureConfirm()" [disabled]="!signatureAcknowledged || !!activeHandover?.customerSignatureUrl" class="primary-btn" style="position: absolute; left: 1025px; top: 553px;">
+                  {{ activeHandover?.customerSignatureUrl ? 'Signed' : 'Confirm' }}
+                </button>
               </ng-container>
 
               <ng-container *ngSwitchCase="'checkout-registration'">
@@ -302,8 +322,23 @@ interface AssetGroup {
                     <div class="radio-dot"><span *ngIf="selectedPayment === 'visa'"></span></div>
                   </div>
                 </div>
+                <!-- UC4 §3.1.4 — settlement signature gate (required before refund payout) -->
+                <div *ngIf="settlementData && settlementData.status === 'confirmed' && !settlementData.customerSignatureUrl" class="page-text" style="left: 78px; top: 480px; position: absolute; width: 1180px; padding: 16px 20px; box-sizing: border-box; background: #FFF7ED; border: 2px solid #FDBA74; border-radius: 12px; color: #9A3412; font-size: 16px;">
+                  <strong>Signature required:</strong> Please sign the settlement report below before confirming the refund.
+                  <button (click)="signSettlement()" [disabled]="isSubmitting" class="primary-btn" style="margin-left: 20px; height: 42px; min-width: 160px; font-size: 18px; padding: 0 22px;">
+                    {{ isSubmitting ? 'Signing…' : 'Sign Settlement' }}
+                  </button>
+                </div>
+                <div *ngIf="settlementData?.customerSignatureUrl" class="page-text" style="left: 78px; top: 480px; position: absolute; color: #0b9b4b; font-size: 16px; font-weight: 700;">
+                  Settlement signed at {{ settlementData?.signedAt | date:'short' }}.
+                </div>
+                <div *ngIf="checkoutError" class="page-text" style="left: 78px; top: 510px; position: absolute; color: #b91c1c; font-size: 16px; font-weight: 700;">{{ checkoutError }}</div>
+
                 <button (click)="screen = 'dispute'" class="secondary-btn" style="position: absolute; left: 847px; top: 543px;">Dispute</button>
-                <button (click)="confirmRefundPayment()" class="primary-btn" style="position: absolute; left: 1064px; top: 543px;">Confirm</button>
+                <button (click)="confirmRefundPayment()"
+                        [disabled]="settlementData?.status === 'confirmed' && !settlementData?.customerSignatureUrl"
+                        [title]="(settlementData?.status === 'confirmed' && !settlementData?.customerSignatureUrl) ? 'Sign the settlement first' : ''"
+                        class="primary-btn" style="position: absolute; left: 1064px; top: 543px;">Confirm</button>
               </ng-container>
 
               <ng-container *ngSwitchCase="'checkout-detail'">
@@ -321,7 +356,8 @@ interface AssetGroup {
                   <div class="page-text" style="left: 230px; top: 162px; position: absolute; color: #111; font-size: 18px; line-height: 44px;">
                     {{ refundRate }}%<br/>{{ formatCurrency(residency.deposit) }}<br/>{{ formatCurrency(refundableDeposit) }}
                   </div>
-                  <input [(ngModel)]="damageFee" type="number" class="field" style="width: 498px; height: 50px; left: 40px; top: 340px; position: absolute; border: 1px solid #aaa; background: #eee;" />
+                  <!-- Backend §3.1.4 auto-computes deductions from unpaid invoices + inspection damages; read-only on the customer side -->
+                  <input [value]="damageFeeNumber" type="number" readonly title="Calculated by Accountant — read-only" class="field" style="width: 498px; height: 50px; left: 40px; top: 340px; position: absolute; border: 1px solid #aaa; background: #eee; cursor: not-allowed;" />
 
                   <div class="page-text" style="right: 42px; top: 48px; position: absolute; color: #777; font-size: 22px;">Final Balance</div>
                   <div class="page-text" style="right: 42px; top: 87px; position: absolute; color: #0087b8; font-size: 22px;">{{ formatCurrency(finalBalance) }}</div>
@@ -359,7 +395,9 @@ interface AssetGroup {
                 <input [(ngModel)]="disputeBranch" class="field" style="width: 426px; height: 42px; left: 818px; top: 314px; position: absolute;" />
                 <label class="page-text" style="left: 578px; top: 384px; position: absolute; color: #111; font-size: 15px; font-weight: 700;">Reasons for Dispute</label>
                 <textarea [(ngModel)]="disputeReason" class="field" style="width: 426px; height: 116px; left: 818px; top: 368px; position: absolute;"></textarea>
-                <button (click)="submitDispute()" class="primary-btn" style="position: absolute; left: 1050px; top: 545px; height: 60px; min-width: 168px; font-size: 21px;">Submit</button>
+                <div *ngIf="disputeError" class="page-text" style="left: 578px; top: 500px; position: absolute; color: #b91c1c; font-size: 14px; font-weight: 700;">{{ disputeError }}</div>
+                <div *ngIf="disputeSuccess" class="page-text" style="left: 578px; top: 500px; position: absolute; color: #0b9b4b; font-size: 14px; font-weight: 700;">Dispute submitted — staff will review shortly.</div>
+                <button (click)="submitDispute()" [disabled]="disputeSubmitting" class="primary-btn" style="position: absolute; left: 1050px; top: 545px; height: 60px; min-width: 168px; font-size: 21px;">{{ disputeSubmitting ? 'Submitting…' : 'Submit' }}</button>
               </ng-container>
 
               <ng-container *ngSwitchCase="'payment-success'">
@@ -445,13 +483,17 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly checkoutSvc = inject(CheckoutService);
   private readonly contractsSvc = inject(ContractsService);
+  private readonly handoverSvc = inject(HandoverService);
+  private readonly disputeSvc = inject(DisputeService);
   private readonly destroy$ = new Subject<void>();
 
   activeContractId: string | null = null;
   activeCheckoutId: string | null = null;
+  activeHandover: HandoverDTO | null = null;
   settlementData: SettlementDTO | null = null;
   isSubmitting = false;
   loadingContract = true;
+  signError = '';
 
   scaleFactor = 1;
   screen: ContractScreen = 'residency';
@@ -470,9 +512,13 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
   outstandingRent = 0;
   refundRate = 100;
   evidenceFileName = '';
+  evidenceFile: File | null = null;
   disputeName = '';
   disputeBranch = '';
   disputeReason = '';
+  disputeError = '';
+  disputeSubmitting = false;
+  disputeSuccess = false;
 
   residency = {
     customerName: '—',
@@ -548,6 +594,35 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
     return this.refundableDeposit - this.totalDeductions;
   }
 
+  /**
+   * Split the active handover's items into up to 3 columns for the 3-column
+   * layout on the handover screen. Falls back to an empty list when no
+   * handover has been initiated yet.
+   */
+  get handoverItemColumns(): { itemName: string; itemCondition: string | null; notes: string | null }[][] {
+    const items = this.activeHandover?.items ?? [];
+    if (items.length === 0) return [];
+    const cols: { itemName: string; itemCondition: string | null; notes: string | null }[][] = [[], [], []];
+    items.forEach((item, idx) => {
+      cols[idx % 3].push({
+        itemName: item.itemName,
+        itemCondition: item.itemCondition,
+        notes: item.notes,
+      });
+    });
+    return cols.filter((c) => c.length > 0);
+  }
+
+  /**
+   * Treat null / "good" / "ok" / "new" conditions as acceptable; anything that
+   * looks like damaged/broken/missing renders a red ✗ instead.
+   */
+  isAssetOk(condition: string | null): boolean {
+    if (!condition) return true;
+    const c = condition.toLowerCase();
+    return !/(damag|broken|missing|bad|poor|lost)/.test(c);
+  }
+
   get formattedCheckoutDate(): string {
     if (!this.checkoutDate) return '15/04/2026';
     const [year, month, day] = this.checkoutDate.split('-');
@@ -608,12 +683,55 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
 
   openSignatureConfirm(): void {
     if (!this.signatureAcknowledged) return;
+    this.signError = '';
     this.showSignatureModal = true;
   }
 
+  /**
+   * UC3 §3.1.3 — submit the customer's signature to the active handover.
+   * We use a synthetic signature URL embedding identity + timestamp; in a real
+   * deployment this would be the URL of an uploaded signature image
+   * (Cloudinary, signature pad PNG, etc.).
+   */
   confirmSignature(): void {
-    this.showSignatureModal = false;
-    this.screen = 'residency';
+    if (!this.activeHandover) {
+      // No handover record yet — staff hasn't created one. Close modal and
+      // let the customer know to wait for staff to initiate handover.
+      this.signError = 'Handover not yet initiated by staff. Please wait for the manager to schedule check-in.';
+      this.showSignatureModal = false;
+      return;
+    }
+    const user = this.authService.getCurrentUser();
+    const signatureUrl = `signed:customer:${user?.id ?? 'unknown'}:${new Date().toISOString()}`;
+    this.handoverSvc.sign(this.activeHandover.id, { customerSignatureUrl: signatureUrl })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.activeHandover = res.data;
+          this.showSignatureModal = false;
+          this.screen = 'residency';
+        },
+        error: (err) => {
+          this.signError = err?.error?.message ?? 'Failed to record signature. Please try again.';
+          this.showSignatureModal = false;
+        },
+      });
+  }
+
+  private loadActiveHandover(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) return;
+    this.handoverSvc.list({ customerId: user.id, status: 'pending' })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          // Pick the handover that belongs to the active contract.
+          this.activeHandover = res.data.find(
+            (h) => h.contractId === this.activeContractId,
+          ) ?? null;
+        },
+        error: () => { /* not all customers have a pending handover — fine */ },
+      });
   }
 
   submitCheckoutRequest(): void {
@@ -646,6 +764,38 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * UC4 §3.1.4 — customer signs the settlement report before refund payout.
+   * Posts a synthetic signature URL to the backend. In production replace with
+   * a real signature pad upload.
+   */
+  signSettlement(): void {
+    if (!this.activeCheckoutId || !this.settlementData) {
+      this.checkoutError = 'No active settlement found.';
+      return;
+    }
+    if (this.settlementData.status !== 'confirmed') {
+      this.checkoutError = 'Settlement is not ready for signing yet.';
+      return;
+    }
+    this.checkoutError = '';
+    this.isSubmitting = true;
+    const user = this.authService.getCurrentUser();
+    const signatureUrl = `signed:customer:${user?.id ?? 'unknown'}:${new Date().toISOString()}`;
+    this.checkoutSvc.signSettlement(this.activeCheckoutId, this.settlementData.id, signatureUrl)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.settlementData = res.data;
+          this.isSubmitting = false;
+        },
+        error: (err) => {
+          this.checkoutError = err?.error?.message ?? 'Failed to sign settlement.';
+          this.isSubmitting = false;
+        },
+      });
+  }
+
   async confirmRefundPayment(): Promise<void> {
     if (this.selectedPayment === 'visa') {
       this.screen = 'payment-fail';
@@ -662,11 +812,68 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
 
   onEvidenceSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.evidenceFileName = input.files?.[0]?.name ?? '';
+    const file = input.files?.[0] ?? null;
+    this.evidenceFile = file;
+    this.evidenceFileName = file?.name ?? '';
   }
 
-  submitDispute(): void {
-    this.screen = 'checkout-detail';
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (err) => reject(err);
+    });
+  }
+
+  /**
+   * UC4 §3.1.4 — submit a settlement dispute. Evidence file (if any) is sent
+   * inline as base64 and uploaded to Cloudinary on the backend.
+   */
+  async submitDispute(): Promise<void> {
+    if (!this.disputeName?.trim()) {
+      this.disputeError = 'Please enter your name.';
+      return;
+    }
+    if (!this.disputeReason?.trim()) {
+      this.disputeError = 'Please describe the reason for the dispute.';
+      return;
+    }
+    this.disputeError = '';
+    this.disputeSubmitting = true;
+    try {
+      const evidenceBase64 = this.evidenceFile ? await this.fileToBase64(this.evidenceFile) : undefined;
+      this.disputeSvc.create({
+        settlementId: this.settlementData?.id,
+        checkoutRequestId: this.activeCheckoutId ?? undefined,
+        name: this.disputeName.trim(),
+        branch: this.disputeBranch?.trim() || undefined,
+        reason: this.disputeReason.trim(),
+        evidenceBase64,
+      }).pipe(takeUntil(this.destroy$)).subscribe({
+        next: () => {
+          this.disputeSubmitting = false;
+          this.disputeSuccess = true;
+          // Reset form, return to summary after short confirmation.
+          this.disputeName = '';
+          this.disputeBranch = '';
+          this.disputeReason = '';
+          this.evidenceFile = null;
+          this.evidenceFileName = '';
+          setTimeout(() => {
+            this.disputeSuccess = false;
+            this.screen = 'checkout-detail';
+          }, 1500);
+        },
+        error: (err) => {
+          this.disputeSubmitting = false;
+          this.disputeError = err?.error?.message ?? 'Failed to submit dispute. Please try again.';
+        },
+      });
+    } catch {
+      this.disputeSubmitting = false;
+      this.disputeError = 'Failed to read evidence file.';
+    }
   }
 
   formatCurrency(value: number): string {
@@ -684,6 +891,7 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
             this.activeContractId = contract.id;
             this.populateResidency(contract);
             this.loadExistingCheckout();
+            this.loadActiveHandover();
           }
           this.loadingContract = false;
         },
@@ -713,9 +921,14 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
       term: `${monthsDiff} months`,
     };
 
+    // Mirror backend §3.1.4: 100% if expired, 80% if not yet moved in,
+    // 50% if stayed <6 months, 70% otherwise. Real source of truth is the
+    // settlement.refundRate from the backend (loaded in loadExistingCheckout).
     const now = new Date();
-    if (end <= now) {
+    if (contract.status === 'completed' || end <= now) {
       this.refundRate = 100;
+    } else if (now < start) {
+      this.refundRate = 80;
     } else {
       const monthsStayed = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
       this.refundRate = monthsStayed < 6 ? 50 : 70;

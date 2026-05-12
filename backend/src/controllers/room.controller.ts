@@ -331,6 +331,11 @@ export class RoomController {
 
       max_price: parseOptionalNumber(query.max_price),
 
+      gender: (() => {
+        const g = parseStringQueryParam(query.gender);
+        return g === "male" || g === "female" ? g : undefined;
+      })(),
+
       search: parseStringQueryParam(query.search),
     };
 

@@ -22,16 +22,24 @@ export class DepositService {
     dueAt?: string;
     notes?: string;
   }): Promise<DepositDetailDTO> {
-    // UC2-3: deposit must be at least 2 months' rent
+    // UC2-3 (spec §3.1.2): deposit = monthly_rent × 2 × number_of_beds_rented.
+    // For per-bed rental: number_of_beds = 1.
+    // For whole-room rental (bedId is null): number_of_beds = room.max_capacity.
     const monthlyPrice = input.bedId
       ? await DepositRepository.getBedPrice(input.bedId)
       : await DepositRepository.getRoomPrice(input.roomId);
 
+    let bedsCount = 1;
+    if (!input.bedId) {
+      const capacity = await DepositRepository.getRoomCapacity(input.roomId);
+      if (capacity && capacity > 0) bedsCount = capacity;
+    }
+
     if (monthlyPrice !== null) {
-      const minimum = monthlyPrice * 2;
+      const minimum = monthlyPrice * 2 * bedsCount;
       if (input.amount < minimum) {
         throw new ValidationError(
-          `Deposit amount must be at least 2 months' rent (${minimum.toLocaleString()} VND)`,
+          `Deposit amount must be at least 2 months' rent × ${bedsCount} bed(s) (${minimum.toLocaleString()} VND)`,
         );
       }
     }

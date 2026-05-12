@@ -5,6 +5,7 @@ import type {
   HandoverStatus,
   CreateHandoverInput,
   AddHandoverItemInput,
+  SignHandoverInput,
 } from '@models/handover.model';
 import { InternalServerError, NotFoundError, ConflictError } from '@utils/errors';
 
@@ -14,7 +15,9 @@ function client() {
 }
 
 const HANDOVER_SELECT = `
-  id, contract_id, manager_id, customer_id, handover_at, status, notes, created_at, updated_at,
+  id, contract_id, manager_id, customer_id, handover_at, status, notes,
+  manager_signature_url, customer_signature_url, signed_at,
+  created_at, updated_at,
   customer:users!handovers_customer_id_fkey(full_name, email),
   manager:users!handovers_manager_id_fkey(full_name),
   contract:contracts!handovers_contract_id_fkey(room_id, bed_id, start_date, end_date),
@@ -35,6 +38,9 @@ function mapRow(row: Record<string, unknown>): Handover {
     handoverAt: row.handover_at as string,
     status: row.status as HandoverStatus,
     notes: row.notes as string | null,
+    managerSignatureUrl: (row.manager_signature_url as string | null) ?? null,
+    customerSignatureUrl: (row.customer_signature_url as string | null) ?? null,
+    signedAt: (row.signed_at as string | null) ?? null,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
     customer: cu ? { fullName: cu.full_name as string, email: cu.email as string } : null,
@@ -127,9 +133,35 @@ export class HandoverService {
       throw new ConflictError('Only pending handovers can be completed');
     }
 
+    // UC3-2 gate (spec §3.1.3): accountant must confirm collection of all initial
+    // fees before handover. Block completion if any invoice tied to the contract
+    // is still unpaid.
+    const { data: unpaid, error: invErr } = await db
+      .from('invoices')
+      .select('id, total_amount')
+      .eq('contract_id', handover.contractId)
+      .eq('status', 'unpaid');
+    if (invErr) throw new InternalServerError(`Failed to verify invoices: ${invErr.message}`);
+    if (unpaid && unpaid.length > 0) {
+      const total = (unpaid as { total_amount: number | string }[]).reduce(
+        (s, r) => s + Number(r.total_amount ?? 0),
+        0,
+      );
+      throw new ConflictError(
+        `Cannot complete handover: ${unpaid.length} unpaid invoice(s) totaling ${total.toLocaleString()} VND must be settled first`,
+      );
+    }
+
+    // UC3 spec §3.1.3: handover minutes must be signed by both manager and customer.
+    if (!handover.managerSignatureUrl || !handover.customerSignatureUrl) {
+      throw new ConflictError(
+        'Both manager and customer signatures are required before completing handover',
+      );
+    }
+
     const { error } = await db
       .from('handovers')
-      .update({ status: 'completed', manager_id: managerId })
+      .update({ status: 'completed', manager_id: managerId, signed_at: new Date().toISOString() })
       .eq('id', id);
     if (error) throw new InternalServerError(`Failed to complete handover: ${error.message}`);
 
@@ -156,6 +188,30 @@ export class HandoverService {
       .update({ status: 'cancelled' })
       .eq('id', id);
     if (error) throw new InternalServerError(`Failed to cancel handover: ${error.message}`);
+
+    return this.getById(id);
+  }
+
+  /**
+   * Attach manager and/or customer signature URLs to an existing handover.
+   * Signatures are typically Cloudinary URLs of signed PNG/JPG images.
+   */
+  static async sign(id: string, input: SignHandoverInput): Promise<Handover> {
+    if (!input.managerSignatureUrl && !input.customerSignatureUrl) {
+      throw new ConflictError('At least one signature URL is required');
+    }
+
+    const handover = await this.getById(id);
+    if (handover.status !== 'pending') {
+      throw new ConflictError('Only pending handovers can be signed');
+    }
+
+    const update: Record<string, string> = {};
+    if (input.managerSignatureUrl) update.manager_signature_url = input.managerSignatureUrl;
+    if (input.customerSignatureUrl) update.customer_signature_url = input.customerSignatureUrl;
+
+    const { error } = await client().from('handovers').update(update).eq('id', id);
+    if (error) throw new InternalServerError(`Failed to attach signature: ${error.message}`);
 
     return this.getById(id);
   }

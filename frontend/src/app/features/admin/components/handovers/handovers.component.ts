@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { HandoverService, HandoverDTO, HandoverStatus } from '@core/services/handover.service';
 import { ContractsService, ContractListItem } from '@core/services/contracts.service';
+import { DefaultHandoverItemService } from '@core/services/default-handover-item.service';
 import { AuthService } from '@core/services/auth.service';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -126,7 +127,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                     </td>
                     <td class="px-5 py-3">
                       <div class="flex items-center justify-center gap-2">
-                        <button *ngIf="row.status === 'pending'" (click)="promptComplete(row)" title="Complete Handover" class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
+                        <button *ngIf="row.status === 'pending'" (click)="openSignModal(row)" title="Attach Signatures" class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors">
+                          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                        </button>
+                        <button *ngIf="row.status === 'pending'" (click)="promptComplete(row)" [disabled]="!(row.managerSignatureUrl && row.customerSignatureUrl)" [title]="!(row.managerSignatureUrl && row.customerSignatureUrl) ? 'Both signatures required first' : 'Complete Handover'" class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                           </svg>
@@ -162,41 +168,110 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
       </div>
 
       <!-- Create handover modal -->
-      <div *ngIf="showCreateModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-          <h2 class="mb-4 text-xl font-bold text-[#264893]">New Handover</h2>
-          <div class="flex flex-col gap-4">
-            <div>
-              <label class="mb-1 block text-sm font-semibold text-slate-600">Select Contract</label>
-              <select [(ngModel)]="newForm.contractId" (ngModelChange)="onContractSelect()" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893] bg-white">
-                <option value="">-- Select a Contract --</option>
-                <option *ngFor="let c of availableContracts" [value]="c.id">
-                  {{ c.customer?.fullName || 'Unknown' }} - Room {{ c.room?.roomNumber || c.roomId.slice(0,8) }}
-                </option>
-              </select>
-            </div>
-            
-            <div *ngIf="newForm.contractId">
-              <label class="mb-1 block text-sm font-semibold text-slate-600">Customer</label>
-              <div class="w-full rounded-lg bg-slate-50 border border-slate-200 px-3 py-2.5 text-sm text-slate-600 font-medium">
-                {{ selectedContractCustomerName }}
+      <div *ngIf="showCreateModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm overflow-y-auto py-10" style="font-family: 'Afacad', sans-serif">
+        <div class="w-full max-w-4xl rounded-2xl bg-white p-8 shadow-2xl my-auto border border-[#264893]/10 flex flex-col max-h-[90vh]">
+          <div class="mb-5 flex items-center justify-between border-b border-slate-100 pb-4 shrink-0">
+            <h2 class="text-3xl font-bold text-[#264893]" style="font-family: 'Big Shoulders Text', sans-serif; letter-spacing: 0.5px;">New Handover</h2>
+            <button (click)="showCreateModal = false; resetForm()" class="text-slate-400 hover:text-red-500 transition-colors">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            <div class="flex flex-col md:flex-row gap-8">
+              <!-- Left Column: Details -->
+              <div class="flex-1 flex flex-col gap-5">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#264893] text-xs font-bold text-white">1</span>
+                  <h3 class="font-bold text-slate-700 text-lg">Handover Details</h3>
+                </div>
+                
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col gap-4">
+                  <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600">Select Contract</label>
+                    <select [(ngModel)]="newForm.contractId" (ngModelChange)="onContractSelect()" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893] bg-white">
+                      <option value="">-- Select a Contract --</option>
+                      <option *ngFor="let c of availableContracts" [value]="c.id">
+                        {{ c.customer?.fullName || 'Unknown' }} - Room {{ c.room?.roomNumber || c.roomId.slice(0,8) }}
+                      </option>
+                    </select>
+                  </div>
+                  
+                  <div *ngIf="newForm.contractId">
+                    <label class="mb-1 block text-sm font-semibold text-slate-600">Customer</label>
+                    <div class="w-full rounded-lg bg-slate-100 border border-slate-200 px-3 py-2.5 text-sm text-slate-600 font-medium">
+                      {{ selectedContractCustomerName }}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600">Handover Date</label>
+                    <input [(ngModel)]="newForm.handoverAt" type="datetime-local" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893]" />
+                  </div>
+                  
+                  <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600">Notes</label>
+                    <textarea [(ngModel)]="newForm.notes" rows="3" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893] resize-none" placeholder="Optional notes..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Handover Items -->
+              <div class="flex-1 flex flex-col gap-5">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#264893] text-xs font-bold text-white">2</span>
+                    <h3 class="font-bold text-slate-700 text-lg">Handover Items</h3>
+                  </div>
+                  <button (click)="addHandoverItem()" class="text-xs font-bold text-white bg-[#264893] hover:bg-[#1a3570] flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Add Item
+                  </button>
+                </div>
+
+                <div *ngIf="newForm.items.length === 0" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
+                  <p class="text-sm text-slate-500 mb-2">No items added to handover.</p>
+                  <button (click)="addHandoverItem()" class="text-xs font-medium text-[#264893] hover:underline">Click here to add items (e.g. Keys, AC Remote)</button>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <div *ngFor="let item of newForm.items; let i = index" class="relative rounded-xl border border-slate-200 bg-white p-4 shadow-sm group hover:border-[#264893]/30 transition-colors">
+                    <button (click)="removeHandoverItem(i)" class="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-200 z-10">
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div class="flex flex-col gap-3">
+                      <div class="flex flex-wrap md:flex-nowrap gap-3">
+                        <div class="flex-1 min-w-[200px]">
+                          <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 block">Item Name</label>
+                          <input [(ngModel)]="item.itemName" placeholder="e.g. Room Keys" class="w-full text-sm font-semibold text-slate-700 border-b-2 border-slate-100 px-1 py-1 outline-none focus:border-[#264893] bg-transparent transition-colors" />
+                        </div>
+                        <div class="w-full md:w-32 shrink-0">
+                          <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 block">Condition</label>
+                          <select [(ngModel)]="item.itemCondition" class="w-full text-sm font-medium text-slate-700 border border-slate-200 rounded-lg px-2 py-1.5 outline-none focus:border-[#264893] bg-slate-50 transition-colors">
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Damaged">Damaged</option>
+                            <option value="Missing">Missing</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <input [(ngModel)]="item.notes" placeholder="Additional notes or description (optional)" class="w-full text-xs text-slate-500 border border-slate-100 rounded-lg px-2 py-2 outline-none focus:border-[#264893] focus:bg-white bg-slate-50 transition-colors" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div>
-              <label class="mb-1 block text-sm font-semibold text-slate-600">Handover Date</label>
-              <input [(ngModel)]="newForm.handoverAt" type="datetime-local" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893]" />
-            </div>
-            <div>
-              <label class="mb-1 block text-sm font-semibold text-slate-600">Notes</label>
-              <textarea [(ngModel)]="newForm.notes" rows="3" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893] resize-none" placeholder="Optional notes..."></textarea>
-            </div>
           </div>
-          <div class="mt-6 flex justify-end gap-3">
+
+          <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
             <button (click)="showCreateModal = false; resetForm()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
             <button (click)="createHandover()" [disabled]="creating || !newForm.contractId" class="rounded-xl bg-[#264893] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1a3570] disabled:opacity-50 transition-colors shadow-sm">{{ creating ? 'Creating…' : 'Create Handover' }}</button>
           </div>
-          <div *ngIf="createError" class="mt-3 text-sm text-red-600">{{ createError }}</div>
+          <div *ngIf="createError" class="mt-3 text-sm text-center text-red-600 font-medium">{{ createError }}</div>
         </div>
       </div>
 
@@ -243,6 +318,37 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
               [class]="confirmAction.type === 'complete' ? 'bg-[#264893] hover:bg-[#1a3570]' : 'bg-red-600 hover:bg-red-700'"
               class="rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors shadow-sm">
               Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signature modal (UC3 §3.1.3) -->
+      <div *ngIf="signTarget" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" style="font-family: 'Afacad', sans-serif">
+          <div class="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-2xl font-bold text-[#264893]">Handover Signatures</h2>
+            <button (click)="closeSignModal()" class="text-slate-400 hover:text-red-500">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+          <p class="mb-4 text-sm text-slate-500">Both the manager and the customer must sign the handover minutes before the handover can be completed.</p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Manager signature URL</label>
+              <input type="text" [(ngModel)]="signForm.managerSignatureUrl" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#264893]" placeholder="Paste signature image URL" />
+              <p *ngIf="signTarget.managerSignatureUrl" class="mt-1 text-xs text-green-700">Already signed at {{ signTarget.signedAt | date:'short' }}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Customer signature URL</label>
+              <input type="text" [(ngModel)]="signForm.customerSignatureUrl" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#264893]" placeholder="Paste signature image URL" />
+              <p *ngIf="signTarget.customerSignatureUrl" class="mt-1 text-xs text-green-700">Already signed</p>
+            </div>
+          </div>
+          <div class="mt-5 flex justify-end gap-2">
+            <button (click)="closeSignModal()" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+            <button (click)="submitSignatures()" [disabled]="actionId === signTarget.id" class="rounded-lg bg-[#264893] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1a3570] disabled:opacity-50">
+              {{ actionId === signTarget.id ? 'Saving…' : 'Save Signatures' }}
             </button>
           </div>
         </div>
@@ -332,6 +438,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class HandoversComponent implements OnInit, OnDestroy {
   private readonly handoverSvc = inject(HandoverService);
   private readonly contractsSvc = inject(ContractsService);
+  private readonly defaultItemSvc = inject(DefaultHandoverItemService);
   private readonly authSvc = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
@@ -360,7 +467,21 @@ export class HandoversComponent implements OnInit, OnDestroy {
   creating = false;
   createError = '';
 
-  newForm = { contractId: '', customerId: '', handoverAt: '', notes: '' };
+  newForm = { 
+    contractId: '', 
+    customerId: '', 
+    handoverAt: '', 
+    notes: '',
+    items: [] as { itemName: string; itemCondition: string; notes: string }[]
+  };
+
+  addHandoverItem() {
+    this.newForm.items.push({ itemName: '', itemCondition: 'Good', notes: '' });
+  }
+
+  removeHandoverItem(index: number) {
+    this.newForm.items.splice(index, 1);
+  }
 
   private rows: HandoverDTO[] = [];
   
@@ -466,6 +587,47 @@ export class HandoversComponent implements OnInit, OnDestroy {
     this.confirmAction = { type: 'cancel', row };
   }
 
+  // UC3 §3.1.3 — signature collection on handover minutes
+  signTarget: HandoverDTO | null = null;
+  signForm = { managerSignatureUrl: '', customerSignatureUrl: '' };
+
+  openSignModal(row: HandoverDTO) {
+    this.signTarget = row;
+    this.signForm = {
+      managerSignatureUrl: row.managerSignatureUrl ?? '',
+      customerSignatureUrl: row.customerSignatureUrl ?? '',
+    };
+  }
+
+  closeSignModal() {
+    this.signTarget = null;
+  }
+
+  submitSignatures() {
+    if (!this.signTarget) return;
+    const body: { managerSignatureUrl?: string; customerSignatureUrl?: string } = {};
+    if (this.signForm.managerSignatureUrl?.trim()) body.managerSignatureUrl = this.signForm.managerSignatureUrl.trim();
+    if (this.signForm.customerSignatureUrl?.trim()) body.customerSignatureUrl = this.signForm.customerSignatureUrl.trim();
+    if (!body.managerSignatureUrl && !body.customerSignatureUrl) {
+      this.errorMsg = 'Provide at least one signature URL';
+      return;
+    }
+    this.actionId = this.signTarget.id;
+    this.errorMsg = '';
+    this.handoverSvc.sign(this.signTarget.id, body).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.actionId = null;
+        this.signTarget = null;
+        this.loadData();
+      },
+      error: (err) => {
+        this.errorMsg = err?.error?.message ?? 'Failed to attach signature';
+        this.actionId = null;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
   executeConfirmedAction() {
     if (!this.confirmAction) return;
     const { type, row } = this.confirmAction;
@@ -491,11 +653,31 @@ export class HandoversComponent implements OnInit, OnDestroy {
 
   onContractSelect() {
     const c = this.contractDetailsMap[this.newForm.contractId];
-    if (c) {
-      this.newForm.customerId = c.customerId;
-    } else {
+    if (!c) {
       this.newForm.customerId = '';
+      this.newForm.items = [];
+      return;
     }
+    this.newForm.customerId = c.customerId;
+
+    // Fetch admin-editable defaults from the backend (default_handover_items table).
+    // Falls back to an empty list if the call fails — manager can still add items manually.
+    this.defaultItemSvc.resolve(c.room?.roomType ?? null)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.newForm.items = res.data.map((d) => ({
+            itemName: d.itemName,
+            itemCondition: d.itemCondition,
+            notes: d.notes ?? '',
+          }));
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.newForm.items = [];
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   get selectedContractCustomerName() {
@@ -517,6 +699,7 @@ export class HandoversComponent implements OnInit, OnDestroy {
       customerId: this.newForm.customerId,
       handoverAt: this.newForm.handoverAt ? new Date(this.newForm.handoverAt).toISOString() : undefined,
       notes: this.newForm.notes || undefined,
+      items: this.newForm.items.length > 0 ? this.newForm.items : undefined,
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.creating = false;
@@ -534,7 +717,13 @@ export class HandoversComponent implements OnInit, OnDestroy {
   }
 
   resetForm() {
-    this.newForm = { contractId: '', customerId: '', handoverAt: '', notes: '' };
+    this.newForm = { 
+      contractId: '', 
+      customerId: '', 
+      handoverAt: '', 
+      notes: '',
+      items: []
+    };
     this.createError = '';
   }
 

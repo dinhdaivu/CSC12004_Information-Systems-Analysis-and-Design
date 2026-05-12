@@ -123,14 +123,25 @@ interface BookingDetail {
                 </div>
               </div>
 
-              <!-- Labels -->
+              <!-- Labels (UC1+UC2 happy path) -->
               <div style="display: flex; justify-content: space-between; margin-top: 8px; padding: 0 20px;">
                 <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Under Review</div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Approved</div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">
-                  {{ booking.status === 'cancelled' ? 'Cancelled' : 'Declined' }}
+                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Viewing Scheduled</div>
+                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Awaiting Deposit</div>
+                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Confirmed</div>
+              </div>
+
+              <!-- Terminal banner — rejected/cancelled are end states, not progressions -->
+              <div *ngIf="isTerminal()" style="margin-top: 20px; padding: 14px 20px; background: #fee2e2; border: 2px solid #fca5a5; border-radius: 14px; display: flex; align-items: center; gap: 12px;">
+                <span style="display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; border-radius: 9999px; background: #b91c1c; color: white; font-weight: 900;">!</span>
+                <div>
+                  <div style="color: #991b1b; font-size: 20px; font-family: Big Shoulders Text; font-weight: 900;">
+                    {{ booking?.status === 'cancelled' ? 'You cancelled this request' : 'This request was declined' }}
+                  </div>
+                  <div style="color: #7f1d1d; font-size: 14px; font-family: Big Shoulders Text;">
+                    {{ booking?.status === 'cancelled' ? 'Feel free to submit a new request anytime.' : 'The room is no longer available or the application criteria were not met.' }}
+                  </div>
                 </div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Deposit Pending</div>
               </div>
 
               <!-- Status badge -->
@@ -313,16 +324,27 @@ export class BookingDetailComponent implements OnInit {
     return deposits[0];
   }
 
+  isTerminal(): boolean {
+    const status = this.booking?.status ?? '';
+    return status === 'rejected' || status === 'cancelled';
+  }
+
+  /**
+   * 4-step happy path: Under Review → Viewing Scheduled → Awaiting Deposit → Confirmed.
+   * Terminal statuses (rejected / cancelled) freeze the bar and are explained
+   * via the separate terminal banner.
+   */
   getStepLevel(): number {
     const status = this.booking?.status ?? '';
-    if (['requested', 'reviewing', 'viewing_scheduled'].includes(status)) return 1;
-    if (status === 'accepted') return 2;
-    if (['rejected', 'cancelled'].includes(status)) return 3;
-    if (['deposit_pending', 'completed'].includes(status)) return 4;
+    if (['requested', 'reviewing'].includes(status)) return 1;
+    if (status === 'viewing_scheduled') return 2;
+    if (status === 'deposit_pending') return 3;
+    if (['accepted', 'completed'].includes(status)) return 4;
     return 1;
   }
 
   getLinePercent(): string {
+    if (this.isTerminal()) return '0%';
     const level = this.getStepLevel();
     if (level <= 1) return '0%';
     if (level === 2) return 'calc(33% - 10px)';
@@ -331,10 +353,12 @@ export class BookingDetailComponent implements OnInit {
   }
 
   getStepBg(step: number): string {
+    if (this.isTerminal()) return '#D9D9D9';
     return step <= this.getStepLevel() ? '#264893' : '#D9D9D9';
   }
 
   getStepColor(step: number): string {
+    if (this.isTerminal()) return '#595959';
     return step <= this.getStepLevel() ? 'white' : '#595959';
   }
 
