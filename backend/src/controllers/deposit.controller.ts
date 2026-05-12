@@ -84,6 +84,26 @@ function parseFilters(req: AuthRequest): DepositQueryFiltersDTO {
 }
 
 export class DepositController {
+  static async createDeposit(req: AuthRequest, res: Response): Promise<void> {
+    const { rentalRequestId, customerId, roomId, bedId, amount, dueAt, notes } = req.body as Record<string, unknown>;
+
+    if (typeof roomId !== "string" || !roomId) throw new ValidationError("roomId is required");
+    if (typeof customerId !== "string" || !customerId) throw new ValidationError("customerId is required");
+    if (typeof amount !== "number" && typeof amount !== "string") throw new ValidationError("amount is required");
+
+    const result = await DepositService.createDeposit({
+      rentalRequestId: typeof rentalRequestId === "string" ? rentalRequestId : undefined,
+      customerId,
+      roomId,
+      bedId: typeof bedId === "string" ? bedId : undefined,
+      amount: Number(amount),
+      dueAt: typeof dueAt === "string" ? dueAt : undefined,
+      notes: typeof notes === "string" ? notes : undefined,
+    });
+
+    res.status(201).json(ApiResponseBuilder.success(result, "Deposit created successfully"));
+  }
+
   static async getDeposits(req: AuthRequest, res: Response): Promise<void> {
     const deposits = await DepositService.getDeposits(parseFilters(req));
     res.status(200).json(ApiResponseBuilder.success(deposits));

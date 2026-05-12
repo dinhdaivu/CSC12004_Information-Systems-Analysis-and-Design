@@ -13,7 +13,7 @@
 
 ## Overview
 
-Implement manager check-in handover after contract signing. The manager records room/bed condition, handed-over assets, keys/cards, and finalizes the tenant move-in.
+Implement manager check-in handover after UC3-2 completes. The manager records room/bed condition, handed-over assets, keys/cards, and finalizes the tenant move-in.
 
 ### Related Routes
 
@@ -39,7 +39,7 @@ Implement manager check-in handover after contract signing. The manager records 
 ```text
 Check-in handover flow:
 
-1. Manager opens signed contract ready for handover.
+1. Manager opens the signed contract after UC3-2 is complete.
 2. System displays room/bed and asset list.
 3. Manager records current condition and issued items.
 4. Manager confirms keys/cards and residency rules were handed over.

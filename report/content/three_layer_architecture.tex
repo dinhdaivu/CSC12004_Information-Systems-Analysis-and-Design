@@ -5,13 +5,16 @@ Hệ thống quản lý kí túc xá được chia thành ba tầng với trách
 giao diện, lớp nghiệp vụ và lớp dữ liệu. Mô hình này giúp giảm sự phụ thuộc giữa
 giao diện, xử lý logic và lưu trữ, từ đó làm cho hệ thống dễ kiểm thử, dễ bảo trì
 và dễ mở rộng hơn. Trong dự án ký túc xá, kiến trúc 3 lớp cũng khớp với cách
-phân tích BCE ở mức khái niệm và cách triển khai Express.js ở backend.
+phân tích BCE ở mức khái niệm và cách triển khai Express.js ở backend. \cite{pham_nguyen_cuong_phan_tich_thiet_ke_he_thong_thong_tin_theo_huong_doi_tuong}.
 
 \subsubsection{Lớp giao diện}
+Kiến trúc frontend của dự án được xây dựng theo hướng standalone component, route
+guard và HTTP interceptor của Angular, kết hợp TypeScript để giữ cho mã nguồn rõ
+ràng và dễ bảo trì \cite{angular_docs,typescript_docs,tailwind_docs}.
 Đây là nơi người dùng tương tác trực tiếp với hệ thống. Các màn hình
 Angular chịu trách nhiệm hiển thị dữ liệu, thu nhận thao tác người dùng và gửi
 yêu cầu đến backend thông qua API. Lớp này không xử lý quy tắc nghiệp vụ, mà chỉ
-tập trung vào giao diện, trải nghiệm người dùng và việc phản hồi thông tin một
+tập trung vào giao diện, trải nghiệm người dùng và phản hồi thông tin một
 cách rõ ràng, nhất quán.
 
 \begin{itemize}
@@ -21,7 +24,9 @@ cách rõ ràng, nhất quán.
 \end{itemize}
 
 \subsubsection{Lớp nghiệp vụ}
-Lớp nghiệp vụ xử lý các quy tắc cốt lõi của hệ thống. Đây là nơi kiểm tra trạng
+Phần xử lý này bám theo mô hình request/response của Express.js, trong đó route,
+controller, middleware và service phối hợp với nhau để xử lí các yêu cần nghiệp vụ
+trong backend \cite{express_docs}. Đây là nơi kiểm tra trạng
 thái phòng, xác nhận thông tin khách hàng, tính tiền đặt cọc, quản lý hợp đồng,
 điều phối quy trình trả phòng và tính toán hoàn tiền. Trong backend, lớp này được
 triển khai chủ yếu qua các controller và service để đảm bảo luồng xử lý được tách
@@ -30,10 +35,13 @@ biệt khỏi giao diện và dữ liệu.
 \begin{itemize}
     \item Ví dụ: \texttt{BookingController}, \texttt{PaymentController}, \texttt{ContractController}, \texttt{CheckoutController}, \texttt{RefundCalculator}, \texttt{SchedulerController}.
     \item Nhiệm vụ chính: kiểm tra tính hợp lệ của yêu cầu, cập nhật trạng thái phòng/giường, xử lý đặt cọc, lập hợp đồng và đối soát chi phí.
-    \item Nguyên tắc: nhận yêu cầu từ lớp trình bày, làm việc với lớp dữ liệu qua service/repository và không trực tiếp đảm nhiệm giao diện.
+    \item Nguyên tắc: nhận yêu cầu từ lớp giao diện, làm việc với lớp dữ liệu qua service/repository và không trực tiếp đảm nhiệm giao diện.
 \end{itemize}
 
 \subsubsection{Lớp dữ liệu}
+Thiết kế lưu trữ dựa trên và mô hình dịch vụ. Lớp này sử dụng Supabase như một cloud PostgreSQL database do
+đặc biệt phù hợp với các bảng quan hệ, khóa ngoại và cơ chế phân quyền RLS được
+áp dụng trong dự án \cite{supabase_docs,postgresql_docs}.
 Lớp dữ liệu lưu trữ các thực thể và trạng thái bền vững của hệ thống. Các đối
 tượng trong lớp này phản ánh trực tiếp dữ liệu nghiệp vụ như khách hàng, nhân
 viên, phòng, giường, đặt cọc, thanh toán, hợp đồng và biên bản thanh lý. Ở mức
@@ -50,7 +58,9 @@ hình dữ liệu và các bảng tương ứng.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.98\textwidth]{images/3-Layer.pdf}
-    \caption{Sơ đồ điều hướng màn hình hệ thống HomeStay Dorm}
+    \caption{Sơ đồ kiến trúc 3 lớp của hệ thống HomeStay Dorm}
 \end{figure}
+
+
 
 

@@ -89,11 +89,12 @@ export class MyBookingService {
         branches ( id, name, address, phone ),
         rooms ( id, room_number, room_type, price_per_month, max_capacity ),
         beds ( id, bed_number, price_per_month ),
-        users ( full_name, gender, phone_number, email, identity_number )
+        users ( full_name, gender, phone_number, email, identity_number ),
+        deposit_requests ( id, amount, due_at, status, paid_at, notes )
       `)
       .eq('id', bookingId)
       .eq('customer_id', customerId)
-      .maybeSingle(); // 🔥 đổi từ single -> maybeSingle
+      .maybeSingle();
 
     if (error) {
       throw new AppError(500, 'DB_ERROR', error.message);

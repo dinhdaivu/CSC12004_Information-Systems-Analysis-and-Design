@@ -10,6 +10,8 @@ import { ScheduledManagementComponent } from "./components/scheduled-management/
 import { RentalRequestsComponent } from "./components/rental-requests/rental-request.component";
 import { ContractsComponent } from "./components/contracts/contracts.component";
 import { ChatInboxComponent } from "./components/chat-inbox/chat-inbox.component";
+import { CheckoutRequestsComponent } from "./components/checkout-requests/checkout-requests.component";
+import { HandoversComponent } from "./components/handovers/handovers.component";
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -118,6 +120,28 @@ export const ADMIN_ROUTES: Routes = [
       access: ["sale", "manager", "admin"],
       navLabelKey: "NAV.ADMIN.CONTRACTS",
       pageTitleKey: "PAGES.ADMIN_CONTRACTS.TITLE",
+    } satisfies AppRouteData,
+  },
+  {
+    path: "checkout-requests",
+    component: CheckoutRequestsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["manager", "admin"],
+      access: ["manager", "admin"],
+      navLabelKey: "NAV.ADMIN.CHECKOUT_REQUESTS",
+      pageTitleKey: "PAGES.ADMIN_CHECKOUT_REQUESTS.TITLE",
+    } satisfies AppRouteData,
+  },
+  {
+    path: "handovers",
+    component: HandoversComponent,
+    canActivate: [authGuard, roleGuard],
+    data: {
+      roles: ["sale", "manager", "admin"],
+      access: ["sale", "manager", "admin"],
+      navLabelKey: "NAV.ADMIN.HANDOVERS",
+      pageTitleKey: "PAGES.ADMIN_HANDOVERS.TITLE",
     } satisfies AppRouteData,
   },
   {

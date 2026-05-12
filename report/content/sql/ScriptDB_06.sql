@@ -286,3 +286,5 @@ CREATE INDEX idx_khachhang_hoso ON khachhang(hoso_id);
 CREATE INDEX idx_phong_status ON phong(status);
 CREATE INDEX idx_giuong_status ON giuong(status);
 CREATE INDEX idx_hopdong_status ON hopdong(status);
+
+

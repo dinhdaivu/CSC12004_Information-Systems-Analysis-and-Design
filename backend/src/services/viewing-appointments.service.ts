@@ -282,6 +282,16 @@ export class ViewingAppointmentsService {
       );
     }
 
+    // Sync rental request status based on viewing outcome
+    const rentalRequestId = (data as any).rental_request_id as string | null;
+    if (rentalRequestId) {
+      const rentalStatus = status === "scheduled" ? "deposit_pending" : "rejected";
+      await client
+        .from("rental_requests")
+        .update({ status: rentalStatus })
+        .eq("id", rentalRequestId);
+    }
+
     const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
     (mapped as any).rental_requests = (data as any).rental_requests;
     return mapped;

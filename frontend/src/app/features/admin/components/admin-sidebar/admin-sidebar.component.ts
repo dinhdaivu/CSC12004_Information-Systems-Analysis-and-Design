@@ -101,6 +101,8 @@ export class AdminSidebarComponent {
     { label: "Rooms", path: "/admin/rooms" },
     { label: "Reservations", path: "/admin/payments" },
     { label: "Contracts", path: "/admin/contracts" },
+    { label: "Handovers", path: "/admin/handovers" },
+    { label: "Checkout Requests", path: "/admin/checkout-requests" },
     { label: "Users", path: "/admin/users" },
     { label: "Chat", path: "/admin/chat" },
   ];

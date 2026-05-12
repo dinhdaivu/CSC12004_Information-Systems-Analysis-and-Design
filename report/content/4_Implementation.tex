@@ -60,6 +60,10 @@ Các SUC trong Bảng~\ref{tab:implementation-suc-mapping} được đối chi�
 
 \subsection{Triển khai theo các luồng nghiệp vụ chính}
 
+Các lựa chọn triển khai trong chương này bám theo tài liệu chính thức của Angular,
+Express, TypeScript và Supabase để bảo đảm tính nhất quán giữa frontend, backend
+và tầng dữ liệu \cite{angular_docs,express_docs,typescript_docs,supabase_docs}.
+
 \subsubsection{Xác thực, phân quyền và quản lý hồ sơ người dùng}
 
 Nhóm chức năng này chủ yếu tương ứng với SUC1, SUC18 và SUC19. Ở tầng backend, module authentication chịu trách nhiệm xử lý đăng ký tài khoản, xác thực email bằng OTP, đăng nhập, gửi lại OTP, quên mật khẩu, đặt lại mật khẩu, đăng xuất và cập nhật hồ sơ cá nhân. JWT được sử dụng để nhận diện phiên đăng nhập, trong khi cơ chế RBAC được áp dụng nhằm kiểm soát quyền truy cập theo từng vai trò như customer, sale, accountant, manager và admin.
