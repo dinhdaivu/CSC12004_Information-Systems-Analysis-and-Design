@@ -1,7 +1,7 @@
 import { HandoverController } from '../controllers/handover.controller';
 import { HandoverService } from '../services/handover.service';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { Response, NextFunction } from 'express';
+import { Response } from 'express';
 
 jest.mock('../services/handover.service');
 
