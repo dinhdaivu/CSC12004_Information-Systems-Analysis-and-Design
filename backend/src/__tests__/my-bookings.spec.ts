@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { MyBookingService } from '../services/my-booking.service';
 import { MyBookingController } from '../controllers/my-booking.controller';
-import { supabase } from '../config/supabase';
+import { supabaseServiceRole } from '../config/supabase';
 import { ConflictError, NotFoundError } from '../utils/errors';
 
 const mockRequest = (body: any = {}, params: any = {}, query: any = {}, user: any = undefined) => {
@@ -30,7 +30,7 @@ const mockSupabaseQuery = {
 };
 
 jest.mock('../config/supabase', () => ({
-  supabase: { from: jest.fn(() => mockSupabaseQuery) }
+  supabaseServiceRole: { from: jest.fn(() => mockSupabaseQuery) }
 }));
 
 describe('MyBookings Module', () => {
@@ -48,7 +48,7 @@ describe('MyBookings Module', () => {
 
         const result = await MyBookingService.getMyBookings('cust-123', {});
         
-        expect(supabase!.from).toHaveBeenCalledWith('rental_requests');
+        expect(supabaseServiceRole!.from).toHaveBeenCalledWith('rental_requests');
         expect(mockSupabaseQuery.eq).toHaveBeenCalledWith('customer_id', 'cust-123');
         expect(result).toEqual(mockData);
       });

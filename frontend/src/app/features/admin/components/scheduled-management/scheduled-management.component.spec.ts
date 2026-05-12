@@ -21,6 +21,11 @@ const viewingServiceMock = {
       },
     })
   ),
+  updateAppointmentStatus: jest.fn(() =>
+    of({
+      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
+      scheduledAt: '2026-04-10T09:00:00', status: 'scheduled', createdAt: '', updatedAt: '',
+    })),
 };
 
 describe('ScheduledManagementComponent', () => {
@@ -253,6 +258,7 @@ describe('ScheduledManagementComponent', () => {
       branch: 'Branch A',
       customer: 'John Doe',
       staff: 'Staff B',
+      roomCategory: 'Twin Room',
     };
     component.openApprovalModal(appointment);
     expect(component.selectedAppointment).toBeTruthy();
@@ -302,8 +308,8 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return sorted appointments', () => {
     (component as any).appointments = [
-      { id: '2', date: '2026-04-20', time: '14:00', status: 'pending', branch: 'B', customer: 'C2', staff: 'S' },
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C1', staff: 'S' },
+      { id: '2', date: '2026-04-20', time: '14:00', status: 'pending', branch: 'B', customer: 'C2', staff: 'S', roomCategory: 'Twin Room' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C1', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const sorted = component.sortedAppointments;
     expect(sorted[0].id).toBe('1');
@@ -316,7 +322,7 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return calendar statuses from appointments', () => {
     (component as any).appointments = [
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C', staff: 'S' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const statuses = component.calendarStatuses;
     expect(statuses.length).toBe(1);
@@ -325,33 +331,31 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return statusByDate map', () => {
     (component as any).appointments = [
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'scheduled', branch: 'B', customer: 'C', staff: 'S' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'scheduled', branch: 'B', customer: 'C', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const map = component.statusByDate;
     expect(map['2026-04-10']).toBe('scheduled');
   });
 
   it('should handle approve and clear cache', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
     (component as any).appointments = [];
-    component.handleApprove({
-      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
-      scheduledAt: '2026-04-10T09:00:00', status: 'scheduled', createdAt: '', updatedAt: '',
-    });
-    expect(alertSpy).toHaveBeenCalled();
+    component.selectedAppointment = {
+      id: 'a1', customerName: 'John', date: '10-04-2026', time: '9AM', location: 'Branch', roomInterest: 'Twin'
+    };
+    component.handleApprove();
+    expect(viewingServiceMock.updateAppointmentStatus).toHaveBeenCalledWith('a1', 'scheduled');
     expect(component.selectedAppointment).toBeNull();
-    alertSpy.mockRestore();
   });
 
   it('should handle decline and clear cache', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
     (component as any).appointments = [];
-    component.handleDecline({
-      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
-      scheduledAt: '2026-04-10T09:00:00', status: 'cancelled', createdAt: '', updatedAt: '',
-    });
-    expect(alertSpy).toHaveBeenCalled();
+    component.selectedAppointment = {
+      id: 'a1', customerName: 'John', date: '10-04-2026', time: '9AM', location: 'Branch', roomInterest: 'Twin'
+    };
+    
+    // It should map to 'cancelled'
+    component.handleDecline();
+    expect(viewingServiceMock.updateAppointmentStatus).toHaveBeenCalledWith('a1', 'cancelled');
     expect(component.selectedAppointment).toBeNull();
-    alertSpy.mockRestore();
   });
 });

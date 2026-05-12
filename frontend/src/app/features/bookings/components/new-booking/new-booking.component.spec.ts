@@ -106,7 +106,9 @@ describe('NewBookingComponent', () => {
       expected_move_in_date: '2026-05-01',
       rental_duration_months: 6,
       people_count: 2,
-      note: 'Test'
+      note: 'Test',
+      viewing_date: '2026-05-02',
+      viewing_time: '09:00'
     });
 
     // 3. Cấp một file giả để vượt qua điều kiện có ảnh CCCD
@@ -136,7 +138,9 @@ describe('NewBookingComponent', () => {
       expected_move_in_date: '2026-05-01',
       rental_duration_months: 6,
       people_count: 2,
-      note: ''
+      note: '',
+      viewing_date: '2026-05-02',
+      viewing_time: '09:00'
     });
     component.selectedFile = new File(['dummy content'], 'test.png', { type: 'image/png' });
 

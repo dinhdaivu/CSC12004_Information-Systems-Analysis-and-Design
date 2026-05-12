@@ -1,4 +1,4 @@
-import { supabase } from '../config/supabase';
+import { supabaseServiceRole } from '../config/supabase';
 import { NotFoundError, ConflictError, AppError } from '../utils/errors';
 
 export interface MyBookingFilters {
@@ -11,7 +11,7 @@ export class MyBookingService {
    * Lấy danh sách booking/rental request của một khách hàng cụ thể
    */
   static async getMyBookings(customerId: string, filters: MyBookingFilters) {
-    let query = supabase!
+    let query = supabaseServiceRole!
       .from('rental_requests')
       .select(`
         *,
@@ -82,7 +82,7 @@ export class MyBookingService {
    */
   static async getBookingById(customerId: string, bookingId: string) {
 
-    const { data, error } = await supabase!
+    const { data, error } = await supabaseServiceRole!
       .from('rental_requests')
       .select(`
         *,
@@ -122,7 +122,7 @@ export class MyBookingService {
         throw new ConflictError(`Không thể hủy yêu cầu đang ở trạng thái: ${booking.status}`);
       }
 
-      const { data, error } = await supabase!
+      const { data, error } = await supabaseServiceRole!
         .from('rental_requests')
         .update({ 
           status: 'cancelled',

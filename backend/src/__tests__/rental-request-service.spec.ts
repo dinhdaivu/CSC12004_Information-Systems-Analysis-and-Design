@@ -1,14 +1,14 @@
 import { RentalRequestService } from "@services/rental-request.service";
-import { supabase } from "@config/supabase";
+import { supabaseServiceRole } from "@config/supabase";
 import type { CreateRentalRequestDTO } from "@models/rental-request.model";
 
 jest.mock("@config/supabase", () => ({
-  supabase: {
+  supabaseServiceRole: {
     from: jest.fn(),
   },
 }));
 
-const mockedSupabase = supabase as NonNullable<typeof supabase> & {
+const mockedSupabase = supabaseServiceRole as NonNullable<typeof supabaseServiceRole> & {
   from: jest.Mock;
 };
 

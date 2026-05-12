@@ -32,9 +32,9 @@ type PaginatedAppointmentsResult = {
 type CreateAppointmentInput = {
   rentalRequestId: string;
   customerId: string;
-  saleId: string;
-  roomId: string;
-  bedId: string;
+  saleId?: string;
+  roomId?: string;
+  bedId?: string;
   scheduledAt: string;
   status?: ViewingAppointmentStatus;
   resultNote?: string;
@@ -58,6 +58,7 @@ const VIEWING_APPOINTMENT_COLUMNS = [
   "status",
   "customer:users!viewing_appointments_customer_id_fkey(full_name)",
   "sale:users!viewing_appointments_sale_id_fkey(full_name)",
+  "rental_requests(preferred_room_type, branches(name), rooms(room_number))",
   "created_at",
   "updated_at",
 ].join(",");
@@ -109,22 +110,19 @@ export class ViewingAppointmentsService {
     if (
       !input.rentalRequestId ||
       !input.customerId ||
-      !input.saleId ||
-      !input.roomId ||
-      !input.bedId ||
       !input.scheduledAt
     ) {
       throw new ValidationError(
-        "rentalRequestId, customerId, saleId, roomId, bedId, and scheduledAt are required",
+        "rentalRequestId, customerId, and scheduledAt are required",
       );
     }
 
     const payload = {
       rental_request_id: input.rentalRequestId,
       customer_id: input.customerId,
-      sale_id: input.saleId,
-      room_id: input.roomId,
-      bed_id: input.bedId,
+      sale_id: input.saleId ?? null,
+      room_id: input.roomId ?? null,
+      bed_id: input.bedId ?? null,
       scheduled_at: input.scheduledAt,
       result_note: input.resultNote,
       status,
@@ -142,7 +140,9 @@ export class ViewingAppointmentsService {
       );
     }
 
-    return mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    (mapped as any).rental_requests = (data as any).rental_requests;
+    return mapped;
   }
 
   static async getAppointments(
@@ -206,7 +206,11 @@ export class ViewingAppointmentsService {
 
     const records = (
       (data as unknown as ViewingAppointmentRow[] | null) ?? []
-    ).map(mapViewingAppointmentRow);
+    ).map((row) => {
+      const mapped = mapViewingAppointmentRow(row);
+      (mapped as any).rental_requests = (row as any).rental_requests;
+      return mapped;
+    });
     const total = count ?? 0;
 
     return {
@@ -239,7 +243,9 @@ export class ViewingAppointmentsService {
       );
     }
 
-    return mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    (mapped as any).rental_requests = (data as any).rental_requests;
+    return mapped;
   }
 
   static async updateOutcome(
@@ -276,7 +282,9 @@ export class ViewingAppointmentsService {
       );
     }
 
-    return mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
+    (mapped as any).rental_requests = (data as any).rental_requests;
+    return mapped;
   }
 
   static async cancelAppointment(id: string): Promise<ViewingAppointment> {
