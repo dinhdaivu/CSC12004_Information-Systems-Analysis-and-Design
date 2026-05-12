@@ -1,11 +1,11 @@
 import request from 'supertest';
 import express from 'express';
 import rentalRequestRoutes from '../routes/rental-request.routes';
-import { supabase } from '../config/supabase';
+import { supabaseServiceRole } from '../config/supabase';
 import { TokenUtils } from '../utils/token';
 
 jest.mock('../config/supabase', () => ({
-  supabase: {
+  supabaseServiceRole: {
     from: jest.fn()
   }
 }));
@@ -39,7 +39,7 @@ describe('Rental Request Routes (Task 01-03)', () => {
       });
 
       // SỬ DỤNG DẤU ! ĐỂ FIX LỖI TYPE
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
             single: mockSingle
@@ -61,7 +61,7 @@ describe('Rental Request Routes (Task 01-03)', () => {
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(supabase!.from).toHaveBeenCalledWith('rental_requests');
+      expect(supabaseServiceRole!.from).toHaveBeenCalledWith('rental_requests');
     });
 
     it('should return 401 if user is not authenticated', async () => {
@@ -88,7 +88,7 @@ describe('Rental Request Routes (Task 01-03)', () => {
         error: new Error('DB Insert Error')
       });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
             single: mockSingle
@@ -119,7 +119,7 @@ describe('Rental Request Routes (Task 01-03)', () => {
 
       const mockEq = jest.fn().mockReturnValue({ order: mockOrder });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         select: jest.fn().mockReturnValue({
           eq: mockEq
         })
@@ -155,7 +155,7 @@ describe('Staff Rental Request Routes (Task 01-04)', () => {
         error: null
       });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         select: jest.fn().mockReturnValue({
           order: mockOrder
         })
@@ -167,7 +167,7 @@ describe('Staff Rental Request Routes (Task 01-04)', () => {
 
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveLength(2);
-      expect(supabase!.from).toHaveBeenCalledWith('rental_requests');
+      expect(supabaseServiceRole!.from).toHaveBeenCalledWith('rental_requests');
     });
   });
 
@@ -185,7 +185,7 @@ describe('Staff Rental Request Routes (Task 01-04)', () => {
 
       const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         select: jest.fn().mockReturnValue({
           eq: mockEq
         })
@@ -216,7 +216,7 @@ describe('Staff Rental Request Routes (Task 01-04)', () => {
       const mockEq = jest.fn().mockReturnValue({ select: mockSelect });
       const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         update: mockUpdate
       }));
 
@@ -250,7 +250,7 @@ describe('Staff Rental Request Routes (Task 01-04)', () => {
       const mockEq = jest.fn().mockReturnValue({ select: mockSelect });
       const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
 
-      (supabase!.from as jest.Mock).mockImplementation(() => ({
+      (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => ({
         update: mockUpdate
       }));
 

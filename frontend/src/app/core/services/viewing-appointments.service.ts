@@ -117,4 +117,16 @@ export class ViewingAppointmentsService {
       )
       .pipe(map((response) => response.data));
   }
+
+  updateAppointmentStatus(
+    id: string,
+    status: ViewingAppointmentStatus
+  ): Observable<ViewingAppointmentRecord> {
+    return this.http
+      .patch<{ success: boolean; data: ViewingAppointmentRecord }>(
+        `${this.apiUrl}/${id}/status`,
+        { status }
+      )
+      .pipe(map((response) => response.data));
+  }
 }

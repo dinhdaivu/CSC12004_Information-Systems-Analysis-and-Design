@@ -21,6 +21,11 @@ const viewingServiceMock = {
       },
     })
   ),
+  updateAppointmentStatus: jest.fn(() =>
+    of({
+      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
+      scheduledAt: '2026-04-10T09:00:00', status: 'scheduled', createdAt: '', updatedAt: '',
+    })),
 };
 
 describe('ScheduledManagementComponent', () => {
@@ -332,26 +337,24 @@ describe('ScheduledManagementComponent', () => {
   });
 
   it('should handle approve and clear cache', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
     (component as any).appointments = [];
-    component.handleApprove({
-      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
-      scheduledAt: '2026-04-10T09:00:00', status: 'scheduled', createdAt: '', updatedAt: '',
-    });
-    expect(alertSpy).toHaveBeenCalled();
+    component.selectedAppointment = {
+      id: 'a1', customerName: 'John', date: '10-04-2026', time: '9AM', location: 'Branch', roomInterest: 'Twin'
+    };
+    component.handleApprove();
+    expect(viewingServiceMock.updateAppointmentStatus).toHaveBeenCalledWith('a1', 'scheduled');
     expect(component.selectedAppointment).toBeNull();
-    alertSpy.mockRestore();
   });
 
   it('should handle decline and clear cache', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
     (component as any).appointments = [];
-    component.handleDecline({
-      id: 'a1', rentalRequestId: 'r1', customerId: 'c1', saleId: null, roomId: null, bedId: null,
-      scheduledAt: '2026-04-10T09:00:00', status: 'cancelled', createdAt: '', updatedAt: '',
-    });
-    expect(alertSpy).toHaveBeenCalled();
+    component.selectedAppointment = {
+      id: 'a1', customerName: 'John', date: '10-04-2026', time: '9AM', location: 'Branch', roomInterest: 'Twin'
+    };
+    
+    // It should map to 'cancelled'
+    component.handleDecline();
+    expect(viewingServiceMock.updateAppointmentStatus).toHaveBeenCalledWith('a1', 'cancelled');
     expect(component.selectedAppointment).toBeNull();
-    alertSpy.mockRestore();
   });
 });

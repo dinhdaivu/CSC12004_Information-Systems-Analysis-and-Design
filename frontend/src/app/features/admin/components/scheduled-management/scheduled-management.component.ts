@@ -45,6 +45,7 @@ type ViewingScheduleItem = {
   branch: string;
   customer: string;
   staff: string;
+  roomCategory: string;
 };
 
 type CalendarCell = {
@@ -232,6 +233,43 @@ type AppointmentFilters = {
                     >
                       {{ cell.dayOfMonth }}
                     </span>
+                  </div>
+                </div>
+
+                <div class="mt-8 border-t border-slate-200 pt-6">
+                  <h4 class="text-lg font-bold text-[#264893] mb-4">
+                    Lịch hẹn ngày {{ formatListDateWithWeekday(selectedDate) }}
+                  </h4>
+                  
+                  <div *ngIf="appointmentsForSelectedDate.length === 0" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80">
+                    Không có lịch hẹn nào trong ngày này.
+                  </div>
+
+                  <div class="list-container mt-4" *ngIf="appointmentsForSelectedDate.length > 0">
+                    <article
+                      *ngFor="let appointment of appointmentsForSelectedDate"
+                      class="appointment-card"
+                      role="button"
+                      tabindex="0"
+                      (click)="openApprovalModal(appointment)"
+                      (keydown.enter)="openApprovalModal(appointment)"
+                      (keydown.space)="$event.preventDefault(); openApprovalModal(appointment)"
+                    >
+                      <div class="card-date">
+                        <span
+                          class="dot"
+                          [class.cancelled-dot]="appointment.status === 'cancelled'"
+                          [class.pending-dot]="appointment.status === 'pending'"
+                          [class.scheduled-dot]="appointment.status === 'scheduled'"
+                        ></span>
+                        {{ formatTimeShort(appointment.time) }}
+                      </div>
+                      <div class="divider"></div>
+                      <div class="card-info">
+                        <strong>{{ appointment.customer }}</strong>
+                        <p>{{ appointment.roomCategory }} - {{ appointment.branch }}</p>
+                      </div>
+                    </article>
                   </div>
                 </div>
               </div>
@@ -483,16 +521,16 @@ type AppointmentFilters = {
             </section>
           </div>
           <ng-container *ngTemplateOutlet="sidebarAndMenus"></ng-container>
+
+          <app-viewing-approval-modal
+            *ngIf="selectedAppointment"
+            [appointment]="selectedAppointment"
+            (close)="closeApprovalModal()"
+            (approve)="handleApprove()"
+            (decline)="handleDecline()"
+          ></app-viewing-approval-modal>
         </div>
       </div>
-
-      <app-viewing-approval-modal
-        *ngIf="selectedAppointment"
-        [appointment]="selectedAppointment"
-        (close)="closeApprovalModal()"
-        (approve)="handleApprove($event)"
-        (decline)="handleDecline($event)"
-      ></app-viewing-approval-modal>
     </div>
 
     <ng-template #sidebarAndMenus>
@@ -857,7 +895,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private readonly authToken = localStorage.getItem("auth_token") ?? "";
   private readonly destroy$ = new Subject<void>();
-  private readonly monthFilter$ = new BehaviorSubject<string>("2026-03");
+  private readonly monthFilter$ = new BehaviorSubject<string>(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`);
   private readonly branchFilter$ = new BehaviorSubject<string | null>(null);
   private readonly statusFilter$ =
     new BehaviorSubject<ViewingScheduleStatus | null>(null);
@@ -884,8 +922,8 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   ];
 
   calendarMonthYear = {
-    year: 2026,
-    monthIndex: 2,
+    year: new Date().getFullYear(),
+    monthIndex: new Date().getMonth(),
   };
 
   readonly statusLabel: Record<ViewingScheduleStatus, string> = {
@@ -915,6 +953,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "District 1 Branch",
       customer: "Hoang Ha Linh",
       staff: "Nguyen Minh Anh",
+      roomCategory: "Twin Room (2)",
     },
     {
       id: "tour-02",
@@ -924,6 +963,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "Thu Duc Branch",
       customer: "Tran Quoc Bao",
       staff: "Le Hoang Nam",
+      roomCategory: "Quad Room (4)",
     },
     {
       id: "tour-03",
@@ -933,6 +973,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "Binh Thanh Branch",
       customer: "Nguyen Thi Thu",
       staff: "Tran Bao Han",
+      roomCategory: "Twin Room (2)",
     },
     {
       id: "tour-04",
@@ -942,6 +983,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "District 7 Branch",
       customer: "Pham Gia Khanh",
       staff: "Pham Nhat Quang",
+      roomCategory: "Twin Room (2)",
     },
     {
       id: "tour-05",
@@ -951,6 +993,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "Go Vap Branch",
       customer: "Le Minh Chau",
       staff: "Do Thi Lan",
+      roomCategory: "Quad Room (4)",
     },
     {
       id: "tour-06",
@@ -960,6 +1003,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "Tan Binh Branch",
       customer: "Vo Thanh Hung",
       staff: "Vo Duc Khoa",
+      roomCategory: "Twin Room (2)",
     },
     {
       id: "tour-07",
@@ -969,6 +1013,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       branch: "District 3 Branch",
       customer: "Bui Ngoc Linh",
       staff: "Bui Ngoc Diep",
+      roomCategory: "Quad Room (4)",
     },
   ];
 
@@ -1002,6 +1047,12 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
     return `${this.calendarMonthYear.year}-${String(this.calendarMonthYear.monthIndex + 1).padStart(2, "0")}`;
   }
 
+  get appointmentsForSelectedDate(): ViewingScheduleItem[] {
+    return this.sortedAppointments.filter(
+      (item) => item.date === this.selectedDate
+    );
+  }
+
   get filteredAppointments(): ViewingScheduleItem[] {
     return this.sortedAppointments;
   }
@@ -1028,14 +1079,15 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
 
   viewMode: ScheduleViewMode = "calendar";
-  selectedDate = "2026-03-14";
   selectedAppointment: ViewingApprovalModalAppointment | null = null;
   readonly todayIsoDate = this.formatIsoDate(new Date());
+  selectedDate = this.todayIsoDate;
 
   private runInView(update: () => void): void {
     this.ngZone.run(() => {
       update();
       this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 
@@ -1073,22 +1125,30 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   }
 
   setViewMode(mode: ScheduleViewMode): void {
-    this.viewMode = mode;
+    this.runInView(() => {
+      this.viewMode = mode;
+    });
   }
 
   toggleBranchDropdown(): void {
-    this.isBranchDropdownOpen = !this.isBranchDropdownOpen;
+    this.runInView(() => {
+      this.isBranchDropdownOpen = !this.isBranchDropdownOpen;
+    });
   }
 
   selectBranch(branchId: string | null): void {
     if (this.selectedBranchId === branchId) {
-      this.isBranchDropdownOpen = false;
+      this.runInView(() => {
+        this.isBranchDropdownOpen = false;
+      });
       return;
     }
 
-    this.selectedBranchId = branchId;
-    this.currentPage = 1;
-    this.isBranchDropdownOpen = false;
+    this.runInView(() => {
+      this.selectedBranchId = branchId;
+      this.currentPage = 1;
+      this.isBranchDropdownOpen = false;
+    });
     this.branchFilter$.next(branchId);
     this.pageFilter$.next(1);
   }
@@ -1102,8 +1162,10 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedStatus = status;
-    this.currentPage = 1;
+    this.runInView(() => {
+      this.selectedStatus = status;
+      this.currentPage = 1;
+    });
     this.statusFilter$.next(status);
     this.pageFilter$.next(1);
   }
@@ -1164,6 +1226,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   }
 
   formatListDateWithWeekday(date: string): string {
+    if (!date) return '';
     const parsed = new Date(`${date}T00:00:00`);
     const weekday = parsed.toLocaleDateString("en-US", { weekday: "short" });
     return `${parsed.toLocaleDateString("en-GB")} - ${weekday}`;
@@ -1198,36 +1261,74 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedDate = cell.isoDate;
+    this.runInView(() => {
+      this.selectedDate = cell.isoDate;
+    });
   }
 
   openApprovalModal(appointment: ViewingScheduleItem): void {
-    this.selectedAppointment = {
-      id: appointment.id,
-      customerName: appointment.customer,
-      date: this.formatDateForModal(appointment.date),
-      time: this.formatTimeShort(appointment.time),
-      location: appointment.branch,
-      roomInterest: "Twin Room",
-    };
+    this.runInView(() => {
+      this.selectedAppointment = {
+        id: appointment.id,
+        customerName: appointment.customer,
+        date: this.formatDateForModal(appointment.date),
+        time: this.formatTimeShort(appointment.time),
+        location: appointment.branch,
+        roomInterest: appointment.roomCategory,
+      };
+    });
   }
 
   closeApprovalModal(): void {
-    this.selectedAppointment = null;
+    this.runInView(() => {
+      this.selectedAppointment = null;
+    });
   }
 
-  handleApprove(updatedAppointment: ViewingAppointmentRecord): void {
-    this.replaceAppointmentInList(updatedAppointment);
-    this.appointmentsCache.clear();
-    window.alert("Appointment approved");
-    this.closeApprovalModal();
+  handleApprove(): void {
+    if (!this.selectedAppointment) {
+      return;
+    }
+    const appointmentId = this.selectedAppointment.id;
+
+    this.viewingAppointmentsService.updateAppointmentStatus(appointmentId, 'scheduled').subscribe({
+      next: (updatedRecord: ViewingAppointmentRecord) => {
+        this.runInView(() => {
+          this.replaceAppointmentInList(updatedRecord);
+          this.appointmentsCache.clear();
+          this.closeApprovalModal();
+        });
+      },
+      error: (err: unknown) => {
+        this.runInView(() => {
+          console.error(`Failed to approve appointment ${appointmentId}`, err);
+          alert('Đã xảy ra lỗi khi duyệt lịch hẹn. Vui lòng thử lại.');
+        });
+      }
+    });
   }
 
-  handleDecline(updatedAppointment: ViewingAppointmentRecord): void {
-    this.replaceAppointmentInList(updatedAppointment);
-    this.appointmentsCache.clear();
-    window.alert("Appointment rejected");
-    this.closeApprovalModal();
+  handleDecline(): void {
+    if (!this.selectedAppointment) {
+      return;
+    }
+    const appointmentId = this.selectedAppointment.id;
+
+    this.viewingAppointmentsService.updateAppointmentStatus(appointmentId, 'cancelled').subscribe({
+      next: (updatedRecord: ViewingAppointmentRecord) => {
+        this.runInView(() => {
+          this.replaceAppointmentInList(updatedRecord);
+          this.appointmentsCache.clear();
+          this.closeApprovalModal();
+        });
+      },
+      error: (err: unknown) => {
+        this.runInView(() => {
+          console.error(`Failed to decline appointment ${appointmentId}`, err);
+          alert('Đã xảy ra lỗi khi từ chối lịch hẹn. Vui lòng thử lại.');
+        });
+      }
+    });
   }
 
   private setupAppointmentsStream(): void {
@@ -1359,7 +1460,10 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   private mapApiRecordToScheduleItem(
     record: ViewingAppointmentRecord,
   ): ViewingScheduleItem {
-    const parsedDate = new Date(record.scheduledAt);
+    const recordWithDetails = record as any;
+    const scheduledAtRaw = record.scheduledAt ?? recordWithDetails.scheduled_at;
+    const parsedDate = scheduledAtRaw ? new Date(scheduledAtRaw) : new Date(NaN);
+    
     const localDate = Number.isNaN(parsedDate.getTime())
       ? ""
       : `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, "0")}-${String(parsedDate.getDate()).padStart(2, "0")}`;
@@ -1367,28 +1471,42 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       ? ""
       : `${String(parsedDate.getHours()).padStart(2, "0")}:${String(parsedDate.getMinutes()).padStart(2, "0")}`;
 
-    const selectedBranchName = this.selectedBranchId
-      ? this.branches.find((branch) => branch.id === this.selectedBranchId)
-          ?.name
-      : undefined;
+    const roomId = record.roomId ?? recordWithDetails.room_id;
+    const customerId = record.customerId ?? recordWithDetails.customer_id;
+    const saleId = record.saleId ?? recordWithDetails.sale_id;
+
+    // Safe access for nested relations
+    const rentalReq = recordWithDetails.rental_requests || {};
+
+    const branchName = recordWithDetails.branches?.name ?? 
+      (Array.isArray(rentalReq.branches) ? rentalReq.branches[0]?.name : rentalReq.branches?.name) ?? 'N/A';
+
+    const roomNum = recordWithDetails.rooms?.room_number ?? 
+      (Array.isArray(rentalReq.rooms) ? rentalReq.rooms[0]?.room_number : rentalReq.rooms?.room_number);
+
+    const roomDescription = 
+      recordWithDetails.preferred_room_type ?? 
+      rentalReq.preferred_room_type ??
+      roomNum ?? 
+      (roomId ? `Room ID ${roomId.slice(0, 4)}` : 'N/A');
+
+    const customerName = record.customerName ?? recordWithDetails.customer_name ?? 
+      (recordWithDetails.users ? recordWithDetails.users.full_name : null) ?? 
+      (rentalReq.users ? rentalReq.users.full_name : null) ??
+      `Customer ${customerId ? customerId.slice(0, 8) : 'N/A'}`;
+
+    const staffName = record.saleName ?? recordWithDetails.sale_name ??
+      (saleId ? `Sale ${saleId.slice(0, 8)}` : "Unassigned sale");
 
     return {
       id: record.id,
       date: localDate,
       time: localTime,
       status: record.status,
-      branch:
-        selectedBranchName ??
-        (record.roomId
-          ? `Room ${record.roomId.slice(0, 8)}`
-          : "Unassigned room"),
-      customer:
-        record.customerName ?? `Customer ${record.customerId.slice(0, 8)}`,
-      staff:
-        record.saleName ??
-        (record.saleId
-          ? `Sale ${record.saleId.slice(0, 8)}`
-          : "Unassigned sale"),
+      branch: branchName,
+      customer: customerName,
+      staff: staffName,
+      roomCategory: roomDescription,
     };
   }
 
