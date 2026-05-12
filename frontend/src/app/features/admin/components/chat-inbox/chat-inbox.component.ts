@@ -282,6 +282,6 @@ export class ChatInboxComponent implements OnInit {
   }
 
   private scrollToBottom(): void {
-    setTimeout(() => { if (this.msgsEl) this.msgsEl.nativeElement.scrollTop = this.msgsEl.nativeElement.scrollHeight; }, 0);
+    window.setTimeout(() => { if (this.msgsEl) this.msgsEl.nativeElement.scrollTop = this.msgsEl.nativeElement.scrollHeight; }, 0);
   }
 }

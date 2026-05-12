@@ -258,6 +258,7 @@ describe('ScheduledManagementComponent', () => {
       branch: 'Branch A',
       customer: 'John Doe',
       staff: 'Staff B',
+      roomCategory: 'Twin Room',
     };
     component.openApprovalModal(appointment);
     expect(component.selectedAppointment).toBeTruthy();
@@ -307,8 +308,8 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return sorted appointments', () => {
     (component as any).appointments = [
-      { id: '2', date: '2026-04-20', time: '14:00', status: 'pending', branch: 'B', customer: 'C2', staff: 'S' },
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C1', staff: 'S' },
+      { id: '2', date: '2026-04-20', time: '14:00', status: 'pending', branch: 'B', customer: 'C2', staff: 'S', roomCategory: 'Twin Room' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C1', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const sorted = component.sortedAppointments;
     expect(sorted[0].id).toBe('1');
@@ -321,7 +322,7 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return calendar statuses from appointments', () => {
     (component as any).appointments = [
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C', staff: 'S' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'pending', branch: 'B', customer: 'C', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const statuses = component.calendarStatuses;
     expect(statuses.length).toBe(1);
@@ -330,7 +331,7 @@ describe('ScheduledManagementComponent', () => {
 
   it('should return statusByDate map', () => {
     (component as any).appointments = [
-      { id: '1', date: '2026-04-10', time: '09:00', status: 'scheduled', branch: 'B', customer: 'C', staff: 'S' },
+      { id: '1', date: '2026-04-10', time: '09:00', status: 'scheduled', branch: 'B', customer: 'C', staff: 'S', roomCategory: 'Twin Room' },
     ];
     const map = component.statusByDate;
     expect(map['2026-04-10']).toBe('scheduled');

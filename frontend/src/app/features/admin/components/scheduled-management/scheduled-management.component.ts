@@ -1302,7 +1302,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       error: (err: unknown) => {
         this.runInView(() => {
           console.error(`Failed to approve appointment ${appointmentId}`, err);
-          alert('Đã xảy ra lỗi khi duyệt lịch hẹn. Vui lòng thử lại.');
+          window.alert('Đã xảy ra lỗi khi duyệt lịch hẹn. Vui lòng thử lại.');
         });
       }
     });
@@ -1325,7 +1325,7 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
       error: (err: unknown) => {
         this.runInView(() => {
           console.error(`Failed to decline appointment ${appointmentId}`, err);
-          alert('Đã xảy ra lỗi khi từ chối lịch hẹn. Vui lòng thử lại.');
+          window.alert('Đã xảy ra lỗi khi từ chối lịch hẹn. Vui lòng thử lại.');
         });
       }
     });
@@ -1460,7 +1460,24 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   private mapApiRecordToScheduleItem(
     record: ViewingAppointmentRecord,
   ): ViewingScheduleItem {
-    const recordWithDetails = record as any;
+    const recordWithDetails = record as unknown as ViewingAppointmentRecord & {
+      scheduled_at?: string;
+      room_id?: string;
+      customer_id?: string;
+      sale_id?: string;
+      customer_name?: string;
+      sale_name?: string;
+      preferred_room_type?: string;
+      branches?: { name?: string };
+      rooms?: { room_number?: string };
+      users?: { full_name?: string };
+      rental_requests?: {
+        preferred_room_type?: string;
+        branches?: { name?: string } | Array<{ name?: string }>;
+        rooms?: { room_number?: string } | Array<{ room_number?: string }>;
+        users?: { full_name?: string };
+      };
+    };
     const scheduledAtRaw = record.scheduledAt ?? recordWithDetails.scheduled_at;
     const parsedDate = scheduledAtRaw ? new Date(scheduledAtRaw) : new Date(NaN);
     
