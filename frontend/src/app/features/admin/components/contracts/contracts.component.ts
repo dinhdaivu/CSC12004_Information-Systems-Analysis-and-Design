@@ -8,14 +8,13 @@ import {
   type ContractStatus,
   ContractsService,
 } from "@core/services/contracts.service";
-import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: "app-contracts",
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   template: `
     <div [style.height.px]="1080 * scaleFactor" style="width:100%; overflow: hidden; position: relative; background: #FEF4DF;">
       <div *ngIf="isLoading" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df">
@@ -33,10 +32,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
           <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
-            Contract Management
+            {{ "ADMIN_CONTRACTS.TITLE" | translate }}
           </div>
           <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
-            Track signature status, active leases, and renewals for all residents across branches.
+            {{ "ADMIN_CONTRACTS.SUBTITLE" | translate }}
           </div>
 
           <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
@@ -45,30 +44,30 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                 <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Search ..." class="w-52 bg-transparent text-sm outline-none placeholder:text-slate-400" />
+                <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" [placeholder]="'ADMIN_CONTRACTS.SEARCH' | translate" class="w-52 bg-transparent text-sm outline-none placeholder:text-slate-400" />
               </div>
               <select [(ngModel)]="statusFilter" (ngModelChange)="onStatusChange()" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none">
-                <option value="all">Filter</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-                <option value="terminated">Terminated</option>
+                <option value="all">{{ "ADMIN_CONTRACTS.FILTER" | translate }}</option>
+                <option value="active">{{ "ADMIN_CONTRACTS.STATUS.ACTIVE" | translate }}</option>
+                <option value="completed">{{ "ADMIN_CONTRACTS.STATUS.COMPLETED" | translate }}</option>
+                <option value="terminated">{{ "ADMIN_CONTRACTS.STATUS.TERMINATED" | translate }}</option>
               </select>
             </div>
 
             <div *ngIf="errorMessage" class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ errorMessage }}</div>
 
-            <div *ngIf="!isLoading && filteredContracts.length === 0" class="rounded-2xl border border-slate-200 bg-white/80 px-4 py-8 text-center text-sm text-slate-600">No contracts found.</div>
+            <div *ngIf="!isLoading && filteredContracts.length === 0" class="rounded-2xl border border-slate-200 bg-white/80 px-4 py-8 text-center text-sm text-slate-600">{{ "ADMIN_CONTRACTS.NO_CONTRACTS" | translate }}</div>
 
             <div *ngIf="filteredContracts.length > 0" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <table class="w-full text-sm">
                 <thead class="bg-[#264893] text-white">
                   <tr>
-                    <th class="px-5 py-3 text-left font-semibold">Resident</th>
-                    <th class="px-5 py-3 text-left font-semibold">Room & Bed</th>
-                    <th class="px-5 py-3 text-left font-semibold">Term</th>
-                    <th class="px-5 py-3 text-left font-semibold">Initial Fees</th>
-                    <th class="px-5 py-3 text-left font-semibold">Signature Status</th>
-                    <th class="px-5 py-3 text-left font-semibold">Download</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.RESIDENT" | translate }}</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.ROOM_BED" | translate }}</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.TERM" | translate }}</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.INITIAL_FEES" | translate }}</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.SIGNATURE_STATUS" | translate }}</th>
+                    <th class="px-5 py-3 text-left font-semibold">{{ "ADMIN_CONTRACTS.TABLE.DOWNLOAD" | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -88,7 +87,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             </div>
 
             <div *ngIf="totalPages > 1" class="mt-4 flex items-center justify-between text-sm text-slate-500">
-              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <span>{{ "COMMON.PAGE" | translate }} {{ currentPage }} {{ "COMMON.OF" | translate }} {{ totalPages }}</span>
               <div class="flex gap-2">
                 <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&lt;</button>
                 <button *ngFor="let p of pageNumbers" (click)="goToPage(p)" [class]="p === currentPage ? 'bg-[#264893] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'" class="rounded-lg border border-slate-200 px-3 py-1.5 min-w-[36px]">{{ p }}</button>
@@ -116,7 +115,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
           <div (mousedown)="logout()" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.LOGOUT" | translate }}</div>
         </div>
 
-        <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/RoomsUnion.png" />
+        <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/ContractUnion.png" />
         <img (click)="navigate('/')" class="hover-effect" style="width: 185px; height: 165px; left: 107px; top: 81px; position: absolute; cursor: pointer;" src="assets/icons/BookingLogo.png" />
 
         <!-- Sidebar links -->
@@ -130,13 +129,17 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
         <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 500px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}</div>
         <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 510px; position: absolute;" />
 
-        <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Contracts</div>
+        <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">Contracts</div>
+        <img (click)="navigate('/admin/contracts')" class="hover-effect" src="assets/icons/BlueContracts.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 570px; position: absolute;" />
 
         <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Users</div>
+        <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/Users.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 630px; position: absolute;" />
 
         <div (click)="navigate('/admin/checkout-requests')" class="hover-effect" style="cursor: pointer; width: 200px; height: 46px; left: 163px; top: 680px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Checkouts</div>
+        <img (click)="navigate('/admin/checkout-requests')" class="hover-effect" src="assets/icons/Checkout.png" style="cursor: pointer; width: 28px; height: 28px; left: 107px; top: 690px; position: absolute;" />
 
         <div (click)="navigate('/admin/handovers')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 740px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Handovers</div>
+        <img (click)="navigate('/admin/handovers')" class="hover-effect" src="assets/icons/Handover.png" style="cursor: pointer; width: 28px; height: 28px; left: 107px; top: 750px; position: absolute;" />
 
         <div (click)="navigate('/admin/chat')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 800px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}</div>
         <img (click)="navigate('/admin/chat')" class="hover-effect" src="assets/icons/Chat.png" style="cursor: pointer; width: 28px; height: 28px; left: 110px; top: 810px; position: absolute;" />

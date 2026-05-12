@@ -115,7 +115,7 @@ import type { User } from '@shared/models/auth.model';
           <div (click)="navigate('/bookings')" class="page-text clickable" style="width: 156px; height: 61px; left: 191px; top: 424px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #FEF4DF; font-size: 32px; font-weight: 500; z-index: 50;">{{ 'COMMON.BOOKING' | translate }}</div>
 
           <!-- Contract nav (inactive) -->
-          <img src="assets/icons/Contract.png" style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; object-fit: contain; z-index: 50; filter: brightness(0) invert(1);" alt="" />
+          <img src="assets/icons/Contracts.png" style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; object-fit: contain; z-index: 50; filter: brightness(0) invert(1);" alt="" />
           <div (click)="navigate('/contracts')" class="page-text clickable" style="width: 156px; height: 61px; left: 191px; top: 527px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #FEF4DF; font-size: 32px; font-weight: 500; z-index: 50;">{{ 'COMMON.CONTRACT' | translate }}</div>
 
           <!-- Contact info -->
