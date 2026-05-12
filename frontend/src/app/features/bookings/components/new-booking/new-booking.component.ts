@@ -152,22 +152,19 @@ import type { User } from '@shared/models/auth.model';
                 <div style="width: 195px; height: 54px; left: 10px; top: 8px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ 'BOOKING.SUBMIT' | translate }}</div>
               </button>
             </ng-container>
-          </form>
 
           <ng-container *ngIf="currentPage === 3">
             <button type="button" (click)="onSubmit()" [disabled]="isSubmitting" style="all: unset; position: absolute; left: 1462px; top: 800px; cursor: pointer; z-index: 10;" [style.opacity]="isSubmitting ? '0.5' : '1'">
               <div style="width: 285px; height: 70px; background: #264893; border-radius: 40px"></div>
               <div style="width: 231px; height: 44px; left: 27px; top: 13px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ 'BOOKING.CONFIRM_ATTENDANCE' | translate }}</div>
             </button>
-            
+
             <div style="width: 107px; height: 30px; left: 791px; top: 490px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'BOOKING.DATE' | translate }}</div>
-            <div style="width: 678px; height: 42px; left: 924px; top: 484px; position: absolute; background: #D9D9D9; border-radius: 10px"></div>
-            <div style="width: 200px; height: 30px; left: 960px; top: 490px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #747474; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bookingForm.get('expected_move_in_date')?.value | date:'dd-MM-yyyy' }}</div>
-            
+            <input type="date" formControlName="viewing_date" style="width: 678px; height: 42px; left: 924px; top: 484px; position: absolute; background: #D9D9D9; border-radius: 10px; border: none; padding: 0 22px; color: black; font-size: 20px; font-family: Afacad; outline: none; z-index: 10;">
+
             <div style="width: 107px; height: 30px; left: 791px; top: 562px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'BOOKING.TIME' | translate }}</div>
-            <div style="width: 678px; height: 42px; left: 924px; top: 556px; position: absolute; background: #D9D9D9; border-radius: 10px"></div>
-            <div style="width: 107px; height: 30px; left: 960px; top: 562px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #747474; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ 'BOOKING.TIME_VALUE' | translate }}</div>
-            
+            <input type="time" formControlName="viewing_time" style="width: 678px; height: 42px; left: 924px; top: 556px; position: absolute; background: #D9D9D9; border-radius: 10px; border: none; padding: 0 22px; color: black; font-size: 20px; font-family: Afacad; outline: none; z-index: 10;">
+
             <div style="width: 107px; height: 30px; left: 791px; top: 634px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 20px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'BOOKING.LOCATION' | translate }}</div>
             <div style="width: 678px; height: 42px; left: 924px; top: 628px; position: absolute; background: #D9D9D9; border-radius: 10px"></div>
             <div style="width: 300px; height: 30px; left: 960px; top: 634px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #747474; font-size: 20px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ bookingForm.get('branch')?.value }}</div>
@@ -181,6 +178,7 @@ import type { User } from '@shared/models/auth.model';
             </div>
             <div *ngIf="errorMessage" style="width: 600px; height: 50px; position: absolute; left: 855px; top: 810px; justify-content: center; display: flex; flex-direction: column; color: #991B1B; font-size: 24px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ errorMessage }}</div>
           </ng-container>
+          </form>
 
           <ng-container *ngIf="currentPage === 4">
             <div style="position: absolute; left: 500px; top: 250px; width: 1317px; height: 730px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;">
@@ -225,6 +223,7 @@ export class NewBookingComponent implements OnInit {
   authService = inject(AuthService);
   bookingForm!: FormGroup;
   preSelectedRoomId: string | null = null;
+  preSelectedBedId: string | null = null;
   currentPage = 1;
   isSubmitting = false;
   
@@ -277,7 +276,9 @@ export class NewBookingComponent implements OnInit {
       expected_move_in_date: ['', Validators.required],
       rental_duration_months: [6, [Validators.required, Validators.min(1)]],
       people_count: [2, [Validators.required, Validators.min(1)]],
-      note: ['']
+      note: [''],
+      viewing_date: [this.getTomorrowDateString(), Validators.required],
+      viewing_time: ['09:00', Validators.required]
     });
 
     // 1. NHẬN DỮ LIỆU TRUYỀN TỪ TRANG ROOMS (Nếu có)
@@ -288,7 +289,7 @@ export class NewBookingComponent implements OnInit {
         room_category: stateData.room_category
       });
       this.preSelectedRoomId = stateData.room_id;
-      // Lưu thêm bed_id nếu cần xử lý đặc biệt
+      this.preSelectedBedId = stateData.bed_id;
     }
 
     // 2. NHẬN DỮ LIỆU TỪ QUERY PARAMS (Giữ nguyên logic cũ của bạn)[cite: 4]
@@ -369,6 +370,13 @@ export class NewBookingComponent implements OnInit {
     });
   }
 
+  private getTomorrowDateString(): string {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
+  }
+
   // Gọi API khi người dùng nhấn "Confirm Attendance" trên Trang 3
   async onSubmit(): Promise<void> { // <-- Thêm chữ async
     if (this.bookingForm.invalid || !this.selectedFile) {
@@ -383,18 +391,22 @@ export class NewBookingComponent implements OnInit {
     const formValues = this.bookingForm.value;
     const selectedBranchName = formValues.branch;
     const mappedBranchId = this.branchIdMap[selectedBranchName];
-    
+
+    const formattedViewingTime = `${formValues.viewing_date} lúc ${formValues.viewing_time}`;
+    const scheduledAt = new Date(`${formValues.viewing_date}T${formValues.viewing_time}`).toISOString();
+
     // GIỮ NGUYÊN 100% NHƯ BẠN YÊU CẦU
-    const payload: RentalPayload = {
+    const payload: RentalPayload & { scheduled_at?: string; bed_id?: string } = {
       expected_move_in_date: formValues.expected_move_in_date,
       rental_duration_months: Number(formValues.rental_duration_months),
       people_count: Number(formValues.people_count),
       preferred_room_type: formValues.room_category,
-      note: `Branch: ${formValues.branch} | Notes: ${formValues.note}`,
+      note: `Hẹn xem phòng: ${formattedViewingTime} | Branch: ${formValues.branch} | Notes: ${formValues.note}`,
       full_name: this.user?.full_name,
       phone_number: this.user?.phone_number,
       gender: this.user?.gender,
-      identity_number: this.user?.identity_number
+      identity_number: this.user?.identity_number,
+      scheduled_at: scheduledAt
     };
 
     if (mappedBranchId) {
@@ -403,6 +415,10 @@ export class NewBookingComponent implements OnInit {
 
     if (this.preSelectedRoomId) {
       payload.room_id = this.preSelectedRoomId;
+    }
+
+    if (this.preSelectedBedId) {
+      payload.bed_id = this.preSelectedBedId;
     }
 
     // NÂNG CẤP: Chuyển ảnh thành chuỗi ký tự Base64 và gắn vào JSON

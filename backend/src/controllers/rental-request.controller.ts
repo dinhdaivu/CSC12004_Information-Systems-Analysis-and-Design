@@ -1,8 +1,9 @@
 import { Response, NextFunction } from 'express';
-import { supabase } from '../config/supabase';
+import { supabaseServiceRole } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { AppError } from '../utils/errors';
 import cloudinary from '../config/cloudinary';
+import { ViewingAppointmentsService } from '../services/viewing-appointments.service';
 
 // 1. Enum khớp 100% với kiểu "public.rental_request_status" trong DB của bạn
 export enum RentalRequestStatus {
@@ -30,7 +31,7 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
         const customerId = req.user?.id; 
 
         if (!customerId) return next(new AppError(401, 'UNAUTHORIZED', 'Yêu cầu đăng nhập'));
-        if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database client chưa được khởi tạo'));
+        if (!supabaseServiceRole) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database client chưa được khởi tạo'));
         
         if (requestData.identity_card_base64) {
             const uploadResult = await cloudinary.uploader.upload(requestData.identity_card_base64 as string, {
@@ -43,6 +44,9 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
             delete requestData.identity_card_base64; 
         }
 
+        const scheduledAt = requestData.scheduled_at as string | undefined;
+        delete requestData.scheduled_at;
+
         // Lấy thông tin cá nhân đính kèm để cập nhật profile khách hàng (nếu có)
         const userUpdates: Record<string, unknown> = {};
         if (requestData.full_name) userUpdates['full_name'] = requestData.full_name;
@@ -51,7 +55,7 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
         if (requestData.identity_number) userUpdates['identity_number'] = requestData.identity_number;
 
         if (Object.keys(userUpdates).length > 0) {
-            await supabase.from('users').update(userUpdates).eq('id', customerId);
+            await supabaseServiceRole.from('users').update(userUpdates).eq('id', customerId);
         }
 
         // Xóa các trường tạm khỏi payload để không gây lỗi khi insert vào bảng rental_requests
@@ -61,17 +65,33 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
         delete requestData.identity_number;
 
         // Gọi supabase insert data với requestData như bình thường...
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServiceRole
             .from('rental_requests')
             .insert([{ 
                 ...requestData, 
                 customer_id: customerId,
-                status: RentalRequestStatus.REQUESTED 
+                    status: scheduledAt ? RentalRequestStatus.VIEWING_SCHEDULED : RentalRequestStatus.REQUESTED 
             }])
             .select()
             .single();
 
         if (error) throw new AppError(500, 'SUPABASE_INSERT_ERROR', error.message);
+
+        // Tạo tự động viewing appointment qua Service đã định chuẩn
+        if (scheduledAt) {
+            try {
+                await ViewingAppointmentsService.createAppointment({
+                    rentalRequestId: data.id,
+                    customerId: customerId,
+                    roomId: requestData.room_id as string | undefined,
+                    bedId: requestData.bed_id as string | undefined,
+                    scheduledAt: scheduledAt,
+                    status: 'pending' as any
+                });
+            } catch (viewingError) {
+                console.error("Lỗi khi tạo viewing_appointment qua service:", viewingError);
+            }
+        }
 
         res.status(201).json({ success: true, data, message: 'Yêu cầu thuê phòng đã được gửi thành công' });
     } catch (error: unknown) {
@@ -83,9 +103,9 @@ export const getMyRentalRequests = async (req: AuthRequest, res: Response, next:
     try {
         const customerId = req.user?.id;
         if (!customerId) return next(new AppError(401, 'UNAUTHORIZED', 'Yêu cầu đăng nhập'));
-        if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database client chưa được khởi tạo'));
+        if (!supabaseServiceRole) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database client chưa được khởi tạo'));
         
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServiceRole
             .from('rental_requests')
             .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .eq('customer_id', customerId)
@@ -104,9 +124,9 @@ export const getMyRentalRequests = async (req: AuthRequest, res: Response, next:
 
 export const getAllRentalRequests = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
+        if (!supabaseServiceRole) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServiceRole
             .from('rental_requests')
             .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .order('created_at', { ascending: false });
@@ -121,9 +141,9 @@ export const getAllRentalRequests = async (req: AuthRequest, res: Response, next
 export const getRentalRequestById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { id } = req.params;
-        if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
+        if (!supabaseServiceRole) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServiceRole
             .from('rental_requests')
             .select('*, branches(name), rooms(room_number), users(full_name, gender, phone_number, email, identity_number)')
             .eq('id', id)
@@ -146,7 +166,7 @@ export const updateRentalRequestStatus = async (req: AuthRequest, res: Response,
             bed_id?: string 
         };
         
-        if (!supabase) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
+        if (!supabaseServiceRole) return next(new AppError(500, 'SUPABASE_CLIENT_UNAVAILABLE', 'Database lỗi'));
 
         const updateData: Record<string, unknown> = {};
         
@@ -175,7 +195,7 @@ export const updateRentalRequestStatus = async (req: AuthRequest, res: Response,
             }
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServiceRole
             .from('rental_requests')
             .update(updateData)
             .eq('id', id)

@@ -1,10 +1,11 @@
-import { supabase } from '../config/supabase';
+import { supabaseServiceRole } from '../config/supabase';
 import { 
   NotFoundError, 
   ConflictError, 
   InternalServerError 
 } from '../utils/errors'; // Sử dụng các lớp lỗi đã định nghĩa
 import { CreateRentalRequestDTO, RentalRequest } from '../models/rental-request.model';
+import { ViewingAppointmentsService } from './viewing-appointments.service';
 
 export class RentalRequestService {
   /**
@@ -13,14 +14,14 @@ export class RentalRequestService {
   static async createRequest(customerId: string, payload: CreateRentalRequestDTO): Promise<RentalRequest> {
     
     // Kiểm tra kết nối Supabase
-    if (!supabase) {
+    if (!supabaseServiceRole) {
       throw new InternalServerError('Cấu hình Database chưa sẵn sàng');
     }
 
     // 1. Kiểm tra tính khả dụng (Availability Check)
     if (payload.bed_id) {
       // Truy vấn trạng thái giường nếu khách hàng chọn giường cụ thể (Dorm)
-      const { data: bed, error: bedError } = await supabase
+      const { data: bed, error: bedError } = await supabaseServiceRole
         .from('beds')
         .select('status')
         .eq('id', payload.bed_id)
@@ -34,7 +35,7 @@ export class RentalRequestService {
       
     } else if (payload.room_id) {
       // Truy vấn trạng thái phòng nếu khách hàng chọn phòng nguyên căn
-      const { data: room, error: roomError } = await supabase
+      const { data: room, error: roomError } = await supabaseServiceRole
         .from('rooms')
         .select('status')
         .eq('id', payload.room_id)
@@ -47,8 +48,11 @@ export class RentalRequestService {
       }
     }
 
+    // Lấy scheduled_at từ payload (nếu có truyền từ Frontend)
+    const scheduledAt = (payload as any).scheduled_at;
+
     // 2. Viết hàm tạo Request: Insert dữ liệu vào bảng rental_requests
-    const { data: newRequest, error: insertError } = await supabase
+    const { data: newRequest, error: insertError } = await supabaseServiceRole
       .from('rental_requests')
       .insert([
         {
@@ -61,7 +65,7 @@ export class RentalRequestService {
           budget_max: payload.budget_max || null,
           people_count: payload.people_count || 1,
           note: payload.note || null,
-          status: 'requested' // Trạng thái khởi tạo theo quy định
+          status: scheduledAt ? 'viewing_scheduled' : 'requested'
         }
       ])
       .select()
@@ -70,6 +74,22 @@ export class RentalRequestService {
     // 3. Xử lý lỗi hệ thống nếu insert thất bại
     if (insertError) {
       throw new InternalServerError(`Lỗi khi tạo yêu cầu thuê: ${insertError.message}`);
+    }
+
+    // 4. Tạo lịch hẹn xem phòng nếu có ngày giờ hẹn
+    if (scheduledAt) {
+      try {
+        await ViewingAppointmentsService.createAppointment({
+          rentalRequestId: newRequest.id,
+          customerId: customerId,
+          roomId: payload.room_id,
+          bedId: payload.bed_id,
+          scheduledAt: scheduledAt,
+          status: 'pending' as any
+        });
+      } catch (err) {
+        console.error("Lỗi khi tự động tạo viewing_appointment:", err);
+      }
     }
 
     return newRequest;

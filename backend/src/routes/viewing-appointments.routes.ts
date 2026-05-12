@@ -43,6 +43,12 @@ router.patch(
   ),
 );
 router.patch(
+  "/:id/status",
+  ViewingAppointmentsController.updateStatus.bind(
+    ViewingAppointmentsController,
+  ),
+);
+router.patch(
   "/:id/cancel",
   ViewingAppointmentsController.cancelAppointment.bind(
     ViewingAppointmentsController,

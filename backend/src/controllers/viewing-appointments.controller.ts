@@ -112,6 +112,24 @@ export class ViewingAppointmentsController {
       .json(ApiResponseBuilder.success(updated, "Viewing appointment updated"));
   }
 
+  static async updateStatus(req: AuthRequest, res: Response): Promise<void> {
+    const status = req.body.status as ViewingAppointmentStatus | undefined;
+
+    if (!status || !VALID_STATUSES.includes(status)) {
+      throw new ValidationError("Invalid status value");
+    }
+
+    const id = this.getIdParam(req);
+    const updated = await ViewingAppointmentsService.updateOutcome(
+      id,
+      status,
+      undefined,
+    );
+    res
+      .status(200)
+      .json(ApiResponseBuilder.success(updated, "Viewing appointment status updated"));
+  }
+
   static async cancelAppointment(
     req: AuthRequest,
     res: Response,
