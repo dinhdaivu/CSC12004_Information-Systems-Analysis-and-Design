@@ -222,7 +222,7 @@ type SearchCriteria = {
                   class="rounded-xl border border-[#264893] bg-white px-4 py-2 text-sm font-semibold text-[#264893] transition hover:bg-slate-50"
                   (click)="openAddRoomView()"
                 >
-                  Add Room
+                  {{ "ADMIN_ROOMS.ADD_ROOM" | translate }}
                 </button>
 
                 <label class="relative block">
@@ -231,7 +231,7 @@ type SearchCriteria = {
                     [value]="searchKeyword"
                     (input)="onSearchInput($event)"
                     (keyup.enter)="searchRooms()"
-                    placeholder="Search room name..."
+                    [placeholder]="'ADMIN_ROOMS.SEARCH' | translate"
                     class="w-64 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-[#264893] outline-none transition focus:border-[#264893]"
                   />
                 </label>
@@ -241,7 +241,7 @@ type SearchCriteria = {
                   class="rounded-xl bg-[#264893] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f3a75]"
                   (click)="searchRooms()"
                 >
-                  Search
+                  {{ "COMMON.SEARCH" | translate }}
                 </button>
 
                 <div class="relative">
@@ -265,7 +265,7 @@ type SearchCriteria = {
                       class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[#264893] transition hover:bg-slate-100"
                       (click)="selectBranch(null)"
                     >
-                      All Branches
+                      {{ "ADMIN_ROOMS.ALL_BRANCHES" | translate }}
                     </button>
 
                     <button
@@ -296,7 +296,7 @@ type SearchCriteria = {
                   *ngIf="!roomsErrorMessage && visibleRooms.length === 0"
                   class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
                 >
-                  No rooms found for selected filters.
+                  {{ "ADMIN_ROOMS.NO_ROOMS" | translate }}
                 </div>
 
                 <div
@@ -328,7 +328,7 @@ type SearchCriteria = {
 
               <aside class="rounded-2xl bg-[#fafafa] p-4 shadow-sm">
                 <h3 class="text-center text-2xl font-bold text-[#264893]">
-                  Floor
+                  {{ "ADMIN_ROOMS.FLOOR" | translate }}
                 </h3>
 
                 <div class="mt-4 flex flex-wrap gap-2">
@@ -341,7 +341,7 @@ type SearchCriteria = {
                     [class.text-[#264893]]="selectedFloor !== null"
                     (click)="selectFloor(null)"
                   >
-                    All
+                    {{ "COMMON.ALL" | translate }}
                   </button>
 
                   <button
@@ -363,9 +363,9 @@ type SearchCriteria = {
                     <div class="flex items-start gap-3">
                       <span class="mt-1 h-3 w-3 rounded-full bg-red-400"></span>
                       <div>
-                        <p class="text-sm font-bold">Occupied</p>
+                        <p class="text-sm font-bold">{{ "ADMIN_ROOMS.STATUS.OCCUPIED" | translate }}</p>
                         <p class="mt-1 text-xs text-[#264893]/70">
-                          All beds in this room are currently occupied
+                          {{ "ADMIN_ROOMS.STATUS_DESC.OCCUPIED" | translate }}
                         </p>
                       </div>
                     </div>
@@ -377,10 +377,9 @@ type SearchCriteria = {
                         class="mt-1 h-3 w-3 rounded-full bg-amber-400"
                       ></span>
                       <div>
-                        <p class="text-sm font-bold">Reserved</p>
+                        <p class="text-sm font-bold">{{ "ADMIN_ROOMS.STATUS.RESERVED" | translate }}</p>
                         <p class="mt-1 text-xs text-[#264893]/70">
-                          The remaining beds are currently on hold for a 24h
-                          deposit
+                          {{ "ADMIN_ROOMS.STATUS_DESC.RESERVED" | translate }}
                         </p>
                       </div>
                     </div>
@@ -392,9 +391,9 @@ type SearchCriteria = {
                         class="mt-1 h-3 w-3 rounded-full bg-emerald-400"
                       ></span>
                       <div>
-                        <p class="text-sm font-bold">Available</p>
+                        <p class="text-sm font-bold">{{ "ADMIN_ROOMS.STATUS.AVAILABLE" | translate }}</p>
                         <p class="mt-1 text-xs text-[#264893]/70">
-                          The room has at least one vacant bed.
+                          {{ "ADMIN_ROOMS.STATUS_DESC.AVAILABLE" | translate }}
                         </p>
                       </div>
                     </div>
@@ -413,14 +412,14 @@ type SearchCriteria = {
                   class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#264893] transition hover:bg-slate-50"
                   (click)="backToRoomList()"
                 >
-                  Back
+                  {{ "ADMIN_ROOMS.FORM.BACK" | translate }}
                 </button>
               </div>
 
               <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <h3 class="text-2xl font-bold text-[#264893]">Add New Room</h3>
+                <h3 class="text-2xl font-bold text-[#264893]">{{ "ADMIN_ROOMS.ADD_NEW_ROOM" | translate }}</h3>
                 <p class="mt-1 text-sm text-[#264893]/80">
-                  Fill out room information to create a new room.
+                  {{ "ADMIN_ROOMS.ADD_NEW_ROOM_DESC" | translate }}
                 </p>
 
                 <div
@@ -443,7 +442,7 @@ type SearchCriteria = {
                 >
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Branch</span
+                      >{{ "ADMIN_ROOMS.FORM.BRANCH" | translate }}</span
                     >
                     <select
                       class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-[#264893] outline-none focus:border-[#264893]"
@@ -451,7 +450,7 @@ type SearchCriteria = {
                       (change)="onCreateRoomBranchChange($event)"
                       required
                     >
-                      <option value="" disabled>Select branch</option>
+                      <option value="" disabled>{{ "ADMIN_ROOMS.FORM.SELECT_BRANCH" | translate }}</option>
                       <option
                         *ngFor="let branch of branches"
                         [value]="branch.id"
@@ -463,7 +462,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Room Number</span
+                      >{{ "ADMIN_ROOMS.FORM.ROOM_NUMBER" | translate }}</span
                     >
                     <input
                       type="text"
@@ -477,7 +476,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Max Capacity</span
+                      >{{ "ADMIN_ROOMS.FORM.MAX_CAPACITY" | translate }}</span
                     >
                     <select
                       class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-[#264893] outline-none focus:border-[#264893]"
@@ -494,7 +493,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Room Type (auto)</span
+                      >{{ "ADMIN_ROOMS.FORM.ROOM_TYPE" | translate }}</span
                     >
                     <input
                       type="text"
@@ -506,7 +505,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Price Per Month (VND)</span
+                      >{{ "ADMIN_ROOMS.FORM.PRICE" | translate }}</span
                     >
                     <input
                       type="number"
@@ -521,7 +520,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-1">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Default Status</span
+                      >{{ "ADMIN_ROOMS.FORM.DEFAULT_STATUS" | translate }}</span
                     >
                     <input
                       type="text"
@@ -533,7 +532,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-2">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Amenities (comma separated)</span
+                      >{{ "ADMIN_ROOMS.FORM.AMENITIES" | translate }}</span
                     >
                     <input
                       type="text"
@@ -546,7 +545,7 @@ type SearchCriteria = {
 
                   <label class="flex flex-col gap-1 md:col-span-2">
                     <span class="text-sm font-semibold text-[#264893]"
-                      >Room Images</span
+                      >{{ "ADMIN_ROOMS.FORM.ROOM_IMAGES" | translate }}</span
                     >
                     <input
                       type="file"
@@ -559,7 +558,7 @@ type SearchCriteria = {
                       *ngIf="selectedImageNames.length > 0"
                       class="text-xs text-[#264893]/80"
                     >
-                      Selected: {{ selectedImageNames.join(", ") }}
+                      {{ "ADMIN_ROOMS.FORM.SELECTED" | translate }} {{ selectedImageNames.join(", ") }}
                     </p>
                   </label>
 
@@ -569,7 +568,7 @@ type SearchCriteria = {
                       [disabled]="isCreatingRoom"
                       class="rounded-xl bg-[#264893] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f3a75] disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                      {{ isCreatingRoom ? "Creating..." : "Create Room" }}
+                      {{ isCreatingRoom ? ("ADMIN_ROOMS.FORM.CREATING" | translate) : ("ADMIN_ROOMS.FORM.CREATE_ROOM" | translate) }}
                     </button>
                   </div>
                 </form>
@@ -605,7 +604,7 @@ type SearchCriteria = {
               *ngIf="isRoomDetailLoading"
               class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-[#264893]/80"
             >
-              Loading room detail...
+              {{ "ADMIN_ROOMS.MODAL.LOADING" | translate }}
             </div>
 
             <div
@@ -628,7 +627,7 @@ type SearchCriteria = {
                   [disabled]="isDeletingRoom"
                   (click)="deleteSelectedRoom()"
                 >
-                  {{ isDeletingRoom ? "Deleting..." : "Delete Room" }}
+                  {{ isDeletingRoom ? ("ADMIN_ROOMS.MODAL.DELETING" | translate) : ("ADMIN_ROOMS.MODAL.DELETE_ROOM" | translate) }}
                 </button>
               </div>
 
@@ -682,7 +681,7 @@ type SearchCriteria = {
               "
               class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-[#264893]/80"
             >
-              Select a room to view detail.
+              {{ "ADMIN_ROOMS.MODAL.SELECT_ROOM" | translate }}
             </div>
           </div>
         </div>
@@ -723,10 +722,10 @@ type SearchCriteria = {
       </div>
       <img (click)="navigate('/admin/scheduled')" class="hover-effect" src="assets/icons/Schedules.png" style="cursor: pointer; width: 34px; height: 30px; left: 107px; top: 390px; position: absolute;" />
 
-      <div (click)="navigate('/admin/rooms')" class="hover-effect" style="cursor: pointer; width: 195px; height: 46px; left: 161px; top: 440px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">
+      <div (click)="navigate('/admin/rooms')" class="hover-effect" style="cursor: pointer; width: 195px; height: 46px; left: 161px; top: 440px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">
         {{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}
       </div>
-      <img (click)="navigate('/admin/rooms')" class="hover-effect" src="assets/icons/Rooms.png" style="cursor: pointer; width: 30px; height: 27px; left: 107px; top: 450px; position: absolute;" />
+      <img (click)="navigate('/admin/rooms')" class="hover-effect" src="assets/icons/BlueRooms.png" style="cursor: pointer; width: 30px; height: 27px; left: 107px; top: 450px; position: absolute;" />
 
       <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 500px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
         {{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}
@@ -734,20 +733,24 @@ type SearchCriteria = {
       <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 510px; position: absolute;" />
 
       <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Contracts
+        {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
       </div>
+      <img (click)="navigate('/admin/contracts')" class="hover-effect" src="assets/icons/Contracts.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 570px; position: absolute;" />
 
       <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Users
+        {{ "ADMIN_RENTAL.SIDEBAR.USERS" | translate }}
       </div>
+      <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/Users.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 630px; position: absolute;" />
 
       <div (click)="navigate('/admin/checkout-requests')" class="hover-effect" style="cursor: pointer; width: 200px; height: 46px; left: 163px; top: 680px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Checkouts
+        {{ "ADMIN_RENTAL.SIDEBAR.CHECKOUTS" | translate }}
       </div>
+      <img (click)="navigate('/admin/checkout-requests')" class="hover-effect" src="assets/icons/Checkout.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 690px; position: absolute;" />
 
       <div (click)="navigate('/admin/handovers')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 740px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Handovers
+        {{ "ADMIN_RENTAL.SIDEBAR.HANDOVERS" | translate }}
       </div>
+      <img (click)="navigate('/admin/handovers')" class="hover-effect" src="assets/icons/Handover.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 750px; position: absolute;" />
 
       <div (click)="navigate('/admin/chat')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 800px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
         {{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}
@@ -890,13 +893,13 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
   get selectedBranchLabel(): string {
     if (!this.selectedBranchId) {
-      return "All Branches";
+      return this.translate.instant("ADMIN_ROOMS.ALL_BRANCHES");
     }
 
     const selected = this.branches.find(
       (branch) => branch.id === this.selectedBranchId,
     );
-    return selected?.name ?? "All Branches";
+    return selected?.name ?? this.translate.instant("ADMIN_ROOMS.ALL_BRANCHES");
   }
 
   get canCreateRoom(): boolean {
@@ -1765,14 +1768,14 @@ export class RoomsManagementComponent implements OnInit, OnDestroy {
 
   statusText(status: RoomVisualStatus): string {
     if (status === "occupied") {
-      return "Occupied";
+      return this.translate.instant("ADMIN_ROOMS.STATUS.OCCUPIED");
     }
 
     if (status === "reserved") {
-      return "Reserved";
+      return this.translate.instant("ADMIN_ROOMS.STATUS.RESERVED");
     }
 
-    return "Available";
+    return this.translate.instant("ADMIN_ROOMS.STATUS.AVAILABLE");
   }
 
   private buildCreateRoomPayload(): CreateRoomPayload | null {

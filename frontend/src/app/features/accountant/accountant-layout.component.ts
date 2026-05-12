@@ -225,7 +225,7 @@ export class AccountantLayoutComponent implements OnInit, OnDestroy {
   private urlSub!: Subscription;
 
   readonly sidebarItems: SidebarItem[] = [
-    { segment: 'transactions',    label: 'Transactions',    icon: 'assets/icons/Contract.png'    },
+    { segment: 'transactions',    label: 'Transactions',    icon: 'assets/icons/Contracts.png'    },
     { segment: 'monthly-billing', label: 'Monthly Billing', icon: 'assets/icons/Schedules.png'   },
     { segment: 'checkout',        label: 'Checkout',        icon: 'assets/icons/Details.png'     },
     { segment: 'refunds',         label: 'Refunds',         icon: 'assets/icons/Reservation.png' },

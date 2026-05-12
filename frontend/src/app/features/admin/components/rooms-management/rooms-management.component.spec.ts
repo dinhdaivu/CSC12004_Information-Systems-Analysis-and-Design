@@ -99,7 +99,7 @@ describe('RoomsManagementComponent', () => {
 
   it('should return "All Branches" when no branch selected', () => {
     component.selectedBranchId = null;
-    expect(component.selectedBranchLabel).toBe('All Branches');
+    expect(component.selectedBranchLabel).toBe('ADMIN_ROOMS.ALL_BRANCHES');
   });
 
   it('should return branch name when branch is selected and in list', () => {
@@ -111,7 +111,7 @@ describe('RoomsManagementComponent', () => {
   it('should return "All Branches" when selected branch not found', () => {
     (component as any).branches = [];
     component.selectedBranchId = 'unknown';
-    expect(component.selectedBranchLabel).toBe('All Branches');
+    expect(component.selectedBranchLabel).toBe('ADMIN_ROOMS.ALL_BRANCHES');
   });
 
   it('should return empty floors when no branches', () => {
@@ -263,15 +263,15 @@ describe('RoomsManagementComponent', () => {
   });
 
   it('should return "Occupied" status text', () => {
-    expect(component.statusText('occupied')).toBe('Occupied');
+    expect(component.statusText('occupied')).toBe('ADMIN_ROOMS.STATUS.OCCUPIED');
   });
 
   it('should return "Reserved" status text', () => {
-    expect(component.statusText('reserved')).toBe('Reserved');
+    expect(component.statusText('reserved')).toBe('ADMIN_ROOMS.STATUS.RESERVED');
   });
 
   it('should return "Available" status text', () => {
-    expect(component.statusText('available')).toBe('Available');
+    expect(component.statusText('available')).toBe('ADMIN_ROOMS.STATUS.AVAILABLE');
   });
 
   it('should return correct bed status labels', () => {

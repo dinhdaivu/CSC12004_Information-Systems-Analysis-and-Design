@@ -37,4 +37,14 @@ export class MyBookingService {
   performAction(id: string, action: string): Observable<ApiResponse<unknown>> {
     return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/${id}/actions`, { action });
   }
+
+  /**
+   * Gửi ảnh bằng chứng đặt cọc (Base64) lên backend
+   */
+  updateDepositProof(depositId: string, base64Image: string): Observable<ApiResponse<unknown>> {
+    // Gọi PATCH /api/deposits/:id
+    return this.http.patch<ApiResponse<unknown>>(`${environment.apiUrl}/deposits/${depositId}`, {
+      proof_image_base64: base64Image
+    });
+  }
 }
