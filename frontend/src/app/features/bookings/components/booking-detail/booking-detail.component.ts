@@ -389,7 +389,9 @@ export class BookingDetailComponent implements OnInit {
   formatDate(dateStr: string | null | undefined): string {
     if (!dateStr) return '—';
     try {
-      return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch {
       return '—';
     }
