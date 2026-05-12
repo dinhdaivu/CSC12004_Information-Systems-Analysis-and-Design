@@ -1,0 +1,75 @@
+\subsection{Thiết kế CSDL QH}
+\label{sec:db-script-migration}
+
+Thiết kế cơ sở dữ liệu của hệ thống bám theo mô hình quan hệ của PostgreSQL và
+được triển khai trên Supabase, nơi các bảng, khóa và chính sách truy cập được tổ
+chức để phản ánh đúng các nghiệp vụ thuê phòng, đặt cọc, hợp đồng và thanh lý
+\cite{supabase_docs,postgresql_docs}.
+
+\begingroup
+\small
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{|p{5.0cm}|p{10.0cm}|}
+\hline
+\textbf{Bảng} & \textbf{Mục đích} \\
+\hline
+\endfirsthead
+
+
+\texttt{chinhanh} -- Thông tin chi nhánh & Lưu thông tin các chi nhánh như tên, địa chỉ, số điện thoại và thời gian tạo. \\
+\hline
+\texttt{hoso} -- Hồ sơ cơ bản & Lưu thông tin hồ sơ dùng chung cho cả nhân viên và khách hàng. \\
+\hline
+\texttt{nhanvien} -- Hồ sơ nhân viên & Lưu thông tin nhân viên và liên kết với hồ sơ cơ bản. \\
+\hline
+\texttt{khachhang} -- Hồ sơ khách hàng & Lưu thông tin khách hàng và liên kết với hồ sơ cơ bản. \\
+\hline
+\texttt{nhom} -- Nhóm khách hàng & Lưu các nhóm khách hàng để gom và quản lý theo cụm. \\
+\hline
+\texttt{nhom\_khachhang} -- Bảng ánh xạ thành viên nhóm & Ánh xạ khách hàng vào từng nhóm bằng khóa chính ghép. \\
+\hline
+\texttt{dichvu} -- Danh mục dịch vụ & Lưu danh mục dịch vụ kèm mô tả và đơn giá. \\
+\hline
+\texttt{phong} -- Danh mục phòng & Lưu thông tin phòng và trạng thái phòng theo từng chi nhánh. \\
+\hline
+\texttt{giuong} -- Danh mục giường & Lưu thông tin giường và trạng thái giường trong từng phòng. \\
+\hline
+\texttt{yeucau\_thue} -- Yêu cầu thuê phòng & Lưu các yêu cầu thuê phòng do khách hàng gửi. \\
+\hline
+\texttt{lich\_xem} -- Lịch xem phòng & Lưu lịch hẹn xem phòng tương ứng với các yêu cầu thuê. \\
+\hline
+\texttt{dangky} -- Đăng ký / đặt chỗ & Lưu thông tin đăng ký thuê, liên kết khách hàng, phòng và giường. \\
+\hline
+\texttt{tiencoc} -- Hồ sơ đặt cọc & Lưu thông tin đặt cọc gắn với từng bản ghi đăng ký. \\
+\hline
+\texttt{hopdong} -- Hợp đồng & Lưu thông tin hợp đồng, trạng thái và ghi chú liên quan. \\
+\hline
+\texttt{hoadon} -- Phần đầu hóa đơn & Lưu phần đầu hóa đơn để tổng hợp các khoản thanh toán. \\
+\hline
+\texttt{chitiet\_hoadon} -- Chi tiết hóa đơn & Lưu các dòng chi tiết hóa đơn cho từng dịch vụ hoặc khoản thu. \\
+\hline
+\texttt{bienban\_bangiao} -- Phần đầu biên bản bàn giao & Lưu phần đầu của biên bản bàn giao tài sản và phòng. \\
+\hline
+\texttt{chitiet\_bangiao} -- Chi tiết bàn giao & Lưu chi tiết tình trạng tài sản, hạng mục và nội dung bàn giao. \\
+\hline
+\texttt{bienban\_thanhly} -- Biên bản thanh lý / chấm dứt & Lưu thông tin thanh lý, khấu trừ, hoàn tiền và số tiền cuối cùng. \\
+\hline
+\caption{Mục đích các bảng cơ sở dữ liệu}\label{tab:scriptdb06-table-purpose}
+\end{longtable}
+\endgroup
+
+
+\subsubsection{Script cơ sở dữ liệu}
+\lstinputlisting[
+    language=SQL,
+    caption={Script cơ sở dữ liệu},
+    label={lst:scriptdb06-original}
+]{content/sql/ScriptDB_06.sql}
+
+\subsubsection{Migration bổ sung trong quá trình làm}
+\lstinputlisting[
+    language=SQL,
+    caption={Migration bổ sung trong quá trình làm},
+    label={lst:scriptdb06-latest}
+]{content/sql/scriptdb_06_latest.sql}

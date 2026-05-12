@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant VQ as VietQR
+    participant DB as Database
+
+    HT-->>KH: Hiển thị thông tin thanh toán
+    KH->>HT: Chọn phương thức thanh toán (VietQR)
+    HT->>VQ: Gửi yêu cầu tạo giao dịch
+    VQ-->>HT: Trả về mã QR
+    HT-->>KH: Hiển thị mã QR thanh toán
+    KH->>VQ: Quét mã QR và xác nhận thanh toán
+    VQ->>HT: Thông báo kết quả giao dịch
+
+    alt Thanh toán thành công
+        Note over HT,DB: Thực hiện SUC6 - Quản lý thanh toán
+        HT->>DB: Cập nhật trạng thái thanh toán → Thành công
+        DB-->>HT: Xác nhận lưu
+        HT-->>KH: Thông báo thanh toán thành công
+    else A1 - Thanh toán thất bại
+        HT-->>KH: Thông báo thất bại, cho phép thanh toán lại
+    else A2 - Timeout / Lỗi kết nối VietQR
+        VQ-->>HT: Thông báo lỗi kết nối
+        HT-->>KH: Thông báo lỗi, giao dịch bị hủy
+    end

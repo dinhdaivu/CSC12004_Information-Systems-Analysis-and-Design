@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor QL as Quản lý
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở trang tổng quan quản trị
+    HT->>DB: Tải số liệu tổng hợp (người dùng, phòng, yêu cầu, đặt cọc, thanh toán, trả phòng)
+    DB-->>HT: Dữ liệu thống kê
+
+    alt Tải dữ liệu thành công
+        HT-->>QL: Hiển thị các thẻ thống kê và hoạt động gần đây
+        QL->>HT: Chọn thẻ thống kê hoặc liên kết nhanh
+        HT-->>QL: Điều hướng đến màn hình quản lý chi tiết tương ứng
+    else A1 - Không đủ quyền truy cập
+        HT-->>QL: Chuyển hướng về đăng nhập hoặc thông báo không có quyền
+    else A2 - Không có dữ liệu thống kê
+        HT-->>QL: Hiển thị giá trị mặc định và trạng thái rỗng
+    else A3 - Lỗi tải dữ liệu
+        HT-->>QL: Hiển thị thông báo lỗi, cho phép tải lại
+        QL->>HT: Chọn tải lại trang tổng quan
+        HT->>DB: Tải lại số liệu
+        DB-->>HT: Dữ liệu thống kê
+        HT-->>QL: Hiển thị tổng quan
+    end

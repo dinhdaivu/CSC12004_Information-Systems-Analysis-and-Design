@@ -1,0 +1,32 @@
+sequenceDiagram
+    actor QL as Quản lý
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở màn hình quản lý giường/phòng
+    HT->>DB: Truy vấn danh sách giường/phòng
+    DB-->>HT: Danh sách giường/phòng
+    HT-->>QL: Hiển thị danh sách
+    QL->>HT: Chọn thao tác (Thêm / Sửa / Xóa / Xem)
+
+    alt Thêm mới
+        QL->>HT: Nhập thông tin phòng/giường mới
+        HT->>DB: Lưu bản ghi mới
+        DB-->>HT: Xác nhận lưu thành công
+    else Sửa
+        QL->>HT: Chỉnh sửa thông tin phòng/giường
+        HT->>DB: Cập nhật bản ghi
+        DB-->>HT: Xác nhận cập nhật
+    else Xóa
+        HT->>DB: Kiểm tra phòng/giường đang được sử dụng
+        alt Không đang sử dụng
+            HT->>DB: Xóa bản ghi
+            DB-->>HT: Xác nhận xóa
+        else A2 - Đang sử dụng
+            HT-->>QL: Từ chối xóa, thông báo lý do
+        end
+    else Xem
+        HT-->>QL: Hiển thị chi tiết phòng/giường
+    end
+
+    HT-->>QL: Thông báo thao tác hoàn tất

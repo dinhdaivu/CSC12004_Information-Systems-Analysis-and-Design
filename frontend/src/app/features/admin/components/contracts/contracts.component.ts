@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, HostListener, NgZone, OnDestroy, OnInit, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { finalize } from "rxjs/operators";
@@ -9,201 +9,159 @@ import {
   ContractsService,
 } from "@core/services/contracts.service";
 import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
+import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: "app-contracts",
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent, TranslateModule],
   template: `
-    <div class="min-h-screen bg-slate-100 font-['Afacad'] text-[#1e3a6d]">
-      <div
-        *ngIf="isLoading"
-        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6"
-        style="background: #fef4df"
-      >
-        <img
-          src="assets/icons/logo.svg"
-          alt="HomeStay Dorm"
-          class="h-28 w-auto object-contain"
-        />
-        <p class="text-[1.05rem] italic tracking-wide text-[#264893]/70">
-          Nurturing Your Journey, Building Your Home.
-        </p>
-        <span
-          class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"
-        ></span>
+    <div [style.height.px]="1080 * scaleFactor" style="width:100%; overflow: hidden; position: relative; background: #FEF4DF;">
+      <div *ngIf="isLoading" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df">
+        <img src="assets/icons/logo.svg" alt="HomeStay Dorm" class="h-28 w-auto object-contain" />
+        <p class="text-[1.05rem] italic tracking-wide text-[#264893]/70" style="font-family: 'Afacad', sans-serif">Nurturing Your Journey, Building Your Home.</p>
+        <span class="h-9 w-9 animate-spin rounded-full border-[3px] border-[#264893]/20 border-t-[#264893]"></span>
       </div>
 
-      <app-admin-sidebar></app-admin-sidebar>
+      <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;">
+        <div style="width: 1920px; height: 1080px; position: relative; background: #FEF4DF; overflow: hidden">
+          <div style="width: 1920px; height: 644px; left: 0px; top: -5px; position: absolute; background: #503D2E"></div>
+          <img style="width: 1133px; height: 638px; left: 552px; top: 0px; position: absolute" src="assets/pictures/Background.png" />
+          <div style="width: 2000px; height: 622px; left: -40px; top: -226px; position: absolute; background: linear-gradient(180deg, rgba(254, 244, 223, 0.10) 0%, #FEF4DF 100%)"></div>
+          <div style="width: 1920px; height: 698px; left: 0px; top: 393px; position: absolute; background: #FEF4DF"></div>
+          <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
-      <div class="min-h-screen lg:ml-64">
-        <main class="p-6">
-          <div
-            class="mx-auto max-w-6xl rounded-[32px] bg-[#f7f1e6] p-8 shadow-lg"
-          >
-            <header class="mb-8">
-              <h2 class="text-3xl font-extrabold text-[#2b4c8c]">
-                Contract Management
-              </h2>
-              <p class="mt-2 text-sm font-medium text-[#2b4c8c]/90">
-                Track signature status, active leases, and renewals for all
-                residents across branches.
-              </p>
-            </header>
+          <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
+            Contract Management
+          </div>
+          <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
+            Track signature status, active leases, and renewals for all residents across branches.
+          </div>
 
-            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <button
-                  type="button"
-                  class="inline-flex items-center gap-2 rounded-full bg-[#2b4c8c] px-5 py-2 text-sm font-semibold text-white"
-                >
-                  <span
-                    class="inline-block h-2 w-2 rounded-full bg-white"
-                  ></span>
-                  All Branches
-                </button>
+          <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
+            <div class="mb-4 flex flex-wrap items-center gap-3">
+              <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Search ..." class="w-52 bg-transparent text-sm outline-none placeholder:text-slate-400" />
               </div>
-              <div class="flex flex-wrap items-center gap-3">
-                <label
-                  class="inline-flex items-center gap-2 rounded-full border border-black/80 px-4 py-2 text-sm font-medium"
-                >
-                  <span class="text-base">🔍</span>
-                  <input
-                    type="text"
-                    [(ngModel)]="searchTerm"
-                    (ngModelChange)="applyFilters()"
-                    placeholder="Search ..."
-                    class="w-40 bg-transparent text-sm outline-none"
-                  />
-                </label>
-                <select
-                  [(ngModel)]="statusFilter"
-                  (ngModelChange)="onStatusChange()"
-                  class="rounded-full border border-black/80 bg-transparent px-4 py-2 text-sm font-semibold"
-                >
-                  <option value="all">Filter</option>
-                  <option value="active">Active</option>
-                  <option value="completed">Completed</option>
-                  <option value="terminated">Terminated</option>
-                </select>
-              </div>
+              <select [(ngModel)]="statusFilter" (ngModelChange)="onStatusChange()" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none">
+                <option value="all">Filter</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="terminated">Terminated</option>
+              </select>
             </div>
 
-            <div
-              *ngIf="errorMessage"
-              class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
-              {{ errorMessage }}
-            </div>
+            <div *ngIf="errorMessage" class="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ errorMessage }}</div>
 
-            <div
-              *ngIf="!isLoading && filteredContracts.length === 0"
-              class="rounded-2xl border border-slate-200 bg-white/80 px-4 py-8 text-center text-sm text-slate-600"
-            >
-              No contracts found.
-            </div>
+            <div *ngIf="!isLoading && filteredContracts.length === 0" class="rounded-2xl border border-slate-200 bg-white/80 px-4 py-8 text-center text-sm text-slate-600">No contracts found.</div>
 
-            <div *ngIf="filteredContracts.length > 0" class="overflow-x-auto">
-              <table class="w-full border-collapse">
-                <thead>
-                  <tr class="text-left text-sm font-bold text-[#2b4c8c]">
-                    <th class="px-3 py-3">Resident's Name</th>
-                    <th class="px-3 py-3">Room & Bed</th>
-                    <th class="px-3 py-3">Term</th>
-                    <th class="px-3 py-3">Initial Fees</th>
-                    <th class="px-3 py-3">Signature Status</th>
-                    <th class="px-3 py-3">Download</th>
+            <div *ngIf="filteredContracts.length > 0" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <table class="w-full text-sm">
+                <thead class="bg-[#264893] text-white">
+                  <tr>
+                    <th class="px-5 py-3 text-left font-semibold">Resident</th>
+                    <th class="px-5 py-3 text-left font-semibold">Room & Bed</th>
+                    <th class="px-5 py-3 text-left font-semibold">Term</th>
+                    <th class="px-5 py-3 text-left font-semibold">Initial Fees</th>
+                    <th class="px-5 py-3 text-left font-semibold">Signature Status</th>
+                    <th class="px-5 py-3 text-left font-semibold">Download</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="let contract of filteredContracts"
-                    class="border-t border-black/10 text-sm font-medium text-[#1e3a6d]"
-                  >
-                    <td class="px-3 py-3">
-                      {{ contract.customer?.fullName || "Unknown" }}
-                    </td>
-                    <td class="px-3 py-3">
-                      {{ contract.room?.roomNumber || contract.roomId }}
-                      <span class="text-sm text-[#5e7299]">
-                        -
-                        {{ contract.bed?.bedNumber || contract.bedId || "N/A" }}
-                      </span>
-                    </td>
-                    <td class="px-3 py-3">{{ getTerm(contract) }}</td>
-                    <td class="px-3 py-3">
-                      {{ getInitialFees(contract) }}
-                    </td>
-                    <td class="px-3 py-3">
-                      {{ getSignatureStatus(contract) }}
-                    </td>
-                    <td class="px-3 py-3">
-                      <a
-                        *ngIf="contract.contractDocumentUrl"
-                        [href]="contract.contractDocumentUrl"
-                        target="_blank"
-                        rel="noreferrer"
-                        class="inline-flex items-center gap-2 text-[#1e3a6d] hover:text-[#2b4c8c]"
-                      >
-                        <span>⬇</span>
-                        <span>PDF</span>
-                      </a>
-                      <span *ngIf="!contract.contractDocumentUrl">—</span>
+                  <tr *ngFor="let contract of filteredContracts; let i = index" [class]="i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'" class="border-t border-slate-100 hover:bg-blue-50/40 transition-colors">
+                    <td class="px-5 py-3">{{ contract.customer?.fullName || 'Unknown' }}</td>
+                    <td class="px-5 py-3">{{ contract.room?.roomNumber || contract.roomId }} <span class="text-xs text-slate-400">- {{ contract.bed?.bedNumber || contract.bedId || 'N/A' }}</span></td>
+                    <td class="px-5 py-3">{{ getTerm(contract) }}</td>
+                    <td class="px-5 py-3">{{ getInitialFees(contract) }}</td>
+                    <td class="px-5 py-3">{{ getSignatureStatus(contract) }}</td>
+                    <td class="px-5 py-3">
+                      <a *ngIf="contract.contractDocumentUrl" [href]="contract.contractDocumentUrl" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 text-[#1e3a6d] hover:text-[#2b4c8c]"><span>⬇</span><span>PDF</span></a>
+                      <span *ngIf="!contract.contractDocumentUrl" class="text-xs text-slate-400">—</span>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div
-              *ngIf="totalPages > 1"
-              class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm font-semibold text-[#1e3a6d]"
-            >
-              <button
-                type="button"
-                (click)="goToPage(currentPage - 1)"
-                [disabled]="currentPage === 1"
-                class="px-2 disabled:opacity-40"
-              >
-                &lt;
-              </button>
-              <button
-                *ngFor="let page of pageNumbers"
-                type="button"
-                (click)="goToPage(page)"
-                class="px-2"
-                [class.underline]="page === currentPage"
-                [class.font-extrabold]="page === currentPage"
-              >
-                {{ page }}
-              </button>
-              <button
-                type="button"
-                (click)="goToPage(currentPage + 1)"
-                [disabled]="currentPage === totalPages"
-                class="px-2 disabled:opacity-40"
-              >
-                &gt;
-              </button>
+            <div *ngIf="totalPages > 1" class="mt-4 flex items-center justify-between text-sm text-slate-500">
+              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <div class="flex gap-2">
+                <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&lt;</button>
+                <button *ngFor="let p of pageNumbers" (click)="goToPage(p)" [class]="p === currentPage ? 'bg-[#264893] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'" class="rounded-lg border border-slate-200 px-3 py-1.5 min-w-[36px]">{{ p }}</button>
+                <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&gt;</button>
+              </div>
             </div>
-
-            <button
-              type="button"
-              class="fixed bottom-10 right-10 inline-flex items-center gap-2 rounded-full bg-[#2b4c8c] px-6 py-3 text-sm font-semibold text-white shadow-lg opacity-60"
-              disabled
-              title="Create contract coming soon"
-            >
-              <span class="text-lg">＋</span>
-              Create Contract
-            </button>
           </div>
-        </main>
+
+          <ng-container *ngTemplateOutlet="sidebarAndMenus"></ng-container>
+        </div>
       </div>
+
+      <ng-template #sidebarAndMenus>
+        <!-- Reuse sidebar/menu visuals from other admin pages -->
+        <div (click)="navigate('/guidelines')" class="hover-effect" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ "COMMON.GUIDELINES" | translate }}</div>
+        <div (click)="navigate('/about')" class="hover-effect" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ "COMMON.ABOUT_US" | translate }}</div>
+        <div (click)="navigate('/contact')" class="hover-effect" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ "COMMON.CONTACT" | translate }}</div>
+        <img (click)="toggleLangMenu()" class="hover-effect" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
+        <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+          <div (click)="changeLang('en')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.ENGLISH" | translate }}</div>
+          <div (click)="changeLang('vi')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.VIETNAMESE" | translate }}</div>
+        </div>
+        <img (click)="toggleUserMenu()" class="hover-effect" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Account.png" />
+        <div *ngIf="isUserMenuOpen" style="position: absolute; left: 1680px; top: 180px; width: 150px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
+          <div (mousedown)="logout()" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.LOGOUT" | translate }}</div>
+        </div>
+
+        <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/RoomsUnion.png" />
+        <img (click)="navigate('/')" class="hover-effect" style="width: 185px; height: 165px; left: 107px; top: 81px; position: absolute; cursor: pointer;" src="assets/icons/BookingLogo.png" />
+
+        <!-- Sidebar links -->
+        <div (click)="navigate('/admin/rental-requests')" class="hover-effect" style="cursor: pointer; width: 196px; height: 46px; left: 166px; top: 320px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.INQUIRIES" | translate }}</div>
+        <img (click)="navigate('/admin/rental-requests')" class="hover-effect" src="assets/icons/WhiteInquiries.png" style="cursor: pointer; width: 28px; height: 25px; left: 110px; top: 331px; position: absolute;" />
+        <div (click)="navigate('/admin/scheduled')" class="hover-effect" style="cursor: pointer; width: 160px; height: 46px; left: 166px; top: 380px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.SCHEDULES" | translate }}</div>
+        <img (click)="navigate('/admin/scheduled')" class="hover-effect" src="assets/icons/Schedules.png" style="cursor: pointer; width: 34px; height: 30px; left: 107px; top: 390px; position: absolute;" />
+        <div (click)="navigate('/admin/rooms')" class="hover-effect" style="cursor: pointer; width: 195px; height: 46px; left: 161px; top: 440px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.ROOMS" | translate }}</div>
+        <img (click)="navigate('/admin/rooms')" class="hover-effect" src="assets/icons/Rooms.png" style="cursor: pointer; width: 30px; height: 27px; left: 107px; top: 450px; position: absolute;" />
+
+        <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 500px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}</div>
+        <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 510px; position: absolute;" />
+
+        <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Contracts</div>
+
+        <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Users</div>
+
+        <div (click)="navigate('/admin/checkout-requests')" class="hover-effect" style="cursor: pointer; width: 200px; height: 46px; left: 163px; top: 680px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Checkouts</div>
+
+        <div (click)="navigate('/admin/handovers')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 740px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Handovers</div>
+
+        <div (click)="navigate('/admin/chat')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 800px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}</div>
+        <img (click)="navigate('/admin/chat')" class="hover-effect" src="assets/icons/Chat.png" style="cursor: pointer; width: 28px; height: 28px; left: 110px; top: 810px; position: absolute;" />
+
+        <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
+          <span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.TITLE" | translate }}<br /><br/></span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HEADQUARTERS" | translate }} </span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.ADDRESS_1" | translate }}<br />{{ "CONTACT_INFO.ADDRESS_2" | translate }}<br/></span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.PHONE_LABEL" | translate }} </span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.PHONE" | translate }}<br/></span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL_LABEL" | translate }}</span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.EMAIL" | translate }}<br/></span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ "CONTACT_INFO.HOURS_LABEL" | translate }}</span>
+          <span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ "CONTACT_INFO.HOURS" | translate }}</span>
+        </div>
+      </ng-template>
     </div>
   `,
 })
 export class ContractsComponent implements OnInit, OnDestroy {
   private readonly contractsService = inject(ContractsService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
+  private readonly ngZone = inject(NgZone);
+  private readonly translate = inject(TranslateService);
   private readonly destroy$ = new Subject<void>();
 
   contracts: ContractListItem[] = [];
@@ -218,6 +176,11 @@ export class ContractsComponent implements OnInit, OnDestroy {
   readonly pageSize = 12;
   pageNumbers: number[] = [];
 
+  // layout helpers
+  scaleFactor = typeof window !== 'undefined' ? window.innerWidth / 1920 : 1;
+  isLangMenuOpen = false;
+  isUserMenuOpen = false;
+
   ngOnInit(): void {
     this.loadContracts();
   }
@@ -227,9 +190,30 @@ export class ContractsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  @HostListener('window:resize')
+  onResize() {
+    if (typeof window !== 'undefined') {
+      this.scaleFactor = window.innerWidth / 1920;
+    }
+  }
+
+  private runInView(update: () => void): void {
+    this.ngZone.run(() => {
+      update();
+      this.cdr.markForCheck();
+    });
+  }
+
+  toggleLangMenu() { this.isLangMenuOpen = !this.isLangMenuOpen; this.isUserMenuOpen = false; }
+  toggleUserMenu() { this.isUserMenuOpen = !this.isUserMenuOpen; this.isLangMenuOpen = false; }
+  changeLang(lang: string) { this.translate.use(lang); this.isLangMenuOpen = false; }
+  navigate(path: string) { this.router.navigate([path]); this.isUserMenuOpen = false; }
+  logout() { /* placeholder: wire to AuthService.logout() if present */ }
+
   loadContracts(page: number = 1): void {
     this.isLoading = true;
     this.errorMessage = null;
+    this.cdr.markForCheck();
 
     const status = this.statusFilter === "all" ? undefined : this.statusFilter;
     this.currentPage = page;
@@ -243,6 +227,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
       .pipe(
         finalize(() => {
           this.isLoading = false;
+          this.cdr.markForCheck();
         }),
         takeUntil(this.destroy$),
       )
@@ -253,10 +238,12 @@ export class ContractsComponent implements OnInit, OnDestroy {
           this.totalPages = response.data.meta.totalPages;
           this.pageNumbers = this.buildPageNumbers(this.totalPages);
           this.applyFilters();
+          this.cdr.markForCheck();
         },
         error: () => {
           this.errorMessage =
             "Failed to load contracts. Please check permissions and try again.";
+          this.cdr.markForCheck();
         },
       });
   }

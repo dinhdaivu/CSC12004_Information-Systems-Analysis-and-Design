@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor NV as Nhân viên Sales
+    participant HT as Hệ thống
+    participant DB as Database
+
+    NV->>HT: Mở lịch xem phòng cần xử lý
+    HT->>DB: Truy vấn thông tin lịch hẹn và phòng đã xem
+    DB-->>HT: Thông tin lịch hẹn
+    HT-->>NV: Hiển thị thông tin lịch và phòng/giường
+    NV->>HT: Ghi nhận tình trạng buổi xem phòng
+
+    alt Khách đồng ý thuê
+        NV->>HT: Chọn kết quả: Đồng ý thuê
+        HT->>DB: Lưu kết quả, cập nhật yêu cầu → Sẵn sàng đặt cọc
+        DB-->>HT: Xác nhận
+        HT-->>NV: Thông báo, chuyển sang SUC4 (Đặt cọc)
+    else Cần tư vấn thêm
+        NV->>HT: Chọn kết quả: Cần tư vấn thêm
+        HT->>DB: Lưu kết quả, giữ trạng thái xử lý
+        DB-->>HT: Xác nhận
+    else A2 - Khách không đồng ý thuê
+        NV->>HT: Chọn kết quả: Không tiếp tục
+        HT->>DB: Cập nhật trạng thái yêu cầu → Không tiếp tục
+        DB-->>HT: Xác nhận
+    else A1 - Khách không đến xem phòng
+        NV->>HT: Ghi nhận vắng mặt
+        HT->>DB: Lưu trạng thái vắng mặt, chờ sắp lịch lại
+        DB-->>HT: Xác nhận
+    end

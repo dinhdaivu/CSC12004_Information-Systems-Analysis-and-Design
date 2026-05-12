@@ -23,6 +23,7 @@ router.use(depositRateLimiter);
 router.use(authMiddleware);
 router.use(roleMiddleware(STAFF_AND_ADMIN_ROLES));
 
+router.post("/", DepositController.createDeposit.bind(DepositController));
 router.get("/", DepositController.getDeposits.bind(DepositController));
 router.get("/:id", DepositController.getDepositById.bind(DepositController));
 router.patch(

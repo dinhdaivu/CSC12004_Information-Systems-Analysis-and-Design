@@ -1,0 +1,91 @@
+\section{Cài đặt hệ thống}
+\label{sec:implementation}
+
+\subsection{Ánh xạ giữa các module triển khai và các SUC}
+
+\begingroup
+\small
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{|p{4.0cm}|p{2.9cm}|p{8.1cm}|}
+\caption{Ánh xạ giữa các module đã triển khai và các SUC tương ứng}\label{tab:implementation-suc-mapping}\\
+\hline
+\textbf{Module triển khai} & \textbf{SUC liên quan} & \textbf{Mô tả triển khai} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Module triển khai} & \textbf{SUC liên quan} & \textbf{Mô tả triển khai} \\
+\hline
+\endhead
+
+\textbf{Authentication Module} & SUC1, SUC18, SUC19 & Hỗ trợ đăng ký tài khoản, xác thực OTP qua email, đăng nhập, quên và đặt lại mật khẩu, đăng xuất, lấy thông tin người dùng hiện tại, cập nhật hồ sơ cá nhân, kiểm soát truy cập dựa trên vai trò (RBAC) và Angular route guards. \\
+\hline
+\textbf{Room Management Module} & SUC12, SUC13, SUC21 & Cung cấp chức năng danh sách phòng với khả năng lọc và tìm kiếm, xem chi tiết phòng, đồng thời hỗ trợ các thao tác tạo, cập nhật và xóa phòng. Module này bao gồm cả giao diện quản trị và giao diện tra cứu dành cho khách hàng. \\
+\hline
+\textbf{Bed Management Module} & SUC12, SUC13 & Cho phép quản trị viên tạo mới và cập nhật thông tin giường trong từng phòng, hỗ trợ trực tiếp cho nghiệp vụ quản lý phòng và giường của hệ thống. \\
+\hline
+\textbf{Rental Request Module} & SUC2, SUC3, SUC20 & Cho phép khách hàng gửi yêu cầu thuê phòng/giường sau khi hệ thống kiểm tra tình trạng còn trống. Staff và admin có thể xem danh sách yêu cầu, xem chi tiết và cập nhật trạng thái xử lý yêu cầu. \\
+\hline
+\textbf{Booking Module} & SUC2, SUC20 & Cung cấp giao diện xem danh sách đặt chỗ, xem chi tiết booking, thực hiện các thao tác liên quan đến booking và tạo booking mới, bám sát luồng đăng ký thuê và theo dõi trạng thái xử lý. \\
+\hline
+\textbf{Contract Module} & SUC7, SUC16, SUC17 & Hỗ trợ tạo, cập nhật và xem hợp đồng, đồng thời phục vụ các bước kiểm tra điều kiện lưu trú và quy trình nhận phòng/bàn giao phòng. \\
+\hline
+\textbf{Payment \& Deposit Module} & SUC4, SUC5, SUC6, SUC8, SUC9 & Bao gồm quản lý giao dịch, quản lý đặt cọc, duyệt hoặc từ chối đặt cọc, xử lý thanh toán, tính toán chi phí, đối soát cuối kỳ và thực hiện hoàn tiền khi cần thiết. \\
+\hline
+\textbf{Viewing Appointments Module} & SUC14, SUC15 & Cho phép khách hàng đặt lịch xem phòng, trong khi staff và admin có thể duyệt hoặc từ chối lịch hẹn cũng như ghi nhận kết quả sau buổi xem phòng. \\
+\hline
+\textbf{Real-Time Chat Module} & Không có SUC riêng & Được triển khai như một tính năng hỗ trợ giao tiếp giữa khách hàng và nhân viên trong nhiều luồng nghiệp vụ khác nhau. Chức năng chat thời gian thực, hộp thư quản trị và read receipts được bổ sung nhằm cải thiện tốc độ phản hồi, mặc dù chưa được mô hình hóa thành một SUC độc lập trong hệ thống sơ đồ hiện tại. \\
+\hline
+\textbf{User Management Module} & SUC19 & Cho phép admin quản lý tài khoản người dùng, bao gồm xem danh sách người dùng, xem chi tiết hồ sơ, cập nhật vai trò/trạng thái và thực hiện soft delete tài khoản. \\
+\hline
+\textbf{Branch \& Zone Module} & SUC13, SUC21 & Hỗ trợ tổ chức dữ liệu phòng theo chi nhánh và khu vực (zone), phục vụ chức năng tra cứu phòng và cung cấp ngữ cảnh dữ liệu cho dashboard quản trị. \\
+\hline
+\textbf{Admin Dashboard} & SUC21 & Hiển thị các thống kê tổng quan như số lượng người dùng, số lượng phòng, booking đang hoạt động, doanh thu và các yêu cầu đang chờ xử lý. \\
+\hline
+\textbf{Lodging Eligibility Module} & SUC16, SUC17 & Thực hiện kiểm tra điều kiện lưu trú và xử lý thông tin đánh giá trước khi khách hàng tiến hành nhận phòng. \\
+\hline
+\textbf{Customer Dashboard \& Profile} & SUC1, SUC20 & Cung cấp giao diện tổng quan cho khách hàng về booking hiện tại, các khoản thanh toán sắp tới và các thao tác nhanh; đồng thời hỗ trợ cập nhật thông tin cá nhân. \\
+\hline
+\textbf{Public-Facing Pages} & Không có SUC riêng & Bao gồm các trang công khai như About, Contact và Guidelines nhằm giới thiệu hệ thống, cung cấp thông tin liên hệ và các quy định dành cho người dùng chưa đăng nhập. \\
+\hline
+\textbf{Internationalization (i18n)} & Không có SUC riêng & Hỗ trợ chuyển đổi giữa tiếng Việt và tiếng Anh, đồng thời lưu lựa chọn ngôn ngữ của người dùng nhằm nâng cao khả năng tiếp cận giao diện mà không gắn với một SUC nghiệp vụ cụ thể. \\
+\hline
+\textbf{Cross-Cutting Technical Features} & Tất cả SUC & Bao gồm JWT authentication, rate limiting, middleware xử lý lỗi tập trung, HTTP interceptor, Angular route guards, tích hợp NgZone cho realtime synchronization, responsive layout và hệ thống kiểm thử Jest. Đây là các thành phần nền tảng phục vụ toàn bộ các SUC trong hệ thống. \\
+\hline
+\end{longtable}
+\endgroup
+
+Các SUC trong Bảng~\ref{tab:implementation-suc-mapping} được đối chiếu trực tiếp với các sơ đồ tuần tự đã trình bày trong Chương~3. Việc ánh xạ này bảo đảm rằng mỗi module triển khai đều có thể truy vết về một hoặc nhiều luồng nghiệp vụ đã được đặc tả trước đó.
+
+\subsection{Triển khai theo các luồng nghiệp vụ chính}
+
+Các lựa chọn triển khai trong chương này bám theo tài liệu chính thức của Angular,
+Express, TypeScript và Supabase để bảo đảm tính nhất quán giữa frontend, backend
+và tầng dữ liệu \cite{angular_docs,express_docs,typescript_docs,supabase_docs}.
+
+\subsubsection{Xác thực, phân quyền và quản lý hồ sơ người dùng}
+
+Nhóm chức năng này chủ yếu tương ứng với SUC1, SUC18 và SUC19. Ở tầng backend, module authentication chịu trách nhiệm xử lý đăng ký tài khoản, xác thực email bằng OTP, đăng nhập, gửi lại OTP, quên mật khẩu, đặt lại mật khẩu, đăng xuất và cập nhật hồ sơ cá nhân. JWT được sử dụng để nhận diện phiên đăng nhập, trong khi cơ chế RBAC được áp dụng nhằm kiểm soát quyền truy cập theo từng vai trò như customer, sale, accountant, manager và admin.
+
+Ở tầng frontend, Auth Guard và HTTP Interceptor được triển khai để bảo vệ các route yêu cầu xác thực và tự động đính kèm access token vào các request gửi đến backend. Cách triển khai này giúp bảo đảm tính nhất quán trong toàn bộ quy trình xác thực từ giao diện người dùng đến hệ thống backend, đồng thời tạo nền tảng bảo mật cho các chức năng khác như quản lý phòng, đặt cọc và thanh toán.
+
+\subsubsection{Quản lý phòng, giường, xem phòng và yêu cầu thuê}
+
+Nhóm chức năng này bao phủ các SUC12, SUC13, SUC14, SUC15, SUC2, SUC3 và SUC20. Module quản lý phòng và giường cho phép quản trị viên tạo, cập nhật, xóa và tra cứu phòng/giường dựa trên các tiêu chí như chi nhánh, khu vực, trạng thái và nhiều bộ lọc khác. Dữ liệu này được tái sử dụng trong giao diện khách hàng nhằm hiển thị các phòng còn trống, thông tin chi tiết phòng, hình ảnh và tiện ích đi kèm.
+
+Quy trình xem phòng và đăng ký thuê bắt đầu khi khách hàng tìm được phòng phù hợp và tiến hành gửi yêu cầu thuê hoặc đặt lịch xem phòng. Staff và admin có thể xem xét yêu cầu, xác nhận lịch hẹn và ghi nhận kết quả sau buổi xem phòng. Trạng thái xử lý của các yêu cầu được đồng bộ lên dashboard khách hàng, cho phép người dùng theo dõi tiến trình xử lý theo thời gian thực.
+
+\subsubsection{Đặt cọc, hợp đồng, thanh toán và thanh lý}
+
+Nhóm chức năng này tương ứng với các SUC4, SUC5, SUC6, SUC7, SUC8, SUC9, SUC10, SUC11, SUC16 và SUC17. Sau khi yêu cầu thuê được phê duyệt, hệ thống tiếp tục xử lý các bước đặt cọc, tạo hợp đồng, thu các khoản phí ban đầu, kiểm tra điều kiện lưu trú và bàn giao phòng. Đây là giai đoạn quan trọng nhất trong quy trình nghiệp vụ vì liên quan trực tiếp đến doanh thu, vòng đời hợp đồng và các yêu cầu pháp lý trong quá trình lưu trú.
+
+Hệ thống thanh toán và đối soát được triển khai theo hướng phân tách trách nhiệm rõ ràng giữa các vai trò. Staff và accountant chịu trách nhiệm xử lý thanh toán, theo dõi trạng thái đặt cọc, thực hiện billing định kỳ hàng tháng, tính toán chi phí cuối kỳ và xử lý hoàn tiền khi cần thiết. Các công thức hoàn tiền và khấu trừ được triển khai dựa trên các quy tắc nghiệp vụ đã được đặc tả trong phần use case tương ứng.
+
+\subsubsection{Các tính năng hỗ trợ và mở rộng}
+
+Một số thành phần như chat thời gian thực, dashboard quản trị, internationalization, các trang public và các cơ chế kỹ thuật cắt ngang không phải lúc nào cũng gắn với một SUC riêng biệt. Tuy nhiên, các thành phần này đóng vai trò quan trọng trong việc nâng cao trải nghiệm người dùng cũng như hiệu quả vận hành của hệ thống.
+
+Chat widget và admin chat inbox hỗ trợ trao đổi nhanh giữa khách hàng và nhân viên trong các quy trình liên quan đến booking, đặt cọc, hợp đồng và thanh lý. Cơ chế internationalization cho phép giao diện chuyển đổi linh hoạt giữa tiếng Việt và tiếng Anh mà không ảnh hưởng đến logic nghiệp vụ của hệ thống. Các trang công khai như About, Contact và Guidelines hỗ trợ cung cấp thông tin cho người dùng trước khi đăng nhập, trong khi dashboard quản trị giúp theo dõi tổng quan hoạt động toàn hệ thống.
+
+Về mặt kỹ thuật, các thành phần như JWT authentication, rate limiting, centralized error handling, route guards, tích hợp NgZone, Supabase Realtime synchronization, responsive layout và hệ thống kiểm thử Jest góp phần bảo đảm tính ổn định, khả năng mở rộng, khả năng bảo trì và tính an toàn của hệ thống.

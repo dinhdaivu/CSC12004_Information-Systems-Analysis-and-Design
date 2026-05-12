@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import * as QRCode from 'qrcode';
 import { AuthService } from '@core/services/auth.service';
+import { CheckoutService, SettlementDTO } from '@core/services/checkout.service';
+import { ContractsService, ContractListItem } from '@core/services/contracts.service';
 
 type ContractScreen =
   | 'residency'
@@ -269,7 +272,7 @@ interface AssetGroup {
                   </ul>
                 </div>
                 <div *ngIf="checkoutError" class="page-text" style="left: 460px; top: 386px; position: absolute; color: #b91c1c; font-size: 16px; font-weight: 700;">{{ checkoutError }}</div>
-                <button (click)="submitCheckoutRequest()" class="primary-btn" style="position: absolute; left: 984px; top: 543px; min-width: 238px;">Submit Request</button>
+                <button (click)="submitCheckoutRequest()" [disabled]="isSubmitting" class="primary-btn" style="position: absolute; left: 984px; top: 543px; min-width: 238px;">{{ isSubmitting ? 'Submitting…' : 'Submit Request' }}</button>
               </ng-container>
 
               <ng-container *ngSwitchCase="'checkout-summary'">
@@ -435,11 +438,20 @@ interface AssetGroup {
     </div>
   `
 })
-export class CustomerContractsComponent {
+export class CustomerContractsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly authService = inject(AuthService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly checkoutSvc = inject(CheckoutService);
+  private readonly contractsSvc = inject(ContractsService);
+  private readonly destroy$ = new Subject<void>();
+
+  activeContractId: string | null = null;
+  activeCheckoutId: string | null = null;
+  settlementData: SettlementDTO | null = null;
+  isSubmitting = false;
+  loadingContract = true;
 
   scaleFactor = 1;
   screen: ContractScreen = 'residency';
@@ -454,24 +466,24 @@ export class CustomerContractsComponent {
   checkoutReason = '';
   checkoutError = '';
   selectedPayment: PaymentMethod = 'momo';
-  damageFee = 500000;
-  readonly outstandingRent = 0;
-  readonly refundRate = 100;
+  damageFee = 0;
+  outstandingRent = 0;
+  refundRate = 100;
   evidenceFileName = '';
   disputeName = '';
   disputeBranch = '';
   disputeReason = '';
 
-  readonly residency = {
-    customerName: 'Nguyen Ngoc Linh Chi',
-    branch: 'To Hien Thanh',
-    roomBed: 'Room 302 - Bed A',
-    roomShort: 'THT.204',
-    moveInDate: '30/04/2026',
-    monthlyRent: 1000000,
-    deposit: 6000000,
-    status: 'Active',
-    term: '6 months',
+  residency = {
+    customerName: '—',
+    branch: '—',
+    roomBed: '—',
+    roomShort: '—',
+    moveInDate: '—',
+    monthlyRent: 0,
+    deposit: 0,
+    status: 'Loading...',
+    term: '—',
   };
 
   readonly assetGroups: AssetGroup[] = [
@@ -487,6 +499,15 @@ export class CustomerContractsComponent {
     this.translate.setDefaultLang(fallbackLang);
     this.translate.use(fallbackLang);
     this.onResize();
+  }
+
+  ngOnInit(): void {
+    this.loadActiveContract();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   @HostListener('window:resize')
@@ -507,14 +528,23 @@ export class CustomerContractsComponent {
   }
 
   get refundableDeposit(): number {
+    if (this.settlementData) {
+      return this.settlementData.depositTotal * this.settlementData.refundRate;
+    }
     return this.residency.deposit * this.refundRate / 100;
   }
 
   get totalDeductions(): number {
+    if (this.settlementData) {
+      return this.settlementData.deduction;
+    }
     return this.outstandingRent + this.damageFeeNumber;
   }
 
   get finalBalance(): number {
+    if (this.settlementData) {
+      return this.settlementData.finalAmount;
+    }
     return this.refundableDeposit - this.totalDeductions;
   }
 
@@ -591,8 +621,29 @@ export class CustomerContractsComponent {
       this.checkoutError = 'Please choose a proposed checkout date.';
       return;
     }
+    if (!this.activeContractId) {
+      this.checkoutError = 'No active contract found. Please contact staff.';
+      return;
+    }
     this.checkoutError = '';
-    this.screen = 'checkout-detail';
+    this.isSubmitting = true;
+    const user = this.authService.getCurrentUser();
+    this.checkoutSvc.createCheckoutRequest({
+      contract_id: this.activeContractId,
+      customer_id: user?.id ?? '',
+      requested_checkout_date: this.checkoutDate,
+      reason: this.checkoutReason || undefined,
+    }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.activeCheckoutId = res.data.id;
+        this.isSubmitting = false;
+        this.screen = 'checkout-detail';
+      },
+      error: (err) => {
+        this.checkoutError = err?.error?.message ?? 'Failed to submit request. Please try again.';
+        this.isSubmitting = false;
+      },
+    });
   }
 
   async confirmRefundPayment(): Promise<void> {
@@ -620,6 +671,83 @@ export class CustomerContractsComponent {
 
   formatCurrency(value: number): string {
     return `${new Intl.NumberFormat('en-US').format(value)}VND`;
+  }
+
+  private loadActiveContract(): void {
+    this.loadingContract = true;
+    this.contractsSvc.listContracts({ status: 'active', limit: 1 })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          const contract = res.data.data[0] ?? null;
+          if (contract) {
+            this.activeContractId = contract.id;
+            this.populateResidency(contract);
+            this.loadExistingCheckout();
+          }
+          this.loadingContract = false;
+        },
+        error: () => { this.loadingContract = false; },
+      });
+  }
+
+  private populateResidency(contract: ContractListItem): void {
+    const start = new Date(contract.startDate);
+    const end = new Date(contract.endDate);
+    const roomBed = contract.room?.roomNumber
+      ? (contract.bed?.bedNumber
+          ? `${contract.room.roomNumber} - Bed ${contract.bed.bedNumber}`
+          : contract.room.roomNumber)
+      : '—';
+    const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+
+    this.residency = {
+      customerName: contract.customer?.fullName ?? contract.customer?.email ?? '—',
+      branch: 'HomeStay Dorm',
+      roomBed,
+      roomShort: contract.room?.roomNumber ?? '—',
+      moveInDate: this.formatIsoDate(contract.startDate),
+      monthlyRent: contract.monthlyPrice,
+      deposit: contract.deposit?.amount ?? 0,
+      status: contract.status.charAt(0).toUpperCase() + contract.status.slice(1),
+      term: `${monthsDiff} months`,
+    };
+
+    const now = new Date();
+    if (end <= now) {
+      this.refundRate = 100;
+    } else {
+      const monthsStayed = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+      this.refundRate = monthsStayed < 6 ? 50 : 70;
+    }
+  }
+
+  private loadExistingCheckout(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user || !this.activeContractId) return;
+    this.checkoutSvc.listCheckoutRequests({ customerId: user.id, limit: 10 })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          const existing = res.data.data.find(
+            r => r.contractId === this.activeContractId && r.status !== 'cancelled'
+          );
+          if (existing) {
+            this.activeCheckoutId = existing.id;
+            if (existing.settlement) {
+              this.settlementData = existing.settlement;
+              this.refundRate = Math.round(existing.settlement.refundRate * 100);
+              this.damageFee = existing.settlement.deduction;
+            }
+          }
+        },
+        error: () => {},
+      });
+  }
+
+  private formatIsoDate(isoDate: string): string {
+    const d = new Date(isoDate);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
   }
 
   private async generatePaymentQr(): Promise<void> {

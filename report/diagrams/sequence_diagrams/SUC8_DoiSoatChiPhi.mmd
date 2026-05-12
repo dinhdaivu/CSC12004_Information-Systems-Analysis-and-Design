@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor KT as Kế toán
+    participant HT as Hệ thống
+    participant DB as Database
+
+    HT-->>KT: Thông báo có yêu cầu trả phòng
+    KT->>HT: Mở thông tin thuê phòng
+    HT->>DB: Truy vấn thông tin thuê, hợp đồng, đặt cọc
+    DB-->>HT: Thông tin đầy đủ
+    HT-->>KT: Hiển thị thông tin thuê và đặt cọc
+
+    Note over KT,DB: Thực hiện SUC9 - Tính toán chi phí
+    HT->>DB: Tính chi phí phát sinh (tiền phòng còn lại, phụ phí)
+    DB-->>HT: Kết quả tính toán
+    HT-->>KT: Tổng hợp kết quả (thu thêm / hoàn lại)
+
+    alt Đủ dữ liệu
+        KT->>HT: Xác nhận kết quả đối soát
+        HT->>DB: Lưu kết quả đối soát
+        DB-->>HT: Xác nhận lưu
+        HT-->>KT: Thông báo đối soát hoàn tất
+    else A1 - Thiếu dữ liệu
+        HT-->>KT: Thông báo lỗi thiếu thông tin, không thực hiện tiếp
+    else A2 - Dữ liệu bàn giao chưa đầy đủ
+        HT-->>KT: Tạm dừng đối soát, yêu cầu cập nhật tình trạng phòng
+    end

@@ -5,7 +5,7 @@
 | | |
 | --- | --- |
 | Actor | Khách hàng (Customer) |
-| Goal | Verify lodging conditions, sign contract, hand over room |
+| Goal | Verify lodging conditions, sign contract, then complete room handover |
 | Triggers | UC2-3 deposit confirmed |
 | Outcome | Contract active, room status = occupied |
 
@@ -60,6 +60,8 @@ sequenceDiagram
 ```
 
 ## UC3-3: Nhận phòng
+
+> Thực hiện sau khi UC3-2 hoàn tất, tức là sau khi hợp đồng đã được ký và các khoản phí ban đầu đã được thu xong.
 
 ```mermaid
 sequenceDiagram

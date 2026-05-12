@@ -1,0 +1,19 @@
+sequenceDiagram
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    KH->>HT: Chọn chức năng Đăng ký trả phòng
+    HT->>DB: Truy vấn hợp đồng thuê đang hiệu lực
+    DB-->>HT: Kết quả truy vấn
+
+    alt Có hợp đồng đang hiệu lực
+        HT-->>KH: Hiển thị thông tin thuê hiện tại
+        KH->>HT: Chọn ngày trả phòng dự kiến
+        KH->>HT: Xác nhận yêu cầu trả phòng
+        HT->>DB: Tạo yêu cầu trả phòng
+        DB-->>HT: Xác nhận tạo thành công
+        HT-->>KH: Thông báo yêu cầu trả phòng đã được gửi
+    else A1 - Không có hợp đồng
+        HT-->>KH: Thông báo không tìm thấy hợp đồng, kết thúc
+    end

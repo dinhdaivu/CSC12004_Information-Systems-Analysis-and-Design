@@ -44,6 +44,7 @@ export const roleMiddleware = (roles: string[]) => {
     }
 
     if (!roles.includes(req.user.role)) {
+      console.warn(`[roleMiddleware] Access denied — user role: "${req.user.role}", required one of: [${roles.join(', ')}], userId: ${req.user.id}`);
       return next(new ForbiddenError('Access denied'));
     }
 

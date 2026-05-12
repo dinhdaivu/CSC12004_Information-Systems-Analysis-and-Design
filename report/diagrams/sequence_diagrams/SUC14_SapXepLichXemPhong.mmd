@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor NV as Nhân viên Sales
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    NV->>HT: Mở yêu cầu thuê cần sắp lịch xem phòng
+    HT->>DB: Truy vấn thông tin khách hàng, phòng và khung giờ
+    DB-->>HT: Thông tin và lịch khả dụng
+    HT-->>NV: Hiển thị thông tin và các khung giờ trống
+    NV->>KH: Trao đổi và thống nhất thời gian xem phòng
+    NV->>HT: Chọn thời gian xem phòng phù hợp
+
+    alt Khung giờ còn trống
+        HT->>DB: Lưu lịch xem phòng
+        DB-->>HT: Xác nhận lưu
+        HT-->>NV: Xác nhận lịch hẹn đã tạo
+        HT-->>KH: Gửi thông tin lịch hẹn xem phòng
+    else A1 - Không còn khung giờ phù hợp
+        HT-->>NV: Thông báo hết khung giờ, chọn thời gian khác
+    else A2 - Khách hủy lịch hẹn
+        NV->>HT: Ghi nhận hủy lịch
+        HT->>DB: Cập nhật trạng thái lịch → Đã hủy
+        DB-->>HT: Xác nhận
+    end

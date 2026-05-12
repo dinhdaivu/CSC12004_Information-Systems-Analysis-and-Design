@@ -18,6 +18,9 @@ import usersRoutes from "@routes/users.routes";
 import adminRoutes from "@routes/admin.routes";
 import zoneRoutes from "./routes/zone.routes";
 import chatRoutes from "@routes/chat.routes";
+import checkoutRoutes from "@routes/checkout.routes";
+import handoverRoutes from "@routes/handover.routes";
+import { startScheduler } from "./scheduler";
 
 import { ApiResponseBuilder } from "@models/api.model";
 import { AppError } from "@utils/errors";
@@ -56,6 +59,8 @@ app.use("/api/deposits", depositRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contracts", contractsRoutes);
 app.use("/api/lodging-eligibility", lodgingEligibilityRoutes);
+app.use("/api/checkout-requests", checkoutRoutes);
+app.use("/api/handovers", handoverRoutes);
 app.use("/api/zones", zoneRoutes);
 
 // main routes
@@ -132,6 +137,7 @@ app.use((req: express.Request, res: express.Response) => {
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.warn(`Server is running on http://localhost:${PORT}`);
+    startScheduler();
   });
 }
 

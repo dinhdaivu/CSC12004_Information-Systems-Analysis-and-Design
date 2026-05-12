@@ -1,0 +1,31 @@
+sequenceDiagram
+    actor QL as Quản lý
+    participant HT as Hệ thống
+    participant DB as Database
+
+    QL->>HT: Mở màn hình quản lý người dùng
+    HT->>DB: Truy vấn danh sách người dùng
+    DB-->>HT: Danh sách người dùng
+    HT-->>QL: Hiển thị danh sách và thông tin cơ bản
+    QL->>HT: Tìm kiếm/lọc theo tên, email, vai trò, trạng thái
+    HT->>DB: Lọc người dùng theo tiêu chí
+    DB-->>HT: Kết quả lọc
+    HT-->>QL: Hiển thị kết quả tìm kiếm
+    QL->>HT: Chọn người dùng để xem chi tiết
+    HT->>DB: Truy vấn chi tiết người dùng
+    DB-->>HT: Thông tin chi tiết
+    HT-->>QL: Hiển thị chi tiết người dùng
+    QL->>HT: Cập nhật thông tin, vai trò hoặc trạng thái tài khoản
+    HT->>HT: Kiểm tra quyền và tính hợp lệ của thay đổi
+
+    alt Thay đổi hợp lệ
+        HT->>DB: Lưu thay đổi
+        DB-->>HT: Xác nhận cập nhật
+        HT-->>QL: Thông báo cập nhật thành công
+    else A1 - Không đủ quyền
+        HT-->>QL: Từ chối, hiển thị thông báo lỗi quyền truy cập
+    else A2 - Vai trò/trạng thái không hợp lệ
+        HT-->>QL: Thông báo lỗi, yêu cầu kiểm tra lại dữ liệu
+    else A3 - Không tìm thấy người dùng
+        HT-->>QL: Thông báo không có kết quả phù hợp
+    end

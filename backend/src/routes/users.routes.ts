@@ -1,6 +1,6 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { authMiddleware } from "@middleware/auth.middleware";
+import { authMiddleware, roleMiddleware } from "@middleware/auth.middleware";
 import { requireAdmin } from "@middleware/require-admin";
 import { UsersController } from "@controllers/users.controller";
 
@@ -13,35 +13,21 @@ const usersRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Apply middleware: rate limit → auth → admin check
+// Apply middleware: rate limit → auth
 router.use(usersRateLimiter);
 router.use(authMiddleware);
-router.use(requireAdmin);
 
 /**
  * GET /api/users
  * List all users with optional filters
  * Query params: page, limit, search, role, status
  */
-router.get("/", UsersController.listUsers.bind(UsersController));
+// Read: manager and admin can view users
+router.get("/", roleMiddleware(["manager", "admin"]), UsersController.listUsers.bind(UsersController));
+router.get("/:id", roleMiddleware(["manager", "admin"]), UsersController.getUserById.bind(UsersController));
 
-/**
- * GET /api/users/:id
- * Get user detail
- */
-router.get("/:id", UsersController.getUserById.bind(UsersController));
-
-/**
- * PATCH /api/users/:id
- * Update user role and/or status
- * Body: { role?: AppRole, status?: UserStatus }
- */
-router.patch("/:id", UsersController.updateUser.bind(UsersController));
-
-/**
- * DELETE /api/users/:id
- * Soft delete: set status to 'inactive'
- */
-router.delete("/:id", UsersController.deleteUser.bind(UsersController));
+// Write: admin only
+router.patch("/:id", requireAdmin, UsersController.updateUser.bind(UsersController));
+router.delete("/:id", requireAdmin, UsersController.deleteUser.bind(UsersController));
 
 export default router;

@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor KH as Khách hàng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    KH->>HT: Mở màn hình danh sách yêu cầu/đặt phòng
+    HT->>DB: Tải các yêu cầu thuộc về khách hàng hiện tại
+    DB-->>HT: Danh sách yêu cầu thuê, đặt cọc, hợp đồng, trả phòng
+    HT-->>KH: Hiển thị danh sách với trạng thái tương ứng
+    KH->>HT: Lọc hoặc chọn một yêu cầu để xem chi tiết
+    HT->>DB: Truy vấn chi tiết yêu cầu và hành động được phép
+    DB-->>HT: Chi tiết yêu cầu
+
+    alt Yêu cầu tồn tại và thuộc về khách hàng
+        HT-->>KH: Hiển thị chi tiết và các hành động được phép theo trạng thái
+        opt Thực hiện hành động
+            KH->>HT: Chọn hành động (ví dụ: xem thanh toán, tiếp tục quy trình)
+            HT-->>KH: Thực hiện điều hướng hoặc thao tác tương ứng
+        end
+    else A1 - Chưa có yêu cầu
+        HT-->>KH: Hiển thị trạng thái rỗng, gợi ý tra cứu phòng
+    else A2 - Yêu cầu không thuộc về khách hàng
+        HT-->>KH: Từ chối truy cập
+    else A3 - Hành động không hợp lệ theo trạng thái
+        HT-->>KH: Không thực hiện, hiển thị lý do
+    end

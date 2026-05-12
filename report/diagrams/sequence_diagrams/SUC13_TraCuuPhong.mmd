@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor ND as Người dùng
+    participant HT as Hệ thống
+    participant DB as Database
+
+    ND->>HT: Chọn chức năng tra cứu phòng/giường
+    HT->>DB: Truy vấn danh sách phòng
+    DB-->>HT: Danh sách phòng đầy đủ
+    HT-->>ND: Hiển thị danh sách phòng
+    ND->>HT: Nhập tiêu chí tìm kiếm (loại phòng, giá, trạng thái,...)
+    HT->>DB: Lọc phòng/giường theo tiêu chí
+
+    alt Có kết quả
+        DB-->>HT: Danh sách phòng lọc được
+        HT-->>ND: Hiển thị kết quả tìm kiếm
+        ND->>HT: Chọn phòng/giường để xem chi tiết
+        HT->>DB: Truy vấn chi tiết phòng/giường
+        DB-->>HT: Thông tin chi tiết
+        HT-->>ND: Hiển thị chi tiết phòng/giường và danh sách giường
+    else A1 - Không có kết quả
+        HT-->>ND: Thông báo không tìm thấy, gợi ý thay đổi tiêu chí
+    end

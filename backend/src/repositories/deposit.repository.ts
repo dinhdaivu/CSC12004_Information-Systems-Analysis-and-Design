@@ -357,6 +357,76 @@ export class DepositRepository {
     return (data ?? []).length;
   }
 
+  static async getBedPrice(bedId: string): Promise<number | null> {
+    const client = ensureClient();
+    const { data } = await client
+      .from('beds')
+      .select('price_per_month')
+      .eq('id', bedId)
+      .maybeSingle();
+    return data ? toNumber((data as { price_per_month: number | string }).price_per_month) : null;
+  }
+
+  static async getRoomPrice(roomId: string): Promise<number | null> {
+    const client = ensureClient();
+    const { data } = await client
+      .from('rooms')
+      .select('price_per_month')
+      .eq('id', roomId)
+      .maybeSingle();
+    return data ? toNumber((data as { price_per_month: number | string }).price_per_month) : null;
+  }
+
+  static async createDeposit(input: {
+    rentalRequestId?: string;
+    customerId: string;
+    roomId: string;
+    bedId?: string;
+    amount: number;
+    dueAt?: string;
+    notes?: string;
+  }): Promise<string> {
+    const client = ensureClient();
+    const { data, error } = await client
+      .from('deposit_requests')
+      .insert({
+        rental_request_id: input.rentalRequestId ?? null,
+        customer_id: input.customerId,
+        room_id: input.roomId,
+        bed_id: input.bedId ?? null,
+        amount: input.amount,
+        due_at: input.dueAt ?? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        notes: input.notes ?? null,
+        status: 'pending',
+      })
+      .select('id')
+      .single();
+
+    if (error) {
+      throw new InternalServerError(`Failed to create deposit: ${error.message}`);
+    }
+
+    return (data as { id: string }).id;
+  }
+
+  static async updateRentalRequestStatus(
+    rentalRequestId: string,
+    status: string,
+  ): Promise<void> {
+    const client = ensureClient();
+
+    const { error } = await client
+      .from("rental_requests")
+      .update({ status })
+      .eq("id", rentalRequestId);
+
+    if (error) {
+      throw new InternalServerError(
+        `Failed to update rental request status: ${error.message}`,
+      );
+    }
+  }
+
   static async createCompletedDepositPayment(input: {
     userId: string;
     depositRequestId: string;
