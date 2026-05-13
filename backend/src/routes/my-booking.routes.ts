@@ -30,6 +30,12 @@ router.get('/', MyBookingController.getList);
 // GET /api/my-bookings/:id - Lấy chi tiết
 router.get('/:id', MyBookingController.getDetail);
 
+// GET /api/my-bookings/:id/check-availability - Kiểm tra phòng/giường còn trống không
+router.get('/:id/check-availability', MyBookingController.checkAvailability);
+
+// POST /api/my-bookings/:id/submit-proof - Nộp minh chứng thanh toán cọc
+router.post('/:id/submit-proof', MyBookingController.submitProof);
+
 // POST /api/my-bookings/:id/actions - Thực hiện hành động (Hủy)
 router.post('/:id/actions', MyBookingController.performAction);
 

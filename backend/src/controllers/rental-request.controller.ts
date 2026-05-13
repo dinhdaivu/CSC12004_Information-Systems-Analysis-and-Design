@@ -70,7 +70,7 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
             .insert([{ 
                 ...requestData, 
                 customer_id: customerId,
-                    status: scheduledAt ? RentalRequestStatus.VIEWING_SCHEDULED : RentalRequestStatus.REQUESTED 
+                    status: RentalRequestStatus.REVIEWING
             }])
             .select()
             .single();
@@ -203,7 +203,43 @@ export const updateRentalRequestStatus = async (req: AuthRequest, res: Response,
             .single();
 
         if (error) throw new AppError(500, 'SUPABASE_UPDATE_ERROR', error.message);
-        
+
+        // When transitioning to deposit_pending, ensure a deposit_request row exists
+        if (updateData.status === RentalRequestStatus.DEPOSIT_PENDING && data.room_id) {
+            const { data: existing } = await supabaseServiceRole
+                .from('deposit_requests')
+                .select('id')
+                .eq('rental_request_id', data.id)
+                .in('status', ['pending', 'paid'])
+                .maybeSingle();
+
+            if (!existing) {
+                const { data: roomData } = await supabaseServiceRole
+                    .from('rooms')
+                    .select('price_per_month, max_capacity')
+                    .eq('id', data.room_id)
+                    .single();
+
+                let amount = 0;
+                if (roomData) {
+                    const bedsCount = data.bed_id ? 1 : (roomData.max_capacity || 1);
+                    amount = (roomData.price_per_month ?? 0) * 2 * bedsCount;
+                }
+
+                await supabaseServiceRole
+                    .from('deposit_requests')
+                    .insert({
+                        rental_request_id: data.id,
+                        customer_id: data.customer_id,
+                        room_id: data.room_id,
+                        bed_id: data.bed_id ?? null,
+                        amount,
+                        due_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                        status: 'pending',
+                    });
+            }
+        }
+
         res.status(200).json({ success: true, data, message: 'Cập nhật thành công' });
     } catch (error: unknown) {
         next(error);

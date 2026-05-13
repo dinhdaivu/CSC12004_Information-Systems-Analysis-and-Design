@@ -65,7 +65,7 @@ export class RentalRequestService {
           budget_max: payload.budget_max || null,
           people_count: payload.people_count || 1,
           note: payload.note || null,
-          status: scheduledAt ? 'viewing_scheduled' : 'requested'
+          status: 'reviewing'
         }
       ])
       .select()

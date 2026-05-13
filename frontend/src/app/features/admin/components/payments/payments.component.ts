@@ -491,7 +491,7 @@ type PaymentsVmData = {
                     type="button"
                     class="btn-verify"
                     [disabled]="isProofActionDisabled"
-                    (click)="openVerifyConfirmModal()"
+                    (click)="openApproveModal()"
                   >
                     {{ "ADMIN_PAYMENTS.PROOF.VERIFY" | translate }}
                   </button>
@@ -534,7 +534,7 @@ type PaymentsVmData = {
               </div>
 
               <div
-                *ngIf="isVerifyConfirmModalOpen"
+                *ngIf="isApproveModalOpen"
                 class="reject-modal-overlay"
               >
                 <div
@@ -542,9 +542,9 @@ type PaymentsVmData = {
                   role="dialog"
                   aria-modal="true"
                 >
-                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.VERIFY_TITLE" | translate }}</h1>
+                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.APPROVE_TITLE" | translate }}</h1>
                   <p class="modal-description">
-                    {{ "ADMIN_PAYMENTS.MODAL.VERIFY_DESC" | translate }}
+                    {{ "ADMIN_PAYMENTS.MODAL.APPROVE_DESC" | translate }}
                   </p>
 
                   <div class="button-group">
@@ -552,7 +552,7 @@ type PaymentsVmData = {
                       type="button"
                       class="btn-cancel"
                       [disabled]="proofActionLoading"
-                      (click)="closeVerifyConfirmModal()"
+                      (click)="closeApproveModal()"
                     >
                       {{ "COMMON.CANCEL" | translate }}
                     </button>
@@ -560,123 +560,7 @@ type PaymentsVmData = {
                       type="button"
                       class="btn-confirm"
                       [disabled]="proofActionLoading"
-                      (click)="openForwardRequestModal()"
-                    >
-                      {{ "COMMON.CONFIRM" | translate }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                *ngIf="isForwardRequestModalOpen"
-                class="reject-modal-overlay"
-              >
-                <div class="modal-request" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FORWARD_TITLE" | translate }}</h1>
-
-                  <form class="request-form" (ngSubmit)="submitVerifyForward()">
-                    <div class="form-group">
-                      <label for="guest-id">{{ "ADMIN_PAYMENTS.MODAL.GUEST_NAME_ID" | translate }}</label>
-                      <input
-                        type="text"
-                        id="guest-id"
-                        [ngModel]="forwardForm.guestNameId"
-                        name="guestNameId"
-                        readonly
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="branch">{{ "ADMIN_PAYMENTS.MODAL.BRANCH" | translate }}</label>
-                      <input
-                        type="text"
-                        id="branch"
-                        [ngModel]="forwardForm.branchName"
-                        name="branchName"
-                        readonly
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="room">{{ "ADMIN_PAYMENTS.MODAL.ROOM" | translate }}</label>
-                      <input
-                        type="text"
-                        id="room"
-                        [ngModel]="forwardForm.roomNumber"
-                        name="roomNumber"
-                        readonly
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="bed">{{ "ADMIN_PAYMENTS.MODAL.BED" | translate }}</label>
-                      <input
-                        type="text"
-                        id="bed"
-                        [ngModel]="forwardForm.bedNumber"
-                        name="bedNumber"
-                        readonly
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="amount">{{ "ADMIN_PAYMENTS.MODAL.AMOUNT" | translate }}</label>
-                      <input
-                        type="number"
-                        id="amount"
-                        [ngModel]="forwardForm.amount"
-                        name="amount"
-                        readonly
-                      />
-                    </div>
-
-                    <div class="button-group">
-                      <button
-                        type="button"
-                        class="btn-cancel"
-                        [disabled]="proofActionLoading"
-                        (click)="closeForwardRequestModal()"
-                      >
-                        {{ "COMMON.CANCEL" | translate }}
-                      </button>
-                      <button
-                        type="submit"
-                        class="btn-confirm"
-                        [disabled]="proofActionLoading"
-                      >
-                        {{ "COMMON.CONFIRM" | translate }}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-              <div
-                *ngIf="isFinalForwardConfirmModalOpen"
-                class="reject-modal-overlay"
-              >
-                <div class="modal-confirm" role="dialog" aria-modal="true">
-                  <h1 class="modal-title">{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_TITLE" | translate }}</h1>
-
-                  <div class="modal-content">
-                    <p>{{ "ADMIN_PAYMENTS.MODAL.FINAL_FORWARD_DESC" | translate }}</p>
-                  </div>
-
-                  <div class="button-group">
-                    <button
-                      type="button"
-                      class="btn-cancel"
-                      [disabled]="proofActionLoading"
-                      (click)="closeFinalForwardConfirmModal()"
-                    >
-                      {{ "COMMON.CANCEL" | translate }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn-confirm"
-                      [disabled]="proofActionLoading"
-                      (click)="confirmFinalForward()"
+                      (click)="confirmApproveDeposit()"
                     >
                       {{ "COMMON.CONFIRM" | translate }}
                     </button>
@@ -800,7 +684,6 @@ export class PaymentsComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly selectedBranchId$ = new BehaviorSubject<string | null>(null);
   private readonly reloadTrigger$ = new Subject<void>();
-  private branchesSnapshot: Branch[] = [];
 
   readonly skeletonRows = Array.from({ length: 6 });
 
@@ -832,10 +715,6 @@ export class PaymentsComponent implements OnDestroy {
         "Cannot load dashboard data. Please try again.",
       ),
     ),
-    map((state) => {
-      this.branchesSnapshot = state.data.branches;
-      return state;
-    }),
     shareReplay(1),
   );
   // Thêm property này vào component
@@ -848,17 +727,8 @@ export class PaymentsComponent implements OnDestroy {
 
   proofActionLoading = false;
   isRejectModalOpen = false;
-  isVerifyConfirmModalOpen = false;
-  isForwardRequestModalOpen = false;
-  isFinalForwardConfirmModalOpen = false;
+  isApproveModalOpen = false;
   rejectReason = "";
-  forwardForm = {
-    guestNameId: "",
-    branchName: "",
-    roomNumber: "",
-    bedNumber: "",
-    amount: 0,
-  };
   selectedDepositProof: DepositDetailApiItem | null = null;
   selectedDepositId: string | null = null;
   proofModalSubtitle = "";
@@ -998,17 +868,8 @@ export class PaymentsComponent implements OnDestroy {
     this.proofActionLoading = false;
     this.proofDetailLoading = false;
     this.isRejectModalOpen = false;
-    this.isVerifyConfirmModalOpen = false;
-    this.isForwardRequestModalOpen = false;
-    this.isFinalForwardConfirmModalOpen = false;
+    this.isApproveModalOpen = false;
     this.rejectReason = "";
-    this.forwardForm = {
-      guestNameId: "",
-      branchName: "",
-      roomNumber: "",
-      bedNumber: "",
-      amount: 0,
-    };
     this.selectedDepositProof = null;
     this.selectedDepositId = null;
     this.proofModalSubtitle = "";
@@ -1108,45 +969,19 @@ export class PaymentsComponent implements OnDestroy {
     }).subscribe();
   }
 
-  openVerifyConfirmModal(): void {
+  openApproveModal(): void {
     if (!this.isStatusPending(this.selectedDepositProof?.status)) {
       return;
     }
-
-    this.isVerifyConfirmModalOpen = true;
+    this.isApproveModalOpen = true;
   }
 
-  closeVerifyConfirmModal(): void {
-    this.isVerifyConfirmModalOpen = false;
+  closeApproveModal(): void {
+    this.isApproveModalOpen = false;
   }
 
-  openForwardRequestModal(): void {
-    if (!this.isStatusPending(this.selectedDepositProof?.status)) {
-      this.isVerifyConfirmModalOpen = false;
-      return;
-    }
-
-    this.prefillForwardFormFromDetail();
-    this.isVerifyConfirmModalOpen = false;
-    this.isForwardRequestModalOpen = true;
-  }
-
-  closeForwardRequestModal(): void {
-    this.isForwardRequestModalOpen = false;
-  }
-
-  submitVerifyForward(): void {
-    this.isForwardRequestModalOpen = false;
-    this.isFinalForwardConfirmModalOpen = true;
-  }
-
-  closeFinalForwardConfirmModal(): void {
-    this.isFinalForwardConfirmModalOpen = false;
-    this.isForwardRequestModalOpen = true;
-  }
-
-  confirmFinalForward(): void {
-    this.isFinalForwardConfirmModalOpen = false;
+  confirmApproveDeposit(): void {
+    this.isApproveModalOpen = false;
     this.verifyProof();
   }
 
@@ -1167,44 +1002,7 @@ export class PaymentsComponent implements OnDestroy {
     );
   }
 
-  private prefillForwardFormFromDetail(): void {
-    const detail = this.selectedDepositProof;
-    if (!detail) {
-      return;
-    }
 
-    const customerName = detail.customer?.fullName ?? "Unknown customer";
-    this.forwardForm = {
-      guestNameId: `${customerName} / ${detail.customerId}`,
-      branchName: this.resolveForwardBranchName(detail),
-      roomNumber: detail.room?.roomNumber ?? "N/A",
-      bedNumber: detail.bedNumber ?? "N/A",
-      amount: Number(detail.amount ?? 0),
-    };
-  }
-
-  private resolveForwardBranchName(detail: DepositDetailApiItem): string {
-    const roomBranchId = detail.room?.branchId;
-    if (roomBranchId) {
-      const matchedBranch = this.branchesSnapshot.find(
-        (branch) => branch.id === roomBranchId,
-      );
-      if (matchedBranch) {
-        return matchedBranch.name;
-      }
-    }
-
-    if (this.selectedBranchId) {
-      const selectedBranch = this.branchesSnapshot.find(
-        (branch) => branch.id === this.selectedBranchId,
-      );
-      if (selectedBranch) {
-        return selectedBranch.name;
-      }
-    }
-
-    return "N/A";
-  }
 
   private normalizeStatus(status: string | null | undefined): string {
     return (status ?? "").trim().toLowerCase();

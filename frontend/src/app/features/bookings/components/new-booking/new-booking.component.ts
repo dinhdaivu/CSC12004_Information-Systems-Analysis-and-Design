@@ -130,31 +130,64 @@ import type { User } from '@shared/models/auth.model';
               <input type="text" formControlName="note" [placeholder]="'BOOKING.SHARED_FULL' | translate" style="width: 250px; height: 50px; left: 1474px; top: 674px; position: absolute; background: #D9D9D9; border-radius: 10px; border: none; padding: 0 25px; color: black; font-size: 20px; font-family: Afacad; outline: none; z-index: 10;">
               
               <!-- UC1 §3.1.1: rental mode + preference criteria -->
-              <div style="position: absolute; left: 593px; top: 740px; width: 1130px;">
-                <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 24px; font-family: Afacad; font-size: 18px; color: black;">
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="radio" formControlName="rental_mode" value="whole_room" /> Whole Room
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="radio" formControlName="rental_mode" value="shared_bed" /> Shared Bed
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <div style="position: absolute; left: 593px; top: 750px; width: 1130px;">
+                <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; font-family: Afacad; font-size: 20px; color: black; font-weight: 500; align-items: center;">
+                  
+                  <!-- Rental Mode -->
+                  <div style="display: flex; gap: 20px; align-items: center;">
+                    <div (click)="bookingForm.patchValue({rental_mode: 'whole_room'})" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <div [style.background]="bookingForm.get('rental_mode')?.value === 'whole_room' ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; border-radius: 50%; transition: 0.3s;"></div>
+                      <span>Whole Room</span>
+                    </div>
+                    <div (click)="bookingForm.patchValue({rental_mode: 'shared_bed'})" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <div [style.background]="bookingForm.get('rental_mode')?.value === 'shared_bed' ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; border-radius: 50%; transition: 0.3s;"></div>
+                      <span>Shared Bed</span>
+                    </div>
+                  </div>
+
+                  <!-- Preferred Gender Custom Segmented Control -->
+                  <div style="display: flex; align-items: center; gap: 15px;">
                     <span>Preferred gender:</span>
-                    <select formControlName="preferred_gender" style="background:#D9D9D9; border-radius:6px; padding: 4px 8px; border: none; font-family: Afacad;">
-                      <option value="">Any</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                    <input type="checkbox" formControlName="prefers_quiet" /> Quiet
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                    <input type="checkbox" formControlName="needs_parking" /> Parking
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                    <input type="checkbox" formControlName="needs_air_conditioner" /> Air Con
-                  </label>
+                    <div style="display: flex; background: #D9D9D9; border-radius: 10px; overflow: hidden;">
+                      <div (click)="bookingForm.patchValue({preferred_gender: ''})" 
+                           [style.background]="bookingForm.get('preferred_gender')?.value === '' ? '#264893' : 'transparent'"
+                           [style.color]="bookingForm.get('preferred_gender')?.value === '' ? 'white' : 'black'"
+                           style="padding: 6px 16px; cursor: pointer; transition: 0.3s; font-weight: 600;">Any</div>
+                      <div (click)="bookingForm.patchValue({preferred_gender: 'male'})" 
+                           [style.background]="bookingForm.get('preferred_gender')?.value === 'male' ? '#264893' : 'transparent'"
+                           [style.color]="bookingForm.get('preferred_gender')?.value === 'male' ? 'white' : 'black'"
+                           style="padding: 6px 16px; cursor: pointer; transition: 0.3s; font-weight: 600;">Male</div>
+                      <div (click)="bookingForm.patchValue({preferred_gender: 'female'})" 
+                           [style.background]="bookingForm.get('preferred_gender')?.value === 'female' ? '#264893' : 'transparent'"
+                           [style.color]="bookingForm.get('preferred_gender')?.value === 'female' ? 'white' : 'black'"
+                           style="padding: 6px 16px; cursor: pointer; transition: 0.3s; font-weight: 600;">Female</div>
+                    </div>
+                  </div>
+
+                  <!-- Checkboxes -->
+                  <div style="display: flex; gap: 20px; align-items: center;">
+                    <div (click)="bookingForm.patchValue({prefers_quiet: !bookingForm.get('prefers_quiet')?.value})" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <div [style.background]="bookingForm.get('prefers_quiet')?.value ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                        <svg *ngIf="bookingForm.get('prefers_quiet')?.value" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                      <span>Quiet</span>
+                    </div>
+
+                    <div (click)="bookingForm.patchValue({needs_parking: !bookingForm.get('needs_parking')?.value})" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <div [style.background]="bookingForm.get('needs_parking')?.value ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                        <svg *ngIf="bookingForm.get('needs_parking')?.value" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                      <span>Parking</span>
+                    </div>
+
+                    <div (click)="bookingForm.patchValue({needs_air_conditioner: !bookingForm.get('needs_air_conditioner')?.value})" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                      <div [style.background]="bookingForm.get('needs_air_conditioner')?.value ? '#264893' : '#D9D9D9'" style="width: 20px; height: 20px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                        <svg *ngIf="bookingForm.get('needs_air_conditioner')?.value" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                      <span>Air Con</span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
@@ -162,19 +195,50 @@ import type { User } from '@shared/models/auth.model';
             </ng-container>
 
             <ng-container *ngIf="currentPage === 2">
-              <div style="width: 104px; height: 105px; left: 1107px; top: 523px; position: absolute; overflow: hidden">
-                <div style="width: 93.6px; height: 94.5px; left: 8px; top: 13.13px; position: absolute">
-                  <img src="assets/icons/Browse.png" alt="Browse" />
-                </div>
-              </div>
-              <div style="width: 607px; height: 266px; left: 855px; top: 489px; position: absolute; border-radius: 30px; border: 3px rgba(38, 72, 147, 0.40) solid"></div>
-              
               <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
               
-              <div (click)="fileInput.click()" style="width: 158px; height: 38px; left: 1080px; top: 644px; position: absolute; background: #264893; border-radius: 10px; cursor: pointer;"></div>
-              <div style="width: 158px; height: 38px; left: 1080px; top: 644px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 20px; font-family: Afacad; font-weight: 500; word-wrap: break-word; pointer-events: none;">{{ 'BOOKING.BROWSE' | translate }}</div>
-              
-              <div style="width: 224px; height: 38px; left: 1047px; top: 682px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 16px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ selectedFileName || ('BOOKING.UPLOAD_ID' | translate) }}</div>
+              <div style="width: 607px; height: 266px; left: 855px; top: 489px; position: absolute; border-radius: 30px; border: 3px rgba(38, 72, 147, 0.40) solid; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; overflow: hidden; background: rgba(255, 255, 255, 0.5);">
+                
+                <ng-container *ngIf="!selectedFilePreview && !isImageLoading">
+                  <img src="assets/icons/Browse.png" alt="Browse" style="width: 90px; height: 90px;" />
+                  <div (click)="fileInput.click()" style="padding: 10px 30px; background: #264893; border-radius: 10px; cursor: pointer; color: white; font-size: 20px; font-family: Afacad; font-weight: 500;">
+                    {{ 'BOOKING.BROWSE' | translate }}
+                  </div>
+                  <div style="color: #264893; font-size: 16px; font-family: Afacad; font-weight: 500;">
+                    {{ 'BOOKING.UPLOAD_ID' | translate }}
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="isImageLoading">
+                  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#264893" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+                      <line x1="12" y1="2" x2="12" y2="6"></line>
+                      <line x1="12" y1="18" x2="12" y2="22"></line>
+                      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                      <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                      <line x1="2" y1="12" x2="6" y2="12"></line>
+                      <line x1="18" y1="12" x2="22" y2="12"></line>
+                      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                      <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                    </svg>
+                    <div style="color: #264893; font-size: 18px; font-family: Afacad; font-weight: 500;">Processing image...</div>
+                    <style>
+                      @keyframes spin { 100% { transform: rotate(360deg); } }
+                    </style>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="selectedFilePreview && !isImageLoading">
+                  <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e0e0e0;">
+                    <img [src]="selectedFilePreview" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                    <div style="position: absolute; bottom: 15px; display: flex; gap: 10px; background: rgba(255, 255, 255, 0.9); padding: 5px 15px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); align-items: center;">
+                      <span style="color: #264893; font-size: 14px; font-family: Afacad; font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ selectedFileName }}</span>
+                      <div (click)="fileInput.click()" style="cursor: pointer; background: #264893; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-family: Afacad; font-weight: 600;">Change</div>
+                    </div>
+                  </div>
+                </ng-container>
+
+              </div>
               
               <button type="button" (click)="currentPage = 3" [disabled]="bookingForm.invalid || !selectedFile" style="all: unset; position: absolute; left: 1470px; top: 824px; cursor: pointer; z-index： 10;" [style.opacity]="(bookingForm.invalid || !selectedFile) ? '0.5' : '1'">
                 <div style="width: 215px; height: 70px; background: #264893; border-radius: 40px"></div>
@@ -227,19 +291,26 @@ import type { User } from '@shared/models/auth.model';
           </ng-container>
 
           <ng-container *ngIf="currentPage < 3">
-            <div style="position: absolute; left: 1100px; top: 900px; width: 100px; height: 30px; text-align: center; justify-content: center; display: flex; flex-direction: row; gap: 10px;">
+            <div style="position: absolute; left: 1080px; top: 900px; width: 150px; height: 30px; display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px;">
+              <span (click)="currentPage = 1" 
+                    [style.color]="currentPage === 1 ? 'rgba(0, 0, 0, 0.30)' : 'black'"
+                    [style.pointer-events]="currentPage === 1 ? 'none' : 'auto'"
+                    style="cursor: pointer; font-size: 24px; font-family: Afacad; font-weight: 500;">&lt;</span>
+              
               <span (click)="currentPage = 1" 
                     [style.color]="currentPage === 1 ? 'black' : 'rgba(0, 0, 0, 0.50)'" 
                     [style.fontWeight]="currentPage === 1 ? '700' : '400'"
-                    style="cursor: pointer; font-size: 20px; font-family: Afacad; word-wrap: break-word">&lt;&nbsp;&nbsp;1&nbsp;&nbsp;</span>
+                    style="cursor: pointer; font-size: 24px; font-family: Afacad;">1</span>
               
               <span (click)="currentPage = 2" 
                     [style.color]="currentPage === 2 ? 'black' : 'rgba(0, 0, 0, 0.50)'" 
                     [style.fontWeight]="currentPage === 2 ? '700' : '400'"
-                    style="cursor: pointer; font-size: 20px; font-family: Afacad; word-wrap: break-word">2</span>
+                    style="cursor: pointer; font-size: 24px; font-family: Afacad;">2</span>
                     
-              <span style="color: rgba(0, 0, 0, 0.30); font-size: 20px; font-family: Afacad; font-weight: 400; word-wrap: break-word">&nbsp;&nbsp;</span>
-              <span (click)="currentPage = 2" style="cursor: pointer; color: black; font-size: 20px; font-family: Afacad; font-weight: 400; word-wrap: break-word">&nbsp;&gt;</span>
+              <span (click)="currentPage = 2" 
+                    [style.color]="currentPage === 2 ? 'rgba(0, 0, 0, 0.30)' : 'black'"
+                    [style.pointer-events]="currentPage === 2 ? 'none' : 'auto'"
+                    style="cursor: pointer; font-size: 24px; font-family: Afacad; font-weight: 500;">&gt;</span>
             </div>
           </ng-container>
 
@@ -268,6 +339,8 @@ export class NewBookingComponent implements OnInit {
   // Variables for File Upload
   selectedFile: File | null = null;
   selectedFileName: string = '';
+  selectedFilePreview: string | null = null;
+  isImageLoading = false;
   
   errorMessage = '';
 
@@ -387,12 +460,20 @@ export class NewBookingComponent implements OnInit {
   }
 
   // Tương tác File Upload
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const target = event.target as HTMLInputElement;
     const file: File | undefined = target.files?.[0];
     if (file) {
+      this.isImageLoading = true;
+      this.selectedFilePreview = null;
+      this.cdr.detectChanges();
+      
       this.selectedFile = file;
       this.selectedFileName = file.name;
+      this.selectedFilePreview = await this.toBase64(file);
+      
+      this.isImageLoading = false;
+      this.cdr.detectChanges();
     }
   }
 

@@ -7,30 +7,38 @@
 -- ============================================================
 -- New Rooms (only the additions — existing rooms are skipped)
 -- ============================================================
-INSERT INTO public.rooms (branch_id, room_number, room_type, max_capacity, price_per_month, amenities, status)
-SELECT b.id, r.room_number, r.room_type, r.max_capacity, r.price_per_month, r.amenities, r.status::public.room_status
+INSERT INTO public.rooms (branch_id, zone_id, room_number, room_type, max_capacity, price_per_month, amenities, status)
+SELECT b.id, z.id, r.room_number, r.room_type, r.max_capacity, r.price_per_month, r.amenities, r.status::public.room_status
 FROM (
     VALUES
         -- Tô Hiến Thành
-        ('Tô Hiến Thành', 'THT-102', 'Single', 1, 3500000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],            'available'),
-        ('Tô Hiến Thành', 'THT-202', 'Shared', 4, 1800000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],              'available'),
-        ('Tô Hiến Thành', 'THT-301', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
-        ('Tô Hiến Thành', 'THT-302', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],           'available'),
+        ('Tô Hiến Thành', 'Floor 1 - Female Zone', 'THT-102', 'Single', 1, 3500000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],            'available'),
+        ('Tô Hiến Thành', 'Floor 1 - Male Zone', 'THT-202', 'Shared', 4, 1800000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],              'available'),
+        ('Tô Hiến Thành', 'Floor 2 - Female Zone', 'THT-301', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
+        ('Tô Hiến Thành', 'Floor 2 - Female Zone', 'THT-302', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],           'available'),
 
         -- Trần Não
-        ('Trần Não', 'TN-102', 'Single', 1, 3200000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
-        ('Trần Não', 'TN-203', 'Shared', 4, 1600000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],                    'available'),
-        ('Trần Não', 'TN-301', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
-        ('Trần Não', 'TN-302', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],      'available'),
+        ('Trần Não', 'Floor 1 - Female Zone', 'TN-102', 'Single', 1, 3200000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
+        ('Trần Não', 'Floor 1 - Male Zone', 'TN-203', 'Shared', 4, 1600000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],                    'available'),
+        ('Trần Não', 'Floor 2 - Female Zone', 'TN-301', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
+        ('Trần Não', 'Floor 2 - Female Zone', 'TN-302', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],      'available'),
 
         -- Nguyễn Cửu Vân
-        ('Nguyễn Cửu Vân', 'NCV-102', 'Single', 1, 3800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available'),
-        ('Nguyễn Cửu Vân', 'NCV-204', 'Shared', 6, 1700000.00, ARRAY['wifi', 'shared_bathroom', 'locker'],                               'available'),
-        ('Nguyễn Cửu Vân', 'NCV-301', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
-        ('Nguyễn Cửu Vân', 'NCV-302', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available')
-) AS r(branch_name, room_number, room_type, max_capacity, price_per_month, amenities, status)
+        ('Nguyễn Cửu Vân', 'Floor 1 - Female Zone', 'NCV-102', 'Single', 1, 3800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available'),
+        ('Nguyễn Cửu Vân', 'Floor 1 - Male Zone', 'NCV-204', 'Shared', 6, 1700000.00, ARRAY['wifi', 'shared_bathroom', 'locker'],                               'available'),
+        ('Nguyễn Cửu Vân', 'Floor 2 - Female Zone', 'NCV-301', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
+        ('Nguyễn Cửu Vân', 'Floor 2 - Female Zone', 'NCV-302', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available')
+) AS r(branch_name, zone_name, room_number, room_type, max_capacity, price_per_month, amenities, status)
 JOIN public.branches b ON b.name = r.branch_name
-ON CONFLICT (branch_id, room_number) DO NOTHING;
+JOIN public.zones z ON z.name = r.zone_name AND z.branch_id = b.id
+ON CONFLICT (branch_id, room_number) DO UPDATE
+SET zone_id = EXCLUDED.zone_id,
+    room_type = EXCLUDED.room_type,
+    max_capacity = EXCLUDED.max_capacity,
+    price_per_month = EXCLUDED.price_per_month,
+    amenities = EXCLUDED.amenities,
+    status = EXCLUDED.status,
+    updated_at = now();
 
 -- ============================================================
 -- New Beds for the new rooms

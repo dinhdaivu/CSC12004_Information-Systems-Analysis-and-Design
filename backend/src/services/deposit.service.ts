@@ -11,6 +11,10 @@ import {
   NotFoundError,
   ValidationError,
 } from "@utils/errors";
+import {
+  sendDepositConfirmedEmail,
+  sendDepositFailedEmail,
+} from "./email.service";
 
 export class DepositService {
   static async createDeposit(input: {
@@ -117,6 +121,26 @@ export class DepositService {
       );
     }
 
+    if (currentDeposit.customer?.email) {
+      // Best-effort fetch for branch name
+      let branchName = "Homestay Dorm";
+      try {
+        const { data: branch } = await DepositRepository.getRoomById(currentDeposit.roomId).then(async (r) => {
+          if (!r) return { data: null };
+          const client = (await import("@config/supabase")).supabaseServiceRole;
+          return client.from("branches").select("name").eq("id", r.branchId).single();
+        });
+        if (branch) branchName = branch.name;
+      } catch (e) {}
+
+      await sendDepositConfirmedEmail({
+        toEmail: currentDeposit.customer.email,
+        customerName: currentDeposit.customer.fullName,
+        roomLabel: currentDeposit.bedId ? `Giường ${currentDeposit.bedNumber || ''}` : `Phòng ${room.roomNumber}`,
+        branchName
+      }).catch(console.error);
+    }
+
     return {
       deposit: await this.getDepositById(id),
     };
@@ -160,6 +184,14 @@ export class DepositService {
           "Failed to update room status while cancelling deposit",
         );
       }
+    }
+
+    if (currentDeposit.customer?.email) {
+      await sendDepositFailedEmail({
+        toEmail: currentDeposit.customer.email,
+        customerName: currentDeposit.customer.fullName,
+        reason: "Admin rejected your payment proof."
+      }).catch(console.error);
     }
 
     return {

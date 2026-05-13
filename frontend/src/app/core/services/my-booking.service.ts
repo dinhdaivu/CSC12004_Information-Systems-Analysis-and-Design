@@ -39,12 +39,16 @@ export class MyBookingService {
   }
 
   /**
-   * Gửi ảnh bằng chứng đặt cọc (Base64) lên backend
+   * Kiểm tra tình trạng phòng/giường còn trống hay không
    */
-  updateDepositProof(depositId: string, base64Image: string): Observable<ApiResponse<unknown>> {
-    // Gọi PATCH /api/deposits/:id
-    return this.http.patch<ApiResponse<unknown>>(`${environment.apiUrl}/deposits/${depositId}`, {
-      proof_image_base64: base64Image
-    });
+  checkAvailability(id: string): Observable<ApiResponse<{ isAvailable: boolean }>> {
+    return this.http.get<ApiResponse<{ isAvailable: boolean }>>(`${this.apiUrl}/${id}/check-availability`);
+  }
+
+  /**
+   * Nộp minh chứng thanh toán cọc
+   */
+  submitProof(id: string, proofImage: string): Observable<ApiResponse<unknown>> {
+    return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/${id}/submit-proof`, { proofImage });
   }
 }

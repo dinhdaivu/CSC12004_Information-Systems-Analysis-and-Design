@@ -10,6 +10,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "@utils/errors";
+import { sendViewingApprovedEmail, sendViewingDeclinedEmail } from "./email.service";
 
 type GetAppointmentsInput = {
   month?: string;
@@ -56,9 +57,9 @@ const VIEWING_APPOINTMENT_COLUMNS = [
   "scheduled_at",
   "result_note",
   "status",
-  "customer:users!viewing_appointments_customer_id_fkey(full_name)",
+  "customer:users!viewing_appointments_customer_id_fkey(full_name,email)",
   "sale:users!viewing_appointments_sale_id_fkey(full_name)",
-  "rental_requests(preferred_room_type, branches(name), rooms(room_number))",
+  "rental_requests(preferred_room_type, branches(name,address), rooms(room_number))",
   "created_at",
   "updated_at",
 ].join(",");
@@ -290,6 +291,42 @@ export class ViewingAppointmentsService {
         .from("rental_requests")
         .update({ status: rentalStatus })
         .eq("id", rentalRequestId);
+    }
+
+    // Send email notification to customer
+    try {
+      const customerEmail: string | undefined = (data as any).customer?.email;
+      const customerName: string = (data as any).customer?.full_name ?? 'Valued Customer';
+      const roomNumber: string = (data as any).rental_requests?.rooms?.room_number ?? 'N/A';
+      const branchName: string = (data as any).rental_requests?.branches?.name ?? 'Homestay Dorm';
+      const branchAddress: string = (data as any).rental_requests?.branches?.address ?? '';
+      const scheduledAt: string = (data as any).scheduled_at ?? new Date().toISOString();
+
+      if (customerEmail) {
+        if (status === 'scheduled') {
+          await sendViewingApprovedEmail({
+            toEmail: customerEmail,
+            customerName,
+            scheduledAt,
+            roomLabel: `Room ${roomNumber}`,
+            branchName,
+            branchAddress,
+            resultNote,
+          });
+        } else if (status === 'cancelled') {
+          await sendViewingDeclinedEmail({
+            toEmail: customerEmail,
+            customerName,
+            scheduledAt,
+            roomLabel: `Room ${roomNumber}`,
+            branchName,
+            resultNote,
+          });
+        }
+      }
+    } catch (emailErr) {
+      // Email failure should not block the API response
+      console.error('[Email] Failed to send viewing notification:', emailErr);
     }
 
     const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);

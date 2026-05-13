@@ -240,7 +240,7 @@ type AppointmentFilters = {
                   <h4 class="text-lg font-bold text-[#264893] mb-4">
                     {{ "ADMIN_SCHEDULED.APPOINTMENT_DATE" | translate }} {{ formatListDateWithWeekday(selectedDate) }}
                   </h4>
-                  
+
                   <div *ngIf="appointmentsForSelectedDate.length === 0" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80">
                     {{ "ADMIN_SCHEDULED.NO_APPOINTMENTS_DATE" | translate }}
                   </div>

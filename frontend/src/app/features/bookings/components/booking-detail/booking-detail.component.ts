@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MyBookingService } from '../../../../core/services/my-booking.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -18,10 +19,12 @@ interface BookingDetail {
   id: string;
   status: string;
   preferred_room_type: string | null;
-  move_in_date: string | null;
+  expected_move_in_date: string | null;
   move_out_date: string | null;
-  number_of_occupants: number | null;
+  rental_duration_months?: number | null;
+  people_count: number | null;
   notes: string | null;
+  note: string | null;
   created_at: string;
   branches?: { id: string; name: string; address: string; phone: string };
   rooms?: { id: string; room_number: string; room_type: string; price_per_month: number };
@@ -32,7 +35,7 @@ interface BookingDetail {
 @Component({
   selector: 'app-booking-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, FormsModule],
   template: `
     <div [style.height.px]="1080 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: #FEF4DF;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;">
@@ -99,36 +102,32 @@ interface BookingDetail {
               <div style="color: #595959; font-size: 20px; font-family: Big Shoulders Text; font-weight: 600; margin-bottom: 40px;">Track your booking progress</div>
 
               <!-- Track line -->
-              <div style="position: relative; width: 100%; height: 80px; display: flex; align-items: center;">
+              <div style="position: relative; width: 100%; height: 120px; display: flex;">
                 <!-- Grey base line -->
                 <div style="position: absolute; left: 60px; right: 60px; height: 4px; background: #D9D9D9; top: 30px;"></div>
                 <!-- Blue progress line -->
                 <div [style.width]="getLinePercent()" style="position: absolute; left: 60px; height: 4px; background: #264893; top: 30px; transition: width 0.3s ease;"></div>
 
                 <!-- Step 1 -->
-                <div style="position: absolute; left: 30px; display: flex; flex-direction: column; align-items: center; width: 80px;">
-                  <div [style.background]="getStepBg(1)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900;" [style.color]="getStepColor(1)">1</div>
+                <div style="position: absolute; left: -10px; top: 0; display: flex; flex-direction: column; align-items: center; width: 160px;">
+                  <div [style.background]="getStepBg(1)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; margin-bottom: 8px;" [style.color]="getStepColor(1)">1</div>
+                  <div style="text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Under Review</div>
                 </div>
                 <!-- Step 2 -->
-                <div style="position: absolute; left: calc(33% - 10px); display: flex; flex-direction: column; align-items: center; width: 80px;">
-                  <div [style.background]="getStepBg(2)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900;" [style.color]="getStepColor(2)">2</div>
+                <div style="position: absolute; left: calc(33% - 50px); top: 0; display: flex; flex-direction: column; align-items: center; width: 160px;">
+                  <div [style.background]="getStepBg(2)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; margin-bottom: 8px;" [style.color]="getStepColor(2)">2</div>
+                  <div style="text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Viewing Scheduled</div>
                 </div>
                 <!-- Step 3 -->
-                <div style="position: absolute; left: calc(66% - 10px); display: flex; flex-direction: column; align-items: center; width: 80px;">
-                  <div [style.background]="getStepBg(3)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900;" [style.color]="getStepColor(3)">3</div>
+                <div style="position: absolute; left: calc(66% - 50px); top: 0; display: flex; flex-direction: column; align-items: center; width: 160px;">
+                  <div [style.background]="getStepBg(3)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; margin-bottom: 8px;" [style.color]="getStepColor(3)">3</div>
+                  <div style="text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Awaiting Deposit</div>
                 </div>
                 <!-- Step 4 -->
-                <div style="position: absolute; right: 30px; display: flex; flex-direction: column; align-items: center; width: 80px;">
-                  <div [style.background]="getStepBg(4)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900;" [style.color]="getStepColor(4)">4</div>
+                <div style="position: absolute; right: -10px; top: 0; display: flex; flex-direction: column; align-items: center; width: 160px;">
+                  <div [style.background]="getStepBg(4)" style="width: 60px; height: 60px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; margin-bottom: 8px;" [style.color]="getStepColor(4)">4</div>
+                  <div style="text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Confirmed</div>
                 </div>
-              </div>
-
-              <!-- Labels (UC1+UC2 happy path) -->
-              <div style="display: flex; justify-content: space-between; margin-top: 8px; padding: 0 20px;">
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Under Review</div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Viewing Scheduled</div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Awaiting Deposit</div>
-                <div style="width: 160px; text-align: center; color: #264893; font-size: 20px; font-family: Big Shoulders Text; font-weight: 700;">Confirmed</div>
               </div>
 
               <!-- Terminal banner — rejected/cancelled are end states, not progressions -->
@@ -144,12 +143,28 @@ interface BookingDetail {
                 </div>
               </div>
 
-              <!-- Status badge -->
-              <div style="margin-top: 24px;">
-                <span [style.background]="statusBadgeBg()" [style.color]="statusBadgeColor()" style="display: inline-block; padding: 6px 20px; border-radius: 9999px; font-size: 22px; font-family: Big Shoulders Text; font-weight: 700;">
-                  {{ statusLabel() }}
-                </span>
+              <!-- Deposit Instructions CTA — shown whenever awaiting deposit -->
+              <div *ngIf="booking.status === 'deposit_pending'"
+                   style="margin-top: 24px; display: flex; align-items: center; justify-content: space-between;
+                          background: #e8edf8; border-radius: 16px; padding: 18px 28px;">
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700;">
+                    Ready to secure your room?
+                  </div>
+                  <div style="color: #595959; font-size: 16px; font-family: Afacad;">
+                    Learn how to calculate and submit your deposit payment.
+                  </div>
+                </div>
+                <button (click)="openDepositModal()"
+                        style="padding: 12px 28px; background: #264893; color: white; border: none;
+                               border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                               font-size: 20px; font-weight: 700; cursor: pointer; white-space: nowrap;
+                               box-shadow: 0 4px 14px rgba(38,72,147,0.3);"
+                        onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                  Deposit Instructions
+                </button>
               </div>
+
             </div>
 
             <!-- Booking info card -->
@@ -172,15 +187,15 @@ interface BookingDetail {
                 </div>
                 <div>
                   <div style="color: #8a8a8a; font-size: 18px; font-family: Afacad; font-weight: 600;">Move-in Date</div>
-                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ formatDate(booking.move_in_date) }}</div>
+                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ formatDate(booking.expected_move_in_date) }}</div>
                 </div>
                 <div>
                   <div style="color: #8a8a8a; font-size: 18px; font-family: Afacad; font-weight: 600;">Move-out Date</div>
-                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ formatDate(booking.move_out_date) }}</div>
+                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ calculateMoveOutDate(booking.expected_move_in_date, booking.rental_duration_months) }}</div>
                 </div>
                 <div>
                   <div style="color: #8a8a8a; font-size: 18px; font-family: Afacad; font-weight: 600;">Occupants</div>
-                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ booking.number_of_occupants || 1 }}</div>
+                  <div style="color: #264893; font-size: 24px; font-family: Afacad; font-weight: 700;">{{ booking.people_count || 1 }}</div>
                 </div>
                 <div>
                   <div style="color: #8a8a8a; font-size: 18px; font-family: Afacad; font-weight: 600;">Submitted</div>
@@ -221,7 +236,12 @@ interface BookingDetail {
 
               <!-- Payment instructions for pending deposit -->
               <div *ngIf="deposit.status === 'pending'" style="background: #fffbf0; border: 2px solid #f0d080; border-radius: 16px; padding: 24px;">
-                <div style="color: #264893; font-size: 26px; font-family: Big Shoulders Text; font-weight: 700; margin-bottom: 12px;">Payment Instructions</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <div style="color: #264893; font-size: 26px; font-family: Big Shoulders Text; font-weight: 700;">Payment Instructions</div>
+                  <button (click)="openDepositModal()" style="padding: 10px 24px; background: #264893; color: white; border: none; border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(38,72,147,0.25); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                    Deposit Instructions
+                  </button>
+                </div>
                 <div style="color: #595959; font-size: 20px; font-family: Afacad; line-height: 1.6;">
                   Please transfer <strong style="color:#264893">{{ formatAmount(deposit.amount) }} VND</strong> to our bank account below. Include your booking ID in the transfer description.
                 </div>
@@ -260,6 +280,206 @@ interface BookingDetail {
               </div>
             </div>
 
+
+          <!-- ══════════════════════════════════════════════════ -->
+          <!-- Deposit Instructions Modal                        -->
+          <!-- ══════════════════════════════════════════════════ -->
+          <div *ngIf="showDepositInstructions"
+               style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+                      display: flex; align-items: center; justify-content: center;"
+               (click)="showDepositInstructions = false">
+            <div (click)="$event.stopPropagation()"
+                 style="background: #f6f6f6; border-radius: 25px; width: 780px; max-height: 88vh;
+                        overflow-y: auto; padding: 48px 52px; position: relative;
+                        box-shadow: 0 20px 60px rgba(38,72,147,0.22);">
+
+              <!-- Close button -->
+              <button (click)="showDepositInstructions = false"
+                      style="position: absolute; top: 20px; right: 24px; background: none; border: none;
+                             font-size: 28px; color: #8a8a8a; cursor: pointer; line-height: 1;">&#10005;</button>
+
+              <!-- Title -->
+              <div style="color: #264893; font-size: 38px; font-family: 'Big Shoulders Text', sans-serif;
+                          font-weight: 900; margin-bottom: 4px; letter-spacing: 1px;">
+                Deposit Instructions
+              </div>
+              <div style="width: 56px; height: 4px; background: #264893; border-radius: 4px; margin-bottom: 28px;"></div>
+
+              <!-- Step 1 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">1</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Eligibility Check</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    Our sales team will review your profile and verify you meet the dormitory requirements — including gender policy, nationality, required documents, and financial capacity. They will also confirm the room or bed is still available at this time.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">2</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Deposit Amount Calculation</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    The deposit is calculated as:<br/>
+                    <div style="margin: 10px 0 10px 0; padding: 14px 20px; background: #e8edf8; border-radius: 12px; border-left: 4px solid #264893;">
+                      <span style="color: #264893; font-family: 'Big Shoulders Text', sans-serif; font-size: 19px; font-weight: 900;">
+                        Deposit = (2 months rent) &times; (number of beds rented)
+                      </span>
+                    </div>
+                    For a <strong>whole room</strong>, the number of beds equals the room's full capacity (e.g. a 4-person room = 4 beds).
+                    The accountant department will calculate the exact amount and send you a payment request.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">3</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Make Payment</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    You may pay your deposit by <strong>cash</strong> or <strong>bank transfer</strong>.
+                  </div>
+                  <div *ngIf="deposit" style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: white; border-radius: 14px; padding: 14px 16px; border: 1.5px solid #e0e7ff;">
+                      <div style="color: #8a8a8a; font-size: 14px; font-family: Afacad; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Amount Due</div>
+                      <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 900; margin-top: 2px;">{{ formatAmount(deposit.amount) }} VND</div>
+                    </div>
+                    <div style="background: white; border-radius: 14px; padding: 14px 16px; border: 1.5px solid #e0e7ff;">
+                      <div style="color: #8a8a8a; font-size: 14px; font-family: Afacad; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Payment Deadline</div>
+                      <div style="color: #264893; font-size: 20px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 900; margin-top: 2px;">{{ formatDate(deposit.due_at) }}</div>
+                    </div>
+                  </div>
+                  <!-- 24h warning -->
+                  <div style="margin-top: 12px; padding: 12px 16px; background: #fff3cd; border-radius: 12px;
+                              border-left: 4px solid #f59e0b;">
+                    <span style="color: #92400e; font-size: 16px; font-family: Afacad; font-weight: 700;">
+                      You have 24 hours from receiving the payment request to complete your deposit.
+                      If payment is not received within this window, your deposit request will be automatically cancelled.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 32px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">4</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Submit Proof of Payment</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    After completing your transfer, send a screenshot or photo of the transaction receipt to our Sales team.
+                    The manager will verify the payment. Once confirmed, your deposit is complete and your room/bed is officially secured — no other tenants will be able to deposit on it.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 32px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">5</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Check-In Scheduling</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    After the deposit is confirmed, our Sales team will contact you to arrange the move-in date and check-in procedures according to your rental agreement.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Term Checkbox -->
+              <div *ngIf="!showPaymentScreen" style="margin-top: 16px; margin-bottom: 24px;">
+                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="termsAccepted"
+                         style="width: 24px; height: 24px; cursor: pointer; accent-color: #264893;">
+                  <span style="color: #264893; font-size: 20px; font-family: Afacad; font-weight: 700;">
+                    I have read and agree to the Dormitory Terms and Conditions
+                  </span>
+                </label>
+              </div>
+
+              <!-- CTA / Submit Proof Action -->
+              <div *ngIf="!showPaymentScreen">
+                <button (click)="proceedToPayment()"
+                        [disabled]="!termsAccepted || isCheckingAvailability"
+                        [style.opacity]="(!termsAccepted || isCheckingAvailability) ? '0.5' : '1'"
+                        [style.cursor]="(!termsAccepted || isCheckingAvailability) ? 'not-allowed' : 'pointer'"
+                        style="width: 100%; padding: 16px; background: #264893; color: white;
+                               border: none; border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                               font-size: 24px; font-weight: 700; letter-spacing: 1px;
+                               transition: opacity 0.2s;">
+                  {{ isCheckingAvailability ? 'Checking Availability...' : 'Agree on term' }}
+                </button>
+              </div>
+
+              <!-- Payment Screen Section -->
+              <div *ngIf="showPaymentScreen" style="margin-top: 32px; border-top: 2px solid #e0e7ff; padding-top: 32px;">
+                <div style="color: #264893; font-size: 28px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 900; margin-bottom: 16px;">
+                  Upload Proof of Payment
+                </div>
+                
+                <!-- QR Code Placeholder -->
+                <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                  <div style="background: white; padding: 16px; border-radius: 16px; border: 2px solid #e0e7ff; text-align: center;">
+                    <!-- Placeholder QR (dynamic if needed) -->
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=banktransfer:1234567890" width="150" height="150" alt="QR Code" style="border-radius: 8px;">
+                    <div style="color: #595959; font-size: 14px; font-family: Afacad; font-weight: 700; margin-top: 8px;">Scan to Pay</div>
+                    <div style="margin-top: 10px; padding: 8px 12px; background: #e8edf8; border-radius: 10px; text-align: center;">
+                      <div style="color: #8a8a8a; font-size: 12px; font-family: Afacad; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Amount Due</div>
+                      <div style="color: #264893; font-size: 20px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 900; margin-top: 2px;">
+                        {{ displayDepositAmount }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+                    <!-- File Upload Input -->
+                    <div style="background: white; padding: 24px; border-radius: 16px; border: 2px dashed #a5b4fc; text-align: center; cursor: pointer; position: relative;"
+                         onmouseover="this.style.borderColor='#264893'" onmouseout="this.style.borderColor='#a5b4fc'">
+                      <input type="file" accept="image/*" (change)="onFileSelected($event)"
+                             style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                      
+                      <div *ngIf="!proofFilePreview" style="color: #8a8a8a; font-size: 18px; font-family: Afacad; font-weight: 600;">
+                        Click or drag image here to upload
+                      </div>
+                      
+                      <div *ngIf="proofFilePreview" style="display: flex; flex-direction: column; align-items: center;">
+                        <img [src]="proofFilePreview" style="max-height: 120px; border-radius: 8px; border: 1px solid #e5eaf5;">
+                        <div style="color: #264893; font-size: 14px; font-family: Afacad; font-weight: 700; margin-top: 8px;">Image Selected</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 16px;">
+                  <button (click)="showPaymentScreen = false; termsAccepted = false"
+                          [disabled]="isSubmittingProof"
+                          style="flex: 1; padding: 16px; background: white; color: #264893; border: 2px solid #264893;
+                                 border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                                 font-size: 20px; font-weight: 700; cursor: pointer;">
+                    Back
+                  </button>
+                  <button (click)="submitProof()"
+                          [disabled]="!proofFilePreview || isSubmittingProof"
+                          [style.opacity]="(!proofFilePreview || isSubmittingProof) ? '0.5' : '1'"
+                          style="flex: 2; padding: 16px; background: #264893; color: white;
+                                 border: none; border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                                 font-size: 20px; font-weight: 700; cursor: pointer;">
+                    {{ isSubmittingProof ? 'Uploading...' : 'Submit Proof' }}
+                  </button>
+                </div>
+              </div>
+
+            </div>
           </div>
 
         </div>
@@ -272,6 +492,12 @@ export class BookingDetailComponent implements OnInit {
   isLoading = true;
   errorMsg = '';
   booking: BookingDetail | null = null;
+  showDepositInstructions = false;
+  termsAccepted = false;
+  showPaymentScreen = false;
+  proofFilePreview: string | null = null;
+  isCheckingAvailability = false;
+  isSubmittingProof = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -322,6 +548,16 @@ export class BookingDetailComponent implements OnInit {
     const deposits = this.booking?.deposit_requests;
     if (!deposits || deposits.length === 0) return null;
     return deposits[0];
+  }
+
+  /** Amount to show in payment screen: from deposit row if it exists, else compute from room price. */
+  get displayDepositAmount(): string {
+    if (this.deposit) return this.formatAmount(this.deposit.amount) + ' VND';
+    const room = (this.booking as any)?.rooms;
+    if (!room?.price_per_month) return 'Contact staff';
+    const bedsCount = (this.booking as any)?.beds ? 1 : (room.max_capacity ?? 1);
+    const amount = room.price_per_month * 2 * bedsCount;
+    return this.formatAmount(amount) + ' VND';
   }
 
   isTerminal(): boolean {
@@ -421,7 +657,84 @@ export class BookingDetailComponent implements OnInit {
     }
   }
 
+  calculateMoveOutDate(moveInDateStr: string | null | undefined, durationMonths: number | null | undefined): string {
+    if (!moveInDateStr || !durationMonths) return '—';
+    try {
+      const d = new Date(moveInDateStr);
+      if (isNaN(d.getTime())) return '—';
+      d.setMonth(d.getMonth() + durationMonths);
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    } catch {
+      return '—';
+    }
+  }
+
   formatAmount(amount: number): string {
     return amount.toLocaleString('vi-VN');
+  }
+
+  openDepositModal() {
+    this.showDepositInstructions = true;
+    this.termsAccepted = false;
+    this.showPaymentScreen = false;
+    this.proofFilePreview = null;
+  }
+
+  proceedToPayment() {
+    if (!this.booking?.id || !this.termsAccepted) return;
+
+    this.isCheckingAvailability = true;
+    this.cdr.detectChanges();
+
+    this.myBookingService.checkAvailability(this.booking.id).subscribe({
+      next: (res: any) => {
+        this.isCheckingAvailability = false;
+        if (res.isAvailable) {
+          this.showPaymentScreen = true;
+        } else {
+          this.showDepositInstructions = false;
+          this.cdr.detectChanges();
+          alert('Sorry, the room/bed is no longer available. Your request has been cancelled.');
+          this.ngOnInit();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err: unknown) => {
+        this.isCheckingAvailability = false;
+        this.cdr.detectChanges();
+        alert('Failed to check availability. Please try again.');
+        console.error(err);
+      }
+    });
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.proofFilePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  submitProof() {
+    if (!this.booking?.id || !this.proofFilePreview) return;
+    
+    this.isSubmittingProof = true;
+    this.myBookingService.submitProof(this.booking.id, this.proofFilePreview).subscribe({
+      next: (res: any) => {
+        this.isSubmittingProof = false;
+        alert('Proof of payment submitted successfully! The admin will review it shortly.');
+        this.showDepositInstructions = false;
+        this.ngOnInit(); // Refresh to get the updated proof image and notes
+      },
+      error: (err) => {
+        this.isSubmittingProof = false;
+        alert('Failed to submit proof. Please try again.');
+        console.error(err);
+      }
+    });
   }
 }

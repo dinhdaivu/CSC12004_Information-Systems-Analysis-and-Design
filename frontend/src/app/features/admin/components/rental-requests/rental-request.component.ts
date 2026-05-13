@@ -27,6 +27,33 @@ import { AuthService } from "@core/services/auth.service";
     .hover-effect:hover {
       opacity: 0.9;
     }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #f6f6f6;
+      border-radius: 25px;
+      box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25);
+    }
+    .primary-btn {
+      background: #264893;
+      border: 0;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+      font-family: Afacad, Arial, sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      height: 64px;
+      padding: 0 42px;
+      box-sizing: border-box;
+    }
   `],
   template: `
     <div
@@ -739,6 +766,26 @@ import { AuthService } from "@core/services/auth.service";
             >
           </div>
         </ng-template>
+
+        <!-- Alert Modal -->
+        <ng-container *ngIf="showModal">
+          <div class="modal-backdrop">
+            <div class="modal" style="width: 620px; min-height: 390px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 60px; box-sizing: border-box;">
+              <div style="font-family: 'Big Shoulders Text', Impact, sans-serif; color: #264893; font-size: 44px; font-weight: 900; text-align: center;">
+                {{ modalTitle }}
+              </div>
+              <div style="font-family: Afacad, Arial, sans-serif; margin-top: 28px; color: #555; font-size: 26px; text-align: center; line-height: 1.5; word-wrap: break-word; max-width: 100%;">
+                {{ modalMessage }}
+              </div>
+              <div style="display: flex; gap: 22px; margin-top: 54px;">
+                <button (click)="closeModal()" class="primary-btn hover-effect" style="min-width: 160px; height: 60px; font-size: 22px;">
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
       </div>
     </div>
   `,
@@ -770,6 +817,11 @@ export class RentalRequestsComponent implements OnInit {
   // Menu State
   isLangMenuOpen = false;
   isUserMenuOpen = false;
+
+  // Modal State
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
   constructor(
     private router: Router,
@@ -804,7 +856,7 @@ export class RentalRequestsComponent implements OnInit {
       },
       error: (err) => {
         console.error("Failed to load requests from API:", err);
-        window.alert("Lỗi: " + (err.error?.message || err.message));
+        this.openModal("Error", "Failed to load requests: " + (err.error?.message || err.message));
         this.requests = [];
         this.isLoading = false;
         this.onSearch(); // Triggers change detection
@@ -878,7 +930,8 @@ export class RentalRequestsComponent implements OnInit {
       .updateRentalRequestStatus(this.selectedRequest.id, payload)
       .subscribe({
         next: () => {
-          window.alert(`Cập nhật thành công: ${newStatus}`);
+          const statusText = this.statusLabel(newStatus);
+          this.openModal("Success", `The rental request has been successfully updated to '${statusText}'.`);
           this.loadRequests();
           this.currentScreen = 1;
           this.check1 = this.check2 = this.check3 = false;
@@ -886,9 +939,7 @@ export class RentalRequestsComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          window.alert(
-            "Lỗi cập nhật API: " + (err.error?.message || err.message),
-          );
+          this.openModal("Error", "Failed to update the request: " + (err.error?.message || err.message));
           this.isLoading = false;
         },
       });
@@ -944,5 +995,15 @@ export class RentalRequestsComponent implements OnInit {
     this.authService.logout().subscribe(() => {
       this.router.navigate(["/login"]);
     });
+  }
+
+  openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 }
