@@ -20,7 +20,13 @@
     "ROOM": "Room",
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
-    "RETURN": "Return"
+    "RETURN": "Return",
+    "SEARCH": "Search",
+    "ALL": "All",
+    "PAGE": "Page",
+    "OF": "of",
+    "VIEW": "View",
+    "CLOSE": "Close"
   },
   "CONTACT_INFO": {
     "TITLE": "Contact Information",
@@ -518,9 +524,11 @@
       "SCHEDULES": "Schedules",
       "ROOMS": "Rooms",
       "RESERVATIONS": "Reservations",
-      "CONTRACTS": "Users",
+      "CONTRACTS": "Contracts",
+      "USERS": "Users",
+      "CHECKOUTS": "Checkouts",
+      "HANDOVERS": "Handovers",
       "CHAT": "Chat"
-
     },
     "ALERTS": {
       "FETCH_ERROR": "Failed to load data: ",
@@ -725,5 +733,105 @@
       "FINAL_FORWARD_TITLE": "Create Deposit Request",
       "FINAL_FORWARD_DESC": "Are you sure you want to send payment link to guest ?"
     }
+  },
+  "ADMIN_CHAT": {
+    "NO_CONVERSATIONS": "No conversations yet",
+    "OPEN": "Open",
+    "CLOSED": "Closed",
+    "CLOSING": "Closing...",
+    "SELECT_CONVERSATION": "Select a conversation to start chatting",
+    "NO_MESSAGES": "No messages yet.",
+    "TYPE_REPLY": "Type a reply..."
+  },
+  "ADMIN_CONTRACTS": {
+    "TITLE": "Contract Management",
+    "SUBTITLE": "Track signature status, active leases, and renewals for all residents across branches.",
+    "SEARCH": "Search ...",
+    "FILTER": "Filter",
+    "STATUS": {
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "TERMINATED": "Terminated"
+    },
+    "NO_CONTRACTS": "No contracts found.",
+    "TABLE": {
+      "RESIDENT": "Resident",
+      "ROOM_BED": "Room & Bed",
+      "TERM": "Term",
+      "INITIAL_FEES": "Initial Fees",
+      "SIGNATURE_STATUS": "Signature Status",
+      "DOWNLOAD": "Download"
+    }
+  },
+  "ADMIN_ROOMS": {
+    "ADD_ROOM": "Add Room",
+    "SEARCH": "Search room name...",
+    "ALL_BRANCHES": "All Branches",
+    "NO_ROOMS": "No rooms found for selected filters.",
+    "FLOOR": "Floor",
+    "STATUS": {
+      "OCCUPIED": "Occupied",
+      "RESERVED": "Reserved",
+      "AVAILABLE": "Available"
+    },
+    "STATUS_DESC": {
+      "OCCUPIED": "All beds in this room are currently occupied.",
+      "RESERVED": "The remaining beds are currently on hold for a 24h deposit.",
+      "AVAILABLE": "The room has at least one vacant bed."
+    },
+    "ADD_NEW_ROOM": "Add New Room",
+    "ADD_NEW_ROOM_DESC": "Fill out room information to create a new room.",
+    "FORM": {
+      "BRANCH": "Branch",
+      "SELECT_BRANCH": "Select branch",
+      "ROOM_NUMBER": "Room Number",
+      "MAX_CAPACITY": "Max Capacity",
+      "ROOM_TYPE": "Room Type (auto)",
+      "PRICE": "Price Per Month (VND)",
+      "DEFAULT_STATUS": "Default Status",
+      "AMENITIES": "Amenities (comma separated)",
+      "ROOM_IMAGES": "Room Images",
+      "SELECTED": "Selected:",
+      "CREATING": "Creating...",
+      "CREATE_ROOM": "Create Room",
+      "BACK": "Back"
+    },
+    "MODAL": {
+      "LOADING": "Loading room detail...",
+      "SELECT_ROOM": "Select a room to view detail.",
+      "DELETE_ROOM": "Delete Room",
+      "DELETING": "Deleting..."
+    }
+  },
+  "ADMIN_USERS": {
+    "SEARCH": "Search by email or name...",
+    "ALL_ROLES": "All Roles",
+    "ROLES": {
+      "CUSTOMER": "Customer",
+      "SALE": "Sale",
+      "ACCOUNTANT": "Accountant",
+      "MANAGER": "Manager",
+      "ADMIN": "Admin"
+    },
+    "ALL_STATUS": "All Status",
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "BANNED": "Banned"
+    },
+    "LOADING": "Loading users...",
+    "NO_USERS": "No users found matching your filters.",
+    "TABLE": {
+      "EMAIL": "Email",
+      "NAME": "Name",
+      "ROLE": "Role",
+      "STATUS": "Status",
+      "CREATED": "Created",
+      "ACTIONS": "Actions"
+    },
+    "SHOWING": "Showing",
+    "USERS_LOWER": "users",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next"
   }
 }

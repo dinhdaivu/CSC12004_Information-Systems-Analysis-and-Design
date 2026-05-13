@@ -26,6 +26,23 @@ jest.mock("@middleware/auth.middleware", () => ({
 
     next();
   },
+  roleMiddleware: (roles: string[]) => {
+    return (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ): void => {
+      const user = (req as express.Request & { user?: { role: string } }).user;
+      if (!user || !roles.includes(user.role)) {
+        res.status(403).json({
+          success: false,
+          error: { code: "FORBIDDEN", message: "Access denied" },
+        });
+        return;
+      }
+      next();
+    };
+  },
 }));
 
 jest.mock("@middleware/require-admin", () => ({
@@ -219,7 +236,7 @@ describe("Users Admin Routes", () => {
       const app = buildApp();
       const response = await request(app)
         .get("/api/users")
-        .set("x-test-role", "manager");
+        .set("x-test-role", "customer");
 
       expect(response.status).toBe(403);
     });
@@ -254,6 +271,13 @@ describe("Users Admin Routes", () => {
       expect(response.body.data.id).toBe("user-1");
       expect(response.body.data.identityNumber).toBe("123456789");
       expect(response.body.data.gender).toBe("male");
+    });
+
+    it("should return 400 for empty id", async () => {
+      const app = buildApp();
+      const response = await request(app).get("/api/users/%20");
+
+      expect(response.status).toBe(400);
     });
 
     it("should return 404 when user not found", async () => {

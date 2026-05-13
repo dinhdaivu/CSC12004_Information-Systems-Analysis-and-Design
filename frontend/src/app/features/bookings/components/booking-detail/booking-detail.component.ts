@@ -58,7 +58,7 @@ interface BookingDetail {
           <img src="assets/icons/Group 23.png" style="width: 40px; height: 40px; left: 132px; top: 435px; position: absolute; object-fit: contain; z-index: 50;" alt="Booking Icon" />
 
           <div (click)="navigate('/contracts')" style="width: 126px; height: 62px; left: 188px; top: 527px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer; z-index: 50;">{{ 'COMMON.CONTRACT' | translate }}</div>
-          <img src="assets/icons/Contract.png" style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; object-fit: contain; z-index: 50;" alt="Contract Icon" />
+          <img src="assets/icons/Contracts.png" style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; object-fit: contain; z-index: 50;" alt="Contract Icon" />
 
           <!-- Contact footer -->
           <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
@@ -413,7 +413,9 @@ export class BookingDetailComponent implements OnInit {
   formatDate(dateStr: string | null | undefined): string {
     if (!dateStr) return '—';
     try {
-      return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch {
       return '—';
     }

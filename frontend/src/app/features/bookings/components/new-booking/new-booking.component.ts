@@ -70,7 +70,7 @@ import type { User } from '@shared/models/auth.model';
           <img style="width: 37px; height: 35px; left: 131px; top: 438px; position: absolute; pointer-events: none;" src="assets/icons/Group 23.png" />
           
           <div (click)="navigate('/contracts')" style="width: 126px; height: 62px; left: 188px; top: 527px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 32px; font-family: Afacad; font-weight: 500; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.CONTRACT' | translate }}</div>
-          <img style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; pointer-events: none;" src="assets/icons/Contract.png" />
+          <img style="width: 40px; height: 40px; left: 132px; top: 538px; position: absolute; pointer-events: none;" src="assets/icons/Contracts.png" />
           
           <div style="width: 400px; height: 209px; left: 0px; top: 870px; position: absolute; text-align: center">
             <span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'CONTACT_INFO.TITLE' | translate }}<br/><br/></span>

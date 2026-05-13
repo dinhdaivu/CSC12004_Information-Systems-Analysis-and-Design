@@ -179,7 +179,7 @@ interface AssetGroup {
           <div style="width: 307px; height: 78px; left: 98px; top: 490px; position: absolute; background: #264893; border-bottom-right-radius: 31px; z-index: 43;"></div>
           <div style="width: 307px; height: 78px; left: 98px; top: 569px; position: absolute; background: #264893; border-top-right-radius: 31px; z-index: 43;"></div>
           <div (click)="goResidency()" class="clickable" style="width: 335px; height: 62px; left: 98px; top: 520px; position: absolute; background: #FEF4DF; border-radius: 31px 0 0 31px; z-index: 45;"></div>
-          <img src="assets/icons/Contract.png" style="width: 40px; height: 40px; left: 132px; top: 531px; position: absolute; object-fit: contain; z-index: 50; filter: brightness(0) saturate(100%) invert(24%) sepia(34%) saturate(1800%) hue-rotate(199deg) brightness(92%) contrast(93%);" alt="" />
+          <img src="assets/icons/Contracts.png" style="width: 40px; height: 40px; left: 132px; top: 531px; position: absolute; object-fit: contain; z-index: 50; filter: brightness(0) saturate(100%) invert(24%) sepia(34%) saturate(1800%) hue-rotate(199deg) brightness(92%) contrast(93%);" alt="" />
           <div (click)="goResidency()" class="page-text clickable" style="width: 156px; height: 61px; left: 191px; top: 520px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.CONTRACT' | translate }}</div>
 
           <div class="page-text" style="width: 400px; height: 209px; left: 0; top: 870px; position: absolute; text-align: center; z-index: 50;">

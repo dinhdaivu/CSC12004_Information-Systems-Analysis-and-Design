@@ -20,7 +20,13 @@
     "ROOM": "Phòng",
     "CANCEL": "Hủy",
     "CONFIRM": "Xác nhận",
-    "RETURN": "Quay lại"
+    "RETURN": "Quay lại",
+    "SEARCH": "Tìm kiếm",
+    "ALL": "Tất cả",
+    "PAGE": "Trang",
+    "OF": "trong số",
+    "VIEW": "Xem",
+    "CLOSE": "Đóng"
   },
   "CONTACT_INFO": {
     "TITLE": "Thông tin liên hệ",
@@ -518,7 +524,10 @@
       "SCHEDULES": "Lịch hẹn",
       "ROOMS": "Quản lý phòng",
       "RESERVATIONS": "Đặt phòng",
-      "CONTRACTS": "Người dùng",
+      "CONTRACTS": "Hợp đồng",
+      "USERS": "Người dùng",
+      "CHECKOUTS": "Trả phòng",
+      "HANDOVERS": "Bàn giao",
       "CHAT": "Trò chuyện"
 
     },
@@ -725,5 +734,105 @@
       "FINAL_FORWARD_TITLE": "Tạo Yêu cầu Đặt cọc",
       "FINAL_FORWARD_DESC": "Bạn có chắc chắn muốn gửi liên kết thanh toán cho khách không?"
     }
+  },
+  "ADMIN_CHAT": {
+    "NO_CONVERSATIONS": "Chưa có cuộc hội thoại nào",
+    "OPEN": "Mở",
+    "CLOSED": "Đã đóng",
+    "CLOSING": "Đang đóng...",
+    "SELECT_CONVERSATION": "Chọn một cuộc hội thoại để bắt đầu",
+    "NO_MESSAGES": "Chưa có tin nhắn.",
+    "TYPE_REPLY": "Nhập tin nhắn..."
+  },
+  "ADMIN_CONTRACTS": {
+    "TITLE": "Quản lý Hợp đồng",
+    "SUBTITLE": "Theo dõi chữ ký, hợp đồng đang hoạt động và gia hạn của tất cả cư dân.",
+    "SEARCH": "Tìm kiếm...",
+    "FILTER": "Lọc",
+    "STATUS": {
+      "ACTIVE": "Đang hoạt động",
+      "COMPLETED": "Đã hoàn tất",
+      "TERMINATED": "Đã chấm dứt"
+    },
+    "NO_CONTRACTS": "Không tìm thấy hợp đồng nào.",
+    "TABLE": {
+      "RESIDENT": "Cư dân",
+      "ROOM_BED": "Phòng & Giường",
+      "TERM": "Kỳ hạn",
+      "INITIAL_FEES": "Phí ban đầu",
+      "SIGNATURE_STATUS": "Trạng thái ký",
+      "DOWNLOAD": "Tải xuống"
+    }
+  },
+  "ADMIN_ROOMS": {
+    "ADD_ROOM": "Thêm phòng",
+    "SEARCH": "Tìm kiếm tên phòng...",
+    "ALL_BRANCHES": "Tất cả chi nhánh",
+    "NO_ROOMS": "Không tìm thấy phòng nào phù hợp.",
+    "FLOOR": "Tầng",
+    "STATUS": {
+      "OCCUPIED": "Đã thuê",
+      "RESERVED": "Đã đặt",
+      "AVAILABLE": "Còn trống"
+    },
+    "STATUS_DESC": {
+      "OCCUPIED": "Tất cả các giường trong phòng đều đã được thuê.",
+      "RESERVED": "Các giường còn lại đang được giữ trong 24h chờ đặt cọc.",
+      "AVAILABLE": "Phòng còn ít nhất một giường trống."
+    },
+    "ADD_NEW_ROOM": "Thêm phòng mới",
+    "ADD_NEW_ROOM_DESC": "Điền thông tin để tạo phòng mới.",
+    "FORM": {
+      "BRANCH": "Chi nhánh",
+      "SELECT_BRANCH": "Chọn chi nhánh",
+      "ROOM_NUMBER": "Số phòng",
+      "MAX_CAPACITY": "Sức chứa tối đa",
+      "ROOM_TYPE": "Loại phòng (tự động)",
+      "PRICE": "Giá mỗi tháng (VND)",
+      "DEFAULT_STATUS": "Trạng thái mặc định",
+      "AMENITIES": "Tiện ích (phân cách bằng dấu phẩy)",
+      "ROOM_IMAGES": "Hình ảnh phòng",
+      "SELECTED": "Đã chọn:",
+      "CREATING": "Đang tạo...",
+      "CREATE_ROOM": "Tạo phòng",
+      "BACK": "Quay lại"
+    },
+    "MODAL": {
+      "LOADING": "Đang tải chi tiết phòng...",
+      "SELECT_ROOM": "Chọn một phòng để xem chi tiết.",
+      "DELETE_ROOM": "Xóa phòng",
+      "DELETING": "Đang xóa..."
+    }
+  },
+  "ADMIN_USERS": {
+    "SEARCH": "Tìm kiếm theo email hoặc tên...",
+    "ALL_ROLES": "Tất cả vai trò",
+    "ROLES": {
+      "CUSTOMER": "Khách hàng",
+      "SALE": "Sales",
+      "ACCOUNTANT": "Kế toán",
+      "MANAGER": "Quản lý",
+      "ADMIN": "Quản trị viên"
+    },
+    "ALL_STATUS": "Tất cả trạng thái",
+    "STATUS": {
+      "ACTIVE": "Đang hoạt động",
+      "INACTIVE": "Không hoạt động",
+      "BANNED": "Bị khóa"
+    },
+    "LOADING": "Đang tải người dùng...",
+    "NO_USERS": "Không tìm thấy người dùng phù hợp.",
+    "TABLE": {
+      "EMAIL": "Email",
+      "NAME": "Tên",
+      "ROLE": "Vai trò",
+      "STATUS": "Trạng thái",
+      "CREATED": "Ngày tạo",
+      "ACTIONS": "Thao tác"
+    },
+    "SHOWING": "Hiển thị",
+    "USERS_LOWER": "người dùng",
+    "PREVIOUS": "Trước",
+    "NEXT": "Tiếp"
   }
 }

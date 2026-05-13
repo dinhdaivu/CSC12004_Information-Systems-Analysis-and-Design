@@ -23,7 +23,7 @@ type PaymentOption = 'cash' | 'transfer' | 'vietqr';
           <img src="assets/pictures/Union.png" style="position:absolute;left:0;top:0;height:1080px;object-fit:cover;pointer-events:none;" alt="" />
 
           <!-- Sidebar -->
-          <img src="assets/icons/Contract.png" style="width:36px;height:36px;left:130px;top:313px;position:absolute;object-fit:contain;z-index:50;filter:brightness(10);" alt="" />
+          <img src="assets/icons/Contracts.png" style="width:36px;height:36px;left:130px;top:313px;position:absolute;object-fit:contain;z-index:50;filter:brightness(10);" alt="" />
           <div (click)="go('/accountant/transactions')" style="left:178px;top:304px;position:absolute;color:#FEF4DF;font-size:28px;font-family:Afacad;font-weight:500;cursor:pointer;z-index:50;line-height:62px;">Transactions</div>
           <img src="assets/icons/Schedules.png" style="width:36px;height:36px;left:130px;top:406px;position:absolute;object-fit:contain;z-index:50;filter:brightness(10);" alt="" />
           <div (click)="go('/accountant/monthly-billing')" style="left:178px;top:397px;position:absolute;color:#FEF4DF;font-size:26px;font-family:Afacad;font-weight:500;cursor:pointer;z-index:50;line-height:62px;">Monthly Billing</div>

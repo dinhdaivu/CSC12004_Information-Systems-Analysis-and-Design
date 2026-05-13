@@ -90,7 +90,8 @@ export class MyBookingService {
         rooms ( id, room_number, room_type, price_per_month, max_capacity ),
         beds ( id, bed_number, price_per_month ),
         users ( full_name, gender, phone_number, email, identity_number ),
-        deposit_requests ( id, amount, due_at, status, paid_at, notes )
+        deposit_requests ( id, amount, due_at, status, paid_at, notes ),
+        proof_url
       `)
       .eq('id', bookingId)
       .eq('customer_id', customerId)
@@ -112,7 +113,7 @@ export class MyBookingService {
   /**
    * Xử lý Action (ví dụ: cancel) với State Machine Validation
    */
-  static async handleAction(customerId: string, bookingId: string, action: string) {
+  static async handleAction(customerId: string, bookingId: string, action: string, payload?: any) {
     const booking = await this.getBookingById(customerId, bookingId);
 
     if (action === 'cancel') {
@@ -136,6 +137,26 @@ export class MyBookingService {
 
       if (error) {
         throw new AppError(500, 'DB_UPDATE_ERROR', `Lỗi cập nhật trạng thái: ${error.message}`);
+      }
+
+      return data;
+    }
+    
+    if (action === 'upload_proof') {
+      const { data, error } = await supabaseServiceRole!
+        .from('rental_requests')
+        .update({ 
+          proof_url: payload?.proof_url,
+          status: 'completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', bookingId)
+        .eq('customer_id', customerId)
+        .select()
+        .single();
+
+      if (error) {
+        throw new AppError(500, 'DB_UPDATE_ERROR', `Lỗi cập nhật ảnh: ${error.message}`);
       }
 
       return data;

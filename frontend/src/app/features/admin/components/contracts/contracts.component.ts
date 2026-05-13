@@ -9,7 +9,6 @@ import {
   ContractsService,
 } from "@core/services/contracts.service";
 import { AuthService } from "@core/services/auth.service";
-import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UsersService, UserItem } from "@core/services/users.service";
@@ -18,7 +17,7 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
 @Component({
   selector: "app-contracts",
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminSidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   template: `
     <div [style.height.px]="1080 * scaleFactor" style="width:100%; overflow: hidden; position: relative; background: #FEF4DF;">
       <div *ngIf="isLoading" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df">
@@ -36,10 +35,10 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
           <div style="width: 1317px; height: 730px; left: 500px; top: 252px; position: absolute; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
 
           <div style="width: 684px; height: 30px; left: 593px; top: 338px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
-            Contract Management
+            {{ "ADMIN_CONTRACTS.TITLE" | translate }}
           </div>
           <div style="width: 994px; height: 30px; left: 593px; top: 395px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
-            Track signature status, active leases, and renewals for all residents across branches.
+            {{ "ADMIN_CONTRACTS.SUBTITLE" | translate }}
           </div>
 
           <div style="position: absolute; left: 540px; top: 450px; width: 1240px; height: 510px; overflow-y: auto; padding-right: 10px; font-family: 'Afacad', sans-serif;">
@@ -51,7 +50,7 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
                   </svg>
                   <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Search contracts..." class="w-52 bg-transparent text-sm outline-none placeholder:text-slate-400" />
                 </div>
-                
+
                 <div class="relative">
                   <button (click)="isStatusDropdownOpen = !isStatusDropdownOpen" class="flex w-36 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm outline-none transition-colors hover:bg-slate-50">
                     <span class="text-slate-700 truncate">{{ statusFilter === 'all' ? 'All statuses' : (statusFilter | titlecase) }}</span>
@@ -135,7 +134,7 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
             </div>
 
             <div *ngIf="totalPages > 1" class="mt-4 flex items-center justify-between text-sm text-slate-500">
-              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <span>{{ "COMMON.PAGE" | translate }} {{ currentPage }} {{ "COMMON.OF" | translate }} {{ totalPages }}</span>
               <div class="flex gap-2">
                 <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&lt;</button>
                 <button *ngFor="let p of pageNumbers" (click)="goToPage(p)" [class]="p === currentPage ? 'bg-[#264893] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'" class="rounded-lg border border-slate-200 px-3 py-1.5 min-w-[36px]">{{ p }}</button>
@@ -163,7 +162,7 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
           <div (mousedown)="logout()" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ "COMMON.LOGOUT" | translate }}</div>
         </div>
 
-        <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/RoomsUnion.png" />
+        <img style="width: 405px; height: 1080px; left: 0px; top: 0px; position: absolute;" src="assets/pictures/ContractUnion.png" />
         <img (click)="navigate('/')" class="hover-effect" style="width: 185px; height: 165px; left: 107px; top: 81px; position: absolute; cursor: pointer;" src="assets/icons/BookingLogo.png" />
 
         <!-- Sidebar links -->
@@ -177,13 +176,17 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
         <div (click)="navigate('/admin/payments')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 500px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.RESERVATIONS" | translate }}</div>
         <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 510px; position: absolute;" />
 
-        <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Contracts</div>
+        <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">Contracts</div>
+        <img (click)="navigate('/admin/contracts')" class="hover-effect" src="assets/icons/BlueContracts.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 570px; position: absolute;" />
 
         <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Users</div>
+        <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/Users.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 630px; position: absolute;" />
 
         <div (click)="navigate('/admin/checkout-requests')" class="hover-effect" style="cursor: pointer; width: 200px; height: 46px; left: 163px; top: 680px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Checkouts</div>
+        <img (click)="navigate('/admin/checkout-requests')" class="hover-effect" src="assets/icons/Checkout.png" style="cursor: pointer; width: 28px; height: 28px; left: 107px; top: 690px; position: absolute;" />
 
         <div (click)="navigate('/admin/handovers')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 740px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">Handovers</div>
+        <img (click)="navigate('/admin/handovers')" class="hover-effect" src="assets/icons/Handover.png" style="cursor: pointer; width: 28px; height: 28px; left: 107px; top: 750px; position: absolute;" />
 
         <div (click)="navigate('/admin/chat')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 800px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}</div>
         <img (click)="navigate('/admin/chat')" class="hover-effect" src="assets/icons/Chat.png" style="cursor: pointer; width: 28px; height: 28px; left: 110px; top: 810px; position: absolute;" />
@@ -354,6 +357,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
   // New Contract Workflow
   showCreateModal = false;
   creatingContract = false;
+  modalError: string | null = null;
   availableCustomers: UserItem[] = [];
   selectedCustomerId = '';
   
@@ -435,7 +439,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.eligibilityLoading = false;
         this.eligibilityInput = null;
-        alert('Failed to load customer eligibility data: ' + (err.error?.message || err.message));
+        this.modalError = 'Failed to load customer eligibility data: ' + (err.error?.message || err.message);
         this.cdr.markForCheck();
       }
     });
@@ -453,7 +457,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.verifyingEligibility = false;
-        alert('Eligibility verification failed: ' + (err.error?.message || err.message));
+        this.modalError = 'Eligibility verification failed: ' + (err.error?.message || err.message);
         this.cdr.markForCheck();
       }
     });
@@ -489,7 +493,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.creatingContract = false;
-        alert('Error creating contract: ' + (err.error?.message || err.message));
+        this.modalError = 'Error creating contract: ' + (err.error?.message || err.message);
         this.cdr.markForCheck();
       }
     });

@@ -106,7 +106,7 @@ type UserRow = {
               <!-- Search Bar -->
               <input
                 type="text"
-                placeholder="Search by email or name..."
+                [placeholder]="'ADMIN_USERS.SEARCH' | translate"
                 [(ngModel)]="searchInput"
                 (ngModelChange)="onSearchChange($event)"
                 class="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm placeholder-slate-500 focus:border-[#264893] focus:outline-none"
@@ -118,12 +118,12 @@ type UserRow = {
                 (ngModelChange)="onRoleChange($event)"
                 class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-[#264893] focus:outline-none"
               >
-                <option [ngValue]="null">All Roles</option>
-                <option value="customer">Customer</option>
-                <option value="sale">Sale</option>
-                <option value="accountant">Accountant</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
+                <option [ngValue]="null">{{ "ADMIN_USERS.ALL_ROLES" | translate }}</option>
+                <option value="customer">{{ "ADMIN_USERS.ROLES.CUSTOMER" | translate }}</option>
+                <option value="sale">{{ "ADMIN_USERS.ROLES.SALE" | translate }}</option>
+                <option value="accountant">{{ "ADMIN_USERS.ROLES.ACCOUNTANT" | translate }}</option>
+                <option value="manager">{{ "ADMIN_USERS.ROLES.MANAGER" | translate }}</option>
+                <option value="admin">{{ "ADMIN_USERS.ROLES.ADMIN" | translate }}</option>
               </select>
 
               <!-- Status Filter -->
@@ -132,10 +132,10 @@ type UserRow = {
                 (ngModelChange)="onStatusChange($event)"
                 class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-[#264893] focus:outline-none"
               >
-                <option [ngValue]="null">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="banned">Banned</option>
+                <option [ngValue]="null">{{ "ADMIN_USERS.ALL_STATUS" | translate }}</option>
+                <option value="active">{{ "ADMIN_USERS.STATUS.ACTIVE" | translate }}</option>
+                <option value="inactive">{{ "ADMIN_USERS.STATUS.INACTIVE" | translate }}</option>
+                <option value="banned">{{ "ADMIN_USERS.STATUS.BANNED" | translate }}</option>
               </select>
             </div>
 
@@ -144,7 +144,7 @@ type UserRow = {
               *ngIf="isLoading"
               class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#264893]/80"
             >
-              Loading users...
+              {{ "ADMIN_USERS.LOADING" | translate }}
             </div>
 
             <!-- Error State -->
@@ -166,32 +166,32 @@ type UserRow = {
                     <th
                       class="px-6 py-4 text-left text-sm font-bold text-[#264893]"
                     >
-                      Email
+                      {{ "ADMIN_USERS.TABLE.EMAIL" | translate }}
                     </th>
                     <th
                       class="px-6 py-4 text-left text-sm font-bold text-[#264893]"
                     >
-                      Name
+                      {{ "ADMIN_USERS.TABLE.NAME" | translate }}
                     </th>
                     <th
                       class="px-6 py-4 text-left text-sm font-bold text-[#264893]"
                     >
-                      Role
+                      {{ "ADMIN_USERS.TABLE.ROLE" | translate }}
                     </th>
                     <th
                       class="px-6 py-4 text-left text-sm font-bold text-[#264893]"
                     >
-                      Status
+                      {{ "ADMIN_USERS.TABLE.STATUS" | translate }}
                     </th>
                     <th
                       class="px-6 py-4 text-left text-sm font-bold text-[#264893]"
                     >
-                      Created
+                      {{ "ADMIN_USERS.TABLE.CREATED" | translate }}
                     </th>
                     <th
                       class="px-6 py-4 text-center text-sm font-bold text-[#264893]"
                     >
-                      Actions
+                      {{ "ADMIN_USERS.TABLE.ACTIONS" | translate }}
                     </th>
                   </tr>
                 </thead>
@@ -212,11 +212,11 @@ type UserRow = {
                         (change)="onRoleUpdate(user.id, $event)"
                         class="rounded border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-[#264893]"
                       >
-                        <option value="customer">Customer</option>
-                        <option value="sale">Sale</option>
-                        <option value="accountant">Accountant</option>
-                        <option value="manager">Manager</option>
-                        <option value="admin">Admin</option>
+                        <option value="customer">{{ "ADMIN_USERS.ROLES.CUSTOMER" | translate }}</option>
+                        <option value="sale">{{ "ADMIN_USERS.ROLES.SALE" | translate }}</option>
+                        <option value="accountant">{{ "ADMIN_USERS.ROLES.ACCOUNTANT" | translate }}</option>
+                        <option value="manager">{{ "ADMIN_USERS.ROLES.MANAGER" | translate }}</option>
+                        <option value="admin">{{ "ADMIN_USERS.ROLES.ADMIN" | translate }}</option>
                       </select>
                     </td>
                     <td class="px-6 py-4">
@@ -225,9 +225,9 @@ type UserRow = {
                         (change)="onStatusUpdate(user.id, $event)"
                         [class]="statusBadgeClass(user.status)"
                       >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="banned">Banned</option>
+                        <option value="active">{{ "ADMIN_USERS.STATUS.ACTIVE" | translate }}</option>
+                        <option value="inactive">{{ "ADMIN_USERS.STATUS.INACTIVE" | translate }}</option>
+                        <option value="banned">{{ "ADMIN_USERS.STATUS.BANNED" | translate }}</option>
                       </select>
                     </td>
                     <td class="px-6 py-4 text-xs text-slate-500">
@@ -239,7 +239,7 @@ type UserRow = {
                         class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200 transition"
                         (click)="viewUserDetail(user.id)"
                       >
-                        View
+                        {{ "COMMON.VIEW" | translate }}
                       </button>
                     </td>
                   </tr>
@@ -252,7 +252,7 @@ type UserRow = {
               *ngIf="!isLoading && !errorMessage && users.length === 0"
               class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-600"
             >
-              No users found matching your filters.
+              {{ "ADMIN_USERS.NO_USERS" | translate }}
             </div>
 
             <!-- Pagination -->
@@ -261,7 +261,7 @@ type UserRow = {
               class="mt-6 flex items-center justify-between"
             >
               <div class="text-sm text-slate-600">
-                Showing {{ users.length }} of {{ totalUsers }} users
+                {{ "ADMIN_USERS.SHOWING" | translate }} {{ users.length }} {{ "COMMON.OF" | translate }} {{ totalUsers }} {{ "ADMIN_USERS.USERS_LOWER" | translate }}
               </div>
               <div class="flex items-center gap-4">
                 <button
@@ -270,10 +270,10 @@ type UserRow = {
                   [disabled]="currentPage <= 1"
                   class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-[#264893] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
                 >
-                  Previous
+                  {{ "ADMIN_USERS.PREVIOUS" | translate }}
                 </button>
                 <span class="text-sm font-medium text-[#264893]">
-                  Page {{ currentPage }} of {{ totalPages }}
+                  {{ "COMMON.PAGE" | translate }} {{ currentPage }} {{ "COMMON.OF" | translate }} {{ totalPages }}
                 </span>
                 <button
                   type="button"
@@ -281,7 +281,7 @@ type UserRow = {
                   [disabled]="currentPage >= totalPages"
                   class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-[#264893] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
                 >
-                  Next
+                  {{ "ADMIN_USERS.NEXT" | translate }}
                 </button>
               </div>
             </div>
@@ -338,20 +338,24 @@ type UserRow = {
       <img (click)="navigate('/admin/payments')" class="hover-effect" src="assets/icons/Reservation.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 509px; position: absolute;" />
 
       <div (click)="navigate('/admin/contracts')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 560px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Contracts
+        {{ "ADMIN_RENTAL.SIDEBAR.CONTRACTS" | translate }}
       </div>
+      <img (click)="navigate('/admin/contracts')" class="hover-effect" src="assets/icons/Contracts.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 569px; position: absolute;" />
 
-      <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">
-        Users
+      <div (click)="navigate('/admin/users')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 620px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 28px; font-family: Afacad; font-weight: 700; word-wrap: break-word">
+        {{ "ADMIN_RENTAL.SIDEBAR.USERS" | translate }}
       </div>
+      <img (click)="navigate('/admin/users')" class="hover-effect" src="assets/icons/BlueUsers.png" style="cursor: pointer; width: 26px; height: 26px; left: 107px; top: 629px; position: absolute;" />
 
       <div (click)="navigate('/admin/checkout-requests')" class="hover-effect" style="cursor: pointer; width: 200px; height: 46px; left: 163px; top: 680px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Checkouts
+        {{ "ADMIN_RENTAL.SIDEBAR.CHECKOUTS" | translate }}
       </div>
+      <img (click)="navigate('/admin/checkout-requests')" class="hover-effect" src="assets/icons/Checkout.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 689px; position: absolute;" />
 
       <div (click)="navigate('/admin/handovers')" class="hover-effect" style="cursor: pointer; width: 175px; height: 46px; left: 166px; top: 740px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
-        Handovers
+        {{ "ADMIN_RENTAL.SIDEBAR.HANDOVERS" | translate }}
       </div>
+      <img (click)="navigate('/admin/handovers')" class="hover-effect" src="assets/icons/Handover.png" style="cursor: pointer; width: 30px; height: 30px; left: 107px; top: 749px; position: absolute;" />
 
       <div (click)="navigate('/admin/chat')" class="hover-effect" style="cursor: pointer; width: 168px; height: 46px; left: 163px; top: 800px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #FEF4DF; font-size: 28px; font-family: Afacad; font-weight: 500; word-wrap: break-word">
         {{ "ADMIN_RENTAL.SIDEBAR.CHAT" | translate }}
