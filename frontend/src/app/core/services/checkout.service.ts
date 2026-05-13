@@ -137,6 +137,18 @@ export class CheckoutService {
     return this.http.get<CheckoutListResponse>(this.baseUrl, { params: p });
   }
 
+  listMyCheckoutRequests(params: {
+    page?: number;
+    limit?: number;
+    status?: CheckoutStatus;
+  }): Observable<CheckoutListResponse> {
+    let p = new HttpParams()
+      .set('page', String(params.page ?? 1))
+      .set('limit', String(params.limit ?? 20));
+    if (params.status) p = p.set('status', params.status);
+    return this.http.get<CheckoutListResponse>(`${this.baseUrl}/my`, { params: p });
+  }
+
   getCheckoutRequestById(id: string): Observable<CheckoutDetailResponse> {
     return this.http.get<CheckoutDetailResponse>(`${this.baseUrl}/${id}`);
   }

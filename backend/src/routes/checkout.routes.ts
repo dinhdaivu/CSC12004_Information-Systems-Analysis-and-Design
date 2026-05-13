@@ -15,6 +15,9 @@ const ALL_AUTHENTICATED = ['customer', 'sale', 'accountant', 'manager', 'admin']
 router.use(limiter);
 router.use(authMiddleware);
 
+// Customer-accessible: returns only the logged-in customer's own checkout requests
+router.get('/my', CheckoutController.listMyCheckoutRequests.bind(CheckoutController));
+
 // Checkout requests
 router.get('/', roleMiddleware(STAFF_ROLES), CheckoutController.listCheckoutRequests.bind(CheckoutController));
 router.get('/:id', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.getCheckoutRequestById.bind(CheckoutController));

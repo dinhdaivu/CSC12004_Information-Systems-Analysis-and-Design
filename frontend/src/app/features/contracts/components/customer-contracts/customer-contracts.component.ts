@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -291,7 +291,7 @@ interface AssetGroup {
                     <li>Final utility bills and any asset damages will be deducted from the security deposit.</li>
                   </ul>
                 </div>
-                <div *ngIf="checkoutError" class="page-text" style="left: 460px; top: 386px; position: absolute; color: #b91c1c; font-size: 16px; font-weight: 700;">{{ checkoutError }}</div>
+                <div *ngIf="checkoutError" class="page-text" style="left: 220px; top: 505px; position: absolute; width: 900px; color: #b91c1c; font-size: 18px; font-weight: 700;">{{ checkoutError }}</div>
                 <button (click)="submitCheckoutRequest()" [disabled]="isSubmitting" class="primary-btn" style="position: absolute; left: 984px; top: 543px; min-width: 238px;">{{ isSubmitting ? 'Submitting…' : 'Submit Request' }}</button>
               </ng-container>
 
@@ -480,6 +480,7 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly checkoutSvc = inject(CheckoutService);
   private readonly contractsSvc = inject(ContractsService);
@@ -677,7 +678,11 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
   }
 
   goCheckout(): void {
-    this.screen = 'checkout-registration';
+    if (this.activeCheckoutId) {
+      this.screen = 'checkout-detail';
+    } else {
+      this.screen = 'checkout-registration';
+    }
     this.checkoutError = '';
   }
 
@@ -725,10 +730,10 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          // Pick the handover that belongs to the active contract.
           this.activeHandover = res.data.find(
             (h) => h.contractId === this.activeContractId,
           ) ?? null;
+          this.cdr.detectChanges();
         },
         error: () => { /* not all customers have a pending handover — fine */ },
       });
@@ -756,10 +761,12 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
         this.activeCheckoutId = res.data.id;
         this.isSubmitting = false;
         this.screen = 'checkout-detail';
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        this.checkoutError = err?.error?.message ?? 'Failed to submit request. Please try again.';
+      error: (err: { error?: { error?: { message?: string }; message?: string } }) => {
+        this.checkoutError = err?.error?.error?.message ?? err?.error?.message ?? 'Failed to submit request. Please try again.';
         this.isSubmitting = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -894,8 +901,12 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
             this.loadActiveHandover();
           }
           this.loadingContract = false;
+          this.cdr.detectChanges();
         },
-        error: () => { this.loadingContract = false; },
+        error: () => {
+          this.loadingContract = false;
+          this.cdr.detectChanges();
+        },
       });
   }
 
@@ -936,9 +947,8 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
   }
 
   private loadExistingCheckout(): void {
-    const user = this.authService.getCurrentUser();
-    if (!user || !this.activeContractId) return;
-    this.checkoutSvc.listCheckoutRequests({ customerId: user.id, limit: 10 })
+    if (!this.activeContractId) return;
+    this.checkoutSvc.listMyCheckoutRequests({ limit: 10 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
@@ -953,6 +963,7 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
               this.damageFee = existing.settlement.deduction;
             }
           }
+          this.cdr.detectChanges();
         },
         error: () => {},
       });

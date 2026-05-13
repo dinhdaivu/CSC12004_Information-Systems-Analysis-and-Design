@@ -18,6 +18,24 @@ function parsePositiveInt(value: string | undefined, fallback: number): number {
 }
 
 export class CheckoutController {
+  static async listMyCheckoutRequests(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const customerId = req.user?.id;
+      if (!customerId) {
+        res.status(401).json(ApiResponseBuilder.error('UNAUTHORIZED', 'Login required'));
+        return;
+      }
+      const page = parsePositiveInt(typeof req.query.page === 'string' ? req.query.page : undefined, 1);
+      const limit = parsePositiveInt(typeof req.query.limit === 'string' ? req.query.limit : undefined, 20);
+      if (limit > 100) throw new ValidationError('limit cannot exceed 100');
+
+      const result = await CheckoutService.listCheckoutRequests({ page, limit, customerId });
+      res.status(200).json(ApiResponseBuilder.success(result));
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async listCheckoutRequests(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const page = parsePositiveInt(typeof req.query.page === 'string' ? req.query.page : undefined, 1);
