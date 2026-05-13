@@ -558,7 +558,7 @@ export class HandoversComponent implements OnInit, OnDestroy {
   }
 
   loadContractsMap() {
-    this.contractsSvc.listContracts({ limit: 500 }).pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.contractsSvc.listContracts({ limit: 100 }).pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.availableContracts = res.data.data;
       res.data.data.forEach(c => {
         this.contractDetailsMap[c.id] = c;

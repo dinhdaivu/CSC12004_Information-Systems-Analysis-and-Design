@@ -152,6 +152,24 @@ export class ContractsService {
     });
   }
 
+  listMyContracts(params: {
+    page?: number;
+    limit?: number;
+    status?: ContractStatus;
+  }): Observable<ContractsListResponse> {
+    let httpParams = new HttpParams()
+      .set("page", String(params.page ?? 1))
+      .set("limit", String(params.limit ?? 20));
+
+    if (params.status) {
+      httpParams = httpParams.set("status", params.status);
+    }
+
+    return this.http.get<ContractsListResponse>(`${this.contractsUrl}/my`, {
+      params: httpParams,
+    });
+  }
+
   getContractById(contractId: string): Observable<ContractDetailResponse> {
     return this.http.get<ContractDetailResponse>(
       `${this.contractsUrl}/${contractId}`,

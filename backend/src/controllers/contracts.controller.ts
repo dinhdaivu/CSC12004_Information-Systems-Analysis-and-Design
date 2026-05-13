@@ -82,6 +82,17 @@ function parseSignPayload(req: AuthRequest): SignContractDTO {
 }
 
 export class ContractsController {
+  static async listMyContracts(req: AuthRequest, res: Response): Promise<void> {
+    const customerId = req.user?.id;
+    if (!customerId) {
+      res.status(401).json(ApiResponseBuilder.error('UNAUTHORIZED', 'Login required'));
+      return;
+    }
+    const filters = parseListFilters(req);
+    const contracts = await ContractsService.listContracts({ ...filters, customerId });
+    res.status(200).json(ApiResponseBuilder.success(contracts));
+  }
+
   static async listContracts(req: AuthRequest, res: Response): Promise<void> {
     const contracts = await ContractsService.listContracts(
       parseListFilters(req),

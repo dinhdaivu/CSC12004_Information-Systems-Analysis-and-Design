@@ -125,7 +125,11 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
                         </a>
-                        <span *ngIf="!contract.contractDocumentUrl" class="text-xs text-slate-400">—</span>
+                        <button *ngIf="!contract.contractDocumentUrl && contract.status === 'active'" (click)="openUploadDocModal(contract)" title="Upload signed contract PDF" class="inline-flex items-center gap-1 rounded-lg bg-[#264893] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#1a3570] transition-colors">
+                          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                          Upload PDF
+                        </button>
+                        <span *ngIf="!contract.contractDocumentUrl && contract.status !== 'active'" class="text-xs text-slate-400">—</span>
                       </div>
                     </td>
                   </tr>
@@ -139,6 +143,22 @@ import { EligibilityInputResponse, CheckEligibilityPayload } from "@core/service
                 <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&lt;</button>
                 <button *ngFor="let p of pageNumbers" (click)="goToPage(p)" [class]="p === currentPage ? 'bg-[#264893] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'" class="rounded-lg border border-slate-200 px-3 py-1.5 min-w-[36px]">{{ p }}</button>
                 <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 hover:bg-slate-50 disabled:opacity-40">&gt;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Contract PDF Modal -->
+          <div *ngIf="showUploadDocModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/40">
+            <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+              <h2 class="mb-1 text-lg font-bold text-[#264893]">Upload Signed Contract</h2>
+              <p class="mb-4 text-sm text-slate-500">Paste the PDF URL of the signed contract to mark it as Signed.</p>
+              <input [(ngModel)]="uploadDocUrl" type="url" placeholder="https://..." class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#264893] mb-1" />
+              <p *ngIf="modalError" class="mb-3 text-xs text-red-600">{{ modalError }}</p>
+              <div class="mt-4 flex justify-end gap-3">
+                <button (click)="closeUploadDocModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                <button (click)="submitUploadDoc()" [disabled]="uploadingDoc || !uploadDocUrl.trim()" class="rounded-xl bg-[#264893] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1a3570] disabled:opacity-50">
+                  {{ uploadingDoc ? 'Saving…' : 'Mark as Signed' }}
+                </button>
               </div>
             </div>
           </div>
@@ -358,6 +378,12 @@ export class ContractsComponent implements OnInit, OnDestroy {
   showCreateModal = false;
   creatingContract = false;
   modalError: string | null = null;
+
+  // Upload Contract PDF
+  showUploadDocModal = false;
+  uploadDocContractId: string | null = null;
+  uploadDocUrl = '';
+  uploadingDoc = false;
   availableCustomers: UserItem[] = [];
   selectedCustomerId = '';
   
@@ -385,7 +411,7 @@ export class ContractsComponent implements OnInit, OnDestroy {
   }
 
   loadCustomers(): void {
-    this.usersService.fetchUsers({ role: 'customer', limit: 500 }).subscribe({
+    this.usersService.fetchUsers({ role: 'customer', limit: 100 }).subscribe({
       next: (res) => {
         console.log("Loaded customers:", res);
         this.availableCustomers = res.data?.data || [];
@@ -620,6 +646,39 @@ export class ContractsComponent implements OnInit, OnDestroy {
   getInitialFees(contract: ContractListItem): string {
     const amount = contract.deposit?.amount ?? contract.monthlyPrice;
     return this.formatCurrency(amount);
+  }
+
+  openUploadDocModal(contract: ContractListItem): void {
+    this.uploadDocContractId = contract.id;
+    this.uploadDocUrl = '';
+    this.modalError = null;
+    this.showUploadDocModal = true;
+  }
+
+  closeUploadDocModal(): void {
+    this.showUploadDocModal = false;
+    this.uploadDocContractId = null;
+    this.uploadDocUrl = '';
+    this.modalError = null;
+  }
+
+  submitUploadDoc(): void {
+    if (!this.uploadDocContractId || !this.uploadDocUrl.trim()) return;
+    this.uploadingDoc = true;
+    this.modalError = null;
+    this.contractsService.signContract(this.uploadDocContractId, { contractDocumentUrl: this.uploadDocUrl.trim() }).subscribe({
+      next: () => {
+        this.uploadingDoc = false;
+        this.closeUploadDocModal();
+        this.loadContracts(this.currentPage);
+        this.cdr.markForCheck();
+      },
+      error: (err: { error?: { message?: string } }) => {
+        this.uploadingDoc = false;
+        this.modalError = err.error?.message || 'Failed to update contract.';
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   getSignatureStatus(contract: ContractListItem): string {

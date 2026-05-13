@@ -90,8 +90,7 @@ export class MyBookingService {
         rooms ( id, room_number, room_type, price_per_month, max_capacity, status ),
         beds ( id, bed_number, price_per_month, status ),
         users ( full_name, gender, phone_number, email, identity_number ),
-        deposit_requests ( id, amount, due_at, status, paid_at, notes ),
-        proof_url
+        deposit_requests ( id, amount, due_at, status, paid_at, notes, proof_image_url )
       `)
       .eq('id', bookingId)
       .eq('customer_id', customerId)
@@ -142,26 +141,6 @@ export class MyBookingService {
       return data;
     }
     
-    if (action === 'upload_proof') {
-      const { data, error } = await supabaseServiceRole!
-        .from('rental_requests')
-        .update({ 
-          proof_url: payload?.proof_url,
-          status: 'completed',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', bookingId)
-        .eq('customer_id', customerId)
-        .select()
-        .single();
-
-      if (error) {
-        throw new AppError(500, 'DB_UPDATE_ERROR', `Lỗi cập nhật ảnh: ${error.message}`);
-      }
-
-      return data;
-    }
-
     throw new AppError(400, 'INVALID_ACTION', 'Hành động không được hỗ trợ.');
   }
 

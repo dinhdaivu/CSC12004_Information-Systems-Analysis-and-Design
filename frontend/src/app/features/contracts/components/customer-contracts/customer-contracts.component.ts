@@ -882,7 +882,7 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
 
   private loadActiveContract(): void {
     this.loadingContract = true;
-    this.contractsSvc.listContracts({ status: 'active', limit: 1 })
+    this.contractsSvc.listMyContracts({ status: 'active', limit: 1 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {

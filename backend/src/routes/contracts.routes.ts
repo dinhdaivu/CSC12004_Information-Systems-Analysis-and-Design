@@ -22,6 +22,10 @@ const STAFF_AND_ADMIN_ROLES = [
 
 router.use(contractsLimiter);
 router.use(authMiddleware);
+
+// Customer-accessible: returns only the logged-in customer's own contracts
+router.get("/my", ContractsController.listMyContracts.bind(ContractsController));
+
 router.use(roleMiddleware(STAFF_AND_ADMIN_ROLES));
 
 router.get("/", ContractsController.listContracts.bind(ContractsController));
