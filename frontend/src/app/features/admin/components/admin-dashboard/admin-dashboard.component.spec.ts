@@ -3,7 +3,7 @@ import { AdminDashboardComponent } from "./admin-dashboard.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
-import { AdminDashboardService } from "../../services/admin-dashboard.service";
+import { AdminDashboardService } from "@core/services/admin-dashboard.service";
 
 describe("AdminDashboardComponent", () => {
   let component: AdminDashboardComponent;

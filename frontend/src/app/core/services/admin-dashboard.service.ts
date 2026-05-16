@@ -4,7 +4,7 @@ import { inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { environment } from "@environments/environment";
-import { DashboardSummary } from "../models/dashboard-summary.model";
+import { DashboardSummary } from "@shared/models/dashboard-summary.model";
 import { ApiResponse } from "@shared/models/api.model";
 
 @Injectable({

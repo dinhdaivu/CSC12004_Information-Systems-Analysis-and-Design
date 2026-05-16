@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AccountantLayoutComponent } from './accountant-layout.component';
+import { AccountantLayoutComponent } from './components/accountant-layout/accountant-layout.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { MonthlyBillingComponent } from './components/monthly-billing/monthly-billing.component';
 import { FinalSettlementComponent } from './components/final-settlement/final-settlement.component';

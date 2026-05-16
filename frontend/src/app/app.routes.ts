@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
 import { roleGuard } from '@core/guards/role.guard';
-import { AdminLayoutComponent } from '@shared/components/admin-layout/admin-layout.component';
+import { AdminShellComponent } from './features/admin/components/admin-shell/admin-shell.component';
 import { PublicLayoutComponent } from '@shared/components/public-layout/public-layout.component';
 
 export const routes: Routes = [
@@ -16,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminLayoutComponent,
+    component: AdminShellComponent,
     canActivate: [authGuard, roleGuard],
     data: {
       roles: ['sale', 'accountant', 'manager', 'admin'],
