@@ -1,10 +1,15 @@
 import { supabaseServiceRole } from '@config/supabase';
 import type {
+  CheckoutInspectionDTO,
+  CheckoutInspectionStatus,
   CheckoutListResponse,
   CheckoutRequestDTO,
   CompleteSettlementDTO,
+  CreateCheckoutInspectionDTO,
   CreateCheckoutRequestDTO,
   CreateSettlementDTO,
+  DamageReportDTO,
+  KeyReturnDTO,
   SettlementDTO,
 } from '@models/checkout.model';
 import {
@@ -44,11 +49,29 @@ function monthsBetween(from: Date, to: Date): number {
   return (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24 * 30.44);
 }
 
-function calculateRefundRate(startDate: string, endDate: string): number {
+// Spec §3.1.4:
+//   - Deposit paid, no contract effectively in force (cancelled / never moved in): 80%
+//   - Contract active, stayed <  6 months: 50%
+//   - Contract active, stayed >= 6 months: 70%
+//   - Contract expired naturally (end_date passed): 100%
+// contractStatus: 'active' | 'terminated' | 'completed'
+function calculateRefundRate(
+  startDate: string,
+  endDate: string,
+  contractStatus: string,
+): number {
   const now = new Date();
+  const start = new Date(startDate);
   const end = new Date(endDate);
-  if (end <= now) return 1.0;
-  const months = monthsBetween(new Date(startDate), now);
+
+  // Contract expired naturally
+  if (contractStatus === 'completed' || end <= now) return 1.0;
+
+  // Never moved in: settlement requested before start date, or contract was terminated
+  // before stay began. Treat as "deposit-only" case → 80%.
+  if (now < start) return 0.8;
+
+  const months = monthsBetween(start, now);
   return months < 6 ? 0.5 : 0.7;
 }
 
@@ -102,6 +125,44 @@ function mapSettlementRow(row: any): SettlementDTO {
     paymentMethod: row.payment_method ?? null,
     status: row.status,
     notes: row.notes ?? null,
+    customerSignatureUrl: row.customer_signature_url ?? null,
+    signedAt: row.signed_at ?? null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapInspectionRow(row: any): CheckoutInspectionDTO {
+  return {
+    id: row.id,
+    checkoutRequestId: row.checkout_request_id,
+    managerId: row.manager_id ?? null,
+    inspectedAt: row.inspected_at,
+    cleanlinessNote: row.cleanliness_note ?? null,
+    overallCondition: row.overall_condition ?? null,
+    status: row.status as CheckoutInspectionStatus,
+    notes: row.notes ?? null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    damageReports: (row.damage_reports ?? []).map((d: any) => ({
+      id: d.id,
+      checkoutInspectionId: d.checkout_inspection_id,
+      itemName: d.item_name,
+      description: d.description ?? null,
+      estimatedCost: Number(d.estimated_cost ?? 0),
+      imageUrl: d.image_url ?? null,
+      createdAt: d.created_at,
+    } satisfies DamageReportDTO)),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    keyReturns: (row.key_returns ?? []).map((k: any) => ({
+      id: k.id,
+      checkoutInspectionId: k.checkout_inspection_id,
+      itemName: k.item_name,
+      returned: Boolean(k.returned),
+      replacementCost: Number(k.replacement_cost ?? 0),
+      notes: k.notes ?? null,
+      createdAt: k.created_at,
+    } satisfies KeyReturnDTO)),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -230,6 +291,194 @@ export class CheckoutService {
     return this.getCheckoutRequestById(id);
   }
 
+  /**
+   * Sum unpaid invoice totals for a contract. Used as a minimum deduction floor
+   * during settlement so unpaid rent/utilities can't be silently waived.
+   */
+  static async aggregateUnpaidInvoiceTotal(contractId: string): Promise<number> {
+    const client = ensureClient();
+    const { data, error } = await client
+      .from('invoices')
+      .select('total_amount')
+      .eq('contract_id', contractId)
+      .eq('status', 'unpaid');
+
+    if (error) throw new InternalServerError(`Failed to aggregate unpaid invoices: ${error.message}`);
+    return ((data as { total_amount: number | string }[] | null) ?? []).reduce(
+      (sum, row) => sum + Number(row.total_amount ?? 0),
+      0,
+    );
+  }
+
+  /**
+   * Sum damage estimates + replacement costs for unreturned keys from the
+   * checkout inspection. Feeds into the settlement deduction floor.
+   */
+  static async aggregateInspectionDeduction(checkoutRequestId: string): Promise<number> {
+    const client = ensureClient();
+    const { data: inspection, error: insErr } = await client
+      .from('checkout_inspections')
+      .select('id')
+      .eq('checkout_request_id', checkoutRequestId)
+      .maybeSingle();
+    if (insErr) throw new InternalServerError(`Failed to load inspection: ${insErr.message}`);
+    if (!inspection) return 0;
+    const inspectionId = (inspection as { id: string }).id;
+
+    const [{ data: damages, error: dErr }, { data: keys, error: kErr }] = await Promise.all([
+      client.from('damage_reports').select('estimated_cost').eq('checkout_inspection_id', inspectionId),
+      client.from('key_returns').select('returned, replacement_cost').eq('checkout_inspection_id', inspectionId),
+    ]);
+    if (dErr) throw new InternalServerError(`Failed to load damage reports: ${dErr.message}`);
+    if (kErr) throw new InternalServerError(`Failed to load key returns: ${kErr.message}`);
+
+    const damageTotal = ((damages as { estimated_cost: number | string }[] | null) ?? []).reduce(
+      (s, r) => s + Number(r.estimated_cost ?? 0),
+      0,
+    );
+    const missingKeyTotal = ((keys as { returned: boolean; replacement_cost: number | string }[] | null) ?? [])
+      .filter((r) => !r.returned)
+      .reduce((s, r) => s + Number(r.replacement_cost ?? 0), 0);
+
+    return damageTotal + missingKeyTotal;
+  }
+
+  // ============================================================
+  // Checkout inspection management (UC4 §3.1.4 manager inspection)
+  // ============================================================
+
+  static async getInspectionByCheckoutId(checkoutRequestId: string): Promise<CheckoutInspectionDTO | null> {
+    const client = ensureClient();
+    const { data, error } = await client
+      .from('checkout_inspections')
+      .select(`
+        id, checkout_request_id, manager_id, inspected_at, cleanliness_note, overall_condition,
+        status, notes, created_at, updated_at,
+        damage_reports(id, checkout_inspection_id, item_name, description, estimated_cost, image_url, created_at),
+        key_returns(id, checkout_inspection_id, item_name, returned, replacement_cost, notes, created_at)
+      `)
+      .eq('checkout_request_id', checkoutRequestId)
+      .maybeSingle();
+
+    if (error) throw new InternalServerError(`Failed to load checkout inspection: ${error.message}`);
+    if (!data) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return mapInspectionRow(data as any);
+  }
+
+  static async createInspection(
+    checkoutRequestId: string,
+    payload: CreateCheckoutInspectionDTO,
+  ): Promise<CheckoutInspectionDTO> {
+    // Ensure the checkout request exists and is confirmed (manager has accepted the request).
+    const checkout = await this.getCheckoutRequestById(checkoutRequestId);
+    if (!['requested', 'confirmed'].includes(checkout.status)) {
+      throw new ConflictError('Inspection can only be created on active checkout requests');
+    }
+
+    const existing = await this.getInspectionByCheckoutId(checkoutRequestId);
+    if (existing) {
+      throw new ConflictError('An inspection already exists for this checkout request');
+    }
+
+    const client = ensureClient();
+    const { data: inserted, error } = await client
+      .from('checkout_inspections')
+      .insert({
+        checkout_request_id: checkoutRequestId,
+        manager_id: payload.managerId ?? null,
+        cleanliness_note: payload.cleanlinessNote ?? null,
+        overall_condition: payload.overallCondition ?? null,
+        notes: payload.notes ?? null,
+        status: 'pending',
+      })
+      .select('id')
+      .single();
+
+    if (error) throw new InternalServerError(`Failed to create inspection: ${error.message}`);
+    const inspectionId = (inserted as { id: string }).id;
+
+    if (payload.damageReports && payload.damageReports.length > 0) {
+      const { error: dErr } = await client.from('damage_reports').insert(
+        payload.damageReports.map((d) => ({
+          checkout_inspection_id: inspectionId,
+          item_name: d.itemName,
+          description: d.description ?? null,
+          estimated_cost: d.estimatedCost ?? 0,
+          image_url: d.imageUrl ?? null,
+        })),
+      );
+      if (dErr) throw new InternalServerError(`Failed to insert damage reports: ${dErr.message}`);
+    }
+
+    if (payload.keyReturns && payload.keyReturns.length > 0) {
+      const { error: kErr } = await client.from('key_returns').insert(
+        payload.keyReturns.map((k) => ({
+          checkout_inspection_id: inspectionId,
+          item_name: k.itemName,
+          returned: k.returned ?? false,
+          replacement_cost: k.replacementCost ?? 0,
+          notes: k.notes ?? null,
+        })),
+      );
+      if (kErr) throw new InternalServerError(`Failed to insert key returns: ${kErr.message}`);
+    }
+
+    const result = await this.getInspectionByCheckoutId(checkoutRequestId);
+    if (!result) throw new InternalServerError('Inspection created but could not be retrieved');
+    return result;
+  }
+
+  static async completeInspection(checkoutRequestId: string): Promise<CheckoutInspectionDTO> {
+    const inspection = await this.getInspectionByCheckoutId(checkoutRequestId);
+    if (!inspection) throw new NotFoundError('Inspection not found for this checkout request');
+    if (inspection.status === 'completed') {
+      throw new ConflictError('Inspection is already completed');
+    }
+
+    const { error } = await ensureClient()
+      .from('checkout_inspections')
+      .update({ status: 'completed' })
+      .eq('id', inspection.id);
+    if (error) throw new InternalServerError(`Failed to complete inspection: ${error.message}`);
+
+    const refreshed = await this.getInspectionByCheckoutId(checkoutRequestId);
+    if (!refreshed) throw new InternalServerError('Inspection refreshed read failed');
+    return refreshed;
+  }
+
+  /**
+   * UC4 §3.1.4: customer signs settlement before refund disbursement.
+   * Only confirmed-status settlements can be signed; completion (refund/payment)
+   * runs through completeSettlement after this.
+   */
+  static async signSettlement(settlementId: string, customerSignatureUrl: string): Promise<SettlementDTO> {
+    if (!customerSignatureUrl) throw new ValidationError('customerSignatureUrl is required');
+    const client = ensureClient();
+    const { data: existing, error: fetchErr } = await client
+      .from('settlements')
+      .select('id, status')
+      .eq('id', settlementId)
+      .maybeSingle();
+    if (fetchErr) throw new InternalServerError(`Failed to load settlement: ${fetchErr.message}`);
+    if (!existing) throw new NotFoundError('Settlement not found');
+    if ((existing as { status: string }).status !== 'confirmed') {
+      throw new ConflictError('Only confirmed settlements can be signed');
+    }
+    const { error } = await client
+      .from('settlements')
+      .update({
+        customer_signature_url: customerSignatureUrl,
+        signed_at: new Date().toISOString(),
+      })
+      .eq('id', settlementId);
+    if (error) throw new InternalServerError(`Failed to sign settlement: ${error.message}`);
+
+    const { data: updated } = await client.from('settlements').select('*').eq('id', settlementId).single();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return mapSettlementRow(updated as any);
+  }
+
   static async getSettlementByCheckoutId(checkoutId: string): Promise<SettlementDTO | null> {
     const client = ensureClient();
 
@@ -281,9 +530,22 @@ export class CheckoutService {
       }
     }
 
-    const refundRate = calculateRefundRate(checkout.contract.startDate, checkout.contract.endDate);
+    const refundRate = calculateRefundRate(
+      checkout.contract.startDate,
+      checkout.contract.endDate,
+      checkout.contract.status,
+    );
     const refundBase = depositTotal * refundRate;
-    const finalAmount = refundBase - (payload.deduction ?? 0);
+
+    // Auto-aggregate unpaid invoice totals + inspection damage/missing-key costs
+    // as a minimum deduction floor. Accountant can still override with a higher
+    // figure (additional penalties) via payload.deduction.
+    const unpaidInvoiceTotal = await this.aggregateUnpaidInvoiceTotal(checkout.contractId);
+    const inspectionCost = await this.aggregateInspectionDeduction(checkoutId);
+    const autoFloor = unpaidInvoiceTotal + inspectionCost;
+    const requestedDeduction = payload.deduction ?? 0;
+    const deduction = Math.max(requestedDeduction, autoFloor);
+    const finalAmount = refundBase - deduction;
 
     const { data: inserted, error } = await client
       .from('settlements')
@@ -293,7 +555,7 @@ export class CheckoutService {
         deposit_request_id: depositRequestId,
         deposit_total: depositTotal,
         refund_rate: refundRate,
-        deduction: payload.deduction ?? 0,
+        deduction,
         final_amount: finalAmount,
         payment_method: payload.payment_method ?? null,
         status: 'draft',
@@ -393,6 +655,11 @@ export class CheckoutService {
 
     if (s.status !== 'confirmed') {
       throw new ConflictError('Only confirmed settlements can be completed');
+    }
+
+    // UC4 §3.1.4: customer must sign the settlement report before refund/payment is finalized.
+    if (!s.customer_signature_url) {
+      throw new ConflictError('Customer signature is required before completing settlement');
     }
 
     const finalAmount = Number(s.final_amount);

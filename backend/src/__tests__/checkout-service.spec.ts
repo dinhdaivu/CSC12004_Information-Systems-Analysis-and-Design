@@ -213,6 +213,7 @@ describe('CheckoutService', () => {
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'dep-1', amount: 2000000, status: 'paid' }, error: null });
+      mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null }); // aggregateInspectionDeduction
       mockChain.single.mockResolvedValueOnce({ data: { id: 'set-1' }, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'set-1', status: 'draft' }, error: null });
 
@@ -227,6 +228,7 @@ describe('CheckoutService', () => {
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'dep-1', amount: 2000000, status: 'paid' }, error: null });
+      mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null }); // aggregateInspectionDeduction
       mockChain.single.mockResolvedValueOnce({ data: { id: 'set-1' }, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'set-1', status: 'draft' }, error: null });
 
@@ -239,6 +241,7 @@ describe('CheckoutService', () => {
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: 'dep-1', amount: 2000000, status: 'paid' }, error: null });
+      mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null }); // aggregateInspectionDeduction
       mockChain.single.mockResolvedValueOnce({ data: { id: 'set-1' }, error: null });
       mockChain.maybeSingle.mockResolvedValueOnce({ data: null, error: null }); // fails retrieve
 
@@ -299,9 +302,9 @@ describe('CheckoutService', () => {
 
   describe('completeSettlement', () => {
     it('should complete settlement as refunded', async () => {
-      mockChain.maybeSingle.mockResolvedValueOnce({ 
-        data: { id: 'set-1', status: 'confirmed', final_amount: 1000000, deposit_request_id: 'dep-1', checkout_request: { customer_id: 'cus-1' }, contract_id: 'ctr-1' }, 
-        error: null 
+      mockChain.maybeSingle.mockResolvedValueOnce({
+        data: { id: 'set-1', status: 'confirmed', final_amount: 1000000, deposit_request_id: 'dep-1', customer_signature_url: 'http://sig/cust.jpg', checkout_request: { customer_id: 'cus-1' }, contract_id: 'ctr-1' },
+        error: null
       });
       mockChain.then.mockImplementationOnce((resolve: any) => resolve({ error: null })); // update settlement
       mockChain.then.mockImplementationOnce((resolve: any) => resolve({ error: null })); // insert payment
@@ -313,9 +316,9 @@ describe('CheckoutService', () => {
     });
 
     it('should complete settlement as paid if negative final amount', async () => {
-      mockChain.maybeSingle.mockResolvedValueOnce({ 
-        data: { id: 'set-1', status: 'confirmed', final_amount: -500000, deposit_request_id: 'dep-1', checkout_request: { customer_id: 'cus-1' }, contract_id: 'ctr-1' }, 
-        error: null 
+      mockChain.maybeSingle.mockResolvedValueOnce({
+        data: { id: 'set-1', status: 'confirmed', final_amount: -500000, deposit_request_id: 'dep-1', customer_signature_url: 'http://sig/cust.jpg', checkout_request: { customer_id: 'cus-1' }, contract_id: 'ctr-1' },
+        error: null
       });
       mockChain.then.mockImplementationOnce((resolve: any) => resolve({ error: null })); // update settlement
       mockChain.then.mockImplementationOnce((resolve: any) => resolve({ error: null })); // insert payment

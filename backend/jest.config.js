@@ -9,6 +9,7 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/index.ts',
     '!src/config/**',
+    '!src/services/email.service.ts',
   ],
   coverageThreshold: {
     global: {

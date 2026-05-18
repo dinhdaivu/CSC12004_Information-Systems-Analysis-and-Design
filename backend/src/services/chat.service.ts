@@ -93,17 +93,8 @@ export class ChatService {
 
     if (!content?.trim()) throw new ValidationError('Message content cannot be empty');
 
-    const timerLabel = `[ChatService] sendMessage:${conversationId}`;
-    console.time(timerLabel);
-    console.log('[ChatService] sendMessage start', {
-      conversationId,
-      senderId,
-      senderRole,
-      contentLength: content.trim().length,
-    });
     try {
       const conv = await this.assertConversationAccess(conversationId, senderId, senderRole);
-      console.timeLog(timerLabel, 'after access check');
       if (conv.status === 'closed') throw new ValidationError('Cannot send message to a closed conversation');
 
       const { data, error } = await supabaseServiceRole!
@@ -112,8 +103,6 @@ export class ChatService {
         .select('*, sender:users!sender_id(id, full_name, role)')
         .single();
 
-      console.timeLog(timerLabel, 'after message insert');
-
       if (error || !data) throw new InternalServerError('Failed to send message');
 
       await supabaseServiceRole!
@@ -121,16 +110,8 @@ export class ChatService {
         .update({ updated_at: new Date().toISOString() })
         .eq('id', conversationId);
 
-      console.timeEnd(timerLabel);
-      console.log('[ChatService] sendMessage success', {
-        conversationId,
-        messageId: data.id,
-        senderId,
-      });
-
       return data as ChatMessage;
     } catch (error) {
-      console.timeEnd(timerLabel);
       console.error('[ChatService] sendMessage error', {
         conversationId,
         senderId,

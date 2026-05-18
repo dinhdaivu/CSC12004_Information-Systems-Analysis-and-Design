@@ -49,7 +49,7 @@ export class RentalRequestService {
     }
 
     // Lấy scheduled_at từ payload (nếu có truyền từ Frontend)
-    const scheduledAt = (payload as any).scheduled_at;
+    const scheduledAt = (payload as Record<string, unknown>).scheduled_at as string | undefined;
 
     // 2. Viết hàm tạo Request: Insert dữ liệu vào bảng rental_requests
     const { data: newRequest, error: insertError } = await supabaseServiceRole
@@ -65,7 +65,7 @@ export class RentalRequestService {
           budget_max: payload.budget_max || null,
           people_count: payload.people_count || 1,
           note: payload.note || null,
-          status: scheduledAt ? 'viewing_scheduled' : 'requested'
+          status: 'reviewing'
         }
       ])
       .select()
@@ -85,7 +85,7 @@ export class RentalRequestService {
           roomId: payload.room_id,
           bedId: payload.bed_id,
           scheduledAt: scheduledAt,
-          status: 'pending' as any
+          status: 'pending'
         });
       } catch (err) {
         console.error("Lỗi khi tự động tạo viewing_appointment:", err);

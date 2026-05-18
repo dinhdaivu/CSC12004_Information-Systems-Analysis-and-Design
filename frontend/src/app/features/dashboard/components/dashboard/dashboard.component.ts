@@ -65,10 +65,10 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
               <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
             </button>
             @if (isLangMenuOpen) {
-              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60]">
-                <button (click)="changeLang('vi')" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
+              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
+                <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
                 <div class="h-px bg-slate-100"></div>
-                <button (click)="changeLang('en')" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">English</button>
+                <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
               </div>
             }
           </div>
@@ -79,15 +79,15 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
               <span class="sr-only">Account</span>
             </button>
             @if (isUserMenuOpen) {
-              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60]">
+              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
                 @if (isAuthenticated) {
-                  <button routerLink="/profile" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Profile</button>
-                  <button routerLink="/bookings" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">My Bookings</button>
+                  <button routerLink="/profile" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'COMMON.PROFILE' | translate }}</button>
+                  <button routerLink="/bookings" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'NAV.PUBLIC.BOOKINGS' | translate }}</button>
                   <div class="h-px bg-slate-100"></div>
-                  <button (click)="logout()" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-red-50 text-red-600">Logout</button>
+                  <button (click)="logout()" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">{{ 'COMMON.LOGOUT' | translate }}</button>
                 } @else {
-                  <button routerLink="/login" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Login</button>
-                  <button routerLink="/register" class="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 text-slate-700">Register</button>
+                  <button routerLink="/login" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.LOG_IN' | translate }}</button>
+                  <button routerLink="/register" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.SIGN_UP' | translate }}</button>
                 }
               </div>
             }
@@ -112,9 +112,9 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
               </button>
               @if (isLangMenuOpen) {
                 <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
-                  <button (click)="changeLang('vi')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
+                  <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
                   <div class="h-px bg-slate-100"></div>
-                  <button (click)="changeLang('en')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
+                  <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
                 </div>
               }
             </div>
@@ -126,13 +126,13 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
               @if (isUserMenuOpen) {
                 <div class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
                   @if (isAuthenticated) {
-                    <button routerLink="/profile" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Profile</button>
-                    <button routerLink="/bookings" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">My Bookings</button>
+                    <button routerLink="/profile" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'COMMON.PROFILE' | translate }}</button>
+                    <button routerLink="/bookings" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'NAV.PUBLIC.BOOKINGS' | translate }}</button>
                     <div class="h-px bg-slate-100"></div>
-                    <button (click)="logout()" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">Logout</button>
+                    <button (click)="logout()" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">{{ 'COMMON.LOGOUT' | translate }}</button>
                   } @else {
-                    <button routerLink="/login" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Login</button>
-                    <button routerLink="/register" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Register</button>
+                    <button routerLink="/login" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.LOG_IN' | translate }}</button>
+                    <button routerLink="/register" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.SIGN_UP' | translate }}</button>
                   }
                 </div>
               }

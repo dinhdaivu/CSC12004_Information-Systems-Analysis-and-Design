@@ -22,7 +22,7 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
           <img style="width: 202.22px; height: 180.03px; left: 380.37px; top: 2907px; position: absolute" src="assets/icons/FooterLogo.png" />
           <div style="width: 682.58px; height: 209px; left: 1021.38px; top: 2943px; position: absolute"><span style="color: white; font-size: 40px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'ABOUT.FOOTER.CONTACT_TITLE' | translate }}<br/></span><span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word"><br/>{{ 'ABOUT.FOOTER.HQ_LABEL' | translate }}</span><span style="color: white; font-size: 24px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ 'ABOUT.FOOTER.HQ_VALUE' | translate }}<br/></span><span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'ABOUT.FOOTER.PHONE_LABEL' | translate }}</span><span style="color: white; font-size: 24px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ 'ABOUT.FOOTER.PHONE_VALUE' | translate }}<br/></span><span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'ABOUT.FOOTER.EMAIL_LABEL' | translate }}</span><span style="color: white; font-size: 24px; font-family: Afacad; font-weight: 400; word-wrap: break-word"> {{ 'ABOUT.FOOTER.EMAIL_VALUE' | translate }}<br/></span><span style="color: white; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'ABOUT.FOOTER.HOURS_LABEL' | translate }}</span><span style="color: white; font-size: 24px; font-family: Afacad; font-weight: 400; word-wrap: break-word"> {{ 'ABOUT.FOOTER.HOURS_VALUE' | translate }}</span></div>
           <div style="width: 322.87px; height: 79.96px; left: 258px; top: 2420.26px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 64px; font-family: Afacad; font-weight: 700; word-wrap: break-word">{{ 'ABOUT.BRANCHES.VALUE' | translate }}</div>
-          <div style="width: 287.40px; height: 44px; left: 275.96px; top: 2506px; position: absolute; text-align: center; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ 'ABOUT.BRANCHES.TITLE' | translate }}</div>
+          <div style="width: 400px; height: 44px; left: 219.66px; top: 2506px; position: absolute; text-align: center; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ 'ABOUT.BRANCHES.TITLE' | translate }}</div>
           <div style="width: 287.40px; height: 81px; left: 278.96px; top: 2576px; position: absolute; text-align: justify; color: #264893; font-size: 20px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ 'ABOUT.BRANCHES.CARD_DESC' | translate }}</div>
           <div style="width: 69.93px; height: 69.93px; left: 384.70px; top: 2337px; position: absolute;">
             <img style="width: 100%; height: 100%; object-fit: contain" src="assets/icons/Home.png" />
@@ -52,15 +52,21 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
           <div style="width: 323.20px; height: 79.87px; left: 1313.41px; top: 1429.36px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 36px; font-family: Afacad; font-weight: 500; word-wrap: break-word">{{ 'ABOUT.PILLARS.DO.NAME' | translate }}</div>
           <img style="width: 195.97px; height: 209.90px; left: 1376.57px; top: 1186.03px; position: absolute; " src="assets/icons/TransparencyMascot.png" />
           <div style="width: 287.70px; height: 119.88px; left: 1331.35px; top: 1537.24px; position: absolute; text-align: justify; color: #264893; font-size: 19px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word">{{ 'ABOUT.PILLARS.DO.DESC' | translate }}</div>
-          <div style="width: 689px; left: 631px; top: 520px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 128px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'ABOUT.HERO.TITLE' | translate }}</div>
-          <div style="width: 1429px; left: 273px; top: 710px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'ABOUT.HERO.TAGLINE' | translate }}</div>
-          <div style="width: 1281.34px; left: 338.31px; top: 805px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 36px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word" [innerHTML]="'ABOUT.HERO.QUOTE' | translate"></div>
-          
-          <div (click)="navigate('/guidelines')" style="width: 151.68px; height: 53px; left: 1239.41px; top: 108px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'NAV.HERO.GUIDELINES' | translate }}</div>
-          <div style="width: 106.78px; height: 0px; left: 1072.76px; top: 163px; position: absolute; outline: 3px white solid; outline-offset: -1.50px"></div>
-          <div (click)="navigate('/about')" style="width: 180.74px; height: 53px; left: 1067.76px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'NAV.HERO.ABOUT' | translate }}</div>
-          <div (click)="navigate('/contact')" style="width: 134.72px; height: 53px; left: 1432.01px; top: 108px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'NAV.HERO.CONTACT' | translate }}</div>
-          
+          <div style="width: 689px; left: 631px; top: 320px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 128px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'ABOUT.HERO.TITLE' | translate }}</div>
+          <div style="width: 1429px; left: 273px; top: 510px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 800; word-wrap: break-word">{{ 'ABOUT.HERO.TAGLINE' | translate }}</div>
+          <div style="width: 1281.34px; left: 338.31px; top: 605px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 36px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word" [innerHTML]="'ABOUT.HERO.QUOTE' | translate"></div>
+          <div style="position: absolute; left: 1067px; top: 108px; display: flex; gap: 60px; align-items: center; height: 53px;">
+            <div (click)="navigate('/about')" class="relative cursor-pointer" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; white-space: nowrap;">
+              {{ 'NAV.HERO.ABOUT' | translate }}
+              <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] bg-white w-full"></div>
+            </div>
+            <div (click)="navigate('/guidelines')" class="relative cursor-pointer hover:opacity-80 transition-opacity" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; white-space: nowrap;">
+              {{ 'NAV.HERO.GUIDELINES' | translate }}
+            </div>
+            <div (click)="navigate('/contact')" class="relative cursor-pointer hover:opacity-80 transition-opacity" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; white-space: nowrap;">
+              {{ 'NAV.HERO.CONTACT' | translate }}
+            </div>
+          </div>
           <img (click)="navigate('/')" style="width: 184.88px; height: 164.77px; left: 103.77px; top: 100.23px; position: absolute; cursor: pointer;" src="assets/icons/logo.svg" />
 
           <div class="relative" style="position: absolute; left: 1620px; top: 95px; z-index: 60;">
@@ -68,9 +74,9 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
               <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
             </button>
             <div *ngIf="isLangMenuOpen" class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
-              <button (click)="changeLang('vi')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
+              <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
               <div class="h-px bg-slate-100"></div>
-              <button (click)="changeLang('en')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
+              <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
             </div>
           </div>
 
@@ -80,14 +86,14 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
             </button>
             <div *ngIf="isUserMenuOpen" class="absolute right-0 top-[calc(100%+0.5rem)] w-48 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
               <ng-container *ngIf="isAuthenticated">
-                <button (click)="navigate('/profile')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'COMMON.PROFILE' | translate }}</button>
-                <button (click)="navigate('/bookings')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'NAV.PUBLIC.BOOKINGS' | translate }}</button>
+                <button (click)="navigate('/profile')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'COMMON.PROFILE' | translate }}</button>
+                <button (click)="navigate('/bookings')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'NAV.PUBLIC.BOOKINGS' | translate }}</button>
                 <div class="h-px bg-slate-100"></div>
-                <button (click)="logout()" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">{{ 'COMMON.LOGOUT' | translate }}</button>
+                <button (click)="logout()" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-red-50 text-red-600">{{ 'COMMON.LOGOUT' | translate }}</button>
               </ng-container>
               <ng-container *ngIf="!isAuthenticated">
-                <button (click)="navigate('/login')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.LOG_IN' | translate }}</button>
-                <button (click)="navigate('/register')" class="w-full text-left px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.SIGN_UP' | translate }}</button>
+                <button (click)="navigate('/login')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.LOG_IN' | translate }}</button>
+                <button (click)="navigate('/register')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">{{ 'AUTH.SIGN_UP' | translate }}</button>
               </ng-container>
             </div>
           </div>

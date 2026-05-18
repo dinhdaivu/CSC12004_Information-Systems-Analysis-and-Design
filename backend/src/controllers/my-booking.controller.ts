@@ -58,4 +58,43 @@ export class MyBookingController {
       next(error);
     }
   }
+
+  static async checkAvailability(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const customerId = req.user?.id;
+      if (!customerId) throw new UnauthorizedError();
+
+      const bookingId = req.params.id as string;
+      const isAvailable = await MyBookingService.checkAvailability(customerId, bookingId);
+
+      res.status(200).json({ success: true, isAvailable });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async submitProof(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const customerId = req.user?.id;
+      if (!customerId) throw new UnauthorizedError();
+
+      const bookingId = req.params.id as string;
+      const { proofImage } = req.body;
+
+      if (!proofImage) {
+        res.status(400).json({ success: false, message: 'proofImage base64 string is required' });
+        return;
+      }
+
+      const updatedData = await MyBookingService.submitDepositProof(customerId, bookingId, proofImage);
+
+      res.status(200).json({
+        success: true,
+        message: 'Nộp minh chứng thanh toán thành công.',
+        data: updatedData
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

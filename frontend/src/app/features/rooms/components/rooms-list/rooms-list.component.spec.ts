@@ -119,14 +119,12 @@ describe('RoomsListComponent', () => {
       );
     });
 
-    it('should alert and return if confirming booking without selecting a bed', () => {
+    it('should show modal and return if confirming booking without selecting a bed', () => {
       fixture.detectChanges();
-      component.selectedBedId = null; // Cố tình không chọn giường
-      jest.spyOn(window, 'alert').mockImplementation(() => {});
+      component.selectedBedId = null;
 
       component.confirmAction();
-      
-      expect(window.alert).toHaveBeenCalled();
+
       expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/bookings/new'], expect.any(Object));
     });
   });

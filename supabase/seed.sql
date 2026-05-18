@@ -49,12 +49,29 @@ INSERT INTO public.rooms (branch_id, room_number, room_type, max_capacity, price
 SELECT b.id, r.room_number, r.room_type, r.max_capacity, r.price_per_month, r.amenities, r.status::public.room_status
 FROM (
     VALUES
-        ('Tô Hiến Thành', 'THT-101', 'Single', 1, 3500000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom'], 'available'),
-        ('Tô Hiến Thành', 'THT-201', 'Shared', 4, 1800000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom'], 'available'),
-        ('Trần Não', 'TN-101', 'Single', 1, 3200000.00, ARRAY['wifi', 'air_conditioner'], 'available'),
-        ('Trần Não', 'TN-202', 'Shared', 4, 1600000.00, ARRAY['wifi', 'shared_bathroom'], 'available'),
-        ('Nguyễn Cửu Vân', 'NCV-101', 'Single', 1, 3800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom'], 'available'),
-        ('Nguyễn Cửu Vân', 'NCV-203', 'Shared', 4, 1900000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom'], 'available')
+        -- Tô Hiến Thành (6 rooms: 2 Single, 2 Shared, 2 Double)
+        ('Tô Hiến Thành', 'THT-101', 'Single', 1, 3500000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],            'available'),
+        ('Tô Hiến Thành', 'THT-102', 'Single', 1, 3500000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],            'available'),
+        ('Tô Hiến Thành', 'THT-201', 'Shared', 4, 1800000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],              'available'),
+        ('Tô Hiến Thành', 'THT-202', 'Shared', 4, 1800000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],              'available'),
+        ('Tô Hiến Thành', 'THT-301', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
+        ('Tô Hiến Thành', 'THT-302', 'Double', 2, 2800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],           'available'),
+
+        -- Trần Não (6 rooms: 2 Single, 2 Shared, 2 Double)
+        ('Trần Não', 'TN-101', 'Single', 1, 3200000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom'],                             'available'),
+        ('Trần Não', 'TN-102', 'Single', 1, 3200000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
+        ('Trần Não', 'TN-202', 'Shared', 4, 1600000.00, ARRAY['wifi', 'shared_bathroom', 'locker'],                                       'available'),
+        ('Trần Não', 'TN-203', 'Shared', 4, 1600000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],                    'available'),
+        ('Trần Não', 'TN-301', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],                 'available'),
+        ('Trần Não', 'TN-302', 'Double', 2, 2600000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],      'available'),
+
+        -- Nguyễn Cửu Vân (6 rooms: 2 Single, 2 Shared, 2 Double)
+        ('Nguyễn Cửu Vân', 'NCV-101', 'Single', 1, 3800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available'),
+        ('Nguyễn Cửu Vân', 'NCV-102', 'Single', 1, 3800000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available'),
+        ('Nguyễn Cửu Vân', 'NCV-203', 'Shared', 4, 1900000.00, ARRAY['wifi', 'air_conditioner', 'shared_bathroom', 'locker'],            'available'),
+        ('Nguyễn Cửu Vân', 'NCV-204', 'Shared', 6, 1700000.00, ARRAY['wifi', 'shared_bathroom', 'locker'],                               'available'),
+        ('Nguyễn Cửu Vân', 'NCV-301', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe', 'balcony'],'available'),
+        ('Nguyễn Cửu Vân', 'NCV-302', 'Double', 2, 3100000.00, ARRAY['wifi', 'air_conditioner', 'private_bathroom', 'wardrobe'],          'available')
 ) AS r(branch_name, room_number, room_type, max_capacity, price_per_month, amenities, status)
 JOIN public.branches b ON b.name = r.branch_name
 ON CONFLICT (branch_id, room_number) DO UPDATE
@@ -72,21 +89,70 @@ INSERT INTO public.beds (room_id, bed_number, price_per_month, status)
 SELECT r.id, b.bed_number, b.price_per_month, b.status::public.bed_status
 FROM (
     VALUES
+        -- THT-101 Single (1 bed)
         ('THT-101', 'A', 3500000.00, 'available'),
+        -- THT-102 Single (1 bed)
+        ('THT-102', 'A', 3500000.00, 'available'),
+        -- THT-201 Shared (4 beds)
         ('THT-201', 'A', 1800000.00, 'available'),
         ('THT-201', 'B', 1800000.00, 'available'),
         ('THT-201', 'C', 1800000.00, 'available'),
         ('THT-201', 'D', 1800000.00, 'available'),
+        -- THT-202 Shared (4 beds)
+        ('THT-202', 'A', 1800000.00, 'available'),
+        ('THT-202', 'B', 1800000.00, 'available'),
+        ('THT-202', 'C', 1800000.00, 'available'),
+        ('THT-202', 'D', 1800000.00, 'available'),
+        -- THT-301 Double (2 beds)
+        ('THT-301', 'A', 2800000.00, 'available'),
+        ('THT-301', 'B', 2800000.00, 'available'),
+        -- THT-302 Double (2 beds)
+        ('THT-302', 'A', 2800000.00, 'available'),
+        ('THT-302', 'B', 2800000.00, 'available'),
+
+        -- TN-101 Single (1 bed)
         ('TN-101', 'A', 3200000.00, 'available'),
+        -- TN-102 Single (1 bed)
+        ('TN-102', 'A', 3200000.00, 'available'),
+        -- TN-202 Shared (4 beds)
         ('TN-202', 'A', 1600000.00, 'available'),
         ('TN-202', 'B', 1600000.00, 'available'),
         ('TN-202', 'C', 1600000.00, 'available'),
         ('TN-202', 'D', 1600000.00, 'available'),
+        -- TN-203 Shared (4 beds)
+        ('TN-203', 'A', 1600000.00, 'available'),
+        ('TN-203', 'B', 1600000.00, 'available'),
+        ('TN-203', 'C', 1600000.00, 'available'),
+        ('TN-203', 'D', 1600000.00, 'available'),
+        -- TN-301 Double (2 beds)
+        ('TN-301', 'A', 2600000.00, 'available'),
+        ('TN-301', 'B', 2600000.00, 'available'),
+        -- TN-302 Double (2 beds)
+        ('TN-302', 'A', 2600000.00, 'available'),
+        ('TN-302', 'B', 2600000.00, 'available'),
+
+        -- NCV-101 Single (1 bed)
         ('NCV-101', 'A', 3800000.00, 'available'),
+        -- NCV-102 Single (1 bed)
+        ('NCV-102', 'A', 3800000.00, 'available'),
+        -- NCV-203 Shared (4 beds)
         ('NCV-203', 'A', 1900000.00, 'available'),
         ('NCV-203', 'B', 1900000.00, 'available'),
         ('NCV-203', 'C', 1900000.00, 'available'),
-        ('NCV-203', 'D', 1900000.00, 'available')
+        ('NCV-203', 'D', 1900000.00, 'available'),
+        -- NCV-204 Shared (6 beds)
+        ('NCV-204', 'A', 1700000.00, 'available'),
+        ('NCV-204', 'B', 1700000.00, 'available'),
+        ('NCV-204', 'C', 1700000.00, 'available'),
+        ('NCV-204', 'D', 1700000.00, 'available'),
+        ('NCV-204', 'E', 1700000.00, 'available'),
+        ('NCV-204', 'F', 1700000.00, 'available'),
+        -- NCV-301 Double (2 beds)
+        ('NCV-301', 'A', 3100000.00, 'available'),
+        ('NCV-301', 'B', 3100000.00, 'available'),
+        -- NCV-302 Double (2 beds)
+        ('NCV-302', 'A', 3100000.00, 'available'),
+        ('NCV-302', 'B', 3100000.00, 'available')
 ) AS b(room_number, bed_number, price_per_month, status)
 JOIN public.rooms r ON r.room_number = b.room_number
 ON CONFLICT (room_id, bed_number) DO UPDATE

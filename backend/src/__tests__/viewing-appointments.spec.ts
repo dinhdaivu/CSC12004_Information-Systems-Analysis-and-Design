@@ -4,6 +4,11 @@ import viewingAppointmentsRoutes from "@routes/viewing-appointments.routes";
 import { supabaseServiceRole } from "@config/supabase";
 import { AppError } from "@utils/errors";
 
+jest.mock("@services/email.service", () => ({
+  sendViewingApprovedEmail: jest.fn().mockResolvedValue(undefined),
+  sendViewingDeclinedEmail: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock("@middleware/auth.middleware", () => ({
   authMiddleware: (
     req: express.Request,

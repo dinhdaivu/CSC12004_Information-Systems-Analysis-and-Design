@@ -107,6 +107,11 @@ describe('NewBookingComponent', () => {
       rental_duration_months: 6,
       people_count: 2,
       note: 'Test',
+      rental_mode: 'shared_bed',
+      preferred_gender: '',
+      prefers_quiet: false,
+      needs_parking: false,
+      needs_air_conditioner: false,
       viewing_date: '2026-05-02',
       viewing_time: '09:00'
     });
@@ -139,6 +144,11 @@ describe('NewBookingComponent', () => {
       rental_duration_months: 6,
       people_count: 2,
       note: '',
+      rental_mode: 'shared_bed',
+      preferred_gender: '',
+      prefers_quiet: false,
+      needs_parking: false,
+      needs_air_conditioner: false,
       viewing_date: '2026-05-02',
       viewing_time: '09:00'
     });

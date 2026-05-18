@@ -128,25 +128,29 @@ import type { User } from '@shared/models/auth.model';
           </div>
 
           <!-- Top navigation -->
-          <div (click)="navigate('/about')" class="page-text clickable" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.ABOUT_US' | translate }}</div>
-          <div (click)="navigate('/guidelines')" class="page-text clickable" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.GUIDELINES' | translate }}</div>
-          <div (click)="navigate('/contact')" class="page-text clickable" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.CONTACT' | translate }}</div>
+          <div style="position: absolute; left: 1067px; top: 108px; height: 53px; display: flex; align-items: center; gap: 60px; z-index: 50;">
+            <div (click)="navigate('/about')" class="page-text clickable hover:opacity-80 transition-opacity" style="color: #264893; font-size: 32px; font-weight: 600; white-space: nowrap; cursor: pointer;">{{ 'NAV.HERO.ABOUT' | translate }}</div>
+            <div (click)="navigate('/guidelines')" class="page-text clickable hover:opacity-80 transition-opacity" style="color: #264893; font-size: 32px; font-weight: 600; white-space: nowrap; cursor: pointer;">{{ 'NAV.HERO.GUIDELINES' | translate }}</div>
+            <div (click)="navigate('/contact')" class="page-text clickable hover:opacity-80 transition-opacity" style="color: #264893; font-size: 32px; font-weight: 600; white-space: nowrap; cursor: pointer;">{{ 'NAV.HERO.CONTACT' | translate }}</div>
+          </div>
 
           <!-- Language switcher -->
           <img (click)="toggleLangMenu()" class="clickable" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; z-index: 50;" src="assets/icons/Globe.png" alt="" />
           @if (isLangMenuOpen) {
-            <div style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
-              <div (click)="changeLang('en')" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #264893; font-size: 24px;">{{ 'COMMON.ENGLISH' | translate }}</div>
-              <div (click)="changeLang('vi')" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #264893; font-size: 24px;">{{ 'COMMON.VIETNAMESE' | translate }}</div>
+            <div style="position: absolute; left: 1550px; top: 180px; width: 192px; overflow: hidden; border-radius: 10px; border: 1px solid rgba(2,6,23,0.08); background: white; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),0 8px 10px -6px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 100; font-family: Afacad, sans-serif;">
+              <button (click)="changeLang('vi')" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #334155; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">Tiếng Việt</button>
+              <div style="height: 1px; background: #f1f5f9;"></div>
+              <button (click)="changeLang('en')" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #334155; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">English</button>
             </div>
           }
 
           <!-- User menu -->
           <img (click)="toggleUserMenu()" class="clickable" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; z-index: 50;" src="assets/icons/Account.png" alt="" />
           @if (isUserMenuOpen) {
-            <div style="position: absolute; left: 1680px; top: 180px; width: 150px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
-              <div (click)="navigate('/profile')" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #264893; font-size: 24px;">{{ 'COMMON.PROFILE' | translate }}</div>
-              <div (click)="logout()" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #ff4d4f; font-size: 24px;">{{ 'COMMON.LOGOUT' | translate }}</div>
+            <div style="position: absolute; left: 1660px; top: 180px; width: 200px; overflow: hidden; border-radius: 10px; border: 1px solid rgba(2,6,23,0.08); background: white; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),0 8px 10px -6px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 100; font-family: Afacad, sans-serif;">
+              <button (click)="navigate('/profile')" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #334155; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">{{ 'COMMON.PROFILE' | translate }}</button>
+              <div style="height: 1px; background: #f1f5f9;"></div>
+              <button (click)="logout()" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #dc2626; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">{{ 'COMMON.LOGOUT' | translate }}</button>
             </div>
           }
 

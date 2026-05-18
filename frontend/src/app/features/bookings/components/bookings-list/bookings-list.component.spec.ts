@@ -139,18 +139,20 @@ describe('BookingsListComponent', () => {
 
   it('should return correct step level for each status', () => {
     expect(component.getStepLevel('requested')).toBe(1);
-    expect(component.getStepLevel('accepted')).toBe(2);
-    expect(component.getStepLevel('cancelled')).toBe(3);
-    expect(component.getStepLevel('deposit_pending')).toBe(4);
+    expect(component.getStepLevel('viewing_scheduled')).toBe(2);
+    expect(component.getStepLevel('deposit_pending')).toBe(3);
+    expect(component.getStepLevel('accepted')).toBe(4);
     expect(component.getStepLevel('completed')).toBe(4);
+    expect(component.getStepLevel('cancelled')).toBe(1);
     expect(component.getStepLevel('unknown')).toBe(1);
   });
 
   it('should return correct line width for each step level', () => {
     expect(component.getLineWidth('requested')).toBe(0);
-    expect(component.getLineWidth('accepted')).toBe(247);
-    expect(component.getLineWidth('cancelled')).toBe(492);
-    expect(component.getLineWidth('completed')).toBe(739);
+    expect(component.getLineWidth('viewing_scheduled')).toBe(247);
+    expect(component.getLineWidth('deposit_pending')).toBe(492);
+    expect(component.getLineWidth('accepted')).toBe(739);
+    expect(component.getLineWidth('cancelled')).toBe(0);
   });
 
   it('should return true for canCancel on eligible statuses', () => {

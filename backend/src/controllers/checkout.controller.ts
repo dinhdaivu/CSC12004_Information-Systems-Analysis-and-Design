@@ -18,6 +18,24 @@ function parsePositiveInt(value: string | undefined, fallback: number): number {
 }
 
 export class CheckoutController {
+  static async listMyCheckoutRequests(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const customerId = req.user?.id;
+      if (!customerId) {
+        res.status(401).json(ApiResponseBuilder.error('UNAUTHORIZED', 'Login required'));
+        return;
+      }
+      const page = parsePositiveInt(typeof req.query.page === 'string' ? req.query.page : undefined, 1);
+      const limit = parsePositiveInt(typeof req.query.limit === 'string' ? req.query.limit : undefined, 20);
+      if (limit > 100) throw new ValidationError('limit cannot exceed 100');
+
+      const result = await CheckoutService.listCheckoutRequests({ page, limit, customerId });
+      res.status(200).json(ApiResponseBuilder.success(result));
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async listCheckoutRequests(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const page = parsePositiveInt(typeof req.query.page === 'string' ? req.query.page : undefined, 1);
@@ -173,6 +191,62 @@ export class CheckoutController {
     try {
       const data = await CheckoutService.completeCheckout(parseId(req));
       res.status(200).json(ApiResponseBuilder.success(data, 'Checkout completed'));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // ============ Inspection sub-resource (UC4) ============
+
+  static async getInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await CheckoutService.getInspectionByCheckoutId(parseId(req));
+      res.status(200).json(ApiResponseBuilder.success(data));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async createInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const checkoutId = parseId(req);
+      const body = req.body as Record<string, unknown>;
+      const data = await CheckoutService.createInspection(checkoutId, {
+        managerId: typeof body.managerId === 'string' ? body.managerId : req.user?.id,
+        cleanlinessNote: typeof body.cleanlinessNote === 'string' ? body.cleanlinessNote : undefined,
+        overallCondition: typeof body.overallCondition === 'string' ? body.overallCondition : undefined,
+        notes: typeof body.notes === 'string' ? body.notes : undefined,
+        damageReports: Array.isArray(body.damageReports)
+          ? (body.damageReports as { itemName: string; description?: string; estimatedCost?: number; imageUrl?: string }[])
+          : undefined,
+        keyReturns: Array.isArray(body.keyReturns)
+          ? (body.keyReturns as { itemName: string; returned?: boolean; replacementCost?: number; notes?: string }[])
+          : undefined,
+      });
+      res.status(201).json(ApiResponseBuilder.success(data, 'Inspection created'));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async completeInspection(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await CheckoutService.completeInspection(parseId(req));
+      res.status(200).json(ApiResponseBuilder.success(data, 'Inspection completed'));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async signSettlement(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const settlementId = parseId(req, 'settlementId');
+      const { customerSignatureUrl } = req.body as { customerSignatureUrl?: string };
+      if (typeof customerSignatureUrl !== 'string' || !customerSignatureUrl.trim()) {
+        throw new ValidationError('customerSignatureUrl is required');
+      }
+      const data = await CheckoutService.signSettlement(settlementId, customerSignatureUrl);
+      res.status(200).json(ApiResponseBuilder.success(data, 'Settlement signed'));
     } catch (err) {
       next(err);
     }

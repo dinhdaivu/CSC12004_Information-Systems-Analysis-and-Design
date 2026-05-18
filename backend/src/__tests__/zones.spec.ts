@@ -35,4 +35,37 @@ describe("Zone API & Service", () => {
     expect(res.status).toBe(200);
     expect(mockChain.eq).toHaveBeenCalledWith("branch_id", "b1");
   });
+
+  it("GET / should return 500 when DB returns an error", async () => {
+    (supabaseServiceRole!.from as jest.Mock).mockReturnValue(
+      createSupabaseMock(null, { message: "db error" })
+    );
+    const res = await request(app).get("/api/zones");
+    expect(res.status).toBe(500);
+  });
+
+  it("GET / should return 500 when supabase throws unexpectedly", async () => {
+    (supabaseServiceRole!.from as jest.Mock).mockImplementation(() => {
+      throw new TypeError("unexpected error");
+    });
+    const res = await request(app).get("/api/zones");
+    expect(res.status).toBe(500);
+  });
+
+  it("GET / should return empty array when data is null but no error", async () => {
+    (supabaseServiceRole!.from as jest.Mock).mockReturnValue(
+      createSupabaseMock(null, null)
+    );
+    const res = await request(app).get("/api/zones");
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual([]);
+  });
+
+  it("GET / with whitespace-only branch_id should ignore the filter", async () => {
+    (supabaseServiceRole!.from as jest.Mock).mockReturnValue(
+      createSupabaseMock([{ id: "z1", name: "Zone 1" }])
+    );
+    const res = await request(app).get("/api/zones?branch_id=%20%20");
+    expect(res.status).toBe(200);
+  });
 });

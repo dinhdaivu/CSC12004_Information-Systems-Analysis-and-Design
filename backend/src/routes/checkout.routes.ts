@@ -15,6 +15,9 @@ const ALL_AUTHENTICATED = ['customer', 'sale', 'accountant', 'manager', 'admin']
 router.use(limiter);
 router.use(authMiddleware);
 
+// Customer-accessible: returns only the logged-in customer's own checkout requests
+router.get('/my', CheckoutController.listMyCheckoutRequests.bind(CheckoutController));
+
 // Checkout requests
 router.get('/', roleMiddleware(STAFF_ROLES), CheckoutController.listCheckoutRequests.bind(CheckoutController));
 router.get('/:id', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.getCheckoutRequestById.bind(CheckoutController));
@@ -29,5 +32,12 @@ router.post('/:id/settlement', roleMiddleware(ACCOUNTANT_ROLES), CheckoutControl
 router.patch('/:id/settlement/:settlementId', roleMiddleware(ACCOUNTANT_ROLES), CheckoutController.updateSettlementDeduction.bind(CheckoutController));
 router.patch('/:id/settlement/:settlementId/confirm', roleMiddleware(MANAGER_ROLES), CheckoutController.confirmSettlement.bind(CheckoutController));
 router.patch('/:id/settlement/:settlementId/complete', roleMiddleware(ACCOUNTANT_ROLES), CheckoutController.completeSettlement.bind(CheckoutController));
+// Customer signs settlement after confirmation, before completion
+router.patch('/:id/settlement/:settlementId/sign', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.signSettlement.bind(CheckoutController));
+
+// Inspection sub-resource (UC4 §3.1.4)
+router.get('/:id/inspection', roleMiddleware(ALL_AUTHENTICATED), CheckoutController.getInspection.bind(CheckoutController));
+router.post('/:id/inspection', roleMiddleware(MANAGER_ROLES), CheckoutController.createInspection.bind(CheckoutController));
+router.patch('/:id/inspection/complete', roleMiddleware(MANAGER_ROLES), CheckoutController.completeInspection.bind(CheckoutController));
 
 export default router;

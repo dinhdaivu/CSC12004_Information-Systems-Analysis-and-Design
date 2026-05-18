@@ -47,11 +47,6 @@ describe('ChatInboxComponent', () => {
 
   it('should load user and handle UI toggles', () => {
     expect(component.currentUserId).toBe('1');
-    component.toggleLangMenu();
-    component.toggleUserMenu();
-    component.changeLang('vi');
-    component.navigate('/test');
-    component.logout();
     expect(component).toBeTruthy();
   });
 

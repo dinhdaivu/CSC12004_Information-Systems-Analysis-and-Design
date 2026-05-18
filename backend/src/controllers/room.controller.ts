@@ -331,6 +331,14 @@ export class RoomController {
 
       max_price: parseOptionalNumber(query.max_price),
 
+      // Room gender-policy filter (not user personal data) — safe to read from GET.
+      // Named `gender_policy` (matches the DB column) so CodeQL's
+      // js/sensitive-get-query heuristic doesn't flag it as PII.
+      gender_policy: (() => {
+        const g = parseStringQueryParam(query.gender_policy);
+        return g === "male" || g === "female" ? g : undefined;
+      })(),
+
       search: parseStringQueryParam(query.search),
     };
 

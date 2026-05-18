@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MyBookingService } from '../../../../core/services/my-booking.service';
@@ -14,7 +15,7 @@ interface BookingRecord {
 @Component({
   selector: 'app-bookings-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
   styles: [`
     .booking-scroll-container::-webkit-scrollbar {
       width: 8px;
@@ -77,11 +78,16 @@ interface BookingRecord {
             <span style="color: white; font-size: 15px; font-family: Afacad; font-style: italic; font-weight: 700; word-wrap: break-word">{{ 'CONTACT_INFO.HOURS_LABEL' | translate }}</span><span style="color: white; font-size: 15px; font-family: Afacad; font-weight: 400; word-wrap: break-word">{{ 'CONTACT_INFO.HOURS' | translate }}</span>
           </div>
 
-          <div style="position: absolute; left: 500px; top: 180px; display: flex; gap: 20px; z-index: 60;">
+          <div style="position: absolute; left: 500px; top: 180px; width: 1317px; display: flex; gap: 20px; align-items: center; z-index: 60;">
             <button (click)="filterStatus('')" [style.background]="currentFilter === '' ? '#264893' : 'white'" [style.color]="currentFilter === '' ? 'white' : '#264893'" style="padding: 10px 20px; border-radius: 20px; border: 2px solid #264893; font-family: Afacad; font-weight: bold; cursor: pointer;">{{ 'MY_BOOKINGS.FILTERS.ALL' | translate }}</button>
             <button (click)="filterStatus('pending')" [style.background]="currentFilter === 'pending' ? '#264893' : 'white'" [style.color]="currentFilter === 'pending' ? 'white' : '#264893'" style="padding: 10px 20px; border-radius: 20px; border: 2px solid #264893; font-family: Afacad; font-weight: bold; cursor: pointer;">{{ 'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.LABEL' | translate }}</button>
             <button (click)="filterStatus('confirmed')" [style.background]="currentFilter === 'confirmed' ? '#264893' : 'white'" [style.color]="currentFilter === 'confirmed' ? 'white' : '#264893'" style="padding: 10px 20px; border-radius: 20px; border: 2px solid #264893; font-family: Afacad; font-weight: bold; cursor: pointer;">{{ 'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.LABEL' | translate }}</button>
             <button (click)="filterStatus('cancelled')" [style.background]="currentFilter === 'cancelled' ? '#264893' : 'white'" [style.color]="currentFilter === 'cancelled' ? 'white' : '#264893'" style="padding: 10px 20px; border-radius: 20px; border: 2px solid #264893; font-family: Afacad; font-weight: bold; cursor: pointer;">{{ 'MY_BOOKINGS.TRACKING.STEPS.CANCELLED.LABEL' | translate }}</button>
+
+            <!-- Find a Room CTA — pushed to the right -->
+            <button (click)="navigate('/rooms')" style="margin-left: auto; padding: 10px 28px; background: #264893; color: white; border: none; border-radius: 20px; font-family: 'Big Shoulders Text', Impact, sans-serif; font-size: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(38,72,147,0.3); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+              Find a Room
+            </button>
           </div>
 
           <div *ngIf="bookings.length === 0 && !isLoading" style="width: 1317px; left: 500px; top: 350px; position: absolute; display: flex; flex-direction: column; align-items: center; gap: 24px; z-index: 50;">
@@ -100,10 +106,10 @@ interface BookingRecord {
               <div style="width: 100%; height: 730px; position: relative; background: rgba(246.42, 246.42, 246.42, 0.70); box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px">
                 
                 <!-- Card Content with relative positions -->
-                <div style="width: 684px; height: 30px; left: 93px; top: 86px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">
+                <div style="width: 900px; height: auto; left: 93px; top: 86px; position: absolute; display: flex; align-items: center; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; white-space: nowrap;">
                   {{ 'MY_BOOKINGS.TRACKING.TITLE' | translate }} {{ booking.rooms?.room_number ? '- ' + ('COMMON.ROOM' | translate) + ' ' + booking.rooms?.room_number : '' }}
                 </div>
-                <div style="width: 889px; height: 30px; left: 93px; top: 143px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">
+                <div style="width: 889px; height: auto; left: 93px; top: 143px; position: absolute; display: flex; align-items: center; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word;">
                   {{ 'MY_BOOKINGS.TRACKING.SUBTITLE' | translate }}
                 </div>
                 
@@ -115,25 +121,65 @@ interface BookingRecord {
                 
                 <div [style.width.px]="getLineWidth(booking.status)" style="height: 0px; left: 268px; top: 307px; position: absolute; outline: 3px #264893 solid; outline-offset: -1.50px; transition: width 0.3s ease;"></div>
                 
+                <!-- Step 1: Under Review (requested / reviewing) -->
                 <div [style.background]="getStepBg(booking.status, 1)" style="width: 60px; height: 60px; left: 238px; top: 277px; position: absolute; border-radius: 9999px"></div>
                 <div [style.color]="getStepColor(booking.status, 1)" style="width: 29px; height: 60px; left: 253px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">1</div>
-                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 40px; left: 148px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 50px; left: 148px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PROCESSING.DESC' | translate"></div>
+                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 40px; left: 148px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">Under Review</div>
+                <div [style.color]="getTextColor(booking.status, 1)" style="width: 240px; height: auto; min-height: 50px; left: 148px; top: 395px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">Our team is verifying availability and reviewing your application details.</div>
 
+                <!-- Step 2: Viewing Scheduled (viewing_scheduled) -->
                 <div [style.background]="getStepBg(booking.status, 2)" style="width: 60px; height: 60px; left: 485px; top: 277px; position: absolute; border-radius: 9999px"></div>
                 <div [style.color]="getStepColor(booking.status, 2)" style="width: 29px; height: 60px; left: 500px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">2</div>
-                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 40px; left: 395px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 50px; left: 395px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.ACCEPTED.DESC' | translate"></div>
+                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 40px; left: 395px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">Viewing Scheduled</div>
+                <div [style.color]="getTextColor(booking.status, 2)" style="width: 240px; height: auto; min-height: 50px; left: 395px; top: 395px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">Sales has set an appointment for you to visit the room.</div>
 
+                <!-- Step 3: Awaiting Deposit (deposit_pending) -->
                 <div [style.background]="getStepBg(booking.status, 3)" style="width: 60px; height: 60px; left: 737px; top: 277px; position: absolute; border-radius: 9999px"></div>
                 <div [style.color]="getStepColor(booking.status, 3)" style="width: 29px; height: 60px; left: 752px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">3</div>
-                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 40px; left: 647px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ booking.status === 'cancelled' ? ('MY_BOOKINGS.TRACKING.STEPS.CANCELLED.LABEL' | translate) : ('MY_BOOKINGS.TRACKING.STEPS.REJECTED.LABEL' | translate) }}</div>
-                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 50px; left: 647px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.REJECTED.DESC' | translate"></div>
+                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 40px; left: 647px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">Awaiting Deposit</div>
+                <div [style.color]="getTextColor(booking.status, 3)" style="width: 240px; height: auto; min-height: 50px; left: 647px; top: 395px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">Pay the deposit to secure the room.</div>
 
+                <!-- Step 4: Confirmed (accepted / completed) -->
                 <div [style.background]="getStepBg(booking.status, 4)" style="width: 60px; height: 60px; left: 985px; top: 277px; position: absolute; border-radius: 9999px"></div>
                 <div [style.color]="getStepColor(booking.status, 4)" style="width: 29px; height: 60px; left: 1000px; top: 277px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">4</div>
-                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 40px; left: 895px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 32px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.LABEL' | translate }}</div>
-                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 50px; left: 895px; top: 405px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word" [innerHTML]="'MY_BOOKINGS.TRACKING.STEPS.PENDING_DEPOSIT.DESC' | translate"></div>
+                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 40px; left: 895px; top: 355px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 28px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">Confirmed</div>
+                <div [style.color]="getTextColor(booking.status, 4)" style="width: 240px; height: auto; min-height: 50px; left: 895px; top: 395px; position: absolute; text-align: center; justify-content: flex-start; display: flex; flex-direction: column; font-size: 16px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">Deposit received. Ready for check-in and contract signing.</div>
+
+                <!-- Terminal banner for rejected / cancelled (overlays the line) -->
+                <div *ngIf="isTerminal(booking.status)" style="position: absolute; left: 268px; top: 470px; width: 746px; padding: 16px 24px; background: #fee2e2; border: 2px solid #fca5a5; border-radius: 14px; display: flex; align-items: center; gap: 14px;">
+                  <span style="display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: 9999px; background: #b91c1c; color: white; font-weight: 900; font-family: Big Shoulders Text;">!</span>
+                  <div>
+                    <div style="color: #991b1b; font-size: 22px; font-family: Big Shoulders Text; font-weight: 900;">
+                      {{ booking.status === 'cancelled' ? 'You cancelled this request' : 'This request was declined' }}
+                    </div>
+                    <div style="color: #7f1d1d; font-size: 15px; font-family: Big Shoulders Text; font-weight: 600;">
+                      {{ booking.status === 'cancelled' ? 'No further action is needed. Feel free to submit a new request anytime.' : 'The room is no longer available or the application criteria were not met.' }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Deposit Instructions CTA — shown whenever awaiting deposit -->
+                <div *ngIf="booking.status === 'deposit_pending'"
+                     style="position: absolute; left: 268px; top: 470px; width: 746px; 
+                            display: flex; align-items: center; justify-content: space-between;
+                            background: #e8edf8; border-radius: 16px; padding: 18px 28px; z-index: 10;">
+                  <div>
+                    <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700;">
+                      Ready to secure your room?
+                    </div>
+                    <div style="color: #595959; font-size: 16px; font-family: Afacad;">
+                      Learn how to calculate and submit your deposit payment.
+                    </div>
+                  </div>
+                  <button (click)="showDepositInstructions = true; listTermsAccepted = false; $event.stopPropagation()"
+                          style="padding: 12px 28px; background: #264893; color: white; border: none;
+                                 border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                                 font-size: 20px; font-weight: 700; cursor: pointer; white-space: nowrap;
+                                 box-shadow: 0 4px 14px rgba(38,72,147,0.3);"
+                          onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                    Deposit Instructions
+                  </button>
+                </div>
 
                 <a (click)="navigate('/bookings/' + booking.id)" style="position: absolute; left: 1050px; top: 600px; font-family: Afacad; font-size: 24px; font-weight: bold; color: #264893; cursor: pointer; text-decoration: none; z-index: 20;">
                   {{ 'MY_BOOKINGS.ACTIONS.VIEW_DETAILS' | translate }} &rarr;
@@ -142,6 +188,137 @@ interface BookingRecord {
             </div>
           </div>
           
+          <!-- ══════════════════════════════════════════════════ -->
+          <!-- Deposit Instructions Modal                        -->
+          <!-- ══════════════════════════════════════════════════ -->
+          <div *ngIf="showDepositInstructions"
+               style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+                      display: flex; align-items: center; justify-content: center;"
+               (click)="showDepositInstructions = false">
+            <div (click)="$event.stopPropagation()"
+                 style="background: #f6f6f6; border-radius: 25px; width: 780px; max-height: 88vh;
+                        overflow-y: auto; padding: 48px 52px; position: relative;
+                        box-shadow: 0 20px 60px rgba(38,72,147,0.22);">
+
+              <!-- Close button -->
+              <button (click)="showDepositInstructions = false"
+                      style="position: absolute; top: 20px; right: 24px; background: none; border: none;
+                             font-size: 28px; color: #8a8a8a; cursor: pointer; line-height: 1;">&#10005;</button>
+
+              <!-- Title -->
+              <div style="color: #264893; font-size: 38px; font-family: 'Big Shoulders Text', sans-serif;
+                          font-weight: 900; margin-bottom: 4px; letter-spacing: 1px;">
+                Deposit Instructions
+              </div>
+              <div style="width: 56px; height: 4px; background: #264893; border-radius: 4px; margin-bottom: 28px;"></div>
+
+              <!-- Step 1 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">1</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Eligibility Check</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    Our sales team will review your profile and verify you meet the dormitory requirements — including gender policy, nationality, required documents, and financial capacity. They will also confirm the room or bed is still available at this time.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">2</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Deposit Amount Calculation</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    The deposit is calculated as:<br/>
+                    <div style="margin: 10px 0 10px 0; padding: 14px 20px; background: #e8edf8; border-radius: 12px; border-left: 4px solid #264893;">
+                      <span style="color: #264893; font-family: 'Big Shoulders Text', sans-serif; font-size: 19px; font-weight: 900;">
+                        Deposit = (2 months rent) &times; (number of beds rented)
+                      </span>
+                    </div>
+                    For a <strong>whole room</strong>, the number of beds equals the room's full capacity (e.g. a 4-person room = 4 beds).
+                    The accountant department will calculate the exact amount and send you a payment request.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 24px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">3</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Make Payment</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    You may pay your deposit by <strong>cash</strong> or <strong>bank transfer</strong>.
+                  </div>
+                  <!-- 24h warning -->
+                  <div style="margin-top: 12px; padding: 12px 16px; background: #fff3cd; border-radius: 12px;
+                              border-left: 4px solid #f59e0b;">
+                    <span style="color: #92400e; font-size: 16px; font-family: Afacad; font-weight: 700;">
+                      You have 24 hours from receiving the payment request to complete your deposit.
+                      If payment is not received within this window, your deposit request will be automatically cancelled.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 32px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">4</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Submit Proof of Payment</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    After completing your transfer, send a screenshot or photo of the transaction receipt to our Sales team.
+                    The manager will verify the payment. Once confirmed, your deposit is complete and your room/bed is officially secured — no other tenants will be able to deposit on it.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5 -->
+              <div style="display: flex; gap: 18px; margin-bottom: 32px;">
+                <div style="min-width: 40px; height: 40px; border-radius: 50%; background: #264893; color: white;
+                            display: flex; align-items: center; justify-content: center;
+                            font-family: 'Big Shoulders Text', sans-serif; font-size: 20px; font-weight: 900;">5</div>
+                <div>
+                  <div style="color: #264893; font-size: 22px; font-family: 'Big Shoulders Text', sans-serif; font-weight: 700; margin-bottom: 4px;">Check-In Scheduling</div>
+                  <div style="color: #595959; font-size: 17px; font-family: Afacad; line-height: 1.65;">
+                    After the deposit is confirmed, our Sales team will contact you to arrange the move-in date and check-in procedures according to your rental agreement.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Terms checkbox -->
+              <div style="margin-top: 16px; margin-bottom: 24px;">
+                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="listTermsAccepted"
+                         style="width: 24px; height: 24px; cursor: pointer; accent-color: #264893;">
+                  <span style="color: #264893; font-size: 20px; font-family: Afacad; font-weight: 700;">
+                    I have read and agree to the Dormitory Terms and Conditions
+                  </span>
+                </label>
+              </div>
+
+              <!-- Close CTA -->
+              <button (click)="listTermsAccepted && (showDepositInstructions = false)"
+                      [disabled]="!listTermsAccepted"
+                      [style.opacity]="listTermsAccepted ? '1' : '0.5'"
+                      [style.cursor]="listTermsAccepted ? 'pointer' : 'not-allowed'"
+                      style="width: 100%; padding: 16px; background: #264893; color: white;
+                             border: none; border-radius: 20px; font-family: 'Big Shoulders Text', sans-serif;
+                             font-size: 24px; font-weight: 700; letter-spacing: 1px;
+                             transition: opacity 0.2s;"
+                      onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+                Agree on term
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -152,6 +329,8 @@ export class BookingsListComponent implements OnInit {
   isUserMenuOpen = false;
   isAuthenticated = false;
   scaleFactor = 1;
+  showDepositInstructions = false;
+  listTermsAccepted = false;
   
   allBookings: BookingRecord[] = [];
   bookings: BookingRecord[] = [];
@@ -281,16 +460,26 @@ export class BookingsListComponent implements OnInit {
     }
   }
   
+  /**
+   * Happy-path step level (1..4) matching UC1+UC2 progression. Terminal states
+   * (rejected/cancelled) get isTerminal() handling — they don't advance the bar.
+   */
   getStepLevel(status: string): number {
-    if (['requested', 'reviewing', 'viewing_scheduled'].includes(status)) return 1;
-    if (status === 'accepted') return 2;
-    if (['rejected', 'cancelled'].includes(status)) return 3;
-    if (status === 'deposit_pending') return 4;
-    if (status === 'completed') return 4;
+    if (['requested', 'reviewing'].includes(status)) return 1;
+    if (status === 'viewing_scheduled') return 2;
+    if (status === 'deposit_pending') return 3;
+    if (['accepted', 'completed'].includes(status)) return 4;
+    // rejected/cancelled: freeze the bar at whatever step they were on; we
+    // can't know without history, so render at step 1 and let the banner explain.
     return 1;
   }
 
+  isTerminal(status: string): boolean {
+    return status === 'rejected' || status === 'cancelled';
+  }
+
   getLineWidth(status: string): number {
+    if (this.isTerminal(status)) return 0;
     const level = this.getStepLevel(status);
     if (level === 1) return 0;
     if (level === 2) return 247;
@@ -300,19 +489,19 @@ export class BookingsListComponent implements OnInit {
   }
 
   getStepBg(status: string, step: number): string {
+    if (this.isTerminal(status)) return '#D9D9D9';
     const level = this.getStepLevel(status);
-    if (step <= level) {
-      return '#264893';
-    }
-    return '#D9D9D9';
+    return step <= level ? '#264893' : '#D9D9D9';
   }
 
   getStepColor(status: string, step: number): string {
+    if (this.isTerminal(status)) return '#595959';
     const level = this.getStepLevel(status);
     return step <= level ? 'white' : '#595959';
   }
 
   getTextColor(status: string, step: number): string {
+    if (this.isTerminal(status)) return '#9ca3af';
     const level = this.getStepLevel(status);
     return step <= level ? '#264893' : '#595959';
   }

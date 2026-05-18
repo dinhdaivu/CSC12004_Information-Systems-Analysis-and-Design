@@ -45,8 +45,8 @@ import { AuthService } from '../../../../core/services/auth.service';
           </span>
         </div>
         
-        <div (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 480px; height: 135px; left: 720px; top: 4153px; position: absolute; background: #264893; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 100px;"></div>
-        <div (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 393px; height: 46px; left: 763px; top: 4198px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 48px; font-family: Afacad; font-weight: 600; pointer-events: none;">{{ 'ROOM_DETAIL.CONTACT_US' | translate }}</div>
+        <div *ngIf="!inquirySent" (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 480px; height: 135px; left: 720px; top: 4153px; position: absolute; background: #264893; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 100px;"></div>
+        <div *ngIf="!inquirySent" (click)="onContactAction()" class="hover-scale" style="cursor: pointer; width: 393px; height: 46px; left: 763px; top: 4198px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 48px; font-family: Afacad; font-weight: 600; pointer-events: none;">{{ 'ROOM_DETAIL.CONTACT_US' | translate }}</div>
         
         
 
@@ -266,6 +266,25 @@ import { AuthService } from '../../../../core/services/auth.service';
         </div>
       </div>
     </ng-template>
+
+    <!-- Alert Modal -->
+    <ng-container *ngIf="isContactModalOpen">
+      <div class="animate-fade-in" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.50); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div style="background: #f6f6f6; border-radius: 25px; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); width: 620px; min-height: 390px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 60px; box-sizing: border-box;">
+          <div style="font-family: 'Big Shoulders Text', Impact, sans-serif; color: #264893; font-size: 44px; font-weight: 900; text-align: center;">
+            Notification
+          </div>
+          <div style="font-family: Afacad, Arial, sans-serif; margin-top: 28px; color: #555; font-size: 26px; text-align: center; line-height: 1.5; word-wrap: break-word; max-width: 100%;">
+            {{ contactModalMessage }}
+          </div>
+          <div style="display: flex; gap: 22px; margin-top: 54px;">
+            <button (click)="closeContactModal()" style="background: #264893; color: white; border: none; border-radius: 9999px; font-family: 'Big Shoulders Text', Impact, sans-serif; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; min-width: 160px; height: 60px; font-size: 22px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   `,
   styles: [`
     .loading-state { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #FEF4DF; font-family: Afacad, sans-serif; flex-direction: column; }
@@ -303,6 +322,10 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
+
+  isContactModalOpen = false;
+  contactModalMessage = '';
+  inquirySent = false;
 
   activeSharedIndex = 0;
   activeRoomType: RoomType = 'twin';
@@ -521,9 +544,15 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   }
 
   onContactAction(): void {
+    if (this.inquirySent) return;
+    this.inquirySent = true;
     const branchName = this.branchDetail?.name || '';
     const alertMsg = this.translate.instant('ROOM_DETAIL.CONTACT_ACTION', { name: branchName });
-    window.alert(alertMsg ? alertMsg : `Đã gửi yêu cầu liên hệ tới ban quản lý cơ sở: ${branchName}`);
-    this.router.navigate(['/rooms']);
+    this.contactModalMessage = alertMsg ? alertMsg : `Your inquiry has been sent to the team at ${branchName}`;
+    this.isContactModalOpen = true;
+  }
+
+  closeContactModal(): void {
+    this.isContactModalOpen = false;
   }
 }

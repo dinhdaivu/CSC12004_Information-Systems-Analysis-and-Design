@@ -12,5 +12,7 @@ router.post('/', roleMiddleware(['sale', 'manager', 'admin']), HandoverControlle
 router.patch('/:id/complete', roleMiddleware(['manager', 'admin']), HandoverController.complete);
 router.patch('/:id/cancel', roleMiddleware(['manager', 'admin']), HandoverController.cancel);
 router.post('/:id/items', roleMiddleware(['manager', 'admin']), HandoverController.addItem);
+// Customers or staff can attach signatures; manager finalizes via /complete.
+router.patch('/:id/sign', HandoverController.sign);
 
 export default router;

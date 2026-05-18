@@ -1,3 +1,5 @@
+export type RentalMode = 'whole_room' | 'shared_bed';
+
 export interface RentalPayload {
   expected_move_in_date: string;
   rental_duration_months: number;
@@ -11,6 +13,13 @@ export interface RentalPayload {
   phone_number?: string;
   gender?: string;
   identity_number?: string;
+  // UC1 §3.1.1 — explicit rental mode + matching criteria
+  rental_mode?: RentalMode;
+  preferred_gender?: 'male' | 'female';
+  prefers_quiet?: boolean;
+  needs_parking?: boolean;
+  needs_air_conditioner?: boolean;
+  schedule_note?: string;
 }
 
 export interface RentalRequestResponse {

@@ -11,6 +11,10 @@ import {
   NotFoundError,
   ValidationError,
 } from "@utils/errors";
+import {
+  sendDepositConfirmedEmail,
+  sendDepositFailedEmail,
+} from "./email.service";
 
 export class DepositService {
   static async createDeposit(input: {
@@ -22,16 +26,24 @@ export class DepositService {
     dueAt?: string;
     notes?: string;
   }): Promise<DepositDetailDTO> {
-    // UC2-3: deposit must be at least 2 months' rent
+    // UC2-3 (spec §3.1.2): deposit = monthly_rent × 2 × number_of_beds_rented.
+    // For per-bed rental: number_of_beds = 1.
+    // For whole-room rental (bedId is null): number_of_beds = room.max_capacity.
     const monthlyPrice = input.bedId
       ? await DepositRepository.getBedPrice(input.bedId)
       : await DepositRepository.getRoomPrice(input.roomId);
 
+    let bedsCount = 1;
+    if (!input.bedId) {
+      const capacity = await DepositRepository.getRoomCapacity(input.roomId);
+      if (capacity && capacity > 0) bedsCount = capacity;
+    }
+
     if (monthlyPrice !== null) {
-      const minimum = monthlyPrice * 2;
+      const minimum = monthlyPrice * 2 * bedsCount;
       if (input.amount < minimum) {
         throw new ValidationError(
-          `Deposit amount must be at least 2 months' rent (${minimum.toLocaleString()} VND)`,
+          `Deposit amount must be at least 2 months' rent × ${bedsCount} bed(s) (${minimum.toLocaleString()} VND)`,
         );
       }
     }
@@ -109,6 +121,27 @@ export class DepositService {
       );
     }
 
+    if (currentDeposit.customer?.email) {
+      // Best-effort fetch for branch name
+      let branchName = "Homestay Dorm";
+      try {
+        const { data: branch } = await DepositRepository.getRoomById(currentDeposit.roomId).then(async (r) => {
+          if (!r) return { data: null };
+          const client = (await import("@config/supabase")).supabaseServiceRole;
+          if (!client) return { data: null };
+          return client.from("branches").select("name").eq("id", r.branchId).single();
+        });
+        if (branch) branchName = branch.name;
+      } catch { /* best-effort */ }
+
+      await sendDepositConfirmedEmail({
+        toEmail: currentDeposit.customer.email,
+        customerName: currentDeposit.customer.fullName,
+        roomLabel: currentDeposit.bedId ? `Giường ${currentDeposit.bedNumber || ''}` : `Phòng ${room.roomNumber}`,
+        branchName
+      }).catch(console.error);
+    }
+
     return {
       deposit: await this.getDepositById(id),
     };
@@ -152,6 +185,14 @@ export class DepositService {
           "Failed to update room status while cancelling deposit",
         );
       }
+    }
+
+    if (currentDeposit.customer?.email) {
+      await sendDepositFailedEmail({
+        toEmail: currentDeposit.customer.email,
+        customerName: currentDeposit.customer.fullName,
+        reason: "Admin rejected your payment proof."
+      }).catch(console.error);
     }
 
     return {

@@ -717,21 +717,13 @@
       "TITLE": "Deposit Proof",
       "STATUS": "Status:",
       "REJECT": "Reject Proof",
-      "VERIFY": "Verify & Forward"
+      "VERIFY": "Approve Deposit"
     },
     "MODAL": {
       "REJECT_TITLE": "Reject Proof",
       "REJECT_REASON": "Enter the reason for rejection",
-      "VERIFY_TITLE": "Verified and Forward",
-      "VERIFY_DESC": "Are you sure you want to verify and forward this request to the Manager for final approval?",
-      "FORWARD_TITLE": "Create Deposit Request",
-      "GUEST_NAME_ID": "Guest Name/ID",
-      "BRANCH": "Branch",
-      "ROOM": "Room",
-      "BED": "Bed",
-      "AMOUNT": "Deposit Amount",
-      "FINAL_FORWARD_TITLE": "Create Deposit Request",
-      "FINAL_FORWARD_DESC": "Are you sure you want to send payment link to guest ?"
+      "APPROVE_TITLE": "Approve Deposit",
+      "APPROVE_DESC": "Are you sure you want to approve this deposit? The deposit will be marked as paid and a confirmation email will be sent to the guest."
     }
   },
   "ADMIN_CHAT": {

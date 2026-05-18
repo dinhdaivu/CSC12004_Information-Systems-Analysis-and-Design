@@ -192,40 +192,87 @@ interface RoomItem {
           </ng-container>
 
           <ng-container *ngIf="step === 'bed'">
-            <div style="width: 1920px; height: 1080px; left: 0px; top: 0px; position: absolute; background: rgba(0, 0, 0, 0.50)"></div>
-
-            <div style="width: 695px; height: 640px; left: 661px; top: 209px; position: absolute; background: #F6F6F6; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 25px"></div>
-
-            <div (click)="goToRoomStep()" style="cursor: pointer; width: 88px; height: 87px; left: 680px; top: 230px; position: absolute; display: flex; color: #264893; font-size: 20px; font-family: Afacad; font-weight: 600;">
-              {{ 'ROOM_BED_SEARCH.BUTTONS.BACK_VN' | translate }}
+            <div class="animate-fade-in" style="position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; background: rgba(0, 0, 0, 0.50); z-index: 999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+              
+              <div style="position: relative; width: 700px; max-height: 85vh; background: #FEF4DF; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); border-radius: 30px; display: flex; flex-direction: column; padding: 40px 50px; box-sizing: border-box;">
+                
+                <!-- Header -->
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+                  <div (click)="goToRoomStep()" class="hover-text" style="cursor: pointer; color: #264893; font-size: 20px; font-family: Afacad; font-weight: 700; display: inline-block; align-self: flex-start; margin-bottom: 10px;">
+                    &lt; {{ 'ROOM_BED_SEARCH.BUTTONS.BACK_VN' | translate }}
+                  </div>
+                  
+                  <div style="color: #264893; font-size: 48px; font-family: 'Big Shoulders Text'; font-weight: 900; line-height: 1;">
+                    {{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }} {{ selectedRoom?.roomNumber || 'THT.204' }}
+                  </div>
+                  
+                  <div style="color: #264893; font-size: 24px; font-family: 'Big Shoulders Text'; font-weight: 600; line-height: 1.3;">
+                    {{ 'ROOM_BED_SEARCH.ROOM.BRANCH_LABEL' | translate }} {{ filterBranchName }} | 
+                    {{ 'ROOM_BED_SEARCH.ROOM.ZONE_LABEL' | translate }}: {{ zones.length > 0 ? zones[currentZoneIndex]?.name : '' }} | 
+                    {{ 'ROOM_BED_SEARCH.ROOM.TYPE_LABEL' | translate }}: {{ selectedRoom?.roomType | titlecase }} {{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }}
+                  </div>
+                  
+                  <div (click)="goToDetail()" class="hover-text" style="cursor: pointer; color: #264893; font-size: 20px; text-decoration: underline; font-family: Afacad; margin-top: 5px;">
+                    {{ 'ROOM_BED_SEARCH.ROOM.VIEW_DETAIL' | translate }} &#x2197;
+                  </div>
+                </div>
+                
+                <!-- Bed List -->
+                <div style="flex: 1; overflow-y: auto; padding-right: 15px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px;">
+                  <ng-container *ngFor="let bed of selectedRoom?.beds; let i = index">
+                    <div (click)="bed.status === 'available' ? selectBed(bed.id) : null" 
+                        class="hover-scale"
+                        style="position: relative; width: 100%; height: 95px; background: #F6F6F6; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.08); border-radius: 25px; cursor: pointer; display: flex; align-items: center; padding: 0 40px; box-sizing: border-box; transition: transform 0.2s, border 0.2s;" 
+                        [style.border]="selectedBedId === bed.id ? '3px solid #264893' : '3px solid transparent'" 
+                        [style.opacity]="bed.status === 'available' ? '1' : '0.6'">
+                      
+                      <div [style.background]="getStatusColor(bed.status)" style="width: 18px; height: 18px; border-radius: 50%; margin-right: 25px; flex-shrink: 0;"></div>
+                      
+                      <div style="color: black; font-size: 26px; font-family: Afacad; font-weight: 700; width: 90px; flex-shrink: 0;">
+                        {{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{ number: (bed.bedNumber || i+1) } }}
+                      </div>
+                      
+                      <div style="width: 4px; height: 45px; background: black; border-radius: 2px; margin: 0 35px; flex-shrink: 0;"></div>
+                      
+                      <div style="color: black; font-size: 26px; font-family: Afacad; font-style: italic; font-weight: 400; flex: 1;">
+                        {{ bed.status === 'available' ? ('ROOM_BED_SEARCH.ROOM.VACANT' | translate) : ('ROOM_BED_SEARCH.ROOM.OCCUPIED_BED' | translate) }}
+                      </div>
+                      
+                    </div>
+                  </ng-container>
+                </div>
+                
+                <!-- Footer Button -->
+                <div style="display: flex; justify-content: center;">
+                  <div style="position: relative; width: 215px; height: 70px;" class="hover-scale" (click)="confirmAction()">
+                    <div style="cursor: pointer; width: 215px; height: 70px; left: 0; top: 0; position: absolute; background: #264893; border-radius: 40px; box-shadow: 0 4px 15px rgba(38, 72, 147, 0.3);"></div>
+                    <div style="cursor: pointer; width: 215px; height: 70px; left: 0; top: 0; position: absolute; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-family: Afacad; font-weight: 600;">
+                      {{ 'ROOM_BED_SEARCH.BUTTONS.CONFIRM' | translate }}
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
             </div>
+          </ng-container>
 
-            <div style="width: 350.26px; height: 30px; left: 754px; top: 290px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 48px; font-family: Big Shoulders Text; font-weight: 900; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }} {{ selectedRoom?.roomNumber || 'THT.204' }}</div>
-            <div style="width: 509px; height: 30px; left: 754px; top: 347px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 24px; font-family: Big Shoulders Text; font-weight: 600; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.ROOM.BRANCH_LABEL' | translate }} {{ filterBranchName }} | {{ 'ROOM_BED_SEARCH.ROOM.ZONE_LABEL' | translate }}: {{ zones.length > 0 ? zones[currentZoneIndex]?.name : '' }} | {{ 'ROOM_BED_SEARCH.ROOM.TYPE_LABEL' | translate }}: {{ selectedRoom?.roomType | titlecase }} {{ 'ROOM_BED_SEARCH.ROOM.ROOM_LABEL' | translate }}</div>
-
-            <div style="position: absolute; left: 730px; top: 410px; width: 560px; height: 290px; overflow-y: auto; overflow-x: hidden; padding: 10px 10px 10px 18px;">
-              <ng-container *ngFor="let bed of selectedRoom?.beds; let i = index">
-                 <div style="position: relative; width: 100%; height: 95px; margin-bottom: 16px;">
-                   <div (click)="bed.status === 'available' ? selectBed(bed.id) : null" style="width: 463px; height: 94.99px; left: 55px; top: 0px; position: absolute; background: #F6F6F6; box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.10); border-radius: 25px; cursor: pointer;" [style.border]="selectedBedId === bed.id ? '3px solid #264893' : 'none'" [style.opacity]="bed.status === 'available' ? '1' : '0.7'"></div>
-                   
-                   <div style="width: 57.31px; height: 57px; left: 116.56px; top: 20.93px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-weight: 700; word-wrap: break-word; pointer-events: none;">{{ 'ROOM_BED_SEARCH.ROOM.BED' | translate:{ number: (bed.bedNumber || i+1) } }}</div>
-                   
-                   <div style="width: 216.75px; height: 56.99px; left: 276.88px; top: 21px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: black; font-size: 24px; font-family: Afacad; font-style: italic; font-weight: 400; word-wrap: break-word; pointer-events: none;">{{ bed.status === 'available' ? ('ROOM_BED_SEARCH.ROOM.VACANT' | translate) : ('ROOM_BED_SEARCH.ROOM.OCCUPIED_BED' | translate) }}</div>
-                   
-                   <div [style.background]="getStatusColor(bed.status)" style="width: 16.55px; height: 16.55px; left: 90.33px; top: 39.76px; position: absolute; border-radius: 9999px; pointer-events: none;"></div>
-                   
-                   <div style="width: 62.93px; height: 0px; left: 250.59px; top: 79.49px; position: absolute; transform: rotate(-90deg); transform-origin: top left; outline: 2.50px black solid; outline-offset: -1.25px; pointer-events: none;"></div>
-                   
-                   <div [style.background]="bed.status === 'available' ? '#373737' : '#ADADAD'" style="width: 20px; height: 20px; left: 4px; top: 37px; position: absolute; border-radius: 9999px; border: 1px #ADADAD solid; pointer-events: none;"></div>
-                   <div style="width: 28px; height: 28px; left: 0px; top: 33px; position: absolute; border-radius: 9999px; border: 2px #ADADAD solid; pointer-events: none;"></div>
-                 </div>
-              </ng-container>
+          <!-- Alert Modal -->
+          <ng-container *ngIf="showModal">
+            <div style="position: absolute; inset: 0; left: 0; top: 0; width: 1920px; height: 1080px; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+              <div style="background: #f6f6f6; border-radius: 25px; box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25); width: 620px; min-height: 390px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 60px; box-sizing: border-box;">
+                <div style="font-family: 'Big Shoulders Text', Impact, sans-serif; color: #264893; font-size: 44px; font-weight: 900; text-align: center;">
+                  {{ modalTitle }}
+                </div>
+                <div style="font-family: Afacad, Arial, sans-serif; margin-top: 28px; color: #555; font-size: 26px; text-align: center; line-height: 1.5; word-wrap: break-word; max-width: 100%;">
+                  {{ modalMessage }}
+                </div>
+                <div style="display: flex; gap: 22px; margin-top: 54px;">
+                  <button (click)="closeModal()" style="background: #264893; color: white; border: none; border-radius: 9999px; font-family: 'Big Shoulders Text', Impact, sans-serif; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; min-width: 160px; height: 60px; font-size: 22px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                    OK
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <div (click)="goToDetail()" style="cursor: pointer; left: 754px; top: 380px; position: absolute; color: #264893; font-size: 20px; text-decoration: underline; font-family: Afacad;">{{ 'ROOM_BED_SEARCH.ROOM.VIEW_DETAIL' | translate }}</div>
-
-            <div (click)="confirmAction()" style="cursor: pointer; width: 215px; height: 70px; left: 901px; top: 715px; position: absolute; background: #264893; border-radius: 40px"></div>
-            <div (click)="confirmAction()" style="cursor: pointer; width: 195px; height: 54px; left: 911px; top: 723px; position: absolute; text-align: center; justify-content: center; display: flex; flex-direction: column; color: white; font-size: 28px; font-family: Afacad; font-weight: 600; word-wrap: break-word">{{ 'ROOM_BED_SEARCH.BUTTONS.CONFIRM' | translate }}</div>
           </ng-container>
 
         </div>
@@ -272,6 +319,12 @@ export class RoomsListComponent implements OnInit {
   selectedRoomId: string | null = null;
   selectedRoom: RoomItem | null = null;
   selectedBedId: string | null = null;
+
+  // Modal State
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
+  modalRedirectUrl = '';
 
   // Responsive scaling
   scaleFactor = 1;
@@ -458,7 +511,7 @@ export class RoomsListComponent implements OnInit {
     if (this.selectedRoom && this.selectedRoom.branchId) {
       this.router.navigate(['/rooms', this.selectedRoom.branchId]);
     } else {
-      window.alert('Vui lòng chọn một phòng để xem chi tiết.');
+      this.showModalMessage('Notification', 'Please select a room to view details.');
     }
   }
 
@@ -466,7 +519,7 @@ export class RoomsListComponent implements OnInit {
     if (this.selectedRoomId) {
       this.step = 'bed';
     } else {
-      window.alert('Vui lòng chọn một phòng trước khi tiếp tục.');
+      this.showModalMessage('Notification', 'Please select a room before continuing.');
     }
   }
 
@@ -477,14 +530,13 @@ export class RoomsListComponent implements OnInit {
   confirmAction(): void {
     // Thêm điều kiện !this.selectedRoom vào đây
     if (!this.selectedBedId || !this.selectedRoom) {
-      this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => window.alert(msg));
+      this.translate.get('ROOM_BED_SEARCH.MESSAGES.SELECT_BED').subscribe(msg => this.showModalMessage('Notification', msg));
       return;
     }
 
     if (!this.isAuthenticated) {
       this.translate.get('ROOM_BED_SEARCH.MESSAGES.LOGIN_REQUIRED').subscribe(msg => {
-        window.alert(msg);
-        this.router.navigate(['/login']);
+        this.showModalMessage('Login Required', msg, '/login');
       });
       return;
     }
@@ -498,6 +550,22 @@ export class RoomsListComponent implements OnInit {
     };
 
     this.router.navigate(['/bookings/new'], { state: { data: bookingData } });
+  }
+
+  showModalMessage(title: string, message: string, redirectUrl: string = ''): void {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.modalRedirectUrl = redirectUrl;
+    this.showModal = true;
+    this.cdr.detectChanges();
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    if (this.modalRedirectUrl) {
+      this.router.navigate([this.modalRedirectUrl]);
+      this.modalRedirectUrl = '';
+    }
   }
 
   getStatusColor(status: string): string {

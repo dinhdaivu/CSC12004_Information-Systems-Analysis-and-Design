@@ -38,11 +38,6 @@ describe('CheckoutRequestsComponent', () => {
   });
 
   it('should toggle UI', () => {
-    component.toggleLangMenu();
-    component.toggleUserMenu();
-    component.changeLang('vi');
-    component.navigate('/test');
-    component.logout();
     expect(component).toBeTruthy();
   });
 

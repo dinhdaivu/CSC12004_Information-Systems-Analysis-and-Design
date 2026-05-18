@@ -718,21 +718,13 @@
       "TITLE": "Bằng chứng Đặt cọc",
       "STATUS": "Trạng thái:",
       "REJECT": "Từ chối",
-      "VERIFY": "Xác minh & Chuyển tiếp"
+      "VERIFY": "Duyệt Đặt cọc"
     },
     "MODAL": {
       "REJECT_TITLE": "Từ chối Bằng chứng",
       "REJECT_REASON": "Nhập lý do từ chối",
-      "VERIFY_TITLE": "Đã xác minh và Chuyển tiếp",
-      "VERIFY_DESC": "Bạn có chắc chắn muốn xác minh và chuyển yêu cầu này đến Quản lý để phê duyệt cuối cùng không?",
-      "FORWARD_TITLE": "Tạo Yêu cầu Đặt cọc",
-      "GUEST_NAME_ID": "Tên/ID Khách",
-      "BRANCH": "Chi nhánh",
-      "ROOM": "Phòng",
-      "BED": "Giường",
-      "AMOUNT": "Số tiền Đặt cọc",
-      "FINAL_FORWARD_TITLE": "Tạo Yêu cầu Đặt cọc",
-      "FINAL_FORWARD_DESC": "Bạn có chắc chắn muốn gửi liên kết thanh toán cho khách không?"
+      "APPROVE_TITLE": "Duyệt Đặt cọc",
+      "APPROVE_DESC": "Bạn có chắc chắn muốn duyệt khoản đặt cọc này? Đặt cọc sẽ được đánh dấu là đã thanh toán và email xác nhận sẽ được gửi đến khách."
     }
   },
   "ADMIN_CHAT": {

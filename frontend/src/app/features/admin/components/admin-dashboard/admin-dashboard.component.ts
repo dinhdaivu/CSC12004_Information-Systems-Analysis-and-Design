@@ -3,14 +3,13 @@ import { Component, OnInit, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { finalize } from "rxjs/operators";
-import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
-import { DashboardSummary } from "../../models/dashboard-summary.model";
-import { AdminDashboardService } from "../../services/admin-dashboard.service";
+import { DashboardSummary } from "@shared/models/dashboard-summary.model";
+import { AdminDashboardService } from "@core/services/admin-dashboard.service";
 
 @Component({
   selector: "app-admin-dashboard",
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule, AdminSidebarComponent],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: "./admin-dashboard.component.html",
 })
 export class AdminDashboardComponent implements OnInit {

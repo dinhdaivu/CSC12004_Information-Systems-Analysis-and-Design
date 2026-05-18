@@ -27,9 +27,96 @@ export type ViewingApprovalModalAppointment = {
   selector: "app-viewing-approval-modal",
   standalone: true,
   imports: [CommonModule],
+  styles: [`
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #f6f6f6;
+      border-radius: 25px;
+      box-shadow: 5px 5px 50px 5px rgba(0, 0, 0, 0.25);
+    }
+    .title-text {
+      font-family: 'Big Shoulders Text', Impact, sans-serif;
+      color: #264893;
+      font-size: 44px;
+      font-weight: 900;
+      text-align: center;
+    }
+    .page-text {
+      font-family: Afacad, Arial, sans-serif;
+      color: #555;
+      font-size: 22px;
+      line-height: 1.5;
+    }
+    .label-text {
+      font-family: Afacad, Arial, sans-serif;
+      color: #264893;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .value-text {
+      font-family: Afacad, Arial, sans-serif;
+      color: #111;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .field {
+      background: #d9d9d9;
+      border: 0;
+      border-radius: 8px;
+      color: #111;
+      font-family: Afacad, Arial, sans-serif;
+      font-size: 18px;
+      outline: none;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      resize: none;
+      width: 100%;
+    }
+    .primary-btn {
+      background: #264893;
+      border: 0;
+      border-radius: 40px;
+      color: white;
+      cursor: pointer;
+      font-family: Afacad, Arial, sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      height: 64px;
+      padding: 0 42px;
+      box-sizing: border-box;
+      transition: all 0.2s ease-in-out;
+    }
+    .primary-btn:hover { opacity: 0.9; }
+    .primary-btn:disabled { background: #8a96b8; cursor: not-allowed; opacity: 0.7; }
+
+    .secondary-btn {
+      background: transparent;
+      border: 3px solid #264893;
+      border-radius: 40px;
+      color: #264893;
+      cursor: pointer;
+      font-family: Afacad, Arial, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      height: 64px;
+      padding: 0 42px;
+      box-sizing: border-box;
+      transition: all 0.2s ease-in-out;
+    }
+    .secondary-btn:hover { opacity: 0.9; }
+    .secondary-btn:disabled { border-color: #8a96b8; color: #8a96b8; cursor: not-allowed; opacity: 0.7; }
+  `],
   template: `
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm transition-opacity duration-200 ease-out"
+      class="modal-backdrop transition-opacity duration-200 ease-out"
       [class.opacity-100]="animateIn"
       [class.opacity-0]="!animateIn"
       (click)="onBackdropClick()"
@@ -38,47 +125,37 @@ export type ViewingApprovalModalAppointment = {
       aria-label="Viewing approval modal"
     >
       <div
-        class="w-full max-w-[500px] rounded-[24px] bg-[#FFFFFF] px-8 py-6 shadow-xl transition duration-200 ease-out"
+        class="modal transition duration-200 ease-out"
+        style="width: 620px; padding: 40px 60px; box-sizing: border-box; display: flex; flex-direction: column;"
         [class.scale-100]="animateIn"
         [class.scale-95]="!animateIn"
         (click)="$event.stopPropagation()"
       >
-        <h2
-          class="text-[26px] font-extrabold uppercase tracking-wide text-[#264893]"
-        >
-          Viewing Approval
-        </h2>
+        <div class="title-text">VIEWING APPROVAL</div>
 
-        <p class="mt-2 text-sm text-[#264893]/80">
-          Request from client: {{ appointment.customerName }}
-        </p>
-
-        <div
-          class="mt-6 grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 text-[#264893]"
-        >
-          <p class="text-xs font-bold uppercase tracking-wide">Date</p>
-          <p class="text-sm font-medium">{{ appointment.date }}</p>
-
-          <p class="text-xs font-bold uppercase tracking-wide">Time</p>
-          <p class="text-sm font-medium">{{ appointment.time }}</p>
-
-          <p class="text-xs font-bold uppercase tracking-wide">Location</p>
-          <p class="text-sm font-medium">{{ appointment.location }}</p>
-
-          <p class="text-xs font-bold uppercase tracking-wide">Room Interest</p>
-          <p class="text-sm font-medium">{{ appointment.roomInterest }}</p>
+        <div class="page-text" style="text-align: center; margin-top: 10px;">
+          Request from client: <span style="font-weight: 700; color: #264893;">{{ appointment.customerName }}</span>
         </div>
 
-        <div class="mt-5">
-          <label
-            for="result-note"
-            class="text-xs font-bold uppercase tracking-wide text-[#264893]"
-          >
-            Result Note
-          </label>
+        <div style="display: grid; grid-template-columns: 180px 1fr; gap: 15px; margin-top: 30px;">
+          <div class="label-text">Date:</div>
+          <div class="value-text">{{ appointment.date }}</div>
+
+          <div class="label-text">Time:</div>
+          <div class="value-text">{{ appointment.time }}</div>
+
+          <div class="label-text">Location:</div>
+          <div class="value-text">{{ appointment.location }}</div>
+
+          <div class="label-text">Room Interest:</div>
+          <div class="value-text">{{ appointment.roomInterest }}</div>
+        </div>
+
+        <div style="margin-top: 30px; width: 100%;">
+          <div class="label-text" style="margin-bottom: 10px;">Result Note</div>
           <textarea
             id="result-note"
-            class="mt-2 w-full resize-none rounded-xl border border-slate-300 bg-[#F6F6F6] px-3 py-2 text-sm text-[#264893] outline-none transition focus:border-[#264893]"
+            class="field"
             rows="3"
             [value]="resultNote"
             (input)="onResultNoteChange($event)"
@@ -86,13 +163,12 @@ export type ViewingApprovalModalAppointment = {
           ></textarea>
         </div>
 
-        <div class="mt-8 flex items-center justify-center gap-4">
+        <div style="display: flex; gap: 22px; justify-content: center; margin-top: 40px;">
           <button
             type="button"
-            class="rounded-full border-2 border-[#264893] bg-transparent px-6 py-2 text-sm font-semibold text-[#264893] transition hover:bg-[#eaf2ff]"
+            class="secondary-btn"
+            style="min-width: 160px;"
             [disabled]="isSubmitting"
-            [class.cursor-not-allowed]="isSubmitting"
-            [class.opacity-70]="isSubmitting"
             (click)="onReject()"
           >
             {{ isSubmitting ? "Processing..." : "Decline" }}
@@ -100,17 +176,16 @@ export type ViewingApprovalModalAppointment = {
 
           <button
             type="button"
-            class="rounded-full bg-[#264893] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#1f3c79]"
+            class="primary-btn"
+            style="min-width: 160px;"
             [disabled]="isSubmitting"
-            [class.cursor-not-allowed]="isSubmitting"
-            [class.opacity-70]="isSubmitting"
             (click)="onApprove()"
           >
             {{ isSubmitting ? "Processing..." : "Approve" }}
           </button>
         </div>
 
-        <p *ngIf="errorMessage" class="mt-3 text-center text-sm text-red-600">
+        <p *ngIf="errorMessage" style="margin-top: 15px; text-align: center; color: #D32F2F; font-family: Afacad, Arial, sans-serif; font-size: 18px; font-weight: 600;">
           {{ errorMessage }}
         </p>
       </div>
