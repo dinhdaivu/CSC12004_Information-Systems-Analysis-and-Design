@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ContractsComponent } from './contracts.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ContractsService } from '@core/services/contracts.service';
+import { UsersService } from '@core/services/users.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -10,6 +11,7 @@ describe('ContractsComponent', () => {
   let component: ContractsComponent;
   let fixture: any;
   let mockContractsService: any;
+  let mockUsersService: any;
   let mockRouter: any;
 
   beforeEach(async () => {
@@ -19,6 +21,9 @@ describe('ContractsComponent', () => {
         { id: '2', status: 'completed', startDate: 'invalid', endDate: 'invalid', customer: { fullName: 'Jane Doe' }, roomId: 'r2', bedId: 'b2', monthlyPrice: 1500000, contractDocumentUrl: 'http://doc.url' }
       ], meta: { total: 2, totalPages: 1 } } }))
     };
+    mockUsersService = {
+      fetchUsers: jest.fn().mockReturnValue(of({ data: { data: [] } }))
+    };
     mockRouter = { navigate: jest.fn() };
 
     await TestBed.configureTestingModule({
@@ -26,6 +31,7 @@ describe('ContractsComponent', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ContractsService, useValue: mockContractsService },
+        { provide: UsersService, useValue: mockUsersService },
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(ContractsComponent);

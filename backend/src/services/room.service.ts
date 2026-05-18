@@ -256,8 +256,8 @@ export class RoomService {
 
       // UC1 spec §3.1.1: match customer gender against room gender_policy.
       // A male customer sees rooms tagged 'male' or 'mixed'; female sees 'female' or 'mixed'.
-      if (filters.gender === "male" || filters.gender === "female") {
-        query = query.in("gender_policy", [filters.gender, "mixed"]);
+      if (filters.gender_policy === "male" || filters.gender_policy === "female") {
+        query = query.in("gender_policy", [filters.gender_policy, "mixed"]);
       }
 
       return query;
