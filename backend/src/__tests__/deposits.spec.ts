@@ -4,6 +4,13 @@ import depositsRoutes from "@routes/deposit.routes";
 import { supabaseServiceRole } from "@config/supabase";
 import { AppError } from "@utils/errors";
 
+jest.mock("@services/email.service", () => ({
+  sendDepositConfirmedEmail: jest.fn().mockResolvedValue(undefined),
+  sendDepositFailedEmail: jest.fn().mockResolvedValue(undefined),
+  sendDepositInstructionEmail: jest.fn().mockResolvedValue(undefined),
+  sendDepositRejectedEmail: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock("@middleware/auth.middleware", () => {
   const actual = jest.requireActual("@middleware/auth.middleware");
 
@@ -177,13 +184,21 @@ describe("Deposit Routes", () => {
       }),
     });
 
+    const branchSelect = jest.fn().mockReturnValue({
+      eq: jest.fn().mockReturnValue({
+        single: jest.fn().mockResolvedValue({ data: { name: "Test Branch" }, error: null }),
+      }),
+    });
+
     mockedSupabase.from
       .mockReturnValueOnce({ select: findSelect })
       .mockReturnValueOnce({ select: roomSelect })
       .mockReturnValueOnce({ update: depositUpdate })
       .mockReturnValueOnce({ update: roomUpdate })
       .mockReturnValueOnce({ insert: paymentInsert })
-      .mockReturnValueOnce({ select: detailSelect });
+      .mockReturnValueOnce({ select: roomSelect })    // second getRoomById inside email section
+      .mockReturnValueOnce({ select: branchSelect })  // branches fetch for email branchName
+      .mockReturnValueOnce({ select: detailSelect });  // final getDepositById
 
     const app = buildApp();
     const response = await request(app)

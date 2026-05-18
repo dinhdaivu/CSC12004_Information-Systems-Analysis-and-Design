@@ -590,7 +590,7 @@ export class CheckoutRequestsComponent implements OnInit, OnDestroy {
     this.processingId = this.selectedCheckout.id;
     this.errorMsg = '';
     this.checkoutSvc.completeCheckout(this.selectedCheckout.id).subscribe({
-      next: (res) => {
+      next: () => {
         this.processingId = null;
         this.showProcessModal = false;
         this.loadData();

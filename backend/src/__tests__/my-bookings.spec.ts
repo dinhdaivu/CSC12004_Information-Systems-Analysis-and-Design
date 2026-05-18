@@ -118,7 +118,7 @@ describe('MyBookings Module', () => {
       // FIX LỖI 1: Đã xóa đi các test checkout thừa thãi
       it('should throw Error for unsupported action', async () => {
         jest.spyOn(MyBookingService, 'getBookingById').mockResolvedValue({ id: '1', status: 'requested' } as any);
-        await expect(MyBookingService.handleAction('cust-123', '1', 'unknown-action' as any))
+        await expect(MyBookingService.handleAction('cust-123', '1', 'unknown-action'))
           .rejects.toThrow('Hành động không được hỗ trợ.');
       });
     });

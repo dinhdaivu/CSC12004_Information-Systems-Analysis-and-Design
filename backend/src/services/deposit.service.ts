@@ -128,10 +128,11 @@ export class DepositService {
         const { data: branch } = await DepositRepository.getRoomById(currentDeposit.roomId).then(async (r) => {
           if (!r) return { data: null };
           const client = (await import("@config/supabase")).supabaseServiceRole;
+          if (!client) return { data: null };
           return client.from("branches").select("name").eq("id", r.branchId).single();
         });
         if (branch) branchName = branch.name;
-      } catch (e) {}
+      } catch { /* best-effort */ }
 
       await sendDepositConfirmedEmail({
         toEmail: currentDeposit.customer.email,

@@ -88,7 +88,7 @@ describe('HandoverService', () => {
 
   describe('complete', () => {
     it('should complete handover and update room/bed', async () => {
-      mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: '1', status: 'pending', contract: { room_id: 'r1', bed_id: 'b1' } }, error: null });
+      mockChain.maybeSingle.mockResolvedValueOnce({ data: { id: '1', status: 'pending', manager_signature_url: 'http://sig/mgr.jpg', customer_signature_url: 'http://sig/cust.jpg', contract: { room_id: 'r1', bed_id: 'b1' } }, error: null });
       mockChain.then.mockImplementationOnce((res: any) => res({ error: null }));
       mockChain.then.mockImplementationOnce((res: any) => res({ error: null }));
       mockChain.then.mockImplementationOnce((res: any) => res({ error: null }));

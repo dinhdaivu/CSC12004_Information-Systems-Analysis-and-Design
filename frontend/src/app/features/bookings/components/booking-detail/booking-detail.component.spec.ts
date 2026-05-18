@@ -73,10 +73,12 @@ describe('BookingDetailComponent', () => {
   it('should get correct step level', () => {
     component.booking = { status: 'requested' } as any;
     expect(component.getStepLevel()).toBe(1);
-    component.booking = { status: 'accepted' } as any;
+    component.booking = { status: 'viewing_scheduled' } as any;
     expect(component.getStepLevel()).toBe(2);
-    component.booking = { status: 'rejected' } as any;
+    component.booking = { status: 'deposit_pending' } as any;
     expect(component.getStepLevel()).toBe(3);
+    component.booking = { status: 'accepted' } as any;
+    expect(component.getStepLevel()).toBe(4);
     component.booking = { status: 'completed' } as any;
     expect(component.getStepLevel()).toBe(4);
     component.booking = { status: 'unknown' } as any;
@@ -86,20 +88,25 @@ describe('BookingDetailComponent', () => {
   it('should return correct line percent', () => {
     component.booking = { status: 'requested' } as any;
     expect(component.getLinePercent()).toBe('0%');
-    component.booking = { status: 'accepted' } as any;
+    component.booking = { status: 'viewing_scheduled' } as any;
     expect(component.getLinePercent()).toBe('calc(33% - 10px)');
-    component.booking = { status: 'rejected' } as any;
+    component.booking = { status: 'deposit_pending' } as any;
     expect(component.getLinePercent()).toBe('calc(66% - 10px)');
-    component.booking = { status: 'completed' } as any;
+    component.booking = { status: 'accepted' } as any;
     expect(component.getLinePercent()).toBe('calc(100% - 120px)');
+    component.booking = { status: 'rejected' } as any;
+    expect(component.getLinePercent()).toBe('0%');
   });
 
   it('should get correct step colors and backgrounds', () => {
     component.booking = { status: 'accepted' } as any;
     expect(component.getStepBg(1)).toBe('#264893');
     expect(component.getStepColor(1)).toBe('white');
-    expect(component.getStepBg(3)).toBe('#D9D9D9');
-    expect(component.getStepColor(3)).toBe('#595959');
+    expect(component.getStepBg(3)).toBe('#264893');
+    expect(component.getStepColor(3)).toBe('white');
+    component.booking = { status: 'rejected' } as any;
+    expect(component.getStepBg(1)).toBe('#D9D9D9');
+    expect(component.getStepColor(1)).toBe('#595959');
   });
 
   it('should get status badge info', () => {

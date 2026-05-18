@@ -867,7 +867,7 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
           this.disputeReason = '';
           this.evidenceFile = null;
           this.evidenceFileName = '';
-          setTimeout(() => {
+          window.setTimeout(() => {
             this.disputeSuccess = false;
             this.screen = 'checkout-detail';
           }, 1500);

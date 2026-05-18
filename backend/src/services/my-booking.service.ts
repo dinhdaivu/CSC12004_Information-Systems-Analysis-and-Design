@@ -112,7 +112,7 @@ export class MyBookingService {
   /**
    * Xử lý Action (ví dụ: cancel) với State Machine Validation
    */
-  static async handleAction(customerId: string, bookingId: string, action: string, payload?: any) {
+  static async handleAction(customerId: string, bookingId: string, action: string) {
     const booking = await this.getBookingById(customerId, bookingId);
 
     if (action === 'cancel') {
@@ -164,7 +164,7 @@ export class MyBookingService {
         .update({ status: 'rejected' })
         .eq('id', bookingId);
 
-      const depositRequest = booking.deposit_requests?.find((d: any) => d.status === 'pending');
+      const depositRequest = booking.deposit_requests?.find((d: { status: string; id: string; amount?: number; due_at?: string }) => d.status === 'pending');
       if (depositRequest) {
         await supabaseServiceRole!
           .from('deposit_requests')
@@ -186,7 +186,7 @@ export class MyBookingService {
         }).catch((e: unknown) => console.error('sendDepositRejectedEmail failed:', e));
       }).catch(() => {});
     } else {
-      const depositRequest = booking.deposit_requests?.find((d: any) => d.status === 'pending');
+      const depositRequest = booking.deposit_requests?.find((d: { status: string; id: string; amount?: number; due_at?: string }) => d.status === 'pending');
       if (depositRequest) {
         // Fire-and-forget email — don't block the HTTP response
         import('./email.service').then(({ sendDepositTermsAndPaymentEmail }) => {
@@ -206,7 +206,7 @@ export class MyBookingService {
     const booking = await this.getBookingById(customerId, bookingId);
 
     // Get the pending deposit request — auto-create if missing (legacy bookings)
-    let depositRequest = booking.deposit_requests?.find((d: any) => d.status === 'pending');
+    let depositRequest = booking.deposit_requests?.find((d: { status: string; id: string; amount?: number; due_at?: string }) => d.status === 'pending');
     if (!depositRequest) {
       if (!booking.rooms?.id) {
         throw new ConflictError('Booking chưa được gán phòng, không thể nộp minh chứng.');
@@ -245,8 +245,8 @@ export class MyBookingService {
         folder: 'homestay-dorm/deposits'
       });
       proofImageUrl = uploadResult.secure_url;
-    } catch (err: any) {
-      throw new AppError(500, 'UPLOAD_ERROR', `Lỗi khi tải ảnh lên: ${err.message}`);
+    } catch (err: unknown) {
+      throw new AppError(500, 'UPLOAD_ERROR', `Lỗi khi tải ảnh lên: ${err instanceof Error ? err.message : String(err)}`);
     }
 
     // Update deposit request with proof URL

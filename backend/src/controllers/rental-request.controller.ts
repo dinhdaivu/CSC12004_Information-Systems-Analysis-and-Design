@@ -86,7 +86,7 @@ export const createRentalRequest = async (req: AuthRequest, res: Response, next:
                     roomId: requestData.room_id as string | undefined,
                     bedId: requestData.bed_id as string | undefined,
                     scheduledAt: scheduledAt,
-                    status: 'pending' as any
+                    status: 'pending'
                 });
             } catch (viewingError) {
                 console.error("Lỗi khi tạo viewing_appointment qua service:", viewingError);

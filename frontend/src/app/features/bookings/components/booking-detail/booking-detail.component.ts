@@ -694,7 +694,7 @@ export class BookingDetailComponent implements OnInit {
         } else {
           this.showDepositInstructions = false;
           this.cdr.detectChanges();
-          alert('Sorry, the room/bed is no longer available. Your request has been cancelled.');
+          window.alert('Sorry, the room/bed is no longer available. Your request has been cancelled.');
           this.ngOnInit();
         }
         this.cdr.detectChanges();
@@ -702,7 +702,7 @@ export class BookingDetailComponent implements OnInit {
       error: (err: unknown) => {
         this.isCheckingAvailability = false;
         this.cdr.detectChanges();
-        alert('Failed to check availability. Please try again.');
+        window.alert('Failed to check availability. Please try again.');
         console.error(err);
       }
     });
@@ -724,15 +724,15 @@ export class BookingDetailComponent implements OnInit {
     
     this.isSubmittingProof = true;
     this.myBookingService.submitProof(this.booking.id, this.proofFilePreview).subscribe({
-      next: (res: any) => {
+      next: () => {
         this.isSubmittingProof = false;
-        alert('Proof of payment submitted successfully! The admin will review it shortly.');
+        window.alert('Proof of payment submitted successfully! The admin will review it shortly.');
         this.showDepositInstructions = false;
         this.ngOnInit(); // Refresh to get the updated proof image and notes
       },
       error: (err) => {
         this.isSubmittingProof = false;
-        alert('Failed to submit proof. Please try again.');
+        window.alert('Failed to submit proof. Please try again.');
         console.error(err);
       }
     });

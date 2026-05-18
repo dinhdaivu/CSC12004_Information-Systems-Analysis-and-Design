@@ -47,6 +47,15 @@ const VALID_STATUSES: ViewingAppointmentStatus[] = [
   "cancelled",
 ];
 
+type ViewingAppointmentRawData = ViewingAppointmentRow & {
+  customer?: { full_name: string | null; email?: string | null } | null;
+  rental_requests?: {
+    preferred_room_type?: string | null;
+    branches?: { name?: string | null; address?: string | null } | null;
+    rooms?: { room_number?: string | null } | null;
+  } | null;
+};
+
 const VIEWING_APPOINTMENT_COLUMNS = [
   "id",
   "rental_request_id",
@@ -141,9 +150,9 @@ export class ViewingAppointmentsService {
       );
     }
 
-    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
-    (mapped as any).rental_requests = (data as any).rental_requests;
-    return mapped;
+    const rawData = data as unknown as ViewingAppointmentRawData;
+    const mapped = mapViewingAppointmentRow(rawData);
+    return { ...mapped, rental_requests: rawData.rental_requests } as unknown as ViewingAppointment;
   }
 
   static async getAppointments(
@@ -206,11 +215,10 @@ export class ViewingAppointmentsService {
     }
 
     const records = (
-      (data as unknown as ViewingAppointmentRow[] | null) ?? []
+      (data as unknown as ViewingAppointmentRawData[] | null) ?? []
     ).map((row) => {
       const mapped = mapViewingAppointmentRow(row);
-      (mapped as any).rental_requests = (row as any).rental_requests;
-      return mapped;
+      return { ...mapped, rental_requests: row.rental_requests } as unknown as ViewingAppointment;
     });
     const total = count ?? 0;
 
@@ -244,9 +252,9 @@ export class ViewingAppointmentsService {
       );
     }
 
-    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
-    (mapped as any).rental_requests = (data as any).rental_requests;
-    return mapped;
+    const rawData = data as unknown as ViewingAppointmentRawData;
+    const mapped = mapViewingAppointmentRow(rawData);
+    return { ...mapped, rental_requests: rawData.rental_requests } as unknown as ViewingAppointment;
   }
 
   static async updateOutcome(
@@ -283,8 +291,10 @@ export class ViewingAppointmentsService {
       );
     }
 
+    const rawData = data as unknown as ViewingAppointmentRawData;
+
     // Sync rental request status based on viewing outcome
-    const rentalRequestId = (data as any).rental_request_id as string | null;
+    const rentalRequestId = rawData.rental_request_id;
     if (rentalRequestId) {
       const rentalStatus = status === "scheduled" ? "deposit_pending" : "rejected";
       await client
@@ -295,12 +305,12 @@ export class ViewingAppointmentsService {
 
     // Send email notification to customer
     try {
-      const customerEmail: string | undefined = (data as any).customer?.email;
-      const customerName: string = (data as any).customer?.full_name ?? 'Valued Customer';
-      const roomNumber: string = (data as any).rental_requests?.rooms?.room_number ?? 'N/A';
-      const branchName: string = (data as any).rental_requests?.branches?.name ?? 'Homestay Dorm';
-      const branchAddress: string = (data as any).rental_requests?.branches?.address ?? '';
-      const scheduledAt: string = (data as any).scheduled_at ?? new Date().toISOString();
+      const customerEmail: string | undefined = rawData.customer?.email ?? undefined;
+      const customerName: string = rawData.customer?.full_name ?? 'Valued Customer';
+      const roomNumber: string = rawData.rental_requests?.rooms?.room_number ?? 'N/A';
+      const branchName: string = rawData.rental_requests?.branches?.name ?? 'Homestay Dorm';
+      const branchAddress: string = rawData.rental_requests?.branches?.address ?? '';
+      const scheduledAt: string = rawData.scheduled_at ?? new Date().toISOString();
 
       if (customerEmail) {
         if (status === 'scheduled') {
@@ -329,9 +339,8 @@ export class ViewingAppointmentsService {
       console.error('[Email] Failed to send viewing notification:', emailErr);
     }
 
-    const mapped = mapViewingAppointmentRow(data as unknown as ViewingAppointmentRow);
-    (mapped as any).rental_requests = (data as any).rental_requests;
-    return mapped;
+    const mapped = mapViewingAppointmentRow(rawData);
+    return { ...mapped, rental_requests: rawData.rental_requests } as unknown as ViewingAppointment;
   }
 
   static async cancelAppointment(id: string): Promise<ViewingAppointment> {

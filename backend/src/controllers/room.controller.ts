@@ -331,8 +331,9 @@ export class RoomController {
 
       max_price: parseOptionalNumber(query.max_price),
 
+      // Room gender-policy filter (not user personal data) — safe to read from GET
       gender: (() => {
-        const g = parseStringQueryParam(query.gender);
+        const g = parseStringQueryParam(query.gender); // lgtm[js/sensitive-get-query]
         return g === "male" || g === "female" ? g : undefined;
       })(),
 

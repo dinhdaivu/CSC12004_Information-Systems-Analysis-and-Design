@@ -1,5 +1,8 @@
 import { supabaseServiceRole } from '@config/supabase';
 
+type DepositExpiredRow = { id: string; room_id: string; rental_request_id: string | null };
+type DepositDetailRow = { id: string; users: { full_name: string | null; email: string | null } | null };
+
 async function expireOverdueDeposits(): Promise<void> {
   if (!supabaseServiceRole) return;
 
@@ -14,7 +17,8 @@ async function expireOverdueDeposits(): Promise<void> {
 
   if (fetchErr || !expired || expired.length === 0) return;
 
-  const ids = expired.map((r: { id: string }) => r.id);
+  const expiredRows = expired as DepositExpiredRow[];
+  const ids = expiredRows.map((r) => r.id);
 
   // Mark them expired
   await supabaseServiceRole
@@ -23,7 +27,7 @@ async function expireOverdueDeposits(): Promise<void> {
     .in('id', ids);
 
   // Mark rental requests as cancelled
-  const rentalRequestIds = expired.map((r: any) => r.rental_request_id).filter(Boolean);
+  const rentalRequestIds = expiredRows.map((r) => r.rental_request_id).filter(Boolean);
   if (rentalRequestIds.length > 0) {
     await supabaseServiceRole
       .from('rental_requests')
@@ -39,11 +43,11 @@ async function expireOverdueDeposits(): Promise<void> {
 
   if (expiredDetails) {
     const { sendDepositFailedEmail } = await import('./services/email.service');
-    for (const d of expiredDetails as any[]) {
+    for (const d of expiredDetails as unknown as DepositDetailRow[]) {
       if (d.users?.email) {
         await sendDepositFailedEmail({
           toEmail: d.users.email,
-          customerName: d.users.full_name,
+          customerName: d.users.full_name ?? '',
           reason: 'Your deposit payment timeframe of 24 hours has expired.'
         }).catch(console.error);
       }
@@ -51,7 +55,7 @@ async function expireOverdueDeposits(): Promise<void> {
   }
 
   // For each affected room, check if it still has active deposits; if not, set available
-  const roomIds = [...new Set(expired.map((r: { room_id: string }) => r.room_id))];
+  const roomIds = [...new Set(expiredRows.map((r) => r.room_id))];
   for (const roomId of roomIds) {
     const { data: active } = await supabaseServiceRole
       .from('deposit_requests')
@@ -68,8 +72,19 @@ async function expireOverdueDeposits(): Promise<void> {
     }
   }
 
-  console.log(`[Scheduler] Expired ${ids.length} overdue deposit(s).`);
+  console.warn(`[Scheduler] Expired ${ids.length} overdue deposit(s).`);
 }
+
+type PendingRentalRow = {
+  id: string;
+  customer_id: string;
+  room_id: string | null;
+  bed_id: string | null;
+  users: { full_name: string; email: string; gender: string | null } | null;
+  rooms: { gender_policy: string | null; status: string; price_per_month: number | null } | null;
+  beds: { status: string; price_per_month: number | null } | null;
+  branches: { name: string } | null;
+};
 
 async function processPendingRentalRequests(): Promise<void> {
   if (!supabaseServiceRole) return;
@@ -78,10 +93,10 @@ async function processPendingRentalRequests(): Promise<void> {
   const { data: requests, error } = await supabaseServiceRole.from('rental_requests')
     .select('id, customer_id, room_id, bed_id, users(full_name, email, gender), rooms(gender_policy, status, price_per_month), beds(status, price_per_month), branches(name)')
     .eq('status', 'requested');
-  
+
   if (error || !requests || requests.length === 0) return;
 
-  for (const req of requests as any[]) {
+  for (const req of requests as unknown as PendingRentalRow[]) {
     let isMatch = true;
     let failReason = '';
 
@@ -117,7 +132,7 @@ async function processPendingRentalRequests(): Promise<void> {
       const depositAmount = rentPrice * 2; // typical 2 months
       const dueAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       
-      const { data: depReq, error: depErr } = await supabaseServiceRole.from('deposit_requests').insert({
+      const { error: depErr } = await supabaseServiceRole.from('deposit_requests').insert({
         rental_request_id: req.id,
         customer_id: req.customer_id,
         room_id: req.room_id,
@@ -127,9 +142,9 @@ async function processPendingRentalRequests(): Promise<void> {
         status: 'pending'
       }).select().single();
 
-      if (!depErr) {
+      if (!depErr && req.users) {
         await supabaseServiceRole.from('rental_requests').update({ status: 'deposit_pending' }).eq('id', req.id);
-        
+
         // Dynamic import to avoid circular dependency
         const { sendDepositInstructionEmail } = await import('./services/email.service');
         await sendDepositInstructionEmail({
@@ -143,15 +158,17 @@ async function processPendingRentalRequests(): Promise<void> {
     } else {
       // Reject
       await supabaseServiceRole.from('rental_requests').update({ status: 'rejected' }).eq('id', req.id);
-      
-      const { sendDepositRejectedEmail } = await import('./services/email.service');
-      await sendDepositRejectedEmail({
-         toEmail: req.users.email,
-         customerName: req.users.full_name,
-         roomLabel: req.bed_id ? 'Giường' : 'Phòng',
-         branchName: req.branches?.name || 'Homestay',
-         resultNote: failReason
-      });
+
+      if (req.users) {
+        const { sendDepositRejectedEmail } = await import('./services/email.service');
+        await sendDepositRejectedEmail({
+          toEmail: req.users.email,
+          customerName: req.users.full_name,
+          roomLabel: req.bed_id ? 'Giường' : 'Phòng',
+          branchName: req.branches?.name || 'Homestay',
+          resultNote: failReason
+        });
+      }
     }
   }
 }

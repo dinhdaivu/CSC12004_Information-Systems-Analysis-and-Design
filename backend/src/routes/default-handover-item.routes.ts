@@ -1,10 +1,14 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { authMiddleware, roleMiddleware } from '@middleware/auth.middleware';
 import { DefaultHandoverItemController } from '@controllers/default-handover-item.controller';
 
 const router = Router();
 const STAFF_ROLES = ['sale', 'manager', 'admin'];
 
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 150, standardHeaders: true, legacyHeaders: false });
+
+router.use(limiter);
 router.use(authMiddleware);
 
 // Read endpoints — any authenticated user (admin handover form needs them)

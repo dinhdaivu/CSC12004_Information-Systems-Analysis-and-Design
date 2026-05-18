@@ -2,6 +2,11 @@ import { RentalRequestService } from "@services/rental-request.service";
 import { supabaseServiceRole } from "@config/supabase";
 import type { CreateRentalRequestDTO } from "@models/rental-request.model";
 
+jest.mock("@services/email.service", () => ({
+  sendViewingApprovedEmail: jest.fn().mockResolvedValue(undefined),
+  sendViewingDeclinedEmail: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock("@config/supabase", () => ({
   supabaseServiceRole: {
     from: jest.fn(),

@@ -75,12 +75,11 @@ describe('RoomDetailComponent', () => {
   });
 
   // [x] Kiểm tra hành vi của nút liên hệ
-  it('should trigger contact action and navigate to room search', () => {
-    const routerSpy = jest.spyOn(component['router'], 'navigate').mockImplementation();
-
+  it('should trigger contact action and open contact modal', () => {
     component.onContactAction();
 
-    expect(routerSpy).toHaveBeenCalledWith(['/rooms']);
+    expect(component.isContactModalOpen).toBe(true);
+    expect(component.inquirySent).toBe(true);
   });
 
   it('should return empty string for getSafeUrl with undefined', () => {

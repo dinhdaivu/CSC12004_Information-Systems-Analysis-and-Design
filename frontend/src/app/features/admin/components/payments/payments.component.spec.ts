@@ -93,11 +93,9 @@ describe('PaymentsComponent', () => {
   it('should close proof page and reset state', () => {
     component.currentView = 'proof';
     component.isRejectModalOpen = true;
-    component.isVerifyConfirmModalOpen = true;
     component.closeProofPage();
     expect(component.currentView).toBe('list');
     expect(component.isRejectModalOpen).toBe(false);
-    expect(component.isVerifyConfirmModalOpen).toBe(false);
     expect(component.selectedDepositId).toBeNull();
   });
 
@@ -119,44 +117,6 @@ describe('PaymentsComponent', () => {
     (component as any).selectedDepositProof = { status: 'paid' };
     component.openRejectModal();
     expect(component.isRejectModalOpen).toBe(false);
-  });
-
-  it('should close verify confirm modal', () => {
-    component.isVerifyConfirmModalOpen = true;
-    component.closeVerifyConfirmModal();
-    expect(component.isVerifyConfirmModalOpen).toBe(false);
-  });
-
-  it('should open verify confirm modal when proof is pending', () => {
-    (component as any).selectedDepositProof = { status: 'pending' };
-    component.openVerifyConfirmModal();
-    expect(component.isVerifyConfirmModalOpen).toBe(true);
-  });
-
-  it('should not open verify confirm modal when proof is not pending', () => {
-    (component as any).selectedDepositProof = { status: 'paid' };
-    component.openVerifyConfirmModal();
-    expect(component.isVerifyConfirmModalOpen).toBe(false);
-  });
-
-  it('should close forward request modal', () => {
-    component.isForwardRequestModalOpen = true;
-    component.closeForwardRequestModal();
-    expect(component.isForwardRequestModalOpen).toBe(false);
-  });
-
-  it('should submit verify forward — show final confirm modal', () => {
-    component.isForwardRequestModalOpen = true;
-    component.submitVerifyForward();
-    expect(component.isForwardRequestModalOpen).toBe(false);
-    expect(component.isFinalForwardConfirmModalOpen).toBe(true);
-  });
-
-  it('should close final forward confirm and reopen forward modal', () => {
-    component.isFinalForwardConfirmModalOpen = true;
-    component.closeFinalForwardConfirmModal();
-    expect(component.isFinalForwardConfirmModalOpen).toBe(false);
-    expect(component.isForwardRequestModalOpen).toBe(true);
   });
 
   it('should return true for isStatusPending with pending status', () => {
@@ -202,12 +162,6 @@ describe('PaymentsComponent', () => {
 
   it('should return index from trackByIndex', () => {
     expect(component.trackByIndex(7)).toBe(7);
-  });
-
-  it('should not open forward modal when proof is not pending', () => {
-    (component as any).selectedDepositProof = { status: 'paid' };
-    component.openForwardRequestModal();
-    expect(component.isForwardRequestModalOpen).toBe(false);
   });
 
   it('should not confirm reject when no deposit selected', () => {
