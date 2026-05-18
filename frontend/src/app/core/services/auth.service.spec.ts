@@ -3,11 +3,13 @@ import { AuthService } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import type { User } from '@shared/models/auth.model';
+import { environment } from '@environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-
+  const apiUrl = `${environment.apiUrl}/auth`;
+  
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
@@ -49,7 +51,7 @@ describe('AuthService', () => {
       expect(result).toEqual(user);
     });
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/login');
+    const request = httpMock.expectOne(`${apiUrl}/login`);
     expect(request.request.method).toBe('POST');
     request.flush({
       success: true,
@@ -80,7 +82,7 @@ describe('AuthService', () => {
       expect(service.getCurrentUser()).toBeNull();
     });
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/logout');
+    const request = httpMock.expectOne(`${apiUrl}/logout`);
     expect(request.request.method).toBe('POST');
     request.flush({ message: 'unauthorized' }, { status: 401, statusText: 'Unauthorized' });
   });
@@ -100,7 +102,7 @@ describe('AuthService', () => {
       expect(result.email).toBe('newuser@example.com');
     });
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/register');
+    const request = httpMock.expectOne(`${apiUrl}/register`);
     expect(request.request.method).toBe('POST');
     request.flush({
       success: true,
@@ -131,7 +133,7 @@ describe('AuthService', () => {
       expect(result).toEqual(user);
     });
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/verify-email');
+    const request = httpMock.expectOne(`${apiUrl}/verify-email`);
     expect(request.request.method).toBe('POST');
     request.flush({
       success: true,
@@ -149,7 +151,7 @@ describe('AuthService', () => {
   it('should resend verification code and keep the normalized email', () => {
     service.resendVerificationCode('NEWUSER@EXAMPLE.COM').subscribe();
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/resend-verification');
+    const request = httpMock.expectOne(`${apiUrl}/resend-verification`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({ email: 'newuser@example.com' });
     request.flush({ success: true, data: null });
@@ -165,7 +167,7 @@ describe('AuthService', () => {
       confirm_password: 'secret123',
     }).subscribe();
 
-    const request = httpMock.expectOne('http://localhost:3000/api/auth/reset-password/verify');
+    const request = httpMock.expectOne(`${apiUrl}/reset-password/verify`);
     expect(request.request.method).toBe('POST');
     request.flush({ success: true, data: null });
   });
