@@ -69,3 +69,6 @@ supabase/.temp/
 codeql-db-temp/
 codeql-results.sarif
 *.sarif
+
+# Claude — personal/local settings only (shared .claude/settings.json stays tracked)
+.claude/settings.local.json

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(~/.claude/skills/create-issue/**)",
+      "Edit(/.claude/skills/create-issue/**)",
+      "Edit(~/.claude/skills/open-pr/**)",
+      "Edit(/.claude/skills/open-pr/**)",
+      "Edit(~/.claude/skills/ship-it/**)",
+      "Edit(/.claude/skills/ship-it/**)"
+    ]
+  }
+}

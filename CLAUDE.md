@@ -11,9 +11,9 @@ Private dormitory (ký túc xá) management system. Covers the full tenant lifec
 | Layer | Technology |
 |---|---|
 | Frontend | Angular 21, TypeScript 5.9, Tailwind CSS 4, RxJS 7.8 |
-| Backend | Express.js 5.2, TypeScript 5.9, Node.js 20+ |
+| Backend | Express.js 5.2, TypeScript 5.9, Node.js 20+ — **migrating to Spring Boot 4.0.6 / Java 25 / Gradle / Spring Data JPA** (#72) |
 | Database | Supabase (PostgreSQL) + Row Level Security |
-| Auth | Supabase Auth + JWT |
+| Auth | Custom HS256 JWT (`jsonwebtoken`) + bcrypt — *not* Supabase Auth |
 | Storage | Cloudinary |
 | Email | Resend |
 | Payments | VietQR |
@@ -108,6 +108,31 @@ The system follows 3 complementary patterns:
 ---
 
 ## Architecture Decisions
+
+### Backend Migration → Spring Boot (in progress, #72)
+
+The Express/TypeScript backend is being rewritten on **Spring Boot 4.0.6, Java 25,
+Gradle**. Constraints and decisions:
+
+- **Behavior parity is the hard requirement** — same REST contract, status codes,
+  and JSON payloads. The API base path is **`/api`** (e.g. `/api/auth`, `/api/rooms`),
+  **not** `/api/v1` (older docs were wrong; frontend `apiUrl` ends in `/api`).
+- **Data layer = JDBC / Spring Data JPA** (direct PostgreSQL). Chosen over a
+  PostgREST-over-HTTP port. ⚠️ Implication: a JDBC connection does **not** go through
+  Supabase PostgREST, so **RLS no longer gates access the way it does today** (the
+  current code uses anon vs service-role keys). Every table's access rules must be
+  **re-enforced in app code / Spring Security**, and the migration plan must verify
+  this explicitly. Needs a Postgres connection string + pooler (Supavisor) config —
+  a new secret beyond the anon/service keys.
+- **Auth** — replicate the custom **HS256 JWT** (`{id,email,role}`, 7-day expiry,
+  same `JWT_SECRET`) via a Spring Security filter; **bcrypt** passwords via
+  `BCryptPasswordEncoder` (hash-compatible).
+- **Response envelope** preserved exactly: success `{success,data,message?}`, error
+  `{success,error:{code,message,details?}}`, paginated adds `pagination`; null fields
+  omitted (`@JsonInclude(NON_NULL)`).
+- **Scheduler** — port **both** jobs: `expireOverdueDeposits` (hourly) and
+  `processPendingRentalRequests` (every 60s) via `@Scheduled`.
+- **Out of scope:** the chat/AI (RAG) surface — deferred to a later task.
 
 ### Backend Patterns
 - **Express.js 5** — async errors propagate automatically (no try/catch needed in route handlers if using async functions)
@@ -375,11 +400,11 @@ therefore **shadow** them when invoked here (interface → concrete subclass).
 | `.claude/skills/draft-report/` | Draft a grounded issue/PR report from a task → writes `.claude/drafts/draft-issue.md` | `specialize-skill draft-report` |
 | `.claude/skills/create-issue/` | File the drafted report as a real GitHub issue (self-assign, set Type, create + checkout branch) | `specialize-skill create-issue` |
 | `.claude/skills/open-pr/` | Open a PR from the current branch (fill template from diff, `Closes #n`, labels; no reviewers) | `specialize-skill open-pr` |
-| `.claude/skills/ship-it/` | Gated finish pipeline: lint → test → code-review → security-review → commit → open-pr | `specialize-skill ship-it` |
+| `.claude/skills/ship/` | Gated finish pipeline: sync main → lint → build → test → code-review → security-review → commit → open-pr → watch CI | `specialize-skill ship` |
 
 Typical flow: `draft-report "<task>"` → review draft → `create-issue` (lands you on
-the branch) → do the work → `ship-it` (runs the gates, commits, and calls `open-pr`;
-you add reviewers yourself). Run `open-pr` standalone if you only want the PR step.
+the branch) → do the work → `ship` (syncs main, runs the gates, commits, and calls
+`open-pr`; you add reviewers yourself). Run `open-pr` standalone if you only want the PR step.
 
 ### Project setup / init
 
