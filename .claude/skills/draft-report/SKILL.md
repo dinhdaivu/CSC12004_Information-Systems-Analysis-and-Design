@@ -47,6 +47,24 @@ paths (`backend/src/...`, `frontend/src/app/...`) and read the matching files so
 *Proposed Behavior* / *Implementation Notes* describe actual current state. For a
 PR report, also check `git log --oneline -10` and `git diff --stat`.
 
+### Reconcile docs against the actual code (catch drift)
+
+Treat `CLAUDE.md`, `docs/`, and the issue templates as **claims to verify, not
+ground truth** — this repo has had real doc/code mismatches. Before writing,
+confirm the load-bearing facts against the implementation, e.g.:
+
+- **API base path & routes** — read `backend/src/index.ts` (the `app.use('/api/...')`
+  mounts) and the relevant `*.routes.ts`. (Known gotcha: it's `/api`, *not* `/api/v1`
+  as some docs say.)
+- **Data/auth/config** — verify against `backend/src/config/*`, `middleware/*`,
+  `utils/token.ts`, and `frontend/src/environments/*` rather than trusting prose.
+- **Entity/field/enum names & status values** — grep the models/migrations, don't
+  copy them from the doc.
+
+When code and docs disagree, **the code wins.** Call out the discrepancy explicitly
+in the report (e.g. an "Inconsistencies found" note or a Dependencies/Blockers
+bullet) so it gets fixed — never silently propagate a wrong doc value into the issue.
+
 ## Step 3 — Fill every section
 
 - **Summary / Overview** — 2–5 sentences; the problem and the change, plainly.
