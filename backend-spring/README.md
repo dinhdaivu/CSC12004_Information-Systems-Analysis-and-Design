@@ -5,22 +5,34 @@ plan in `docs/tasks/06-01-backend-spring-boot-migration.md`. Runs **side-by-side
 with the existing `backend/` (Express) until the Phase 10 cutover; Express stays the
 deployed service for now.
 
-This is **Phase 0** (#75): scaffold only — no business logic, no database.
+Phases 0 + 1 complete: scaffold + cross-cutting foundation (response envelope, exception hierarchy, BaseEntity, CORS/security headers). No business logic yet.
 
 ## Prerequisites
 
 - **JDK 25** (the Gradle toolchain pins it; install via your JDK manager).
 - No global Gradle needed — use the wrapper (`./gradlew`).
 
+## Local environment setup
+
+Fill in your Supabase credentials directly in `src/main/resources/application.properties`:
+
+```properties
+spring.datasource.url=jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?sslmode=require
+spring.datasource.username=postgres.<your-project-ref>
+spring.datasource.password=<your-password>
+```
+
+`application.properties` is excluded from git tracking via `git update-index --assume-unchanged` so your credentials won't be committed. To re-enable tracking: `git update-index --no-assume-unchanged backend-spring/src/main/resources/application.properties`.
+
 ## Commands
 
 ```bash
 cd backend-spring
-./gradlew build        # compile + test + lint (spotlessCheck via `check`)
-./gradlew test         # tests only
-./gradlew check        # tests + lint
+./gradlew build         # compile + test + lint
+./gradlew test          # tests only
+./gradlew check         # tests + lint
 ./gradlew spotlessApply # auto-fix lint
-./gradlew bootRun      # run the app on http://localhost:8080
+./gradlew bootRun       # run on http://localhost:8080
 ```
 
 ## Verify
