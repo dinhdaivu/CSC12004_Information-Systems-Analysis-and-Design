@@ -58,10 +58,17 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)   # must not be main
 Show title, `main ← <branch>`, linked issue, labels, draft/ready, body preview.
 Get a go-ahead. Then:
 
+> ⚠️ **Always strip YAML frontmatter before `--body-file`** — passing the raw
+> `draft-pr.md` puts the `---…---` block at the top of the GitHub PR description
+> as raw text. The `awk` below strips it.
+
 ```bash
 REPO="dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design"
-tmp=$(mktemp); awk 'BEGIN{fm=0}/^---[[:space:]]*$/{fm++;next}fm>=2{print}' .claude/drafts/draft-pr.md > "$tmp"
-gh pr create --repo "$REPO" --base main --head "$BRANCH" --title "<title>" --body-file "$tmp" --label "<label>"
+tmp=$(mktemp)
+awk 'BEGIN{fm=0} /^---[[:space:]]*$/{fm++; next} fm>=2{print}' \
+  .claude/drafts/draft-pr.md > "$tmp"
+gh pr create --repo "$REPO" --base main --head "$BRANCH" \
+  --title "<title>" --body-file "$tmp" --label "<label>"
 rm -f "$tmp"
 ```
 No `--reviewer` / `--assignee` unless the user explicitly asked.
