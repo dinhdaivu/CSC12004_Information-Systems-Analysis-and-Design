@@ -6,7 +6,14 @@
       "Edit(~/.claude/skills/open-pr/**)",
       "Edit(/.claude/skills/open-pr/**)",
       "Edit(~/.claude/skills/ship-it/**)",
-      "Edit(/.claude/skills/ship-it/**)"
+      "Edit(/.claude/skills/ship-it/**)",
+      "Bash(node -e \"const ts = require\\('./tsconfig.json'\\); console.log\\(JSON.stringify\\(ts.compilerOptions.paths, null, 2\\)\\)\")",
+      "Bash(curl -s -o /dev/null -w \"GET /api/health: %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/health)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/rooms:           %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/rooms)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/branches:        %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/branches)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/deposits:        %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/deposits)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/contracts:       %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/contracts)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/payments:        %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/payments)"
     ]
   }
 }
