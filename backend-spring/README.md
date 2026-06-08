@@ -5,8 +5,10 @@ plan in `docs/tasks/06-01-backend-spring-boot-migration.md`. Runs **side-by-side
 with the existing `backend/` (Express) until the Phase 10 cutover; Express stays the
 deployed service for now.
 
-Phases 0 + 1 complete: scaffold, clean architecture (hexagonal/ports-and-adapters),
-cross-cutting foundation, and auth endpoints (register / login / me / change-password).
+**Phases 0–4 complete:**
+- Phase 0+1: scaffold, clean architecture (hexagonal/ports-and-adapters), auth endpoints
+- Phase 3: catalog domains — branch, zone, room, bed (PR #96)
+- Phase 4: UC1 inquiry — rental-request, viewing-appointments (PR #97)
 
 ## Prerequisites
 
@@ -65,10 +67,13 @@ src/main/java/vn/edu/hcmus/homestay/
 │
 ├── domain/                        ← innermost ring — pure Java, zero framework deps
 │   └── model/
-│       └── user/
-│           ├── User.java          immutable domain entity
-│           ├── AppRole.java       enum: CUSTOMER | SALE | ACCOUNTANT | MANAGER | ADMIN
-│           └── UserStatus.java    enum: ACTIVE | INACTIVE | BANNED
+│       ├── user/        User, AppRole, UserStatus
+│       ├── branch/      Branch
+│       ├── zone/        Zone
+│       ├── room/        Room, RoomStatus
+│       ├── bed/         Bed, BedStatus
+│       ├── rental/      RentalRequest, RentalRequestStatus (+ VALID_TRANSITIONS map)
+│       └── viewing/     ViewingAppointment, ViewingAppointmentStatus
 │
 ├── application/                   ← use-cases and ports
 │   ├── port/

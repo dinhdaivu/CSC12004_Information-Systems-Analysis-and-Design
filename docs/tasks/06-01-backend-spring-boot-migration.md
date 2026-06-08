@@ -63,13 +63,22 @@ gate in app code / Spring Security → produce a **table → access-rule matrix*
 per-role tests.
 **Exit:** access-control matrix documented + tested. *This phase proves security parity.*
 
-### Phase 3 — Catalog / inventory
+### Phase 3 — Catalog / inventory ✅
 `branch`, `zone`, `room`, `bed` (read-heavy, referenced by everything else).
-**Exit:** endpoint parity for all four via the harness.
+HTTP method-scoped GET permitAll in SecurityConfig; writes require auth.
+`StringListConverter` handles PostgreSQL TEXT[] arrays losslessly.
+**Exit:** endpoint parity for all four via the harness. ✅ PR #96
 
-### Phase 4 — UC1 inquiry
+### Phase 4 — UC1 inquiry ✅
 `rental-request`, `viewing-appointments`.
-**Exit:** parity + inquiry flow tests.
+
+Key decisions locked in issue #79:
+- Own-row auth enforced in service layer (owner || staff) — not SpEL
+- `/my-requests` literal path resolves before `/{UUID id}` by Spring MVC specificity
+- State machine transitions documented as `VALID_TRANSITIONS` constant; free-form updates match Express
+- Nullable FKs stored as raw `UUID` fields in domain model; no eager loading
+
+**Exit:** parity + inquiry flow tests. ✅ PR #97 (pending)
 
 ### Phase 5 — UC2 deposit & payment
 `deposit`, `payment` (VietQR), `my-booking`.
