@@ -127,17 +127,17 @@ public class AuthService
     }
 
     @Override
-    public void forgotPassword(ForgotPasswordCommand command) {
+    public void forgotPassword(@SuppressWarnings("unused") ForgotPasswordCommand command) {
         // TODO: generate reset token, persist it, send email via Resend (Phase 9).
     }
 
     @Override
-    public void resetPassword(ResetPasswordCommand command) {
+    public void resetPassword(@SuppressWarnings("unused") ResetPasswordCommand command) {
         // TODO: validate reset token, update password hash (Phase 9).
     }
 
     @Override
-    public void verifyEmail(VerifyEmailCommand command) {
+    public void verifyEmail(@SuppressWarnings("unused") VerifyEmailCommand command) {
         // TODO: validate verification code, mark account as verified (Phase 9).
     }
 }

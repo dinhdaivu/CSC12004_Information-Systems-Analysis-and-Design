@@ -12,7 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.test.web.servlet.MockMvc;
 import vn.edu.hcmus.homestay.adapter.in.web.HealthController;
 import vn.edu.hcmus.homestay.adapter.out.security.JwtTokenProvider;
@@ -44,10 +44,7 @@ class JwtAuthenticationFilterTest {
         mockMvc.perform(get("/api/health").header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andDo(
-                        result -> {
-                            var auth = SecurityContextHolder.getContext().getAuthentication();
-                            assertThat(result.getResponse().getStatus()).isEqualTo(200);
-                        });
+                        result -> assertThat(result.getResponse().getStatus()).isEqualTo(200));
     }
 
     @Test

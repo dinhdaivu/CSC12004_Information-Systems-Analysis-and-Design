@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { sleep, check, group, fail } from 'k6';
+import { sleep, group, fail } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 
 // ─── Metrics ────────────────────────────────────────────────────────────────
