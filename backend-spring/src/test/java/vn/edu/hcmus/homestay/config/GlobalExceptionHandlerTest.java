@@ -26,7 +26,7 @@ import vn.edu.hcmus.homestay.common.exception.NotFoundException;
 import vn.edu.hcmus.homestay.common.exception.UnauthorizedException;
 import vn.edu.hcmus.homestay.common.exception.ValidationException;
 
-@WebMvcTest
+@WebMvcTest(controllers = GlobalExceptionHandlerTest.StubController.class)
 @Import(GlobalExceptionHandlerTest.StubController.class)
 @WithMockUser
 class GlobalExceptionHandlerTest {
