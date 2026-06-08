@@ -7,6 +7,8 @@ Gradle / Spring Data JPA**, preserving behavior exactly.
 - **Hard constraint:** behavior parity — same REST contract, status codes, JSON payloads.
 - **API base path:** `/api` (NOT `/api/v1`).
 - **Data layer:** JDBC / Spring Data JPA, direct to PostgreSQL (decision: B).
+- **Architecture:** Clean Architecture (hexagonal / ports-and-adapters) following
+  https://www.baeldung.com/spring-boot-clean-architecture — see `backend-spring/README.md`.
 - **Out of scope:** the chat/AI (RAG) surface — deferred to a later task.
 
 ## ⚠️ Key risk taken on by the JDBC/JPA choice
@@ -39,32 +41,27 @@ proven (rollback safety). Each phase is one PR and ends with a **parity check**.
 
 ## Phases
 
-### Phase 0 — Scaffold & build
-Gradle + Spring Boot 4.0.6 + Java 25; package layout
-(`controller/service/repository/entity/config/security`); Spotless/Checkstyle (lint);
-JUnit 5 + Testcontainers-Postgres; `/api/health` → `{status,timestamp}`. Runs
-side-by-side with Express.
-**Exit:** app boots; `/api/health` matches; `gradle build` + `test` green; CI can build the JAR.
+### Phase 0 — Scaffold & build ✅
+Gradle + Spring Boot 4.0.6 + Java 25; clean architecture package layout
+(`domain/model/`, `application/port/`, `application/service/`, `adapter/in/web/`,
+`adapter/out/persistence/`, `common/`, `config/`, `security/`); Spotless (lint);
+JUnit 5 + Testcontainers-Postgres; `/api/health` → `{status,timestamp}`.
+**Exit:** app boots; `/api/health` matches; `gradle build` + `test` green. ✅
 
-### Phase 1 — Cross-cutting foundation (+ parity harness)
-JPA datasource (Postgres connection string + Supavisor pooler); base entity (UUID,
-`created_at`/`updated_at` auditing); **response envelope** (`ApiResponse` +
-`@JsonInclude(NON_NULL)`); `@RestControllerAdvice` mapping the `AppError` hierarchy +
-404 + 413 (payload too large) + bean-validation errors; CORS (open), security headers
-(helmet-equivalent), 25 MB body limit, rate limiting.
-**Parity harness (explicit deliverable):** a test utility that replays a request
-against **both** Express and Spring and diffs status + JSON. Reused as the exit gate
-for every domain phase (3–8).
-**Exit:** error/success envelopes match Express byte-for-byte; harness runs against `/api/health`.
+### Phase 1 — Cross-cutting foundation + Auth ✅
+JPA datasource (Supavisor pooler); `BaseEntity` (UUID pk, audit timestamps);
+**response envelope** (`ApiResponse` + `@JsonInclude(NON_NULL)`);
+`@RestControllerAdvice` mapping `AppException` hierarchy + 404 + 413 + bean-validation;
+CORS, security headers, 25 MB body limit; HS256 JWT filter + `SecurityConfig`;
+`/api/auth/*` (register / login / me / change-password).
+**Parity harness:** `ParityHarnessTest` replays requests against both Express and Spring.
+**Exit:** tokens interoperate with Express; auth parity; all tests green. ✅
 
-### Phase 2 — Auth, Security & RLS re-enforcement
-`users` entity/repo; HS256 JWT filter (same secret/claims/expiry); `BCryptPasswordEncoder`;
-role-based authorization (`user`/`staff`/`admin`); `/api/auth/*` (register/login/me).
-**RLS re-enforcement:** audit every table's current anon/service-role policy and
-re-implement the equivalent gate in app code / Spring Security → produce a
-**table → access-rule matrix** with per-role tests.
-**Exit:** tokens interoperate with Express (same secret); auth-endpoint parity;
-access-control matrix documented + tested. *This phase proves the whole stack.*
+### Phase 2 — RLS re-enforcement
+Audit every table's current anon/service-role policy and re-implement the equivalent
+gate in app code / Spring Security → produce a **table → access-rule matrix** with
+per-role tests.
+**Exit:** access-control matrix documented + tested. *This phase proves security parity.*
 
 ### Phase 3 — Catalog / inventory
 `branch`, `zone`, `room`, `bed` (read-heavy, referenced by everything else).

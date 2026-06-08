@@ -5,7 +5,8 @@ plan in `docs/tasks/06-01-backend-spring-boot-migration.md`. Runs **side-by-side
 with the existing `backend/` (Express) until the Phase 10 cutover; Express stays the
 deployed service for now.
 
-Phases 0 + 1 complete: scaffold + cross-cutting foundation (response envelope, exception hierarchy, BaseEntity, CORS/security headers). No business logic yet.
+Phases 0 + 1 complete: scaffold, clean architecture (hexagonal/ports-and-adapters),
+cross-cutting foundation, and auth endpoints (register / login / me / change-password).
 
 ## Prerequisites
 
@@ -22,7 +23,8 @@ spring.datasource.username=postgres.<your-project-ref>
 spring.datasource.password=<your-password>
 ```
 
-`application.properties` is excluded from git tracking via `git update-index --assume-unchanged` so your credentials won't be committed. To re-enable tracking: `git update-index --no-assume-unchanged backend-spring/src/main/resources/application.properties`.
+`application.properties` is excluded from git tracking via `git update-index --assume-unchanged`
+so your credentials won't be committed.
 
 ## Commands
 
@@ -39,21 +41,102 @@ cd backend-spring
 
 ```bash
 curl -s http://localhost:8080/api/health
-# {"status":"OK","timestamp":"2026-..."}  — matches the Express /api/health shape
+# {"status":"OK","timestamp":"2026-..."}
+
+curl -s -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"secret123","confirmPassword":"secret123"}'
 ```
 
-## Layout (grows in later phases)
+## Architecture
+
+This backend follows the **Clean Architecture** (hexagonal / ports-and-adapters) pattern
+as described at https://www.baeldung.com/spring-boot-clean-architecture.
+
+```
+Dependency rule:  adapter → application → domain
+                  (outer layers depend on inner layers, never the reverse)
+```
+
+### Package layout
 
 ```
 src/main/java/vn/edu/hcmus/homestay/
-  HomestayBackendApplication.java
-  web/          # @RestControllers (HealthController for now)
-  # service/ repository/ entity/ config/ security/ support/ — added in Phase 1+
+│
+├── domain/                        ← innermost ring — pure Java, zero framework deps
+│   └── model/
+│       └── user/
+│           ├── User.java          immutable domain entity
+│           ├── AppRole.java       enum: CUSTOMER | SALE | ACCOUNTANT | MANAGER | ADMIN
+│           └── UserStatus.java    enum: ACTIVE | INACTIVE | BANNED
+│
+├── application/                   ← use-cases and ports
+│   ├── port/
+│   │   ├── in/                    inbound ports (what controllers call)
+│   │   │   ├── RegisterUseCase.java
+│   │   │   ├── LoginUseCase.java
+│   │   │   ├── GetCurrentUserUseCase.java
+│   │   │   └── ChangePasswordUseCase.java
+│   │   └── out/                   outbound ports (what services need from infra)
+│   │       ├── LoadUserPort.java
+│   │       └── SaveUserPort.java
+│   └── service/
+│       └── AuthService.java       implements all four use-case interfaces
+│
+├── adapter/                       ← outermost ring — framework-specific code
+│   ├── in/
+│   │   ├── web/                   REST controllers + DTOs
+│   │   │   ├── AuthController.java
+│   │   │   ├── HealthController.java
+│   │   │   └── dto/
+│   │   └── security/              Spring Security input adapter
+│   │       ├── JwtAuthenticationFilter.java
+│   │       └── UserPrincipal.java
+│   └── out/
+│       ├── persistence/           JPA entities + Spring Data + adapters
+│       │   ├── BaseEntity.java    @MappedSuperclass (JPA-only — lives here, not common/)
+│       │   ├── UserEntity.java
+│       │   ├── UserJpaRepository.java
+│       │   ├── UserPersistenceAdapter.java  implements LoadUserPort + SaveUserPort
+│       │   ├── AppRoleConverter.java
+│       │   └── UserStatusConverter.java
+│       └── security/              JWT output adapter
+│           └── JwtTokenProvider.java        implements TokenPort
+│
+├── application/port/out/
+│   ├── LoadUserPort.java
+│   ├── SaveUserPort.java
+│   └── TokenPort.java             ← interface; keeps application/ free of JWT deps
+│
+├── common/                        ← shared kernel (pure Java, no JPA, no Spring)
+│   ├── ApiResponse.java
+│   ├── ApiResponseBuilder.java
+│   ├── PaginatedResponse.java
+│   └── exception/
+│       ├── AppException.java      base runtime exception
+│       └── ...                    ConflictException, NotFoundException, etc.
+│
+└── config/                        ← Spring @Configuration wiring
+    ├── SecurityConfig.java        @EnableWebSecurity — wires the JWT filter chain
+    ├── GlobalExceptionHandler.java
+    ├── JpaConfig.java
+    └── WebConfig.java
 ```
+
+### Adding a new feature (e.g. rooms)
+
+1. **Domain** — add `domain/model/room/Room.java`, `RoomStatus.java` (pure Java)
+2. **Ports** — add `application/port/in/ListRoomsUseCase.java`, `application/port/out/LoadRoomPort.java`
+3. **Service** — add `application/service/RoomService.java` (implements the use-case interfaces)
+4. **Persistence** — add `adapter/out/persistence/RoomEntity.java`, `RoomJpaRepository.java`, `RoomPersistenceAdapter.java`
+5. **Web** — add `adapter/in/web/RoomController.java` + `dto/`
+
+Each layer only depends on its inner layer. `RoomController` calls use-case interfaces; it never touches `RoomEntity` or `RoomJpaRepository` directly. `AuthService` calls `TokenPort`; it never imports `JwtTokenProvider`.
 
 ## Notes
 
-- `/api/health` is a **custom** controller, not Actuator (Actuator's shape differs).
-- Lint = Spotless with text-only rules for now; google-java-format will be enabled
-  once it parses Java 25.
-- Testcontainers (DB integration tests) is added in Phase 1 (#76), via the Testcontainers BOM.
+- `/api/health` is a **custom** controller, not Spring Actuator (Actuator's shape differs).
+- Lint = Spotless text-only rules; google-java-format will be enabled once it parses Java 25.
+- Testcontainers (DB integration tests) is wired via `AbstractContainerBaseTest`.
+- RLS is no longer enforced by the JDBC connection — security must be re-enforced in
+  `SecurityConfig` and `@PreAuthorize` annotations (see CLAUDE.md for details).

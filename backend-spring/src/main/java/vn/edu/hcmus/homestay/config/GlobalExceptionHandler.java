@@ -5,14 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import vn.edu.hcmus.homestay.support.ApiResponse;
-import vn.edu.hcmus.homestay.support.ApiResponseBuilder;
-import vn.edu.hcmus.homestay.support.AppException;
+import vn.edu.hcmus.homestay.common.ApiResponse;
+import vn.edu.hcmus.homestay.common.ApiResponseBuilder;
+import vn.edu.hcmus.homestay.common.exception.AppException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -49,7 +50,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
+    public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) throws Exception {
+        // Let Spring Security's ExceptionTranslationFilter handle access-denied exceptions
+        // so it can return the proper 401/403 via the configured entry point / denied handler.
+        if (ex instanceof AccessDeniedException) {
+            throw ex;
+        }
         log.error("Unhandled exception", ex);
         return ResponseEntity.internalServerError()
                 .body(ApiResponseBuilder.error("INTERNAL_SERVER_ERROR", "Internal Server Error"));
