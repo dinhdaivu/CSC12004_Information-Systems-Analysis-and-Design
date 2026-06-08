@@ -1,7 +1,10 @@
+import './tracer'; // must be first — instruments all modules before they load
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import morgan from "morgan";
 import dotenv from "dotenv";
+import { logger, morganStream } from "@config/logger";
 
 import authRoutes from "@routes/auth.routes";
 import branchRoutes from "@routes/branch.routes";
@@ -36,6 +39,15 @@ const REQUEST_BODY_LIMIT = process.env.REQUEST_BODY_LIMIT ?? "25mb";
 // Middleware
 app.use(helmet());
 app.use(cors());
+
+// HTTP request logging — piped through winston so trace IDs are injected.
+// Skip /api/health to suppress scheduler/uptime-check noise.
+app.use(
+  morgan(":method :url :status :response-time ms - :res[content-length] bytes", {
+    stream: morganStream,
+    skip: (req) => req.path === "/api/health",
+  }),
+);
 
 // 👉 Giữ config linh hoạt từ env (tốt hơn hardcode 5mb)
 app.use(express.json({ limit: REQUEST_BODY_LIMIT }));
@@ -90,9 +102,9 @@ app.use(
     void next;
 
     if (err instanceof Error) {
-      console.error(err.stack ?? err.message);
+      logger.error(err.message, { stack: err.stack });
     } else {
-      console.error(err);
+      logger.error('Unknown error', { err });
     }
 
     if (err instanceof AppError) {
@@ -140,7 +152,7 @@ app.use((req: express.Request, res: express.Response) => {
 // Start server
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
-    console.warn(`Server is running on http://localhost:${PORT}`);
+    logger.info(`Server running on http://localhost:${PORT}`);
     startScheduler();
   });
 }

@@ -9,26 +9,33 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
-import vn.edu.hcmus.homestay.support.ConflictException;
-import vn.edu.hcmus.homestay.support.ForbiddenException;
-import vn.edu.hcmus.homestay.support.NotFoundException;
-import vn.edu.hcmus.homestay.support.UnauthorizedException;
-import vn.edu.hcmus.homestay.support.ValidationException;
+import vn.edu.hcmus.homestay.application.service.AuthService;
+import vn.edu.hcmus.homestay.common.exception.ConflictException;
+import vn.edu.hcmus.homestay.common.exception.ForbiddenException;
+import vn.edu.hcmus.homestay.common.exception.NotFoundException;
+import vn.edu.hcmus.homestay.common.exception.UnauthorizedException;
+import vn.edu.hcmus.homestay.common.exception.ValidationException;
 
 @WebMvcTest
 @Import(GlobalExceptionHandlerTest.StubController.class)
+@WithMockUser
 class GlobalExceptionHandlerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    AuthService authService;
 
     @RestController
     static class StubController {

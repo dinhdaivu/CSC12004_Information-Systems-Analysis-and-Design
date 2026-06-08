@@ -105,6 +105,26 @@ The system follows 3 complementary patterns:
 - `services/` = control layer (business logic implementation)
 - `models/` = entity layer (TypeScript interfaces)
 
+### Backend mapping (Spring Boot — clean architecture)
+
+The Spring Boot backend follows the **hexagonal / ports-and-adapters** pattern
+(see `backend-spring/README.md` for the full layout):
+
+```
+domain/model/       pure domain entities and enums — no Spring, no JPA
+application/port/in/  inbound ports — use-case interfaces controllers call
+application/port/out/ outbound ports — interfaces services call to reach DB
+application/service/  use-case implementations
+adapter/in/web/     REST controllers and DTOs
+adapter/out/persistence/ JPA entities, Spring Data repos, persistence adapters
+common/             shared response envelope, exception hierarchy, BaseEntity
+config/             Spring @Configuration classes (CORS, JPA auditing, etc.)
+security/           JWT filter, SecurityConfig, UserPrincipal
+```
+
+**Dependency rule:** `adapter → application → domain`. Outer layers depend on inner
+layers; `domain/` has zero framework dependencies.
+
 ---
 
 ## Architecture Decisions
@@ -112,7 +132,8 @@ The system follows 3 complementary patterns:
 ### Backend Migration → Spring Boot (in progress, #72)
 
 The Express/TypeScript backend is being rewritten on **Spring Boot 4.0.6, Java 25,
-Gradle**. Constraints and decisions:
+Gradle** following the **Clean Architecture** pattern (hexagonal / ports-and-adapters).
+Constraints and decisions:
 
 - **Behavior parity is the hard requirement** — same REST contract, status codes,
   and JSON payloads. The API base path is **`/api`** (e.g. `/api/auth`, `/api/rooms`),
@@ -148,7 +169,7 @@ Gradle**. Constraints and decisions:
 - **Dependency injection** — use `inject()` function (not constructor injection) in Angular 21
 - **HTTP calls** — use Angular's `HttpClient` via `HttpClientModule`; backend URL from `environment.apiUrl`
 - **Auth state** — managed via Supabase Auth client in `core/services/auth.service.ts`
-- **Role-based guards** — in `core/guards/`; roles: `customer`, `staff`, `admin`
+- **Role-based guards** — in `core/guards/`; roles: `customer`, `sale`, `accountant`, `manager`, `admin`
 
 ### Database
 - All tables use UUID primary keys
@@ -167,7 +188,7 @@ Gradle**. Constraints and decisions:
 | Quản lý (Manager) | Inspects rooms, approves conditions, signs handover reports |
 | Kế toán (Accountant) | Calculates deposits, fees, refunds; processes payments |
 
-In the system: Customer = `user` role, Sales/Manager/Accountant = `staff` or `admin` role.
+In the system: `app_role` DB enum has five values — `customer`, `sale`, `accountant`, `manager`, `admin`. Customer = `customer`; Sales staff = `sale`; Manager = `manager`; Accountant = `accountant`; System admin = `admin`.
 
 ---
 
@@ -280,8 +301,8 @@ Customer       (BCE: Customer)
                Maps to: users WHERE role = 'customer'
 
 Employee       (BCE: Employee)
-               id, email, full_name, phone, role (sales | manager | accountant)
-               Maps to: users WHERE role = 'staff' | 'admin'
+               id, email, full_name, phone, role (sale | manager | accountant | admin)
+               Maps to: users WHERE role IN ('sale', 'accountant', 'manager', 'admin')
 
 Branch         id, name, address, phone, manager_id
 
