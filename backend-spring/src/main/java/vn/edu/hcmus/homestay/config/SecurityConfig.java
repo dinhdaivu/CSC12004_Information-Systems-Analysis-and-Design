@@ -2,6 +2,7 @@ package vn.edu.hcmus.homestay.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -46,6 +47,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth ->
                                 auth.requestMatchers("/api/auth/**", "/api/health")
+                                        .permitAll()
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/branches/**",
+                                                "/api/zones/**",
+                                                "/api/rooms/**",
+                                                "/api/beds/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

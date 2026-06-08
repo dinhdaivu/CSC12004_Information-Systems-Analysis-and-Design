@@ -40,6 +40,17 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)   # must not be main
     `cd frontend && npm test`, etc.).
   - **Checklist / Breaking Changes / Follow-Up** — fill honestly.
 - Add **`Closes #<n>`** so merge closes the issue.
+- **Multi-issue closing:** When a PR delivers work that fulfils multiple issues
+  (e.g. the branch issue AND a related Phase/Epic sub-task), add one `Closes #<n>`
+  line per issue. Check `gh issue list` for open issues whose completion conditions
+  the diff satisfies, and include them all.
+
+  Known multi-close pairs in this repo:
+  - Spring Boot migration branches that complete a Phase also close the matching
+    Phase sub-task. Example: PR #94 (branch `chore/#88-...`) closed both #88
+    (Phase 1 task) and #77 (Phase 2 Auth task) because the diff satisfied both
+    issues' completion conditions.
+
 - Write the body to `.claude/drafts/draft-pr.md` (frontmatter: `title`, `base`,
   `head`, `issue`, `labels`, `draft`) for review/reuse.
 

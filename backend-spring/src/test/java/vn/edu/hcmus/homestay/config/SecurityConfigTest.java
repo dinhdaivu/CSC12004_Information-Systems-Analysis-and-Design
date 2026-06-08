@@ -1,6 +1,7 @@
 package vn.edu.hcmus.homestay.config;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,15 +36,27 @@ class SecurityConfigTest {
     }
 
     @Test
-    void unknownRoute_noToken_401() throws Exception {
-        mockMvc.perform(get("/api/rooms"))
+    void protectedRoute_noToken_401() throws Exception {
+        // POST /api/rooms is a write operation — not covered by the GET permitAll rule
+        mockMvc.perform(post("/api/rooms"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.error.code").value("UNAUTHORIZED"));
     }
 
     @Test
-    void unknownRoute_validToken_401OrMethodNotAllowed() throws Exception {
+    void publicGetRoute_noToken_200OrNotFound() throws Exception {
+        // GET /api/rooms is permitted without a token (catalog read)
+        int status =
+                mockMvc.perform(get("/api/rooms"))
+                        .andReturn()
+                        .getResponse()
+                        .getStatus();
+        org.assertj.core.api.Assertions.assertThat(status).isNotEqualTo(401);
+    }
+
+    @Test
+    void authenticatedRequest_doesNotGet401() throws Exception {
         UserPrincipal principal = new UserPrincipal(UUID.randomUUID(), "u@e.com", AppRole.CUSTOMER);
         int status =
                 mockMvc.perform(
