@@ -30,9 +30,7 @@ CREATE INDEX IF NOT EXISTS idx_lodging_eligibility_customer
 CREATE INDEX IF NOT EXISTS idx_lodging_eligibility_decision
     ON public.lodging_eligibility (decision);
 
-DO $$ BEGIN
-    CREATE TRIGGER update_lodging_eligibility_updated_at
-        BEFORE UPDATE ON public.lodging_eligibility
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-EXCEPTION WHEN duplicate_object THEN NULL;
-END $$;
+DROP TRIGGER IF EXISTS update_lodging_eligibility_updated_at ON public.lodging_eligibility;
+CREATE TRIGGER update_lodging_eligibility_updated_at
+    BEFORE UPDATE ON public.lodging_eligibility
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
