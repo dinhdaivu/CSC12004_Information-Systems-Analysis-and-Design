@@ -136,7 +136,6 @@ public class PendingRentalRequestScheduler {
 
         try {
             loadUserPort.loadById(req.getCustomerId()).ifPresent(user -> {
-                String roomLabel = resolveRoomLabel(req);
                 emailPort.sendDepositInstruction(
                         user.getEmail(),
                         user.getFullName(),
