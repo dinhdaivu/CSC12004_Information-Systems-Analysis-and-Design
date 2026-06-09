@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import vn.edu.hcmus.homestay.application.port.in.rental.GetMyBookingUseCase;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBranchPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
@@ -15,6 +19,7 @@ import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveRentalRequestPort;
+import vn.edu.hcmus.homestay.application.port.out.storage.StoragePort;
 import vn.edu.hcmus.homestay.common.exception.ConflictException;
 import vn.edu.hcmus.homestay.common.exception.ForbiddenException;
 import vn.edu.hcmus.homestay.common.exception.NotFoundException;
@@ -32,6 +37,8 @@ import vn.edu.hcmus.homestay.domain.model.room.RoomStatus;
 @Service
 public class MyBookingService implements GetMyBookingUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(MyBookingService.class);
+
     private static final Set<RentalRequestStatus> CANCELLABLE_STATUSES = Set.of(
             RentalRequestStatus.REQUESTED,
             RentalRequestStatus.REVIEWING,
@@ -44,6 +51,9 @@ public class MyBookingService implements GetMyBookingUseCase {
     private final LoadBranchPort loadBranchPort;
     private final SaveRentalRequestPort saveRentalRequestPort;
     private final SaveDepositPort saveDepositPort;
+    private final LoadUserPort loadUserPort;
+    private final EmailPort emailPort;
+    private final StoragePort storagePort;
 
     public MyBookingService(
             LoadRentalRequestPort loadRentalRequestPort,
@@ -52,7 +62,10 @@ public class MyBookingService implements GetMyBookingUseCase {
             LoadBedPort loadBedPort,
             LoadBranchPort loadBranchPort,
             SaveRentalRequestPort saveRentalRequestPort,
-            SaveDepositPort saveDepositPort) {
+            SaveDepositPort saveDepositPort,
+            LoadUserPort loadUserPort,
+            EmailPort emailPort,
+            StoragePort storagePort) {
         this.loadRentalRequestPort = loadRentalRequestPort;
         this.loadDepositPort = loadDepositPort;
         this.loadRoomPort = loadRoomPort;
@@ -60,6 +73,9 @@ public class MyBookingService implements GetMyBookingUseCase {
         this.loadBranchPort = loadBranchPort;
         this.saveRentalRequestPort = saveRentalRequestPort;
         this.saveDepositPort = saveDepositPort;
+        this.loadUserPort = loadUserPort;
+        this.emailPort = emailPort;
+        this.storagePort = storagePort;
     }
 
     @Override
@@ -133,11 +149,26 @@ public class MyBookingService implements GetMyBookingUseCase {
             throw new ForbiddenException("Access denied");
         }
 
+        // Upload base64 images to Cloudinary
+        String finalProofUrl = proofImageUrl;
+        if (proofImageUrl != null && proofImageUrl.startsWith("data:")) {
+            try {
+                String uploaded = storagePort.upload(
+                        proofImageUrl, "homestay-dorm/deposits", "proof-" + bookingId);
+                if (uploaded != null) {
+                    finalProofUrl = uploaded;
+                }
+            } catch (Exception ex) {
+                log.warn("Image upload failed for booking {}, using raw URL: {}",
+                        bookingId, ex.getMessage());
+            }
+        }
+
         Optional<DepositRequest> existingDeposit = findDepositForRequest(req);
 
         DepositRequest deposit;
         if (existingDeposit.isPresent()) {
-            deposit = existingDeposit.get().withProofImageUrl(proofImageUrl);
+            deposit = existingDeposit.get().withProofImageUrl(finalProofUrl);
         } else {
             // Auto-create deposit when none exists
             Room room = req.getRoomId() != null
@@ -156,7 +187,7 @@ public class MyBookingService implements GetMyBookingUseCase {
                     amount,
                     Instant.now().plus(24, ChronoUnit.HOURS),
                     null,
-                    proofImageUrl,
+                    finalProofUrl,
                     null,
                     null,
                     DepositStatus.PENDING,
@@ -165,6 +196,25 @@ public class MyBookingService implements GetMyBookingUseCase {
         }
 
         DepositRequest savedDeposit = saveDepositPort.save(deposit);
+
+        try {
+            Room room = req.getRoomId() != null
+                    ? loadRoomPort.loadById(req.getRoomId()).orElse(null)
+                    : null;
+            String roomLabel = room != null ? room.getRoomNumber() : "your room";
+            loadUserPort.loadById(customerId).ifPresent(user -> {
+                emailPort.sendDepositSubmitted(
+                        user.getEmail(),
+                        user.getFullName(),
+                        roomLabel,
+                        savedDeposit.getAmount(),
+                        savedDeposit.getId());
+            });
+        } catch (Exception ex) {
+            log.warn("Failed to send proof submitted email for booking {}: {}",
+                    bookingId, ex.getMessage());
+        }
+
         return assembleMyBooking(req, Optional.of(savedDeposit));
     }
 

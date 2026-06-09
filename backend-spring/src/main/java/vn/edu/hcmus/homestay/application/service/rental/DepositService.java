@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,8 @@ import vn.edu.hcmus.homestay.application.port.in.rental.CancelDepositUseCase;
 import vn.edu.hcmus.homestay.application.port.in.rental.ConfirmDepositUseCase;
 import vn.edu.hcmus.homestay.application.port.in.rental.CreateDepositUseCase;
 import vn.edu.hcmus.homestay.application.port.in.rental.GetDepositUseCase;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.GenerateVietQRPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
@@ -28,23 +32,31 @@ import vn.edu.hcmus.homestay.domain.model.payment.PaymentType;
 public class DepositService
         implements CreateDepositUseCase, GetDepositUseCase, ConfirmDepositUseCase, CancelDepositUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(DepositService.class);
+
     private final LoadDepositPort loadDepositPort;
     private final SaveDepositPort saveDepositPort;
     private final SavePaymentPort savePaymentPort;
     private final GenerateVietQRPort generateVietQRPort;
     private final ApplicationEventPublisher eventPublisher;
+    private final LoadUserPort loadUserPort;
+    private final EmailPort emailPort;
 
     public DepositService(
             LoadDepositPort loadDepositPort,
             SaveDepositPort saveDepositPort,
             SavePaymentPort savePaymentPort,
             GenerateVietQRPort generateVietQRPort,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher,
+            LoadUserPort loadUserPort,
+            EmailPort emailPort) {
         this.loadDepositPort = loadDepositPort;
         this.saveDepositPort = saveDepositPort;
         this.savePaymentPort = savePaymentPort;
         this.generateVietQRPort = generateVietQRPort;
         this.eventPublisher = eventPublisher;
+        this.loadUserPort = loadUserPort;
+        this.emailPort = emailPort;
     }
 
     @Override
@@ -116,6 +128,20 @@ public class DepositService
 
         DepositRequest saved = saveDepositPort.save(updated);
         eventPublisher.publishEvent(new DepositConfirmedEvent(deposit.getRoomId(), deposit.getBedId()));
+
+        try {
+            loadUserPort.loadById(deposit.getCustomerId()).ifPresent(user -> {
+                emailPort.sendDepositConfirmed(
+                        user.getEmail(),
+                        user.getFullName(),
+                        deposit.getRoomId() != null ? deposit.getRoomId().toString() : "your room",
+                        deposit.getAmount());
+            });
+        } catch (Exception ex) {
+            log.warn("Failed to send deposit confirmed email for deposit {}: {}",
+                    id, ex.getMessage());
+        }
+
         return saved;
     }
 

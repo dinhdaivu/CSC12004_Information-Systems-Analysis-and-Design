@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import vn.edu.hcmus.homestay.domain.model.rental.RentalRequest;
+import vn.edu.hcmus.homestay.domain.model.rental.RentalRequestStatus;
 
 public interface LoadRentalRequestPort {
 
@@ -16,4 +17,6 @@ public interface LoadRentalRequestPort {
     long countNonCancelled();
 
     List<RentalRequest> findRecent(int limit);
+
+    List<RentalRequest> loadByStatus(RentalRequestStatus status);
 }

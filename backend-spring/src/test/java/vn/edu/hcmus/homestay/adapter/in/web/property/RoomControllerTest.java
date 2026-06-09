@@ -29,6 +29,7 @@ import vn.edu.hcmus.homestay.application.port.in.property.GetBedUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.GetRoomUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.ListRoomsUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.UpdateRoomUseCase;
+import vn.edu.hcmus.homestay.application.port.out.storage.StoragePort;
 import vn.edu.hcmus.homestay.common.exception.NotFoundException;
 import vn.edu.hcmus.homestay.config.SecurityConfig;
 import vn.edu.hcmus.homestay.domain.model.room.Room;
@@ -60,6 +61,9 @@ class RoomControllerTest {
 
     @MockitoBean
     private GetBedUseCase getBedUseCase;
+
+    @MockitoBean
+    private StoragePort storagePort;
 
     @Test
     void listRooms_publicEndpoint_200() throws Exception {
@@ -115,7 +119,7 @@ class RoomControllerTest {
 
     private Room room(UUID id) {
         return new Room(id, UUID.randomUUID(), "101", "SINGLE", 2, BigDecimal.valueOf(3000000),
-                List.of(), List.of(), RoomStatus.AVAILABLE, Instant.now(), Instant.now());
+                List.of(), List.of(), RoomStatus.AVAILABLE, null, Instant.now(), Instant.now());
     }
 
     @TestConfiguration

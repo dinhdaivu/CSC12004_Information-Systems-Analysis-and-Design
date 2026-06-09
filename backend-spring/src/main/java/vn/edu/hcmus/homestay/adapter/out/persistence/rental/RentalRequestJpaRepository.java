@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import vn.edu.hcmus.homestay.domain.model.rental.RentalRequestStatus;
 
 interface RentalRequestJpaRepository extends JpaRepository<RentalRequestEntity, UUID> {
 
@@ -15,4 +16,6 @@ interface RentalRequestJpaRepository extends JpaRepository<RentalRequestEntity, 
 
     @Query("SELECT r FROM RentalRequestEntity r ORDER BY r.createdAt DESC")
     List<RentalRequestEntity> findRecent(Pageable pageable);
+
+    List<RentalRequestEntity> findByStatus(RentalRequestStatus status);
 }

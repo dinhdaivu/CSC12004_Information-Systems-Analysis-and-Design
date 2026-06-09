@@ -133,6 +133,6 @@ class RoomServiceTest {
 
     private Room room(UUID id, UUID branchId) {
         return new Room(id, branchId, "101", "SINGLE", 2, BigDecimal.valueOf(3000000),
-                List.of(), List.of(), RoomStatus.AVAILABLE, Instant.now(), Instant.now());
+                List.of(), List.of(), RoomStatus.AVAILABLE, null, Instant.now(), Instant.now());
     }
 }

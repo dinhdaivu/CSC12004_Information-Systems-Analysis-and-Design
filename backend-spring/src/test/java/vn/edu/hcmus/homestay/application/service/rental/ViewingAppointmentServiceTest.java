@@ -3,6 +3,7 @@ package vn.edu.hcmus.homestay.application.service.rental;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +19,9 @@ import java.util.List;
 import vn.edu.hcmus.homestay.application.port.in.rental.CreateViewingAppointmentUseCase.CreateViewingAppointmentCommand;
 import vn.edu.hcmus.homestay.application.port.in.rental.UpdateViewingAppointmentUseCase.RecordOutcomeCommand;
 import vn.edu.hcmus.homestay.application.port.in.rental.UpdateViewingAppointmentUseCase.UpdateAppointmentCommand;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
+import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadViewingAppointmentPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveViewingAppointmentPort;
@@ -39,12 +43,28 @@ class ViewingAppointmentServiceTest {
     @Mock
     private LoadRentalRequestPort loadRentalRequestPort;
 
+    @Mock
+    private LoadUserPort loadUserPort;
+
+    @Mock
+    private LoadRoomPort loadRoomPort;
+
+    @Mock
+    private EmailPort emailPort;
+
     private ViewingAppointmentService service;
 
     @BeforeEach
     void setUp() {
         service = new ViewingAppointmentService(
-                loadViewingAppointmentPort, saveViewingAppointmentPort, loadRentalRequestPort);
+                loadViewingAppointmentPort,
+                saveViewingAppointmentPort,
+                loadRentalRequestPort,
+                loadUserPort,
+                loadRoomPort,
+                emailPort);
+        lenient().when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
+        lenient().when(loadRoomPort.loadById(any())).thenReturn(Optional.empty());
     }
 
     // ── createViewingAppointment ──────────────────────────────────────────────

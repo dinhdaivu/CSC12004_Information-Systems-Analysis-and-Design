@@ -121,7 +121,7 @@ class InventoryEventHandlerTest {
 
     private Room room(UUID id, RoomStatus status) {
         return new Room(id, UUID.randomUUID(), "101", "SINGLE", 2,
-                BigDecimal.valueOf(5000000), null, null, status, Instant.now(), Instant.now());
+                BigDecimal.valueOf(5000000), null, null, status, null, Instant.now(), Instant.now());
     }
 
     private Bed bed(UUID id, UUID roomId, BedStatus status) {

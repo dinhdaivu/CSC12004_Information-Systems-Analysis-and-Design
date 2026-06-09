@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveRentalRequestPort;
 import vn.edu.hcmus.homestay.domain.model.rental.RentalRequest;
+import vn.edu.hcmus.homestay.domain.model.rental.RentalRequestStatus;
 
 @Component
 class RentalRequestPersistenceAdapter implements LoadRentalRequestPort, SaveRentalRequestPort {
@@ -51,5 +52,10 @@ class RentalRequestPersistenceAdapter implements LoadRentalRequestPort, SaveRent
         return jpaRepository.findRecent(PageRequest.of(0, limit)).stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<RentalRequest> loadByStatus(RentalRequestStatus status) {
+        return jpaRepository.findByStatus(status).stream().map(mapper::toDomain).toList();
     }
 }

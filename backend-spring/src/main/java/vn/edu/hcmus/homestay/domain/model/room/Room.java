@@ -17,6 +17,7 @@ public class Room {
     private final List<String> amenities;
     private final List<String> imagesUrl;
     private final RoomStatus status;
+    private final GenderPolicy genderPolicy;
     private final Instant createdAt;
     private final Instant updatedAt;
 
@@ -30,6 +31,7 @@ public class Room {
             List<String> amenities,
             List<String> imagesUrl,
             RoomStatus status,
+            GenderPolicy genderPolicy,
             Instant createdAt,
             Instant updatedAt) {
         this.id = id;
@@ -41,6 +43,7 @@ public class Room {
         this.amenities = amenities;
         this.imagesUrl = imagesUrl;
         this.status = status;
+        this.genderPolicy = genderPolicy;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -79,6 +82,18 @@ public class Room {
 
     public RoomStatus getStatus() {
         return status;
+    }
+
+    public GenderPolicy getGenderPolicy() {
+        return genderPolicy;
+    }
+
+    /** Returns a copy of this room with a new gender policy. */
+    public Room withGenderPolicy(GenderPolicy newGenderPolicy) {
+        return new Room(
+                id, branchId, roomNumber, roomType, maxCapacity,
+                pricePerMonth, amenities, imagesUrl, status,
+                newGenderPolicy, createdAt, updatedAt);
     }
 
     public Instant getCreatedAt() {

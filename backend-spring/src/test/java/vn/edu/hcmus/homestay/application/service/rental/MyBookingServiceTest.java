@@ -3,6 +3,7 @@ package vn.edu.hcmus.homestay.application.service.rental;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBranchPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
@@ -24,6 +27,7 @@ import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveRentalRequestPort;
+import vn.edu.hcmus.homestay.application.port.out.storage.StoragePort;
 import vn.edu.hcmus.homestay.common.exception.ConflictException;
 import vn.edu.hcmus.homestay.common.exception.ForbiddenException;
 import vn.edu.hcmus.homestay.common.exception.NotFoundException;
@@ -61,6 +65,15 @@ class MyBookingServiceTest {
     @Mock
     private SaveDepositPort saveDepositPort;
 
+    @Mock
+    private LoadUserPort loadUserPort;
+
+    @Mock
+    private EmailPort emailPort;
+
+    @Mock
+    private StoragePort storagePort;
+
     private MyBookingService myBookingService;
 
     @BeforeEach
@@ -72,7 +85,11 @@ class MyBookingServiceTest {
                 loadBedPort,
                 loadBranchPort,
                 saveRentalRequestPort,
-                saveDepositPort);
+                saveDepositPort,
+                loadUserPort,
+                emailPort,
+                storagePort);
+        lenient().when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
     }
 
     @Test
@@ -209,7 +226,7 @@ class MyBookingServiceTest {
     private Room room(UUID id, RoomStatus status) {
         return new Room(id, UUID.randomUUID(), "101", "SINGLE", 2,
                 BigDecimal.valueOf(2000000), List.of(), List.of(), status,
-                Instant.now(), Instant.now());
+                null, Instant.now(), Instant.now());
     }
 
     private Bed bed(UUID id, BedStatus status) {

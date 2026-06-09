@@ -18,6 +18,7 @@ class RoomMapper {
                 e.getAmenities() != null ? e.getAmenities() : new ArrayList<>(),
                 e.getImagesUrl() != null ? e.getImagesUrl() : new ArrayList<>(),
                 e.getStatus(),
+                e.getGenderPolicy(),
                 e.getCreatedAt(),
                 e.getUpdatedAt());
     }
@@ -35,6 +36,7 @@ class RoomMapper {
         e.setAmenities(r.getAmenities() != null ? r.getAmenities() : new ArrayList<>());
         e.setImagesUrl(r.getImagesUrl() != null ? r.getImagesUrl() : new ArrayList<>());
         e.setStatus(r.getStatus());
+        e.setGenderPolicy(r.getGenderPolicy());
         return e;
     }
 }
