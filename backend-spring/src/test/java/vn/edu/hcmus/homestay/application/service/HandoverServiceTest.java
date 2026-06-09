@@ -107,7 +107,7 @@ class HandoverServiceTest {
         when(saveHandoverPort.save(any())).thenReturn(completed);
         when(loadHandoverPort.loadItemsByHandoverId(handoverId)).thenReturn(List.of());
 
-        HandoverAggregate result = service.completeHandover(handoverId, UUID.randomUUID());
+        HandoverAggregate result = service.completeHandover(handoverId);
 
         assertThat(result.getHandover().getStatus()).isEqualTo(HandoverStatus.COMPLETED);
         verify(eventPublisher).publishEvent(any(HandoverCompletedEvent.class));

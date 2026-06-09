@@ -100,7 +100,7 @@ public class HandoverService implements CreateHandoverUseCase, GetHandoverUseCas
 
     @Override
     @Transactional
-    public HandoverAggregate completeHandover(UUID id, UUID managerId) {
+    public HandoverAggregate completeHandover(UUID id) {
         Handover handover = loadHandoverPort.loadById(id)
                 .orElseThrow(() -> new NotFoundException("Handover not found"));
         Contract contract = loadContractPort.loadById(handover.getContractId())

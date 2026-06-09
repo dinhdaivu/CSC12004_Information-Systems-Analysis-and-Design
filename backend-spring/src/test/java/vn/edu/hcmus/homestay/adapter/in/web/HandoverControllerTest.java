@@ -138,7 +138,7 @@ class HandoverControllerTest {
         UUID contractId = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
         UserPrincipal principal = new UserPrincipal(UUID.randomUUID(), "manager@example.com", AppRole.MANAGER);
-        when(updateHandoverUseCase.completeHandover(eq(handoverId), any()))
+        when(updateHandoverUseCase.completeHandover(eq(handoverId)))
                 .thenReturn(handoverAggregate(handoverId, contractId, customerId));
 
         mockMvc.perform(patch("/api/handovers/{id}/complete", handoverId)

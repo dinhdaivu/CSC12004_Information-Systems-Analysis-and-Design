@@ -5,7 +5,7 @@ import vn.edu.hcmus.homestay.domain.model.handover.HandoverAggregate;
 
 public interface UpdateHandoverUseCase {
 
-    HandoverAggregate completeHandover(UUID id, UUID managerId);
+    HandoverAggregate completeHandover(UUID id);
 
     HandoverAggregate cancelHandover(UUID id);
 
