@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.edu.hcmus.homestay.adapter.in.security.UserPrincipal;
+import vn.edu.hcmus.homestay.common.exception.ValidationException;
 import vn.edu.hcmus.homestay.domain.model.user.AppRole;
 import vn.edu.hcmus.homestay.adapter.in.web.dto.CheckoutInspectionResponse;
 import vn.edu.hcmus.homestay.adapter.in.web.dto.CheckoutRequestResponse;
@@ -156,6 +157,7 @@ public class CheckoutController {
             @PathVariable UUID id,
             @PathVariable UUID settlementId,
             @Valid @RequestBody UpdateDeductionRequest req) {
+        verifySettlementOwnership(id, settlementId);
         SettlementResponse data = SettlementResponse.from(
                 manageSettlementUseCase.updateDeduction(settlementId, req.getDeduction()));
         return ResponseEntity.ok(ApiResponseBuilder.success(data));
@@ -166,6 +168,7 @@ public class CheckoutController {
     public ResponseEntity<ApiResponse<SettlementResponse>> confirmSettlement(
             @PathVariable UUID id,
             @PathVariable UUID settlementId) {
+        verifySettlementOwnership(id, settlementId);
         SettlementResponse data = SettlementResponse.from(
                 manageSettlementUseCase.confirmSettlement(settlementId));
         return ResponseEntity.ok(ApiResponseBuilder.success(data));
@@ -176,6 +179,7 @@ public class CheckoutController {
     public ResponseEntity<ApiResponse<SettlementResponse>> completeSettlement(
             @PathVariable UUID id,
             @PathVariable UUID settlementId) {
+        verifySettlementOwnership(id, settlementId);
         SettlementResponse data = SettlementResponse.from(
                 manageSettlementUseCase.completeSettlement(settlementId));
         return ResponseEntity.ok(ApiResponseBuilder.success(data));
@@ -187,6 +191,7 @@ public class CheckoutController {
             @PathVariable UUID settlementId,
             @Valid @RequestBody SignSettlementRequest req,
             @AuthenticationPrincipal UserPrincipal principal) {
+        verifySettlementOwnership(id, settlementId);
         boolean isStaff = principal.getRole() != AppRole.CUSTOMER;
         SettlementResponse data = SettlementResponse.from(
                 manageSettlementUseCase.signSettlement(
@@ -219,4 +224,15 @@ public class CheckoutController {
                                 req.getNotes())));
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseBuilder.success(data));
     }
+
+    /** Validates that the settlement identified by {@code settlementId} belongs to the checkout
+     *  request identified by {@code checkoutRequestId}. Throws {@link ValidationException} on mismatch. */
+    private void verifySettlementOwnership(UUID checkoutRequestId, UUID settlementId) {
+        SettlementResponse s = SettlementResponse.from(manageSettlementUseCase.getSettlement(checkoutRequestId));
+        if (!settlementId.equals(s.getId())) {
+            throw new ValidationException(
+                    "Settlement " + settlementId + " does not belong to checkout request " + checkoutRequestId);
+        }
+    }
+
 }
