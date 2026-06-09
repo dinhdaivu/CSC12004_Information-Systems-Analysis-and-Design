@@ -8,9 +8,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
-import vn.edu.hcmus.homestay.application.port.out.LoadDepositPort;
-import vn.edu.hcmus.homestay.application.port.out.SaveDepositPort;
-import vn.edu.hcmus.homestay.common.event.DepositExpiredEvent;
+import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
+import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
+import vn.edu.hcmus.homestay.domain.event.DepositExpiredEvent;
 import vn.edu.hcmus.homestay.domain.model.deposit.DepositRequest;
 import vn.edu.hcmus.homestay.domain.model.deposit.DepositStatus;
 

@@ -1,0 +1,18 @@
+package vn.edu.hcmus.homestay.adapter.in.web.dto.tenancy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class SignHandoverRequest {
+
+    @JsonProperty("manager_signature_url")
+    private String managerSignatureUrl;
+
+    @JsonProperty("customer_signature_url")
+    private String customerSignatureUrl;
+
+    public String getManagerSignatureUrl() { return managerSignatureUrl; }
+    public void setManagerSignatureUrl(String managerSignatureUrl) { this.managerSignatureUrl = managerSignatureUrl; }
+
+    public String getCustomerSignatureUrl() { return customerSignatureUrl; }
+    public void setCustomerSignatureUrl(String customerSignatureUrl) { this.customerSignatureUrl = customerSignatureUrl; }
+}

@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import vn.edu.hcmus.homestay.application.port.out.GenerateVietQRPort;
+import vn.edu.hcmus.homestay.application.port.out.rental.GenerateVietQRPort;
 
 @Component
 public class VietQRAdapter implements GenerateVietQRPort {
