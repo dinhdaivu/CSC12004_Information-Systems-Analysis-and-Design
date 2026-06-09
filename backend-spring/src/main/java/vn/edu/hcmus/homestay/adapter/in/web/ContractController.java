@@ -75,8 +75,7 @@ public class ContractController {
     @PostMapping
     @PreAuthorize("hasAnyRole('SALE','ACCOUNTANT','MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<ContractResponse>> createContract(
-            @Valid @RequestBody CreateContractRequest req,
-            @AuthenticationPrincipal UserPrincipal principal) {
+            @Valid @RequestBody CreateContractRequest req) {
         ContractResponse data = ContractResponse.from(
                 createContractUseCase.createContract(
                         new CreateContractUseCase.CreateContractCommand(
