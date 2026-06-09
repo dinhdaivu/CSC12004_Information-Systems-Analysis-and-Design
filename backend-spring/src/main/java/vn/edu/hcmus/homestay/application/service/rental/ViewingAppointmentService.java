@@ -117,7 +117,6 @@ public class ViewingAppointmentService
             try {
                 if (existing.getCustomerId() != null) {
                     String roomLabel = resolveRoomLabel(existing.getRoomId());
-                    String branchName = "";
                     loadUserPort.loadById(existing.getCustomerId()).ifPresent(user -> {
                         emailPort.sendViewingApproved(
                                 user.getEmail(),
