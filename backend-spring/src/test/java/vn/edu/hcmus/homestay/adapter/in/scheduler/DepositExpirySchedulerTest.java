@@ -1,6 +1,7 @@
 package vn.edu.hcmus.homestay.adapter.in.scheduler;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
+import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
+import vn.edu.hcmus.homestay.application.port.out.rental.SaveRentalRequestPort;
 import vn.edu.hcmus.homestay.domain.event.DepositExpiredEvent;
 import vn.edu.hcmus.homestay.domain.model.deposit.DepositRequest;
 import vn.edu.hcmus.homestay.domain.model.deposit.DepositStatus;
@@ -35,11 +41,31 @@ class DepositExpirySchedulerTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
+    @Mock
+    private SaveRentalRequestPort saveRentalRequestPort;
+
+    @Mock
+    private LoadRentalRequestPort loadRentalRequestPort;
+
+    @Mock
+    private LoadUserPort loadUserPort;
+
+    @Mock
+    private EmailPort emailPort;
+
     private DepositExpiryScheduler scheduler;
 
     @BeforeEach
     void setUp() {
-        scheduler = new DepositExpiryScheduler(loadDepositPort, saveDepositPort, eventPublisher);
+        scheduler = new DepositExpiryScheduler(
+                loadDepositPort,
+                saveDepositPort,
+                eventPublisher,
+                saveRentalRequestPort,
+                loadRentalRequestPort,
+                loadUserPort,
+                emailPort);
+        lenient().when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
     }
 
     @Test

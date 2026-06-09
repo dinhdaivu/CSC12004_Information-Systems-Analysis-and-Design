@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import vn.edu.hcmus.homestay.application.port.in.rental.ConfirmDepositUseCase.ConfirmDepositCommand;
 import vn.edu.hcmus.homestay.application.port.in.rental.CreateDepositUseCase.CreateDepositCommand;
+import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.GenerateVietQRPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.SaveDepositPort;
@@ -51,12 +54,20 @@ class DepositServiceTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
+    @Mock
+    private LoadUserPort loadUserPort;
+
+    @Mock
+    private EmailPort emailPort;
+
     private DepositService depositService;
 
     @BeforeEach
     void setUp() {
         depositService = new DepositService(
-                loadDepositPort, saveDepositPort, savePaymentPort, generateVietQRPort, eventPublisher);
+                loadDepositPort, saveDepositPort, savePaymentPort, generateVietQRPort,
+                eventPublisher, loadUserPort, emailPort);
+        lenient().when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
     }
 
     @Test

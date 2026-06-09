@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import vn.edu.hcmus.homestay.domain.model.room.GenderPolicy;
 import vn.edu.hcmus.homestay.domain.model.room.RoomStatus;
 
 @Entity
@@ -40,6 +41,10 @@ public class RoomEntity extends BaseEntity {
     @Convert(converter = RoomStatusConverter.class)
     @Column(name = "status", nullable = false)
     private RoomStatus status = RoomStatus.AVAILABLE;
+
+    @Convert(converter = GenderPolicyConverter.class)
+    @Column(name = "gender_policy")
+    private GenderPolicy genderPolicy;
 
     public UUID getBranchId() {
         return branchId;
@@ -103,5 +108,13 @@ public class RoomEntity extends BaseEntity {
 
     public void setStatus(RoomStatus status) {
         this.status = status;
+    }
+
+    public GenderPolicy getGenderPolicy() {
+        return genderPolicy;
+    }
+
+    public void setGenderPolicy(GenderPolicy genderPolicy) {
+        this.genderPolicy = genderPolicy;
     }
 }

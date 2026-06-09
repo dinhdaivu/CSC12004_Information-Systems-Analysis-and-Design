@@ -53,6 +53,7 @@ public class InventoryEventHandler {
                     room.getAmenities(),
                     room.getImagesUrl(),
                     RoomStatus.DEPOSITED,
+                    room.getGenderPolicy(),
                     room.getCreatedAt(),
                     room.getUpdatedAt());
             saveRoomPort.save(updated);
@@ -87,6 +88,7 @@ public class InventoryEventHandler {
                     room.getAmenities(),
                     room.getImagesUrl(),
                     RoomStatus.OCCUPIED,
+                    room.getGenderPolicy(),
                     room.getCreatedAt(),
                     room.getUpdatedAt());
             saveRoomPort.save(updated);
@@ -121,6 +123,7 @@ public class InventoryEventHandler {
                     room.getAmenities(),
                     room.getImagesUrl(),
                     RoomStatus.AVAILABLE,
+                    room.getGenderPolicy(),
                     room.getCreatedAt(),
                     room.getUpdatedAt());
             saveRoomPort.save(updated);
@@ -155,6 +158,7 @@ public class InventoryEventHandler {
                     room.getAmenities(),
                     room.getImagesUrl(),
                     RoomStatus.AVAILABLE,
+                    room.getGenderPolicy(),
                     room.getCreatedAt(),
                     room.getUpdatedAt());
             saveRoomPort.save(updated);

@@ -88,6 +88,7 @@ public class RoomService
                 new ArrayList<>(),
                 RoomStatus.AVAILABLE,
                 null,
+                null,
                 null);
         return saveRoomPort.save(room);
     }
@@ -117,6 +118,7 @@ public class RoomService
                 command.amenities() != null ? command.amenities() : existing.getAmenities(),
                 existing.getImagesUrl(),
                 command.status() != null ? command.status() : existing.getStatus(),
+                existing.getGenderPolicy(),
                 existing.getCreatedAt(),
                 existing.getUpdatedAt());
         return saveRoomPort.save(updated);

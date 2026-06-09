@@ -2,9 +2,11 @@ package vn.edu.hcmus.homestay.adapter.in.web.property;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,14 +20,17 @@ import vn.edu.hcmus.homestay.adapter.in.web.dto.property.BedResponse;
 import vn.edu.hcmus.homestay.adapter.in.web.dto.property.CreateRoomRequest;
 import vn.edu.hcmus.homestay.adapter.in.web.dto.property.RoomResponse;
 import vn.edu.hcmus.homestay.adapter.in.web.dto.property.UpdateRoomRequest;
+import vn.edu.hcmus.homestay.adapter.in.web.dto.property.UploadImageRequest;
 import vn.edu.hcmus.homestay.application.port.in.property.CreateRoomUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.DeleteRoomUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.GetBedUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.GetRoomUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.ListRoomsUseCase;
 import vn.edu.hcmus.homestay.application.port.in.property.UpdateRoomUseCase;
+import vn.edu.hcmus.homestay.application.port.out.storage.StoragePort;
 import vn.edu.hcmus.homestay.adapter.in.web.ApiResponse;
 import vn.edu.hcmus.homestay.adapter.in.web.ApiResponseBuilder;
+import vn.edu.hcmus.homestay.common.exception.ValidationException;
 import vn.edu.hcmus.homestay.domain.model.room.RoomStatus;
 
 @RestController
@@ -38,6 +43,7 @@ public class RoomController {
     private final UpdateRoomUseCase updateRoomUseCase;
     private final DeleteRoomUseCase deleteRoomUseCase;
     private final GetBedUseCase getBedUseCase;
+    private final StoragePort storagePort;
 
     public RoomController(
             ListRoomsUseCase listRoomsUseCase,
@@ -45,13 +51,15 @@ public class RoomController {
             CreateRoomUseCase createRoomUseCase,
             UpdateRoomUseCase updateRoomUseCase,
             DeleteRoomUseCase deleteRoomUseCase,
-            GetBedUseCase getBedUseCase) {
+            GetBedUseCase getBedUseCase,
+            StoragePort storagePort) {
         this.listRoomsUseCase = listRoomsUseCase;
         this.getRoomUseCase = getRoomUseCase;
         this.createRoomUseCase = createRoomUseCase;
         this.updateRoomUseCase = updateRoomUseCase;
         this.deleteRoomUseCase = deleteRoomUseCase;
         this.getBedUseCase = getBedUseCase;
+        this.storagePort = storagePort;
     }
 
     @GetMapping
@@ -119,5 +127,19 @@ public class RoomController {
     public ResponseEntity<ApiResponse<Void>> deleteRoom(@PathVariable UUID id) {
         deleteRoomUseCase.deleteRoom(id);
         return ResponseEntity.ok(ApiResponseBuilder.success(null, "Room deleted successfully"));
+    }
+
+    @PostMapping("/upload-image")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<Map<String, String>>> uploadImage(
+            @RequestBody UploadImageRequest req) {
+        String url = storagePort.upload(
+                req.getFileData(),
+                "homestay-dorm/rooms",
+                "room-" + System.currentTimeMillis());
+        if (url == null) {
+            throw new ValidationException("Image upload failed or Cloudinary not configured");
+        }
+        return ResponseEntity.ok(ApiResponseBuilder.success(Map.of("image_url", url)));
     }
 }

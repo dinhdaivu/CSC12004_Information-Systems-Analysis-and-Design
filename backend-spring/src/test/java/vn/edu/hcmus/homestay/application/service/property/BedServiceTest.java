@@ -152,6 +152,6 @@ class BedServiceTest {
 
     private Room room(UUID id) {
         return new Room(id, UUID.randomUUID(), "101", "SINGLE", 2, BigDecimal.valueOf(5000000),
-                null, null, RoomStatus.AVAILABLE, Instant.now(), Instant.now());
+                null, null, RoomStatus.AVAILABLE, null, Instant.now(), Instant.now());
     }
 }
