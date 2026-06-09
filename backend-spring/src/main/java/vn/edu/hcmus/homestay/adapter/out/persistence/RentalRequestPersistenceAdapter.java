@@ -3,6 +3,7 @@ package vn.edu.hcmus.homestay.adapter.out.persistence;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmus.homestay.application.port.out.LoadRentalRequestPort;
 import vn.edu.hcmus.homestay.application.port.out.SaveRentalRequestPort;
@@ -38,5 +39,17 @@ class RentalRequestPersistenceAdapter implements LoadRentalRequestPort, SaveRent
     @Override
     public RentalRequest save(RentalRequest request) {
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(request)));
+    }
+
+    @Override
+    public long countNonCancelled() {
+        return jpaRepository.countNonCancelled();
+    }
+
+    @Override
+    public List<RentalRequest> findRecent(int limit) {
+        return jpaRepository.findRecent(PageRequest.of(0, limit)).stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

@@ -1,6 +1,8 @@
 package vn.edu.hcmus.homestay.adapter.out.persistence;
 
+import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmus.homestay.application.port.out.LoadPaymentPort;
 import vn.edu.hcmus.homestay.application.port.out.SavePaymentPort;
@@ -25,5 +27,17 @@ class PaymentPersistenceAdapter implements LoadPaymentPort, SavePaymentPort {
     @Override
     public Payment save(Payment payment) {
         return mapper.toDomain(jpaRepository.save(mapper.toEntity(payment)));
+    }
+
+    @Override
+    public BigDecimal sumCompletedRevenue() {
+        return jpaRepository.sumCompletedRevenue();
+    }
+
+    @Override
+    public List<Payment> findRecentCompleted(int limit) {
+        return jpaRepository.findRecentCompleted(PageRequest.of(0, limit)).stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

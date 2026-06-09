@@ -14,4 +14,6 @@ public interface LoadRoomPort {
     Optional<Room> loadById(UUID id);
 
     boolean existsByBranchIdAndRoomNumber(UUID branchId, String roomNumber);
+
+    long countAllRooms();
 }

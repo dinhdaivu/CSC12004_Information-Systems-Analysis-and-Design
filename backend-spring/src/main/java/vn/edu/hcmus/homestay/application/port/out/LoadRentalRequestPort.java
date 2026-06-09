@@ -12,4 +12,8 @@ public interface LoadRentalRequestPort {
     List<RentalRequest> loadByCustomerId(UUID customerId);
 
     List<RentalRequest> loadAll();
+
+    long countNonCancelled();
+
+    List<RentalRequest> findRecent(int limit);
 }

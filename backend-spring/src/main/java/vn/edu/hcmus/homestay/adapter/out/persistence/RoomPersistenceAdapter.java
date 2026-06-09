@@ -48,4 +48,9 @@ class RoomPersistenceAdapter implements LoadRoomPort, SaveRoomPort {
     public void delete(UUID id) {
         jpaRepository.deleteById(id);
     }
+
+    @Override
+    public long countAllRooms() {
+        return jpaRepository.countAllRooms();
+    }
 }
