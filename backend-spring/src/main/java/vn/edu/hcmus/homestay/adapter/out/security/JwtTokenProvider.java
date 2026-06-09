@@ -11,7 +11,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmus.homestay.adapter.in.security.UserPrincipal;
-import vn.edu.hcmus.homestay.application.port.out.TokenPort;
+import vn.edu.hcmus.homestay.application.port.out.identity.TokenPort;
 import vn.edu.hcmus.homestay.common.exception.UnauthorizedException;
 import vn.edu.hcmus.homestay.domain.model.user.AppRole;
 

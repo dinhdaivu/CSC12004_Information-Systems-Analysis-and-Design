@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import tools.jackson.databind.ObjectMapper;
+import vn.edu.hcmus.homestay.adapter.in.web.ApiResponseBuilder;
+import vn.edu.hcmus.homestay.adapter.in.web.PaginatedResponse;
 
 @JsonTest
 class ApiResponseSerializationTest {

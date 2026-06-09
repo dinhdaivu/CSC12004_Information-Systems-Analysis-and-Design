@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import vn.edu.hcmus.homestay.application.service.AuthService;
+import vn.edu.hcmus.homestay.application.service.identity.AuthService;
 import vn.edu.hcmus.homestay.common.exception.ConflictException;
 import vn.edu.hcmus.homestay.common.exception.ForbiddenException;
 import vn.edu.hcmus.homestay.common.exception.NotFoundException;
