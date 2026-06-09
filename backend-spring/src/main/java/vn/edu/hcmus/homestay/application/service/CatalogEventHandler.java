@@ -7,6 +7,7 @@ import vn.edu.hcmus.homestay.application.port.out.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.LoadRoomPort;
 import vn.edu.hcmus.homestay.application.port.out.SaveBedPort;
 import vn.edu.hcmus.homestay.application.port.out.SaveRoomPort;
+import vn.edu.hcmus.homestay.common.event.CheckoutCompletedEvent;
 import vn.edu.hcmus.homestay.common.event.DepositConfirmedEvent;
 import vn.edu.hcmus.homestay.common.event.DepositExpiredEvent;
 import vn.edu.hcmus.homestay.common.event.HandoverCompletedEvent;
@@ -95,6 +96,40 @@ public class CatalogEventHandler {
                         bed.getBedNumber(),
                         bed.getPricePerMonth(),
                         BedStatus.OCCUPIED,
+                        bed.getCreatedAt(),
+                        bed.getUpdatedAt());
+                saveBedPort.save(updated);
+            });
+        }
+    }
+
+    @EventListener
+    @Transactional
+    public void onCheckoutCompleted(CheckoutCompletedEvent event) {
+        loadRoomPort.loadById(event.roomId()).ifPresent(room -> {
+            Room updated = new Room(
+                    room.getId(),
+                    room.getBranchId(),
+                    room.getRoomNumber(),
+                    room.getRoomType(),
+                    room.getMaxCapacity(),
+                    room.getPricePerMonth(),
+                    room.getAmenities(),
+                    room.getImagesUrl(),
+                    RoomStatus.AVAILABLE,
+                    room.getCreatedAt(),
+                    room.getUpdatedAt());
+            saveRoomPort.save(updated);
+        });
+
+        if (event.bedId() != null) {
+            loadBedPort.loadById(event.bedId()).ifPresent(bed -> {
+                Bed updated = new Bed(
+                        bed.getId(),
+                        bed.getRoomId(),
+                        bed.getBedNumber(),
+                        bed.getPricePerMonth(),
+                        BedStatus.AVAILABLE,
                         bed.getCreatedAt(),
                         bed.getUpdatedAt());
                 saveBedPort.save(updated);
