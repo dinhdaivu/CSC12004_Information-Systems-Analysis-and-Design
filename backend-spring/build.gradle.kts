@@ -46,6 +46,21 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Forward parity-harness vars into the forked test JVM as system properties.
+    // Accepts env vars (EXPRESS_URL, TEST_EMAIL, TEST_PASSWORD)
+    // or Gradle project properties (-PexpressUrl=..., -PtestEmail=..., -PtestPassword=...).
+    // Forward parity-harness vars into the forked test JVM as system properties.
+    // Accepts env vars (EXPRESS_URL, SPRING_URL, TEST_EMAIL, TEST_PASSWORD)
+    // or Gradle project properties (-PexpressUrl=..., -PspringUrl=..., etc.).
+    mapOf(
+        "EXPRESS_URL"   to "expressUrl",
+        "SPRING_URL"    to "springUrl",
+        "TEST_EMAIL"    to "testEmail",
+        "TEST_PASSWORD" to "testPassword",
+    ).forEach { (envKey, propKey) ->
+        val v = System.getenv(envKey) ?: (project.findProperty(propKey) as? String ?: "")
+        if (v.isNotEmpty()) systemProperty(envKey, v)
+    }
 }
 
 // Lint. Text-only rules for now: google-java-format does not yet parse Java 25,

@@ -3,11 +3,11 @@ package vn.edu.hcmus.homestay.adapter.out.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmus.homestay.adapter.in.security.UserPrincipal;
@@ -23,7 +23,10 @@ public class JwtTokenProvider implements TokenPort {
     private final SecretKey signingKey;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        // Use SecretKeySpec directly so short secrets (< 32 bytes) accepted by Express
+        // are also accepted here — JJWT's Keys.hmacShaKeyFor() enforces ≥ 32 bytes.
+        byte[] bytes = secret.getBytes(StandardCharsets.UTF_8);
+        this.signingKey = new SecretKeySpec(bytes, "HmacSHA256");
     }
 
     @Override

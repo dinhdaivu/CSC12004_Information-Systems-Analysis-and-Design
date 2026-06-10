@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 import vn.edu.hcmus.homestay.domain.model.contract.ContractStatus;
+import vn.edu.hcmus.homestay.domain.model.rental.RentalMode;
 
 @Entity
 @Table(name = "contracts", schema = "public")
@@ -45,83 +46,54 @@ public class ContractEntity extends BaseEntity {
     @Column(name = "notes")
     private String notes;
 
-    public UUID getCustomerId() {
-        return customerId;
-    }
+    // ── UC3 traceability fields (migration 007) ───────────────────────────────
 
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
+    @Column(name = "rental_request_id")
+    private UUID rentalRequestId;
 
-    public UUID getDepositRequestId() {
-        return depositRequestId;
-    }
+    @Convert(converter = RentalModeConverter.class)
+    @Column(name = "rental_mode")
+    private RentalMode rentalMode;
 
-    public void setDepositRequestId(UUID depositRequestId) {
-        this.depositRequestId = depositRequestId;
-    }
+    @Column(name = "beds_count")
+    private Integer bedsCount;
 
-    public UUID getRoomId() {
-        return roomId;
-    }
+    public UUID getCustomerId() { return customerId; }
+    public void setCustomerId(UUID customerId) { this.customerId = customerId; }
 
-    public void setRoomId(UUID roomId) {
-        this.roomId = roomId;
-    }
+    public UUID getDepositRequestId() { return depositRequestId; }
+    public void setDepositRequestId(UUID depositRequestId) { this.depositRequestId = depositRequestId; }
 
-    public UUID getBedId() {
-        return bedId;
-    }
+    public UUID getRoomId() { return roomId; }
+    public void setRoomId(UUID roomId) { this.roomId = roomId; }
 
-    public void setBedId(UUID bedId) {
-        this.bedId = bedId;
-    }
+    public UUID getBedId() { return bedId; }
+    public void setBedId(UUID bedId) { this.bedId = bedId; }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
+    public BigDecimal getMonthlyPrice() { return monthlyPrice; }
+    public void setMonthlyPrice(BigDecimal monthlyPrice) { this.monthlyPrice = monthlyPrice; }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
+    public ContractStatus getStatus() { return status; }
+    public void setStatus(ContractStatus status) { this.status = status; }
 
-    public BigDecimal getMonthlyPrice() {
-        return monthlyPrice;
-    }
+    public String getContractDocumentUrl() { return contractDocumentUrl; }
+    public void setContractDocumentUrl(String contractDocumentUrl) { this.contractDocumentUrl = contractDocumentUrl; }
 
-    public void setMonthlyPrice(BigDecimal monthlyPrice) {
-        this.monthlyPrice = monthlyPrice;
-    }
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 
-    public ContractStatus getStatus() {
-        return status;
-    }
+    public UUID getRentalRequestId() { return rentalRequestId; }
+    public void setRentalRequestId(UUID rentalRequestId) { this.rentalRequestId = rentalRequestId; }
 
-    public void setStatus(ContractStatus status) {
-        this.status = status;
-    }
+    public RentalMode getRentalMode() { return rentalMode; }
+    public void setRentalMode(RentalMode rentalMode) { this.rentalMode = rentalMode; }
 
-    public String getContractDocumentUrl() {
-        return contractDocumentUrl;
-    }
-
-    public void setContractDocumentUrl(String contractDocumentUrl) {
-        this.contractDocumentUrl = contractDocumentUrl;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+    public Integer getBedsCount() { return bedsCount; }
+    public void setBedsCount(Integer bedsCount) { this.bedsCount = bedsCount; }
 }

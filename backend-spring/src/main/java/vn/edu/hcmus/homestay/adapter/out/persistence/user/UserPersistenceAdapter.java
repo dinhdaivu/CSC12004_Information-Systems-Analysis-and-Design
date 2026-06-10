@@ -1,5 +1,7 @@
 package vn.edu.hcmus.homestay.adapter.out.persistence.user;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,11 @@ class UserPersistenceAdapter implements LoadUserPort, SaveUserPort {
     @Override
     public Optional<User> loadById(UUID id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<User> loadByIds(Collection<UUID> ids) {
+        return jpaRepository.findAllByIdIn(ids).stream().map(mapper::toDomain).toList();
     }
 
     @Override

@@ -1,14 +1,13 @@
 # homestay-backend (Spring Boot)
 
-Spring Boot 4.0.6 / Java 25 rewrite of the Express backend — **migration epic #72**,
-plan in `docs/tasks/06-01-backend-spring-boot-migration.md`. Runs **side-by-side**
-with the existing `backend/` (Express) until the Phase 10 cutover; Express stays the
-deployed service for now.
+Spring Boot 4.0.6 / Java 25 — the primary backend. Migration epic #72,
+plan in `docs/tasks/06-01-backend-spring-boot-migration.md`.
 
-**Phases 0–4 complete:**
+**Completed phases:**
 - Phase 0+1: scaffold, clean architecture (hexagonal/ports-and-adapters), auth endpoints
 - Phase 3: catalog domains — branch, zone, room, bed (PR #96)
 - Phase 4: UC1 inquiry — rental-request, viewing-appointments (PR #97)
+- Phase 9: scheduler side-effects, Cloudinary, Resend (PR #84)
 
 ## Prerequisites
 

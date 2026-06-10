@@ -2,19 +2,19 @@
 
 Modern dormitory management system for private housing facilities
 
-A comprehensive web-based platform for room rental, deposits, contracts, and payment tracking. Built with Angular 21, Express.js, and Supabase.
+A comprehensive web-based platform for room rental, deposits, contracts, and payment tracking. Built with Angular 21, Spring Boot, and Supabase.
 
 ---
 
 ## Quick Navigation
 
-| Link                                          | Purpose                       |
-| --------------------------------------------- | ----------------------------- |
-| **[Getting Started](#getting-started)**       | Complete setup guide          |
-| **[frontend/README.md](frontend/README.md)**  | Angular-specific setup        |
-| **[backend/README.md](backend/README.md)**    | Express.js-specific setup     |
-| **[supabase/README.md](supabase/README.md)**  | Database configuration        |
-| **[CONTRIBUTING.md](CONTRIBUTING.md)**        | Development guidelines        |
+| Link                                                              | Purpose                       |
+| ----------------------------------------------------------------- | ----------------------------- |
+| **[Getting Started](#getting-started)**                          | Complete setup guide          |
+| **[frontend/README.md](frontend/README.md)**                    | Angular-specific setup        |
+| **[backend-spring/README.md](backend-spring/README.md)**        | Spring Boot backend setup     |
+| **[supabase/README.md](supabase/README.md)**                    | Database configuration        |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)**                          | Development guidelines        |
 
 ---
 
@@ -38,17 +38,17 @@ HomeStay Dorm is a private dormitory (ký túc xá) management system covering t
 
 ## Technology Stack
 
-| Component        | Technology                                             |
-| ---------------- | -------------------------------------------            |
-| Frontend         | Angular 21, TypeScript 5.9.3, Tailwind CSS 4, RxJS 7.8 |
-| Backend          | Express.js 5.2.1, TypeScript 5.9.3, Node.js 20.x+      |
-| Database         | Supabase (PostgreSQL), Row Level Security              |
-| Storage          | Cloudinary                                             |
-| Email            | Resend                                                 |
-| Payments         | VietQR                                                 |
-| Authentication   | Supabase Auth + JWT                                    |
-| Testing          | Jest (Backend), Jasmine (Frontend)                     |
-| CI/CD            | GitHub Actions                                         |
+| Component        | Technology                                              |
+| ---------------- | ------------------------------------------------------- |
+| Frontend         | Angular 21, TypeScript 5.9, Tailwind CSS 4, RxJS 7.8   |
+| Backend          | Spring Boot 4.0.6, Java 25, Gradle                      |
+| Database         | Supabase (PostgreSQL), Row Level Security               |
+| Storage          | Cloudinary                                              |
+| Email            | Resend                                                  |
+| Payments         | VietQR                                                  |
+| Authentication   | Custom HS256 JWT + bcrypt (Spring Security)             |
+| Testing          | Jest (Frontend), JUnit / Spring Boot Test (Backend)     |
+| CI/CD            | GitHub Actions                                          |
 
 ## Current Auth Flow
 
@@ -70,14 +70,14 @@ HomeStay Dorm/
 │   │   └── environments/     # Config
 │   └── README.md
 │
-├── backend/                   # Express.js REST API
-│   ├── src/
-│   │   ├── config/           # Service configs
-│   │   ├── middleware/       # Auth, error handling
-│   │   ├── routes/           # API endpoints
-│   │   ├── controllers/      # Route handlers
-│   │   ├── services/         # Business logic
-│   │   └── models/           # TypeScript interfaces
+├── backend-spring/            # Spring Boot REST API (primary backend)
+│   └── src/main/java/        # Clean Architecture (hexagonal/ports-and-adapters)
+│       ├── domain/           # Pure Java domain models — zero framework deps
+│       ├── application/      # Use-case interfaces and services
+│       ├── adapter/          # Web controllers, JPA persistence adapters
+│       └── config/           # Spring @Configuration classes
+│
+├── backend/                   # Express.js REST API (legacy)
 │   └── README.md
 │
 ├── docs/                      # Reference documentation
@@ -108,18 +108,17 @@ HomeStay Dorm/
 
 ### Prerequisites
 
-- **Node.js** 20.x - [nodejs.org](https://nodejs.org)
+- **JDK 25** — install via [sdkman.io](https://sdkman.io) (`sdk install java 25-open`) or [Adoptium](https://adoptium.net)
+- **Node.js** 20.x — [nodejs.org](https://nodejs.org) (frontend only)
 - **npm** 10.x (included with Node.js)
-- **Git** - For version control
-- **Code Editor** - VS Code recommended
+- **Git** — for version control
+- **Code Editor** — VS Code or IntelliJ IDEA recommended
 
 ### Step 1: Install Dependencies
 
 ```bash
+# Frontend — the Spring Boot backend uses the Gradle wrapper (no install step needed)
 cd frontend
-npm install
-
-cd ../backend
 npm install
 ```
 
@@ -130,6 +129,7 @@ Create free accounts and get credentials:
 1. **Supabase** - [supabase.com](https://supabase.com)
    - Project URL
    - API Key (anon)
+   - Direct database connection string (Supavisor pooler, port 6543)
 
 2. **Cloudinary** - [cloudinary.com](https://cloudinary.com)
    - Cloud Name
@@ -145,73 +145,43 @@ Create free accounts and get credentials:
 
 #### Backend Environment Setup
 
-The backend uses `.env` file for environment variables:
+Edit `backend-spring/src/main/resources/application.properties` with your credentials:
 
-```bash
-cd backend
-cp .env.example .env
-```
+```properties
+# Datasource — Supabase Supavisor pooler, transaction mode (port 6543)
+spring.datasource.url=jdbc:postgresql://<pooler-host>:6543/postgres?sslmode=require
+spring.datasource.username=postgres.<your-project-ref>
+spring.datasource.password=<your-db-password>
 
-Edit `backend/.env` with your credentials:
+# JWT — HS256, min 32 chars
+jwt.secret=your_strong_secret_key_at_least_32_characters
 
-```env
-# Application Configuration
-NODE_ENV=development
-PORT=3000
-FRONTEND_URL=http://localhost:4200
+# Cloudinary
+cloudinary.cloud-name=your_cloud_name
+cloudinary.api-key=your_api_key
+cloudinary.api-secret=your_api_secret
 
-# Supabase Database & Auth
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+# Resend
+resend.api-key=your_resend_api_key
 
-# Cloudinary Image Storage
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Resend Email Service
-RESEND_API_KEY=your_resend_api_key
-
-# VietQR Payment Gateway (Optional)
-VIETQR_CLIENT_ID=your_client_id
-VIETQR_CLIENT_SECRET=your_client_secret
-
-# JWT Authentication
-JWT_SECRET=your_strong_secret_key_at_least_32_characters
-JWT_EXPIRE=7d
-
-# CORS Configuration
-CORS_ORIGIN=http://localhost:4200
+# VietQR (optional)
+vietqr.client-id=your_client_id
+vietqr.client-secret=your_client_secret
 ```
 
 **Important Notes:**
-- The backend uses `.env` for environment variables
-- Never commit `.env` to version control (it's in `.gitignore`)
-- Generate a strong JWT_SECRET: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-- For production, use `.env.production` with production URLs
+- `application.properties` is excluded from git via `git update-index --assume-unchanged` — credentials won't be committed
+- `spring.jpa.hibernate.ddl-auto=validate` — schema is managed by Supabase migrations, not JPA
+- Pool size defaults to 5 (`hikari.maximum-pool-size=5`), sized for Supavisor transaction mode
 
 #### Frontend Environment Setup
 
-The frontend uses environment TypeScript files (not .env files):
-
-Edit `frontend/src/environments/environment.ts` for development:
+Edit `frontend/src/environments/environment.ts` for local development:
 
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
-  supabaseUrl: 'https://your-project.supabase.co',
-  supabaseAnonKey: 'your_anon_key_here'
-};
-```
-
-Edit `frontend/src/environments/environment.prod.ts` for production:
-
-```typescript
-export const environment = {
-  production: true,
-  apiUrl: 'https://api.your-domain.com/api',
+  apiUrl: 'http://localhost:8080/api',
   supabaseUrl: 'https://your-project.supabase.co',
   supabaseAnonKey: 'your_anon_key_here'
 };
@@ -224,15 +194,15 @@ export const environment = {
 
 ### Step 4: Run Development Servers
 
-Terminal 1 - Backend:
+Terminal 1 — Backend:
 
 ```bash
-cd backend
-npm run dev
-# Runs on http://localhost:3000
+cd backend-spring
+./gradlew bootRun
+# Runs on http://localhost:8080
 ```
 
-Terminal 2 - Frontend:
+Terminal 2 — Frontend:
 
 ```bash
 cd frontend
@@ -242,8 +212,8 @@ npm start
 
 ### Step 5: Verify
 
-- Backend running at [http://localhost:3000](http://localhost:3000)
-- Frontend at [http://localhost:4200](http://localhost:4200)
+- Backend health: [http://localhost:8080/api/health](http://localhost:8080/api/health)
+- Frontend: [http://localhost:4200](http://localhost:4200)
 - No console errors in browser
 
 ---
@@ -260,16 +230,14 @@ npm run lint           # ESLint check
 npm run lint:fix       # Auto-fix lint issues
 ```
 
-### Backend
+### Backend (Spring Boot)
 
 ```bash
-npm run dev            # Dev server with hot reload
-npm run build          # Compile TypeScript
-npm test               # Run Jest tests
-npm run test:watch     # Watch mode
-npm run test:coverage  # Coverage report
-npm run lint           # ESLint check
-npm run lint:fix       # Auto-fix issues
+./gradlew bootRun       # Dev server on http://localhost:8080
+./gradlew build         # Compile + test + lint
+./gradlew test          # Tests only
+./gradlew check         # Tests + lint
+./gradlew spotlessApply # Auto-fix lint
 ```
 
 ---
@@ -339,7 +307,7 @@ npm run lint:fix       # Auto-fix issues
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development guidelines
 - **[frontend/README.md](frontend/README.md)** - Angular setup and commands
-- **[backend/README.md](backend/README.md)** - Express.js setup and commands
+- **[backend-spring/README.md](backend-spring/README.md)** - Spring Boot setup and commands
 - **[supabase/README.md](supabase/README.md)** - Database setup and migrations
 - **[docs/README.md](docs/README.md)** - System architecture and API documentation
 
@@ -363,33 +331,35 @@ Workflows: `.github/workflows/frontend-ci.yml`, `backend-ci.yml`
 Port already in use
 
 ```bash
-# Windows: Find and kill process on port 3000
-netstat -ano | findstr :3000
+# Windows: Find and kill process on port 8080
+netstat -ano | findstr :8080
 taskkill /PID <PID> /F
 
-# Linux/Mac: Find and kill process on port 3000
-lsof -i :3000
+# Linux/Mac: Find and kill process on port 8080
+lsof -i :8080
 kill -9 <PID>
 ```
 
-Module not found
+Module not found (frontend)
 
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-TypeScript errors
+Java build errors
 
 ```bash
-npm run build
+cd backend-spring
+./gradlew clean build
 ```
 
-npm command not found
+JDK version mismatch
 
 ```bash
-# Reinstall Node.js from https://nodejs.org
-# Make sure to add to PATH during installation
+# Verify JDK 25 is active
+java -version
+# Install via sdkman: sdk install java 25-open && sdk use java 25-open
 ```
 
 ---

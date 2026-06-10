@@ -16,9 +16,9 @@ Complete system architecture documentation pending implementation.
 
 ### Architecture Overview (To Be Completed)
 
-The system will use a Client-Server architecture with:
+The system uses a Client-Server architecture with:
 - **Frontend**: Angular 21 + Tailwind CSS
-- **Backend**: Express.js + TypeScript
+- **Backend**: Spring Boot 4.0.6, Java 25, Gradle (hexagonal/ports-and-adapters)
 - **Database**: Supabase (PostgreSQL)
 - **Services**: Cloudinary, Resend, VietQR
 
@@ -30,7 +30,7 @@ The planned API endpoint specification is maintained in [architecture/api-endpoi
 
 ### Base URL
 ```
-http://localhost:3000/api
+http://localhost:8080/api
 ```
 
 ### Endpoint Categories
@@ -62,4 +62,4 @@ The current authentication set includes registration, signup verification, verif
 - See [../README.md](../README.md) for project overview
 - See [../supabase/README.md](../supabase/README.md) for database setup
 - See [../frontend/README.md](../frontend/README.md) for Angular setup
-- See [../backend/README.md](../backend/README.md) for Express setup
+- See [../backend-spring/README.md](../backend-spring/README.md) for Spring Boot setup

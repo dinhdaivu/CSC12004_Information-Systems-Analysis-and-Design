@@ -2,37 +2,32 @@ import http from 'k6/http';
 import { sleep, group, fail } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 
-// ─── Metrics ────────────────────────────────────────────────────────────────
-const t = (name) => new Trend(`endpoint_${name}_duration`, true);
+// ── Targets ───────────────────────────────────────────────────────────────────
+// Both backends are hit on every VU iteration so latency is measured in parallel.
+// Override with env vars: -e SPRING_URL=... -e EXPRESS_URL=...
+const SPRING_URL  = __ENV.SPRING_URL  || 'http://localhost:8080';
+const EXPRESS_URL = __ENV.EXPRESS_URL || 'http://localhost:3000';
+const TEST_EMAIL    = __ENV.TEST_EMAIL;
+const TEST_PASSWORD = __ENV.TEST_PASSWORD;
 
-const m = {
-  // public
-  health:              t('health'),
-  branches:            t('branches'),
-  rooms:               t('rooms'),
-  zones:               t('zones'),
-  beds:                t('beds'),
-  defaultHandover:     t('default_handover_items'),
-  // booking flow
-  viewingAppts:        t('viewing_appointments'),
-  rentalRequests:      t('rental_requests'),
-  myBookings:          t('my_bookings'),
-  lodgingEligibility:  t('lodging_eligibility'),
-  // financial
-  deposits:            t('deposits'),
-  payments:            t('payments'),
-  contracts:           t('contracts'),
-  // post check-in
-  handovers:           t('handovers'),
-  disputes:            t('disputes'),
-  checkoutRequests:    t('checkout_requests'),
-  // admin
-  users:               t('users'),
-};
+// ── Metrics ───────────────────────────────────────────────────────────────────
+const mk = (prefix, name) => new Trend(`${prefix}_${name}`, true);
 
-const errorRate = new Rate('endpoint_errors');
+const NAMES = [
+  'health', 'branches', 'rooms', 'zones', 'beds', 'default_handover',
+  'viewing_appts', 'rental_requests', 'my_bookings', 'lodging_eligibility',
+  'deposits', 'payments', 'contracts',
+  'handovers', 'disputes', 'checkout_requests',
+  'users',
+];
 
-// ─── Options ─────────────────────────────────────────────────────────────────
+const s = Object.fromEntries(NAMES.map(n => [n, mk('spring', n)]));
+const e = Object.fromEntries(NAMES.map(n => [n, mk('express', n)]));
+
+const springErrors  = new Rate('spring_errors');
+const expressErrors = new Rate('express_errors');
+
+// ── Options ───────────────────────────────────────────────────────────────────
 export const options = {
   summaryTrendStats: ['avg', 'min', 'max', 'p(50)', 'p(95)', 'p(99)'],
   stages: [
@@ -43,135 +38,144 @@ export const options = {
     { duration: '30s', target: 0    },
   ],
   thresholds: {
-    'endpoint_errors': ['rate<0.10'],
+    'spring_errors':  ['rate<0.10'],
+    'express_errors': ['rate<0.10'],
   },
 };
 
-// ─── Setup (login once, share token across all VUs) ──────────────────────────
-const BASE_URL      = __ENV.BASE_URL      || 'http://localhost:3000';
-const TEST_EMAIL    = __ENV.TEST_EMAIL;
-const TEST_PASSWORD = __ENV.TEST_PASSWORD;
-
+// ── Setup — login against both backends once ──────────────────────────────────
 export function setup() {
   if (!TEST_EMAIL || !TEST_PASSWORD) {
     fail('Set TEST_EMAIL and TEST_PASSWORD env vars');
   }
-  const res = http.post(
-    `${BASE_URL}/api/auth/login`,
-    JSON.stringify({ email: TEST_EMAIL, password: TEST_PASSWORD }),
-    { headers: { 'Content-Type': 'application/json' } },
-  );
-  if (res.status !== 200) fail(`Login failed (${res.status}): ${res.body}`);
-  const token = res.json('data.token');
-  if (!token) fail('Login response missing data.token');
-  console.log(`Logged in as ${TEST_EMAIL}`);
-  return { token };
+  const body    = JSON.stringify({ email: TEST_EMAIL, password: TEST_PASSWORD });
+  const headers = { headers: { 'Content-Type': 'application/json' } };
+
+  const [sr, er] = http.batch([
+    ['POST', `${SPRING_URL}/api/auth/login`,  body, headers],
+    ['POST', `${EXPRESS_URL}/api/auth/login`, body, headers],
+  ]);
+
+  if (sr.status !== 200) fail(`Spring login failed  (${sr.status}): ${sr.body}`);
+  if (er.status !== 200) fail(`Express login failed (${er.status}): ${er.body}`);
+
+  const springToken  = sr.json('data.token');
+  const expressToken = er.json('data.token');
+  if (!springToken)  fail('Spring login response missing data.token');
+  if (!expressToken) fail('Express login response missing data.token');
+
+  console.log(`Logged in — Spring: ${SPRING_URL}  Express: ${EXPRESS_URL}`);
+  return { springToken, expressToken };
 }
 
-// ─── Main VU function ────────────────────────────────────────────────────────
+// ── Main VU function ──────────────────────────────────────────────────────────
 export default function (data) {
-  const auth = {
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-      'Content-Type': 'application/json',
-    },
-  };
+  const sAuth = { headers: { Authorization: `Bearer ${data.springToken}`,  'Content-Type': 'application/json' } };
+  const eAuth = { headers: { Authorization: `Bearer ${data.expressToken}`, 'Content-Type': 'application/json' } };
 
-  const hit = (metric, res, expectAdmin = false) => {
-    metric.add(res.timings.duration);
-    errorRate.add(res.status >= 500);
-    // admin-only routes return 403 for non-admin — treat as ok
-    const ok = expectAdmin ? res.status < 500 : res.status < 300;
-    return ok;
+  // Hit both backends in parallel for each endpoint.
+  const hit = (sm, em, path, withAuth = false) => {
+    const sp = withAuth ? sAuth : {};
+    const ep = withAuth ? eAuth : {};
+    const [sr, er] = http.batch([
+      { method: 'GET', url: SPRING_URL  + path, params: sp },
+      { method: 'GET', url: EXPRESS_URL + path, params: ep },
+    ]);
+    sm.add(sr.timings.duration);
+    em.add(er.timings.duration);
+    springErrors.add(sr.status >= 500);
+    expressErrors.add(er.status >= 500);
   };
 
   group('public', () => {
-    hit(m.health,          http.get(`${BASE_URL}/api/health`));
-    hit(m.branches,        http.get(`${BASE_URL}/api/branches`));
-    hit(m.rooms,           http.get(`${BASE_URL}/api/rooms`));
-    hit(m.zones,           http.get(`${BASE_URL}/api/zones`));
-    hit(m.beds,            http.get(`${BASE_URL}/api/bed`));
-    hit(m.defaultHandover, http.get(`${BASE_URL}/api/default-handover-items`));
+    hit(s.health,           e.health,           '/api/health');
+    hit(s.branches,         e.branches,         '/api/branches');
+    hit(s.rooms,            e.rooms,            '/api/rooms');
+    hit(s.zones,            e.zones,            '/api/zones');
+    hit(s.beds,             e.beds,             '/api/bed');
+    hit(s.default_handover, e.default_handover, '/api/default-handover-items');
   });
 
   group('booking flow', () => {
-    hit(m.viewingAppts,       http.get(`${BASE_URL}/api/viewing-appointments`, auth));
-    hit(m.rentalRequests,     http.get(`${BASE_URL}/api/rental-requests`, auth));
-    hit(m.myBookings,         http.get(`${BASE_URL}/api/my-bookings`, auth));
-    hit(m.lodgingEligibility, http.get(`${BASE_URL}/api/lodging-eligibility`, auth));
+    hit(s.viewing_appts,       e.viewing_appts,       '/api/viewing-appointments', true);
+    hit(s.rental_requests,     e.rental_requests,     '/api/rental-requests',      true);
+    hit(s.my_bookings,         e.my_bookings,         '/api/my-bookings',          true);
+    hit(s.lodging_eligibility, e.lodging_eligibility, '/api/lodging-eligibility',  true);
   });
 
   group('financial', () => {
-    hit(m.deposits,  http.get(`${BASE_URL}/api/deposits`, auth));
-    hit(m.payments,  http.get(`${BASE_URL}/api/payments`, auth));
-    hit(m.contracts, http.get(`${BASE_URL}/api/contracts`, auth));
+    hit(s.deposits,  e.deposits,  '/api/deposits',  true);
+    hit(s.payments,  e.payments,  '/api/payments',  true);
+    hit(s.contracts, e.contracts, '/api/contracts', true);
   });
 
   group('post check-in', () => {
-    hit(m.handovers,       http.get(`${BASE_URL}/api/handovers`, auth));
-    hit(m.disputes,        http.get(`${BASE_URL}/api/disputes`, auth));
-    hit(m.checkoutRequests, http.get(`${BASE_URL}/api/checkout-requests`, auth));
+    hit(s.handovers,         e.handovers,         '/api/handovers',         true);
+    hit(s.disputes,          e.disputes,          '/api/disputes',          true);
+    hit(s.checkout_requests, e.checkout_requests, '/api/checkout-requests', true);
   });
 
   group('admin', () => {
-    hit(m.users, http.get(`${BASE_URL}/api/users`, auth), true);
+    hit(s.users, e.users, '/api/users', true);
   });
 
   sleep(1);
 }
 
-// ─── Summary ─────────────────────────────────────────────────────────────────
+// ── Summary ───────────────────────────────────────────────────────────────────
 export function handleSummary(data) {
   return { stdout: formatSummary(data) };
 }
 
 function formatSummary(data) {
-  const metrics = data.metrics;
-  const p = (key, pct) =>
-    metrics[key]?.values?.[`p(${pct})`]?.toFixed(0) ?? 'N/A';
-  const mx = (key) =>
-    (metrics[key]?.values?.max ?? 0).toFixed(0);
+  const m   = data.metrics;
+  const p   = (key, pct) => (m[key]?.values?.[`p(${pct})`] ?? 0).toFixed(0);
+  const mx  = (key)      => (m[key]?.values?.max            ?? 0).toFixed(0);
+  const col = (key)      =>
+    `${p(key,'50').padStart(6)} ${p(key,'95').padStart(6)} ${p(key,'99').padStart(6)} ${mx(key).padStart(6)}`;
+  // col() = 6+1+6+1+6+1+6 = 27 chars  ➜  with leading+trailing space = 29
 
-  const W = 28;
-  const row = (label, key) =>
-    `║ ${label.padEnd(W)} ║ ${p(key,'50').padStart(7)} ║ ${p(key,'95').padStart(7)} ║ ${p(key,'99').padStart(7)} ║ ${mx(key).padStart(6)} ║`;
-
-  const div = `╠${'═'.repeat(W+2)}╬═════════╬═════════╬═════════╬════════╣`;
-  const top = `╔${'═'.repeat(W+2)}╦═════════╦═════════╦═════════╦════════╗`;
-  const bot = `╚${'═'.repeat(W+2)}╩═════════╩═════════╩═════════╩════════╝`;
-  const hdr = `║ ${'Endpoint'.padEnd(W)} ║   P50   ║   P95   ║   P99   ║  MAX   ║`;
+  const EW  = 30;
+  const CW  = 29;
+  const top = `╔${'═'.repeat(EW+2)}╦${'═'.repeat(CW)}╦${'═'.repeat(CW)}╗`;
+  const sep = `╠${'═'.repeat(EW+2)}╬${'═'.repeat(CW)}╬${'═'.repeat(CW)}╣`;
+  const bot = `╚${'═'.repeat(EW+2)}╩${'═'.repeat(CW)}╩${'═'.repeat(CW)}╝`;
+  const lbl = `║ ${''.padEnd(EW)} ║${' Spring Boot'.padEnd(CW)}║${' Express'.padEnd(CW)}║`;
+  const hdr = `║ ${'Endpoint'.padEnd(EW)} ║${' P50    P95    P99    MAX '.padEnd(CW)}║${' P50    P95    P99    MAX '.padEnd(CW)}║`;
+  const row = (label, sk, ek) =>
+    `║ ${label.padEnd(EW)} ║ ${col(sk)} ║ ${col(ek)} ║`;
 
   return `
 ${top}
-║${' LATENCY SUMMARY (ms)'.padEnd(W+36)}║
-${div}
+${lbl}
 ${hdr}
-${div}
-${row('/api/health',                   'endpoint_health_duration')}
-${row('/api/branches',                 'endpoint_branches_duration')}
-${row('/api/rooms',                    'endpoint_rooms_duration')}
-${row('/api/zones',                    'endpoint_zones_duration')}
-${row('/api/bed',                      'endpoint_beds_duration')}
-${row('/api/default-handover-items',   'endpoint_default_handover_items_duration')}
-${div}
-${row('/api/viewing-appointments',     'endpoint_viewing_appointments_duration')}
-${row('/api/rental-requests',          'endpoint_rental_requests_duration')}
-${row('/api/my-bookings',              'endpoint_my_bookings_duration')}
-${row('/api/lodging-eligibility',      'endpoint_lodging_eligibility_duration')}
-${div}
-${row('/api/deposits',                 'endpoint_deposits_duration')}
-${row('/api/payments',                 'endpoint_payments_duration')}
-${row('/api/contracts',                'endpoint_contracts_duration')}
-${div}
-${row('/api/handovers',                'endpoint_handovers_duration')}
-${row('/api/disputes',                 'endpoint_disputes_duration')}
-${row('/api/checkout-requests',        'endpoint_checkout_requests_duration')}
-${div}
-${row('/api/users',                    'endpoint_users_duration')}
+${sep}
+${row('/api/health',                 'spring_health',              'express_health')}
+${row('/api/branches',               'spring_branches',            'express_branches')}
+${row('/api/rooms',                  'spring_rooms',               'express_rooms')}
+${row('/api/zones',                  'spring_zones',               'express_zones')}
+${row('/api/bed',                    'spring_beds',                'express_beds')}
+${row('/api/default-handover-items', 'spring_default_handover',    'express_default_handover')}
+${sep}
+${row('/api/viewing-appointments',   'spring_viewing_appts',       'express_viewing_appts')}
+${row('/api/rental-requests',        'spring_rental_requests',     'express_rental_requests')}
+${row('/api/my-bookings',            'spring_my_bookings',         'express_my_bookings')}
+${row('/api/lodging-eligibility',    'spring_lodging_eligibility', 'express_lodging_eligibility')}
+${sep}
+${row('/api/deposits',               'spring_deposits',            'express_deposits')}
+${row('/api/payments',               'spring_payments',            'express_payments')}
+${row('/api/contracts',              'spring_contracts',           'express_contracts')}
+${sep}
+${row('/api/handovers',              'spring_handovers',           'express_handovers')}
+${row('/api/disputes',               'spring_disputes',            'express_disputes')}
+${row('/api/checkout-requests',      'spring_checkout_requests',   'express_checkout_requests')}
+${sep}
+${row('/api/users',                  'spring_users',               'express_users')}
 ${bot}
 
-  Total requests : ${data.metrics.http_reqs?.values?.count ?? 0}
-  5xx error rate : ${((data.metrics.endpoint_errors?.values?.rate ?? 0) * 100).toFixed(2)}%
-  Test duration  : ${Math.round((data.state?.testRunDurationMs ?? 0) / 1000)}s
+  Spring Boot error rate : ${((m['spring_errors']?.values?.rate  ?? 0) * 100).toFixed(2)}%
+  Express     error rate : ${((m['express_errors']?.values?.rate ?? 0) * 100).toFixed(2)}%
+  Total requests         : ${m.http_reqs?.values?.count ?? 0}
+  Test duration          : ${Math.round((data.state?.testRunDurationMs ?? 0) / 1000)}s
 `;
 }

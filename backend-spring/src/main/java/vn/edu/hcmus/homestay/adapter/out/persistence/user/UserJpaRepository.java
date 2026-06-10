@@ -1,5 +1,7 @@
 package vn.edu.hcmus.homestay.adapter.out.persistence.user;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,8 @@ import vn.edu.hcmus.homestay.domain.model.user.UserStatus;
 interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findByEmail(String email);
+
+    List<UserEntity> findAllByIdIn(Collection<UUID> ids);
 
     boolean existsByEmail(String email);
 

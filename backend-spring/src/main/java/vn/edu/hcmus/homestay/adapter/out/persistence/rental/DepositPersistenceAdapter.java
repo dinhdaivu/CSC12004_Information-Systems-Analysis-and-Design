@@ -34,7 +34,7 @@ class DepositPersistenceAdapter implements LoadDepositPort, SaveDepositPort {
     @Override
     public List<DepositRequest> loadPendingExpired(Instant now) {
         return jpaRepository
-                .findByStatusAndDueAtBefore(DepositStatus.PENDING, now)
+                .findByStatusAndDueAtBefore(DepositStatus.PENDING.name().toLowerCase(), now)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();

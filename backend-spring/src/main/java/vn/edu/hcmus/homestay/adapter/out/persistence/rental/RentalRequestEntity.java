@@ -6,7 +6,9 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
+import vn.edu.hcmus.homestay.domain.model.rental.RentalMode;
 import vn.edu.hcmus.homestay.domain.model.rental.RentalRequestStatus;
 
 @Entity
@@ -28,10 +30,10 @@ public class RentalRequestEntity extends BaseEntity {
     @Column(name = "preferred_room_type")
     private String preferredRoomType;
 
-    @Column(name = "budget_min", precision = 12, scale = 2, nullable = true)
+    @Column(name = "budget_min", precision = 12, scale = 2)
     private BigDecimal budgetMin;
 
-    @Column(name = "budget_max", precision = 12, scale = 2, nullable = true)
+    @Column(name = "budget_max", precision = 12, scale = 2)
     private BigDecimal budgetMax;
 
     @Column(name = "people_count", nullable = false)
@@ -44,83 +46,84 @@ public class RentalRequestEntity extends BaseEntity {
     @Column(name = "status", nullable = false)
     private RentalRequestStatus status = RentalRequestStatus.REQUESTED;
 
-    public UUID getCustomerId() {
-        return customerId;
-    }
+    // ── UC1 enrichment fields (migration 007) ────────────────────────────────
 
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
+    @Convert(converter = RentalModeConverter.class)
+    @Column(name = "rental_mode")
+    private RentalMode rentalMode;
 
-    public UUID getBranchId() {
-        return branchId;
-    }
+    @Column(name = "preferred_gender")
+    private String preferredGender;
 
-    public void setBranchId(UUID branchId) {
-        this.branchId = branchId;
-    }
+    @Column(name = "expected_move_in_date", columnDefinition = "date")
+    private LocalDate expectedMoveInDate;
 
-    public UUID getRoomId() {
-        return roomId;
-    }
+    @Column(name = "rental_duration_months")
+    private Integer rentalDurationMonths;
 
-    public void setRoomId(UUID roomId) {
-        this.roomId = roomId;
-    }
+    @Column(name = "prefers_quiet", nullable = false)
+    private boolean prefersQuiet = false;
 
-    public UUID getBedId() {
-        return bedId;
-    }
+    @Column(name = "needs_parking", nullable = false)
+    private boolean needsParking = false;
 
-    public void setBedId(UUID bedId) {
-        this.bedId = bedId;
-    }
+    @Column(name = "needs_air_conditioner", nullable = false)
+    private boolean needsAirConditioner = false;
 
-    public String getPreferredRoomType() {
-        return preferredRoomType;
-    }
+    @Column(name = "schedule_note")
+    private String scheduleNote;
 
-    public void setPreferredRoomType(String preferredRoomType) {
-        this.preferredRoomType = preferredRoomType;
-    }
+    public UUID getCustomerId() { return customerId; }
+    public void setCustomerId(UUID customerId) { this.customerId = customerId; }
 
-    public BigDecimal getBudgetMin() {
-        return budgetMin;
-    }
+    public UUID getBranchId() { return branchId; }
+    public void setBranchId(UUID branchId) { this.branchId = branchId; }
 
-    public void setBudgetMin(BigDecimal budgetMin) {
-        this.budgetMin = budgetMin;
-    }
+    public UUID getRoomId() { return roomId; }
+    public void setRoomId(UUID roomId) { this.roomId = roomId; }
 
-    public BigDecimal getBudgetMax() {
-        return budgetMax;
-    }
+    public UUID getBedId() { return bedId; }
+    public void setBedId(UUID bedId) { this.bedId = bedId; }
 
-    public void setBudgetMax(BigDecimal budgetMax) {
-        this.budgetMax = budgetMax;
-    }
+    public String getPreferredRoomType() { return preferredRoomType; }
+    public void setPreferredRoomType(String preferredRoomType) { this.preferredRoomType = preferredRoomType; }
 
-    public int getPeopleCount() {
-        return peopleCount;
-    }
+    public BigDecimal getBudgetMin() { return budgetMin; }
+    public void setBudgetMin(BigDecimal budgetMin) { this.budgetMin = budgetMin; }
 
-    public void setPeopleCount(int peopleCount) {
-        this.peopleCount = peopleCount;
-    }
+    public BigDecimal getBudgetMax() { return budgetMax; }
+    public void setBudgetMax(BigDecimal budgetMax) { this.budgetMax = budgetMax; }
 
-    public String getNote() {
-        return note;
-    }
+    public int getPeopleCount() { return peopleCount; }
+    public void setPeopleCount(int peopleCount) { this.peopleCount = peopleCount; }
 
-    public void setNote(String note) {
-        this.note = note;
-    }
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
 
-    public RentalRequestStatus getStatus() {
-        return status;
-    }
+    public RentalRequestStatus getStatus() { return status; }
+    public void setStatus(RentalRequestStatus status) { this.status = status; }
 
-    public void setStatus(RentalRequestStatus status) {
-        this.status = status;
-    }
+    public RentalMode getRentalMode() { return rentalMode; }
+    public void setRentalMode(RentalMode rentalMode) { this.rentalMode = rentalMode; }
+
+    public String getPreferredGender() { return preferredGender; }
+    public void setPreferredGender(String preferredGender) { this.preferredGender = preferredGender; }
+
+    public LocalDate getExpectedMoveInDate() { return expectedMoveInDate; }
+    public void setExpectedMoveInDate(LocalDate expectedMoveInDate) { this.expectedMoveInDate = expectedMoveInDate; }
+
+    public Integer getRentalDurationMonths() { return rentalDurationMonths; }
+    public void setRentalDurationMonths(Integer rentalDurationMonths) { this.rentalDurationMonths = rentalDurationMonths; }
+
+    public boolean isPrefersQuiet() { return prefersQuiet; }
+    public void setPrefersQuiet(boolean prefersQuiet) { this.prefersQuiet = prefersQuiet; }
+
+    public boolean isNeedsParking() { return needsParking; }
+    public void setNeedsParking(boolean needsParking) { this.needsParking = needsParking; }
+
+    public boolean isNeedsAirConditioner() { return needsAirConditioner; }
+    public void setNeedsAirConditioner(boolean needsAirConditioner) { this.needsAirConditioner = needsAirConditioner; }
+
+    public String getScheduleNote() { return scheduleNote; }
+    public void setScheduleNote(String scheduleNote) { this.scheduleNote = scheduleNote; }
 }

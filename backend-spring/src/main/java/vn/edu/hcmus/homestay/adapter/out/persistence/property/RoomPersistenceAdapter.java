@@ -1,5 +1,6 @@
 package vn.edu.hcmus.homestay.adapter.out.persistence.property;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +33,11 @@ class RoomPersistenceAdapter implements LoadRoomPort, SaveRoomPort {
     @Override
     public Optional<Room> loadById(UUID id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Room> loadByIds(Collection<UUID> ids) {
+        return jpaRepository.findAllByIdIn(ids).stream().map(mapper::toDomain).toList();
     }
 
     @Override

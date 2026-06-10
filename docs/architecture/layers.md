@@ -151,7 +151,20 @@ COMPLETED  — room returned, deposit settled
 
 ---
 
-## Express.js Mapping
+## Spring Boot Mapping (hexagonal / ports-and-adapters)
+
+| BCE | Spring Boot |
+| --- | --- |
+| `<<boundary>>` | `adapter/in/web/` — REST controllers + DTOs; receives HTTP |
+| `<<control>>` | `application/service/` — use-case implementations; pure business logic |
+| `<<entity>>` | `domain/model/` — pure Java domain objects; zero framework dependencies |
+| `SchedulerController` | `@Scheduled` in `adapter/in/scheduler/` |
+
+Dependency rule: `adapter → application → domain` — outer layers depend on inner; `domain/` has no Spring or JPA imports.
+
+---
+
+## Express.js Mapping (legacy)
 
 | BCE | Express.js |
 | --- | --- |
