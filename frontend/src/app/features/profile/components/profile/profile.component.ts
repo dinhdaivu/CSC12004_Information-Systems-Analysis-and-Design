@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { timeout } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@shared/components';
 import { AuthService } from '@core/services/auth.service';
 import type { User } from '@shared/models/auth.model';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule, TranslateModule],
+  imports: [FormsModule, TranslateModule, LanguageSwitcherComponent],
   styles: [`
     :host { display: block; }
     .page-text { font-family: Afacad, Arial, sans-serif; }
@@ -135,14 +136,9 @@ import type { User } from '@shared/models/auth.model';
           </div>
 
           <!-- Language switcher -->
-          <img (click)="toggleLangMenu()" class="clickable" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; z-index: 50;" src="assets/icons/Globe.png" alt="" />
-          @if (isLangMenuOpen) {
-            <div style="position: absolute; left: 1550px; top: 180px; width: 192px; overflow: hidden; border-radius: 10px; border: 1px solid rgba(2,6,23,0.08); background: white; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),0 8px 10px -6px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 100; font-family: Afacad, sans-serif;">
-              <button (click)="changeLang('vi')" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #334155; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">Tiếng Việt</button>
-              <div style="height: 1px; background: #f1f5f9;"></div>
-              <button (click)="changeLang('en')" class="page-text" style="width: 100%; padding: 10px 16px; font-size: 18px; font-weight: 600; color: #334155; background: transparent; border: none; cursor: pointer; text-align: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">English</button>
-            </div>
-          }
+          <div style="position: absolute; left: 1620px; top: 95px; z-index: 50;">
+            <app-language-switcher tone="dark" size="hero" />
+          </div>
 
           <!-- User menu -->
           <img (click)="toggleUserMenu()" class="clickable" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; z-index: 50;" src="assets/icons/Account.png" alt="" />
@@ -268,7 +264,6 @@ export class ProfileComponent {
   private readonly authService = inject(AuthService);
 
   scaleFactor = 1;
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   isEditMode = false;
   showConfirmDialog = false;
@@ -314,19 +309,8 @@ export class ProfileComponent {
     this.router.navigate([path]);
   }
 
-  toggleLangMenu(): void {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
   }
 
   logout(): void {

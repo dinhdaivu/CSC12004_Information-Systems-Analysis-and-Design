@@ -50,21 +50,9 @@ describe('ProfileComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/home']);
   });
 
-  it('should toggle lang menu', () => {
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBe(true);
-    expect(component.isUserMenuOpen).toBe(false);
-  });
-
   it('should toggle user menu', () => {
     component.toggleUserMenu();
     expect(component.isUserMenuOpen).toBe(true);
-    expect(component.isLangMenuOpen).toBe(false);
-  });
-
-  it('should change lang', () => {
-    component.changeLang('vi');
-    expect(component.isLangMenuOpen).toBe(false);
   });
 
   it('should logout', () => {

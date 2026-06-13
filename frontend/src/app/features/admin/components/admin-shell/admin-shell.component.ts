@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@core/services/auth.service';
 import { Subject } from 'rxjs';
+import { LanguageSwitcherComponent } from '@shared/components';
 import { filter, takeUntil } from 'rxjs/operators';
 
 type NavItem = {
@@ -35,7 +36,7 @@ const UNION_MAP: [string, string][] = [
 @Component({
   selector: 'app-admin-shell',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, LanguageSwitcherComponent],
   styles: [`
     .hover-effect { transition: all 0.2s ease-in-out; cursor: pointer; }
     .hover-effect:hover { opacity: 0.9; }
@@ -93,10 +94,8 @@ const UNION_MAP: [string, string][] = [
             {{ 'COMMON.CONTACT' | translate }}
           </div>
 
-          <img (click)="toggleLangMenu()" class="hover-effect" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
-          <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
-            <div (click)="changeLang('en')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ 'COMMON.ENGLISH' | translate }}</div>
-            <div (click)="changeLang('vi')" class="hover-effect" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ 'COMMON.VIETNAMESE' | translate }}</div>
+          <div style="position: absolute; left: 1620px; top: 95px; z-index: 50;">
+            <app-language-switcher tone="dark" size="hero" />
           </div>
 
           <img (click)="toggleUserMenu()" class="hover-effect" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Account.png" />
@@ -122,12 +121,10 @@ const UNION_MAP: [string, string][] = [
 })
 export class AdminShellComponent implements OnInit, OnDestroy {
   scaleFactor = 1;
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   currentUrl = '';
 
   private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
   private readonly authService = inject(AuthService);
   private readonly destroy$ = new Subject<void>();
 
@@ -182,19 +179,8 @@ export class AdminShellComponent implements OnInit, OnDestroy {
     this.scaleFactor = Math.min(window.innerWidth / 1920, 1);
   }
 
-  toggleLangMenu(): void {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
   }
 
   navigate(path: string): void {

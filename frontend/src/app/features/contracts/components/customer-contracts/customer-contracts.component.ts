@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@shared/components';
 import * as QRCode from 'qrcode';
 import { AuthService } from '@core/services/auth.service';
 import { CheckoutService, SettlementDTO } from '@core/services/checkout.service';
@@ -32,7 +33,7 @@ interface AssetGroup {
 @Component({
   selector: 'app-customer-contracts',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, LanguageSwitcherComponent],
   styles: [`
     :host { display: block; }
     .page-text { font-family: Afacad, Arial, sans-serif; letter-spacing: 0; }
@@ -156,10 +157,8 @@ interface AssetGroup {
           <div (click)="navigate('/guidelines')" class="page-text clickable" style="width: 152px; height: 53px; left: 1238px; top: 110px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.GUIDELINES' | translate }}</div>
           <div (click)="navigate('/contact')" class="page-text clickable" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; display: flex; flex-direction: column; justify-content: center; color: #264893; font-size: 32px; font-weight: 600; z-index: 50;">{{ 'COMMON.CONTACT' | translate }}</div>
 
-          <img (click)="toggleLangMenu()" class="clickable" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; z-index: 50;" src="assets/icons/Globe.png" alt="" />
-          <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
-            <div (click)="changeLang('en')" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #264893; font-size: 24px;">{{ 'COMMON.ENGLISH' | translate }}</div>
-            <div (click)="changeLang('vi')" class="page-text clickable" style="padding: 8px 16px; font-style: italic; color: #264893; font-size: 24px;">{{ 'COMMON.VIETNAMESE' | translate }}</div>
+          <div style="position: absolute; left: 1620px; top: 95px; z-index: 50;">
+            <app-language-switcher tone="dark" size="hero" />
           </div>
 
           <img (click)="toggleUserMenu()" class="clickable" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; z-index: 50;" src="assets/icons/Account.png" alt="" />
@@ -498,7 +497,6 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
 
   scaleFactor = 1;
   screen: ContractScreen = 'residency';
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   showSignatureModal = false;
   showImageModal = false;
@@ -640,19 +638,8 @@ export class CustomerContractsComponent implements OnInit, OnDestroy {
     this.router.navigate([path]);
   }
 
-  toggleLangMenu(): void {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
   }
 
   logout(): void {

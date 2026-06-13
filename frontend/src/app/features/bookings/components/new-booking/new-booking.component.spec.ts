@@ -168,24 +168,9 @@ describe('NewBookingComponent', () => {
     expect(component.errorMessage).toContain('Room is fully booked');
   });
 
-  it('should toggle language menu and change language', () => {
-    const translateSpy = jest.spyOn(component['translate'], 'use');
-
-    // Mở menu
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBeTruthy();
-    expect(component.isUserMenuOpen).toBeFalsy(); // User menu phải đóng
-
-    // Đổi ngôn ngữ sang tiếng Anh
-    component.changeLang('en');
-    expect(translateSpy).toHaveBeenCalledWith('en');
-    expect(component.isLangMenuOpen).toBeFalsy(); // Menu lang phải đóng sau khi chọn
-  });
-
   it('should toggle user menu', () => {
     component.toggleUserMenu();
     expect(component.isUserMenuOpen).toBeTruthy();
-    expect(component.isLangMenuOpen).toBeFalsy();
   });
 
   it('should navigate', () => {

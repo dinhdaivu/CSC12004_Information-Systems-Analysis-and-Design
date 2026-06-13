@@ -1,14 +1,15 @@
 import { Component, OnInit, HostListener, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@core/services/auth.service';
 import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.component';
+import { LanguageSwitcherComponent } from '@shared/components';
 
 @Component({
   selector: 'app-guidelines',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ChatWidgetComponent],
+  imports: [CommonModule, TranslateModule, ChatWidgetComponent, LanguageSwitcherComponent],
   template: `
     <div [style.height.px]="3564 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: white;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 3564px;">
@@ -79,15 +80,8 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
             </div>
           </div>
 
-          <div class="relative" style="position: absolute; left: 1620px; top: 95px; z-index: 60;">
-            <button type="button" (click)="toggleLangMenu()" class="inline-flex h-[75px] w-[75px] items-center justify-center rounded-full transition hover:opacity-85">
-              <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
-            </button>
-            <div *ngIf="isLangMenuOpen" class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
-              <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
-              <div class="h-px bg-slate-100"></div>
-              <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
-            </div>
+          <div style="position: absolute; left: 1620px; top: 95px; z-index: 60;">
+            <app-language-switcher tone="dark" size="hero" />
           </div>
 
           <div class="relative" style="position: absolute; left: 1710px; top: 95px; z-index: 60;">
@@ -116,12 +110,10 @@ import { ChatWidgetComponent } from '@shared/components/chat-widget/chat-widget.
 })
 export class GuidelinesComponent implements OnInit {
   scaleFactor = 1;
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
 
   private router = inject(Router);
-  private translate = inject(TranslateService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -139,21 +131,9 @@ export class GuidelinesComponent implements OnInit {
     this.router.navigate([path]);
   }
 
-  toggleLangMenu() {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-    this.cdr.detectChanges();
-  }
-
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
     this.cdr.detectChanges();
-  }
-
-  changeLang(lang: string) {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
   }
 
   logout(): void {

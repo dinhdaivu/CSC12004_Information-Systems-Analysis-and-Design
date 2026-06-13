@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener, inject, ChangeDetectorRef }
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@shared/components';
 import { SharedFacility, RoomData, RoomType, BranchDetail } from '../../../../shared/models/branch.model';
 import { BranchService } from '../../../../core/services/branch.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -9,7 +10,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 @Component({
   selector: 'app-room-detail',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, LanguageSwitcherComponent],
   template: `
     <div class="relative w-full overflow-hidden bg-[#FEF4DF]" [style.height.px]="4913 * scaleFactor" *ngIf="!isLoading && branchDetail; else loadingOrError">
       
@@ -218,13 +219,8 @@ import { AuthService } from '../../../../core/services/auth.service';
         <div class="hover-text" style="width: 126px; left: 1076px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.HERO.ABOUT' | translate }}</div>
         <div class="hover-text" style="width: 135px; left: 1436px; top: 100px; position: absolute; color: white; font-size: 32px; font-family: Afacad; font-weight: 600; cursor: pointer; z-index: 10;">{{ 'NAV.HERO.CONTACT' | translate }}</div>
         
-        <div (click)="toggleLangMenu()" tabindex="0" (blur)="closeMenusDelay()" class="hover-scale" style="width: 75px; height: 75px; left: 1625px; top: 85px; position: absolute; cursor: pointer; outline: none; z-index: 60;">
-          <img style="width: 100%; height: 100%; border-radius: 50%;" src="assets/icons/earth.png" (error)="onImageError($event, 'https://placehold.co/75x75/000/FFF?text=EN/VI')"/>
-        </div>
-        <div *ngIf="isLangMenuOpen" class="glass-menu animate-fade-in" style="position: absolute; left: 1560px; top: 170px; width: 200px; z-index: 61;">
-          <div (mousedown)="changeLang('vi')" class="menu-item">{{ 'COMMON.VIETNAMESE' | translate }}</div>
-          <div style="height: 1px; background: rgba(255, 255, 255, 0.2); margin: 5px 15px;"></div>
-          <div (mousedown)="changeLang('en')" class="menu-item">{{ 'COMMON.ENGLISH' | translate }}</div>
+        <div style="position: absolute; left: 1625px; top: 85px; z-index: 60;">
+          <app-language-switcher tone="dark" size="hero" />
         </div>
 
         <div (click)="toggleUserMenu()" tabindex="0" (blur)="closeMenusDelay()" class="hover-scale" style="width: 70px; height: 70px; left: 1755px; top: 90px; position: absolute; cursor: pointer; outline: none; z-index: 60;">
@@ -319,7 +315,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   errorMessage = '';
 
   isTransitioning = false;
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
 
@@ -517,27 +512,13 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   goHome(): void { this.router.navigate(['/']); }
 
-  toggleLangMenu(): void {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-    this.cdr.detectChanges();
-  }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
-    this.cdr.detectChanges();
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
     this.cdr.detectChanges();
   }
 
   closeMenusDelay(): void {
     window.setTimeout(() => {
-      this.isLangMenuOpen = false;
       this.isUserMenuOpen = false;
       this.cdr.detectChanges();
     }, 200);

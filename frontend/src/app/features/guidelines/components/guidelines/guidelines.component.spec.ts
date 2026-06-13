@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GuidelinesComponent } from './guidelines.component';
 import { Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@core/services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { of } from 'rxjs';
@@ -44,26 +44,10 @@ describe('GuidelinesComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/test']);
   });
 
-  it('should toggle lang menu', () => {
-    component.isLangMenuOpen = false;
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBe(true);
-    expect(component.isUserMenuOpen).toBe(false);
-  });
-
   it('should toggle user menu', () => {
     component.isUserMenuOpen = false;
     component.toggleUserMenu();
     expect(component.isUserMenuOpen).toBe(true);
-    expect(component.isLangMenuOpen).toBe(false);
-  });
-
-  it('should change lang', () => {
-    const translate = TestBed.inject(TranslateService);
-    jest.spyOn(translate, 'use');
-    component.changeLang('en');
-    expect(translate.use).toHaveBeenCalledWith('en');
-    expect(component.isLangMenuOpen).toBe(false);
   });
 
   it('should logout', () => {

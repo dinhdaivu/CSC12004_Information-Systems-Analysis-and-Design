@@ -92,25 +92,9 @@ describe('BookingsListComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/bookings/1']);
   });
 
-  it('should toggle lang menu and close user menu', () => {
-    component.isUserMenuOpen = true;
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBe(true);
-    expect(component.isUserMenuOpen).toBe(false);
-  });
-
-  it('should toggle user menu and close lang menu', () => {
-    component.isLangMenuOpen = true;
+  it('should toggle user menu', () => {
     component.toggleUserMenu();
     expect(component.isUserMenuOpen).toBe(true);
-    expect(component.isLangMenuOpen).toBe(false);
-  });
-
-  it('should change language', () => {
-    const translateSpy = jest.spyOn(component['translate'], 'use');
-    component.changeLang('vi');
-    expect(translateSpy).toHaveBeenCalledWith('vi');
-    expect(component.isLangMenuOpen).toBe(false);
   });
 
   it('should logout and navigate to login', () => {

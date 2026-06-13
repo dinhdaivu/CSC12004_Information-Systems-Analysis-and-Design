@@ -107,30 +107,10 @@ describe('RoomDetailComponent', () => {
     expect(() => component.stopAutoPlay()).not.toThrow();
   });
 
-  it('should toggle lang menu', () => {
-    component.isLangMenuOpen = false;
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBe(true);
-    component.toggleLangMenu();
-    expect(component.isLangMenuOpen).toBe(false);
-  });
-
-  it('should close user menu when opening lang menu', () => {
-    component.isUserMenuOpen = true;
-    component.toggleLangMenu();
-    expect(component.isUserMenuOpen).toBe(false);
-  });
-
   it('should toggle user menu', () => {
     component.isUserMenuOpen = false;
     component.toggleUserMenu();
     expect(component.isUserMenuOpen).toBe(true);
-  });
-
-  it('should close lang menu when opening user menu', () => {
-    component.isLangMenuOpen = true;
-    component.toggleUserMenu();
-    expect(component.isLangMenuOpen).toBe(false);
   });
 
   it('should not change image src when already fallback', () => {
@@ -187,20 +167,11 @@ describe('RoomDetailComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['/']);
   });
 
-  it('should change lang', () => {
-    const translateSpy = jest.spyOn(component['translate'], 'use');
-    component.changeLang('en');
-    expect(translateSpy).toHaveBeenCalledWith('en');
-    expect(component.isLangMenuOpen).toBe(false);
-  });
-
   it('should close menus with delay', () => {
     jest.useFakeTimers();
-    component.isLangMenuOpen = true;
     component.isUserMenuOpen = true;
     component.closeMenusDelay();
     jest.advanceTimersByTime(200);
-    expect(component.isLangMenuOpen).toBe(false);
     expect(component.isUserMenuOpen).toBe(false);
     jest.useRealTimers();
   });

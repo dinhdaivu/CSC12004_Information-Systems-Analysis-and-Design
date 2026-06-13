@@ -114,8 +114,8 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
     }
 
     .language-switcher--hero .language-switcher__trigger {
-      width: clamp(3.5rem, 6.48vh, 4.375rem);
-      height: clamp(3.5rem, 6.48vh, 4.375rem);
+      width: 60px;
+      height: 60px;
       border: 0;
       background: transparent;
     }
@@ -124,7 +124,7 @@ import { LanguageService, SupportedLanguage } from '@core/i18n/language.service'
       font-size: clamp(1.7rem, 2.03vw, 2.45rem);
     }
 
-    .language-switcher__hero-image {
+    .language-switcher--hero .language-switcher__trigger img {
       width: 100%;
       height: 100%;
       object-fit: contain;
