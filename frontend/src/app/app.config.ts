@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
-// import { errorInterceptor } from '@core/interceptors/error.interceptor';
+import { errorInterceptor } from '@core/interceptors/error.interceptor';
 
 export function httpLoaderFactory(http: HttpClient): TranslateLoader {
   return {
@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, errorInterceptor])
     ),
     importProvidersFrom(
       TranslateModule.forRoot({
