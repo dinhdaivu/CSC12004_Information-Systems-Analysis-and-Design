@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from '@shared/components';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
@@ -37,7 +38,7 @@ interface RoomItem {
 @Component({
   selector: 'app-rooms-list',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterModule, FormsModule],
+  imports: [CommonModule, TranslateModule, RouterModule, FormsModule, LanguageSwitcherComponent],
   template: `
     <div [style.height.px]="1080 * scaleFactor" style="width: 100%; overflow: hidden; position: relative; background: #FEF4DF;">
       <div [style.transform]="'scale(' + scaleFactor + ')'" style="position: absolute; top: 0; left: 0; transform-origin: top left; width: 1920px; height: 1080px;">
@@ -52,10 +53,8 @@ interface RoomItem {
           <div (click)="navigate('/about')" style="width: 126px; height: 53px; left: 1071px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.ABOUT_US' | translate }}</div>
           <div (click)="navigate('/contact')" style="width: 135px; height: 53px; left: 1431px; top: 110px; position: absolute; justify-content: center; display: flex; flex-direction: column; color: #264893; font-size: 32px; font-family: Afacad; font-weight: 600; word-wrap: break-word; cursor: pointer;">{{ 'COMMON.CONTACT' | translate }}</div>
 
-          <img (click)="toggleLangMenu()" style="width: 75px; height: 75px; left: 1620px; top: 95px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Globe.png" />
-          <div *ngIf="isLangMenuOpen" style="position: absolute; left: 1550px; top: 180px; width: 192px; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; padding: 8px 0; z-index: 100;">
-            <div (click)="changeLang('en')" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ 'COMMON.ENGLISH' | translate }}</div>
-            <div (click)="changeLang('vi')" style="padding: 8px 16px; font-family: Afacad; font-style: italic; color: #264893; font-size: 24px; cursor: pointer;">{{ 'COMMON.VIETNAMESE' | translate }}</div>
+          <div style="position: absolute; left: 1620px; top: 95px; z-index: 50;">
+            <app-language-switcher tone="dark" size="hero" />
           </div>
 
           <img (click)="toggleUserMenu()" style="width: 70px; height: 70px; left: 1750px; top: 100px; position: absolute; cursor: pointer; z-index: 50;" src="assets/icons/Account.png" />
@@ -290,7 +289,6 @@ export class RoomsListComponent implements OnInit {
   step: 'room' | 'bed' = 'room';
 
   // Menu state
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   isAuthenticated = false;
 
@@ -581,20 +579,8 @@ export class RoomsListComponent implements OnInit {
     return '#92DD9D';
   }
 
-  toggleLangMenu() {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
-  }
-
-  changeLang(lang: string) {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
-    this.cdr.detectChanges();
   }
 
   logout(): void {

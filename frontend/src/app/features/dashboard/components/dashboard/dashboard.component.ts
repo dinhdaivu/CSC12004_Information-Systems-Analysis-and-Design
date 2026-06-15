@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { BranchService } from '@core/services/branch.service';
+import { LanguageSwitcherComponent } from '@shared/components';
 import { AuthService } from '@core/services/auth.service';
 import { Branch } from '@shared/models/branch.model';
 
@@ -34,7 +35,7 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule, LanguageSwitcherComponent],
   template: `
     @if (isLoading) {
       <div class="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-6" style="background: #fef4df;">
@@ -60,18 +61,7 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
             <i class="bi" [class.bi-list]="!isMobileMenuOpen" [class.bi-x-lg]="isMobileMenuOpen"></i>
           </button>
           
-          <div class="relative">
-            <button type="button" (click)="toggleLangMenu()" class="inline-flex h-[clamp(3rem,3.9vw,4.6875rem)] w-[clamp(3rem,3.9vw,4.6875rem)] items-center justify-center rounded-full transition hover:opacity-85">
-              <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
-            </button>
-            @if (isLangMenuOpen) {
-              <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
-                <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
-                <div class="h-px bg-slate-100"></div>
-                <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
-              </div>
-            }
-          </div>
+          <app-language-switcher tone="dark" />
 
           <div class="relative">
             <button type="button" (click)="toggleUserMenu()" aria-label="Open user menu" class="inline-flex h-[clamp(3rem,3.9vw,4.6875rem)] w-[clamp(3rem,3.9vw,4.6875rem)] items-center justify-center rounded-full transition hover:opacity-85">
@@ -106,18 +96,7 @@ const BRANCH_VISUAL_PRESETS: BranchVisualPreset[] = [
             <a routerLink="/contact" routerLinkActive="border-b-2 border-white" class="font-['Afacad'] text-[clamp(1.55rem,2.96vh,2rem)] font-semibold leading-[1.34375] text-white transition hover:text-sky-200 pb-0.5"> {{ 'NAV.HERO.CONTACT' | translate }} </a>
           </nav>
           <div class="flex items-center gap-[clamp(0.9rem,1.8vh,1.35rem)]">
-            <div class="relative">
-              <button type="button" (click)="toggleLangMenu()" class="inline-flex h-[clamp(3.5rem,6.48vh,4.375rem)] w-[clamp(3.5rem,6.48vh,4.375rem)] items-center justify-center rounded-full transition hover:opacity-85">
-                <img src="assets/icons/language.svg" class="h-full w-full object-contain" alt="Language">
-              </button>
-              @if (isLangMenuOpen) {
-                <div class="absolute right-0 top-[calc(100%+0.5rem)] w-40 overflow-hidden rounded-[10px] border border-slate-950/[0.08] bg-white shadow-xl z-[60] font-['Afacad']">
-                  <button (click)="changeLang('vi')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">Tiếng Việt</button>
-                  <div class="h-px bg-slate-100"></div>
-                  <button (click)="changeLang('en')" class="w-full text-center px-4 py-2.5 text-[1.1rem] font-semibold hover:bg-slate-50 text-slate-700">English</button>
-                </div>
-              }
-            </div>
+            <app-language-switcher tone="dark" size="hero" />
             <div class="relative">
               <button type="button" (click)="toggleUserMenu()" aria-label="Open user menu" class="inline-flex h-[clamp(3.5rem,6.48vh,4.375rem)] w-[clamp(3.5rem,6.48vh,4.375rem)] items-center justify-center rounded-full transition hover:opacity-85">
                 <img src="assets/icons/account.svg" aria-hidden="true" class="h-full w-full object-contain">
@@ -246,9 +225,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
-
-  isLangMenuOpen = false;
   isUserMenuOpen = false;
   isMobileMenuOpen = false;
   isAuthenticated = false;
@@ -449,23 +425,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .toLowerCase();
   }
 
-  toggleLangMenu(): void {
-    this.isLangMenuOpen = !this.isLangMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isLangMenuOpen = false;
   }
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
-    this.isLangMenuOpen = false;
   }
 
   logout(): void {

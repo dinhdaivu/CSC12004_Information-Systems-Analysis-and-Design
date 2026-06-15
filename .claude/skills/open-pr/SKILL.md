@@ -23,7 +23,7 @@ base branch `main`, PR template `.github/pull_request_template.md`.
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)   # must not be main
 ```
-- Linked issue: parse `#<n>` from the branch (e.g. `chore/#72-...` → 72); else ask.
+- Linked issue: parse `#<n>` from the branch (e.g. `refactor/#108-...` → 108, `feat/#84-...` → 84); else ask.
 - Push if needed: `git push -u origin "$BRANCH"`.
 - Verify auth: `gh auth status` (stop with `gh auth login` if not authed).
 
@@ -71,13 +71,24 @@ Get a go-ahead. Then:
 
 > ⚠️ **Always strip YAML frontmatter before `--body-file`** — passing the raw
 > `draft-pr.md` puts the `---…---` block at the top of the GitHub PR description
-> as raw text. The `awk` below strips it.
+> as raw text.
 
+**Windows (PowerShell — primary shell on this machine):**
+```powershell
+$REPO = "dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design"
+$content = Get-Content ".claude/drafts/draft-pr.md" -Raw
+$body = $content -replace '(?s)^---.*?---\r?\n', ''
+$tmp = "$env:TEMP\pr-body.md"; $body | Out-File $tmp -Encoding utf8
+gh pr create --repo $REPO --base main --head "$BRANCH" `
+  --title "<title>" --body-file $tmp --label "<label>"
+Remove-Item $tmp -Force
+```
+
+**Bash fallback:**
 ```bash
 REPO="dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design"
 tmp=$(mktemp)
-awk 'BEGIN{fm=0} /^---[[:space:]]*$/{fm++; next} fm>=2{print}' \
-  .claude/drafts/draft-pr.md > "$tmp"
+sed '1{/^---/!q};/^---/,/^---/d' .claude/drafts/draft-pr.md > "$tmp"
 gh pr create --repo "$REPO" --base main --head "$BRANCH" \
   --title "<title>" --body-file "$tmp" --label "<label>"
 rm -f "$tmp"

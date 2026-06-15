@@ -41,7 +41,8 @@ If not authenticated, stop and tell the user to run `gh auth login`.
   | `[Bug]` | Bug | `IT_kwDOD063PM4B1s2P` |
   | `[Feature]` | Feature | `IT_kwDOD063PM4B1s2Q` |
 
-  (Re-probe if ids change: `gh api graphql -f query='{repository(owner:"dinhdaivu",name:"CSC12004_Information-Systems-Analysis-and-Design"){issueTypes(first:10){nodes{name id}}}}'`)
+  (Re-probe if ids change — use variable substitution to avoid parse errors with the hyphenated repo name:
+  `gh api graphql --field query='query($o:String!,$r:String!){repository(owner:$o,name:$r){issueTypes(first:10){nodes{name id}}}}' -f o=dinhdaivu -f r='CSC12004_Information-Systems-Analysis-and-Design'`)
 - **Labels** — use the frontmatter label. `task`, `bug`, `enhancement`,
   `documentation`, `question`, `dependencies`, `javascript` exist. Map
   `[Feature]`→`enhancement`, `[Bug]`→`bug` if a tag label is wanted. Never
@@ -52,23 +53,37 @@ If not authenticated, stop and tell the user to run `gh auth login`.
 Show the resolved **title, type, assignee, label(s)**, the **branch name** (Step 5),
 and a short body preview. Get a go-ahead. Then:
 
+**Windows (PowerShell — primary shell on this machine):**
+```powershell
+$REPO = "dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design"
+# Strip frontmatter and write body to temp file:
+$content = Get-Content ".claude/drafts/draft-issue.md" -Raw
+$body = $content -replace '(?s)^---.*?---\r?\n', ''
+$tmp = "$env:TEMP\issue-body.md"; $body | Out-File $tmp -Encoding utf8
+gh issue create --repo $REPO --title "<title>" --body-file $tmp --assignee "@me" --label "<label>"
+Remove-Item $tmp -Force
+# Set the type via GraphQL (use variable substitution — inline name breaks):
+$ISSUE_ID = gh api graphql --field query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){issue(number:$n){id}}}' -f o=dinhdaivu -f r='CSC12004_Information-Systems-Analysis-and-Design' -F n=<n> --jq '.data.repository.issue.id'
+gh api graphql --field query='mutation($id:ID!,$t:ID!){updateIssue(input:{id:$id,issueTypeId:$t}){issue{number issueType{name}}}}' -f id="$ISSUE_ID" -f t="<issueTypeId>"
+```
+
+**Bash fallback:**
 ```bash
 REPO="dinhdaivu/CSC12004_Information-Systems-Analysis-and-Design"
-# body = draft with frontmatter stripped, written to a temp file:
-tmp=$(mktemp); awk 'BEGIN{fm=0}/^---[[:space:]]*$/{fm++;next}fm>=2{print}' .claude/drafts/draft-issue.md > "$tmp"
+tmp=$(mktemp)
+# Strip frontmatter with sed (portable):
+sed '1{/^---/!q};/^---/,/^---/d' .claude/drafts/draft-issue.md > "$tmp"
 gh issue create --repo "$REPO" --title "<title>" --body-file "$tmp" --assignee "@me" --label "<label>"
 rm -f "$tmp"
-# set the type:
-ISSUE_ID=$(gh api graphql -f query='{repository(owner:"dinhdaivu",name:"CSC12004_Information-Systems-Analysis-and-Design"){issue(number:<n>){id}}}' --jq '.data.repository.issue.id')
-gh api graphql -f query='mutation($id:ID!,$t:ID!){updateIssue(input:{id:$id,issueTypeId:$t}){issue{number issueType{name}}}}' -f id="$ISSUE_ID" -f t="<issueTypeId>"
 ```
 Capture the new issue **number** and **URL**.
 
 ## Step 5 — Create the branch (this repo's convention)
 
 - Format: **`<category>/#<issue#>-<kebab-slug-of-title>`**
-- `<category>`: feat → `feature`, fix/hotfix → `hotfix`, chore/refactor → `chore`, docs → `docs`.
-- Examples: `chore/#72-migrate-backend-to-spring-boot`, `feature/#53-task-generate-accountant-screens`.
+- `<category>` — pick from the commit type that best fits the work:
+  `feat`, `fix`, `refactor`, `perf`, `chore`, `docs`, `test`.
+- Examples: `refactor/#108-language-switcher-shared-component`, `feat/#84-scheduler-cloudinary-resend`, `perf/#104-scheduler-n1-fix`.
 - Create linked to the issue **and check it out** so work can start immediately:
   ```bash
   gh issue develop <n> --repo "$REPO" --base main --name "<branch>" --checkout

@@ -135,10 +135,10 @@ interface BookingDetail {
                 <span style="display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; border-radius: 9999px; background: #b91c1c; color: white; font-weight: 900;">!</span>
                 <div>
                   <div style="color: #991b1b; font-size: 20px; font-family: Big Shoulders Text; font-weight: 900;">
-                    {{ booking?.status === 'cancelled' ? 'You cancelled this request' : 'This request was declined' }}
+                    {{ booking.status === 'cancelled' ? 'You cancelled this request' : 'This request was declined' }}
                   </div>
                   <div style="color: #7f1d1d; font-size: 14px; font-family: Big Shoulders Text;">
-                    {{ booking?.status === 'cancelled' ? 'Feel free to submit a new request anytime.' : 'The room is no longer available or the application criteria were not met.' }}
+                    {{ booking.status === 'cancelled' ? 'Feel free to submit a new request anytime.' : 'The room is no longer available or the application criteria were not met.' }}
                   </div>
                 </div>
               </div>
