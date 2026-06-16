@@ -1,7 +1,12 @@
 package vn.edu.hcmus.homestay.adapter.in.web.identity;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.time.Duration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +39,13 @@ import vn.edu.hcmus.homestay.adapter.in.security.UserPrincipal;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final String COOKIE_NAME = "auth_token";
+    private static final Duration COOKIE_MAX_AGE = Duration.ofDays(7);
+
+    // Must be false on plain HTTP (development). Set COOKIE_SECURE=true in production.
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
 
     private final RegisterUseCase registerUseCase;
     private final LoginUseCase loginUseCase;
@@ -71,17 +83,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest req) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(
+            @Valid @RequestBody LoginRequest req,
+            HttpServletResponse response) {
         LoginUseCase.LoginResult result = loginUseCase.login(
                 new LoginUseCase.LoginCommand(req.getEmail(), req.getPassword()));
+
+        response.addHeader(HttpHeaders.SET_COOKIE, buildAuthCookie(result.token()).toString());
+
         AuthResponse data = new AuthResponse(result.token(), UserResponse.from(result.user()));
         return ResponseEntity.ok(ApiResponseBuilder.success(data));
     }
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> logout() {
-        // Stateless JWT — no server-side session to invalidate.
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
+        response.addHeader(HttpHeaders.SET_COOKIE, clearAuthCookie().toString());
         return ResponseEntity.ok(ApiResponseBuilder.success(null, "Logged out successfully"));
     }
 
@@ -136,5 +153,25 @@ public class AuthController {
         verifyEmailUseCase.verifyEmail(
                 new VerifyEmailUseCase.VerifyEmailCommand(req.getEmail(), req.getCode()));
         return ResponseEntity.ok(ApiResponseBuilder.success(null, "Email verified successfully"));
+    }
+
+    private ResponseCookie buildAuthCookie(String token) {
+        return ResponseCookie.from(COOKIE_NAME, token)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(COOKIE_MAX_AGE)
+                .build();
+    }
+
+    private ResponseCookie clearAuthCookie() {
+        return ResponseCookie.from(COOKIE_NAME, "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(0)
+                .build();
     }
 }

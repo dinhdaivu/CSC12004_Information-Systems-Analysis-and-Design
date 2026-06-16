@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
 import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
@@ -39,33 +38,14 @@ import vn.edu.hcmus.homestay.domain.model.user.UserStatus;
  * into every port call.
  *
  * <p>DB_LATENCY_MS models a realistic remote Supabase/PostgreSQL connection (5 ms/query).
- * This makes the N+1 overhead directly visible in elapsed milliseconds.
- *
- * <p>Two scenarios are covered for PendingRentalRequestScheduler:
- * <ul>
- *   <li>MIXED gender policy — checkGenderPolicy early-exits without loading the user,
- *       so loadUserPort is called once per request (acceptRequest only). Read calls = 200.</li>
- *   <li>Non-MIXED (MALE/FEMALE) — checkGenderPolicy also loads the user (line 107),
- *       so loadUserPort is called twice per request. Read calls = 250. This is the worst case.</li>
- * </ul>
- *
- * <p>The output shows BOTH total speedup and read-only speedup. Writes are unchanged
- * before and after the fix, so they compress the headline number — read-only speedup
- * is the true measure of the optimization.
+ * After the N+1 fix, both schedulers issue 3 bulk queries regardless of N, so the
+ * elapsed time should be close to:
+ *   3 × DB_LATENCY_MS + 2N × DB_LATENCY_MS  (3 reads + 2N writes)
  *
  * <p>Expected results at N=50, DB_LATENCY_MS=5:
  * <pre>
- *   Pending (MIXED)     BEFORE: ~1 500 ms  reads 200×5 + writes 100×5
- *                       AFTER:  ~  515 ms  reads 3×5   + writes 100×5
- *                       Read-only speedup: ~67×   Total speedup: ~2.9×
- *
- *   Pending (non-MIXED) BEFORE: ~1 750 ms  reads 250×5 + writes 100×5
- *                       AFTER:  ~  515 ms  reads 3×5   + writes 100×5
- *                       Read-only speedup: ~83×   Total speedup: ~3.4×
- *
- *   DepositExpiry       BEFORE: ~1 005 ms  reads 101×5 + writes 100×5
- *                       AFTER:  ~  515 ms  reads 3×5   + writes 100×5
- *                       Read-only speedup: ~34×   Total speedup: ~2.0×
+ *   Pending  AFTER:  ~515 ms  (3 reads × 5ms + 100 writes × 5ms)
+ *   Expiry   AFTER:  ~515 ms  (3 reads × 5ms + 100 writes × 5ms)
  * </pre>
  */
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +63,7 @@ class SchedulerLatencyBenchmark {
     @Mock LoadRoomPort loadRoomPort;
     @Mock LoadBedPort loadBedPort;
     @Mock LoadUserPort loadUserPort;
-    @Mock EmailPort emailPort;
+    @Mock AsyncEmailSender asyncEmailSender;
 
     // ── DepositExpiryScheduler deps ───────────────────────────────────────────
     @Mock LoadDepositPort loadDepositPort;
@@ -96,66 +76,56 @@ class SchedulerLatencyBenchmark {
     void setUp() {
         pendingScheduler = new PendingRentalRequestScheduler(
                 loadRentalRequestPort, saveRentalRequestPort, saveDepositPort,
-                loadRoomPort, loadBedPort, loadUserPort, emailPort);
+                loadRoomPort, loadBedPort, loadUserPort, asyncEmailSender);
 
         expiryScheduler = new DepositExpiryScheduler(
                 loadDepositPort, saveDepositPort, eventPublisher,
-                saveRentalRequestPort, loadRentalRequestPort, loadUserPort, emailPort);
+                saveRentalRequestPort, loadRentalRequestPort, loadUserPort, asyncEmailSender);
     }
 
     // ── Benchmarks ────────────────────────────────────────────────────────────
 
     @Test
-    void benchmark_pendingRentalRequestScheduler_N50_mixed() throws Exception {
+    void benchmark_pendingRentalRequestScheduler_N50_mixed() {
         wirePendingScheduler(GenderPolicy.MIXED);
 
         long start = System.currentTimeMillis();
         pendingScheduler.processPendingRentalRequests();
         long elapsed = System.currentTimeMillis() - start;
 
-        // MIXED policy: checkGenderPolicy exits early (line 104) — loadUserPort NOT called there.
-        // loadUserPort is called only in acceptRequest: 1 call per request.
-        //   loadRoomPort : checkAvailability(1) + checkGenderPolicy(1) + resolvePrice(1) = 3×N = 150
-        //   loadUserPort : acceptRequest(1) = 1×N = 50
-        //   total reads  : 200
-        long readCalls  = 3L * N + N;  // 200
-        long writeCalls = N + N;        // 100
+        // After fix: 3 bulk reads (room + user + bed) + 2N writes
+        long readCalls  = 3L;
+        long writeCalls = N + N;  // 100
 
         printResult("PendingRentalRequestScheduler [MIXED]", N, readCalls, writeCalls, elapsed);
     }
 
     @Test
-    void benchmark_pendingRentalRequestScheduler_N50_nonMixed_worstCase() throws Exception {
+    void benchmark_pendingRentalRequestScheduler_N50_nonMixed_worstCase() {
         wirePendingScheduler(GenderPolicy.MALE);
 
         long start = System.currentTimeMillis();
         pendingScheduler.processPendingRentalRequests();
         long elapsed = System.currentTimeMillis() - start;
 
-        // Non-MIXED policy: checkGenderPolicy does NOT early-exit — loads user at line 107.
-        // loadUserPort is called TWICE per request: checkGenderPolicy + acceptRequest.
-        //   loadRoomPort : checkAvailability(1) + checkGenderPolicy(1) + resolvePrice(1) = 3×N = 150
-        //   loadUserPort : checkGenderPolicy(1) + acceptRequest(1) = 2×N = 100
-        //   total reads  : 250  ← worst case, not visible in the MIXED benchmark
-        long readCalls  = 3L * N + 2L * N;  // 250
-        long writeCalls = N + N;              // 100
+        // After fix: same 3 bulk reads regardless of gender policy
+        long readCalls  = 3L;
+        long writeCalls = N + N;  // 100
 
-        printResult("PendingRentalRequestScheduler [non-MIXED worst case]", N, readCalls, writeCalls, elapsed);
+        printResult("PendingRentalRequestScheduler [non-MIXED]", N, readCalls, writeCalls, elapsed);
     }
 
     @Test
-    void benchmark_depositExpiryScheduler_N50() throws Exception {
+    void benchmark_depositExpiryScheduler_N50() {
         wireExpiryScheduler();
 
         long start = System.currentTimeMillis();
         expiryScheduler.expireOverdueDeposits();
         long elapsed = System.currentTimeMillis() - start;
 
-        // read calls: loadPendingExpired×1 + loadRentalRequest×50 + loadUser×50 = 101
-        // write calls: saveDeposit×50 + saveRentalRequest×50 = 100
-        long readCalls  = 1 + N + N;    // 101
-        long writeCalls = N + N;         // 100
-        long totalCalls = readCalls + writeCalls;
+        // After fix: 3 bulk reads (deposits + rentalRequests + users) + 2N writes
+        long readCalls  = 3L;
+        long writeCalls = N + N;  // 100
 
         printResult("DepositExpiryScheduler", N, readCalls, writeCalls, elapsed);
     }
@@ -166,14 +136,19 @@ class SchedulerLatencyBenchmark {
         when(loadRentalRequestPort.loadByStatus(RentalRequestStatus.REQUESTED))
                 .thenReturn(buildRequests(N));
 
-        when(loadRoomPort.loadById(any())).thenAnswer(inv -> {
+        when(loadRoomPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
             sleep();
-            return Optional.of(availableRoom(inv.getArgument(0), policy));
+            return ids.stream().map(id -> availableRoom(id, policy)).toList();
         });
-        // For non-MIXED rooms the user's gender must match the room policy so the request is accepted.
-        when(loadUserPort.loadById(any())).thenAnswer(inv -> {
+        when(loadBedPort.loadByIds(any())).thenAnswer(inv -> {
             sleep();
-            return Optional.of(userWithGender(inv.getArgument(0), policy.name().toLowerCase()));
+            return List.of();
+        });
+        when(loadUserPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
+            sleep();
+            return ids.stream().map(id -> userWithGender(id, policy.name().toLowerCase())).toList();
         });
         when(saveDepositPort.save(any())).thenAnswer(inv -> {
             sleep();
@@ -189,7 +164,7 @@ class SchedulerLatencyBenchmark {
         });
     }
 
-    private void wireExpiryScheduler() throws Exception {
+    private void wireExpiryScheduler() {
         when(loadDepositPort.loadPendingExpired(any())).thenAnswer(inv -> {
             sleep();
             return buildDeposits(N);
@@ -198,17 +173,19 @@ class SchedulerLatencyBenchmark {
             sleep();
             return inv.getArgument(0);
         });
-        when(loadRentalRequestPort.loadById(any())).thenAnswer(inv -> {
+        when(loadRentalRequestPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
             sleep();
-            return Optional.of(rentalRequest(inv.getArgument(0)));
+            return ids.stream().map(this::rentalRequest).toList();
         });
         when(saveRentalRequestPort.save(any())).thenAnswer(inv -> {
             sleep();
             return inv.getArgument(0);
         });
-        when(loadUserPort.loadById(any())).thenAnswer(inv -> {
+        when(loadUserPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
             sleep();
-            return Optional.of(userWithGender(inv.getArgument(0), "male"));
+            return ids.stream().map(id -> userWithGender(id, "male")).toList();
         });
     }
 
@@ -225,30 +202,22 @@ class SchedulerLatencyBenchmark {
     private static void printResult(
             String name, int n, long readCalls, long writeCalls, long elapsedMs) {
 
-        long readBeforeMs   = readCalls  * DB_LATENCY_MS;
-        long writeMs        = writeCalls * DB_LATENCY_MS;
-        long readAfterMs    = 3          * DB_LATENCY_MS;  // 3 bulk queries after fix
-        long totalAfterMs   = readAfterMs + writeMs;
-
-        double readSpeedup  = (double) readBeforeMs / Math.max(readAfterMs, 1);
-        double totalSpeedup = (double) elapsedMs    / Math.max(totalAfterMs, 1);
+        long readMs      = readCalls  * DB_LATENCY_MS;
+        long writeMs     = writeCalls * DB_LATENCY_MS;
+        long projectedMs = readMs + writeMs;
 
         System.out.println();
         System.out.println("╔══════════════════════════════════════════════════════════════════╗");
         System.out.printf ("║  %-64s  ║%n", name + " @ N=" + n);
         System.out.println("╠══════════════════════════════════════════════════════════════════╣");
         System.out.printf ("║  DB_LATENCY_MS per call  : %-37d  ║%n", DB_LATENCY_MS);
-        System.out.printf ("║  Read calls (before)     : %-37d  ║%n", readCalls);
+        System.out.printf ("║  Read calls (bulk)       : %-37d  ║%n", readCalls);
         System.out.printf ("║  Write calls             : %-37d  ║%n", writeCalls);
         System.out.println("╠══════════════════════════════════════════════════════════════════╣");
-        System.out.printf ("║  BEFORE  total (measured)  : %5d ms                             ║%n", elapsedMs);
-        System.out.printf ("║  AFTER   total (projected) : %5d ms  (3 reads + %d writes)      ║%n",
-                totalAfterMs, writeCalls);
-        System.out.println("╠══════════════════════════════════════════════════════════════════╣");
-        System.out.printf ("║  Speedup — total           :  %.1fx  (writes unchanged, mask gain) ║%n",
-                totalSpeedup);
-        System.out.printf ("║  Speedup — reads only      : %.0fx  (%d×5ms → 3×5ms)              ║%n",
-                readSpeedup, readCalls);
+        System.out.printf ("║  Projected total : %5d ms                                      ║%n",
+                projectedMs);
+        System.out.printf ("║  Measured  total : %5d ms                                      ║%n",
+                elapsedMs);
         System.out.println("╚══════════════════════════════════════════════════════════════════╝");
         System.out.println();
     }
