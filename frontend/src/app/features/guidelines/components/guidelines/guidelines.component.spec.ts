@@ -15,7 +15,8 @@ describe('GuidelinesComponent', () => {
   beforeEach(async () => {
     mockAuthService = {
       isAuthenticated: jest.fn().mockReturnValue(true),
-      logout: jest.fn().mockReturnValue(of({}))
+      logout: jest.fn().mockReturnValue(of({})),
+      currentUser$: of(null)
     };
     mockRouter = {
       navigate: jest.fn()

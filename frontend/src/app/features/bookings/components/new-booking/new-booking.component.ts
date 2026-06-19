@@ -8,7 +8,8 @@ import { BranchService } from '@core/services/branch.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageSwitcherComponent } from '@shared/components';
 import { HostListener } from '@angular/core';
-import { inject } from '@angular/core';
+import { inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@core/services/auth.service';
 import type { User } from '@shared/models/auth.model';
 
@@ -320,6 +321,7 @@ import type { User } from '@shared/models/auth.model';
 })
 export class NewBookingComponent implements OnInit {
   authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
   bookingForm!: FormGroup;
   preSelectedRoomId: string | null = null;
   preSelectedBedId: string | null = null;
@@ -366,10 +368,6 @@ export class NewBookingComponent implements OnInit {
   
   ngOnInit(): void {
     this.onResize();
-    this.isAuthenticated = this.authService.isAuthenticated();
-    if (this.isAuthenticated) {
-      this.user = this.authService.getCurrentUser();
-    }
     this.bookingForm = this.fb.group({
       branch: ['Tô Hiến Thành', Validators.required],
       room_category: ['Twin Room (2)', Validators.required],
@@ -385,6 +383,14 @@ export class NewBookingComponent implements OnInit {
       needs_air_conditioner: [false],
       viewing_date: [this.getTomorrowDateString(), Validators.required],
       viewing_time: ['09:00', Validators.required]
+    });
+
+    this.authService.currentUser$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(user => {
+      this.isAuthenticated = !!user;
+      this.user = user;
+      this.cdr.detectChanges();
     });
 
     // 1. NHẬN DỮ LIỆU TRUYỀN TỪ TRANG ROOMS (Nếu có)
@@ -420,7 +426,6 @@ export class NewBookingComponent implements OnInit {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
       this.isUserMenuOpen = false;
       this.router.navigate(['/login']);
     });

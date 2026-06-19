@@ -9,7 +9,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   const apiUrl = `${environment.apiUrl}/auth`;
-  
+
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
@@ -36,7 +36,7 @@ describe('AuthService', () => {
     sessionStorage.clear();
   });
 
-  it('should store token and user after login', () => {
+  it('should store user after login', () => {
     const user: User = {
       id: 'user-1',
       email: 'user@example.com',
@@ -61,12 +61,11 @@ describe('AuthService', () => {
       },
     });
 
-    expect(service.getToken()).toBe('signed-jwt');
     expect(service.getCurrentUser()).toEqual(user);
+    expect(service.isAuthenticated()).toBe(true);
   });
 
   it('should clear session on logout even if backend request fails', () => {
-    localStorage.setItem('auth_token', 'signed-jwt');
     localStorage.setItem('auth_user', JSON.stringify({
       id: 'user-1',
       email: 'user@example.com',
@@ -78,8 +77,8 @@ describe('AuthService', () => {
     }));
 
     service.logout().subscribe(() => {
-      expect(service.getToken()).toBeNull();
       expect(service.getCurrentUser()).toBeNull();
+      expect(service.isAuthenticated()).toBe(false);
     });
 
     const request = httpMock.expectOne(`${apiUrl}/logout`);
@@ -144,8 +143,8 @@ describe('AuthService', () => {
     });
 
     expect(service.getPendingRegistrationEmail()).toBeNull();
-    expect(service.getToken()).toBe('signed-jwt');
     expect(service.getCurrentUser()).toEqual(user);
+    expect(service.isAuthenticated()).toBe(true);
   });
 
   it('should resend verification code and keep the normalized email', () => {

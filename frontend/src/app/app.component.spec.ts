@@ -14,7 +14,7 @@ const languageServiceMock = {
 };
 
 const authServiceMock = {
-  getToken: jest.fn(),
+  isAuthenticated: jest.fn(),
   loadCurrentUser: jest.fn(),
   clearSession: jest.fn(),
 };
@@ -22,10 +22,10 @@ const authServiceMock = {
 describe('AppComponent', () => {
   beforeEach(async () => {
     languageServiceMock.initializeLanguage.mockClear();
-    authServiceMock.getToken.mockReset();
+    authServiceMock.isAuthenticated.mockReset();
     authServiceMock.loadCurrentUser.mockReset();
     authServiceMock.clearSession.mockReset();
-    authServiceMock.getToken.mockReturnValue(null);
+    authServiceMock.isAuthenticated.mockReturnValue(false);
     authServiceMock.loadCurrentUser.mockReturnValue(of(null));
 
     await TestBed.configureTestingModule({
@@ -77,8 +77,8 @@ describe('AppComponent', () => {
     expect(languageServiceMock.initializeLanguage).toHaveBeenCalledTimes(1);
   });
 
-  it('should refresh the current user on init when a token exists', () => {
-    authServiceMock.getToken.mockReturnValue('signed-jwt');
+  it('should refresh the current user on init when already authenticated', () => {
+    authServiceMock.isAuthenticated.mockReturnValue(true);
     authServiceMock.loadCurrentUser.mockReturnValue(of({
       id: 'user-1',
       email: 'user@example.com',
@@ -98,7 +98,7 @@ describe('AppComponent', () => {
   });
 
   it('should clear the session when current-user refresh fails', () => {
-    authServiceMock.getToken.mockReturnValue('signed-jwt');
+    authServiceMock.isAuthenticated.mockReturnValue(true);
     authServiceMock.loadCurrentUser.mockReturnValue(throwError(() => new Error('Unauthorized')));
 
     const fixture = TestBed.createComponent(AppComponent);

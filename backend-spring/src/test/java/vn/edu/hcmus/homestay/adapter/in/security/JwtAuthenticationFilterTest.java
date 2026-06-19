@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.servlet.http.Cookie;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +38,47 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    void validToken_populatesPrincipal() throws Exception {
+    void validBearerToken_populatesPrincipal() throws Exception {
         UUID id = UUID.randomUUID();
         String token = jwtTokenProvider.generateToken(id, "user@example.com", AppRole.CUSTOMER);
 
         mockMvc.perform(get("/api/health").header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andDo(
-                        result -> assertThat(result.getResponse().getStatus()).isEqualTo(200));
+                .andDo(result -> assertThat(result.getResponse().getStatus()).isEqualTo(200));
     }
 
     @Test
-    void invalidToken_publicEndpoint_stillReturns200() throws Exception {
+    void validCookieToken_populatesPrincipal() throws Exception {
+        UUID id = UUID.randomUUID();
+        String token = jwtTokenProvider.generateToken(id, "cookie@example.com", AppRole.CUSTOMER);
+
+        mockMvc.perform(get("/api/health").cookie(new Cookie("auth_token", token)))
+                .andExpect(status().isOk())
+                .andDo(result -> assertThat(result.getResponse().getStatus()).isEqualTo(200));
+    }
+
+    @Test
+    void bearerHeaderTakesPrecedenceOverCookie() throws Exception {
+        UUID id = UUID.randomUUID();
+        String headerToken = jwtTokenProvider.generateToken(id, "header@example.com", AppRole.CUSTOMER);
+        String cookieToken = jwtTokenProvider.generateToken(UUID.randomUUID(), "cookie@example.com", AppRole.SALE);
+
+        // Both present — header wins; request should succeed (valid token in header)
+        mockMvc.perform(get("/api/health")
+                        .header("Authorization", "Bearer " + headerToken)
+                        .cookie(new Cookie("auth_token", cookieToken)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void invalidBearerToken_publicEndpoint_stillReturns200() throws Exception {
         mockMvc.perform(get("/api/health").header("Authorization", "Bearer invalid.token.value"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void invalidCookieToken_publicEndpoint_stillReturns200() throws Exception {
+        mockMvc.perform(get("/api/health").cookie(new Cookie("auth_token", "invalid.token.value")))
                 .andExpect(status().isOk());
     }
 

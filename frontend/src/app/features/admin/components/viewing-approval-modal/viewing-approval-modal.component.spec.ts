@@ -37,7 +37,6 @@ describe('ViewingApprovalModalComponent', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     viewingServiceMock.updateOutcome.mockReturnValue(of(mockRecord));
-    localStorage.setItem('auth_token', 'test-token');
 
     await TestBed.configureTestingModule({
       imports: [ViewingApprovalModalComponent, HttpClientTestingModule],
@@ -49,10 +48,6 @@ describe('ViewingApprovalModalComponent', () => {
     fixture = TestBed.createComponent(ViewingApprovalModalComponent);
     component = fixture.componentInstance;
     component.appointment = mockAppointment;
-  });
-
-  afterEach(() => {
-    localStorage.removeItem('auth_token');
   });
 
   it('should create the modal', () => {
@@ -172,13 +167,5 @@ describe('ViewingApprovalModalComponent', () => {
     expect(viewingServiceMock.updateOutcome).not.toHaveBeenCalled();
   });
 
-  it('should show error when auth token is missing', () => {
-    localStorage.removeItem('auth_token');
-    const freshFixture = TestBed.createComponent(ViewingApprovalModalComponent);
-    const freshComponent = freshFixture.componentInstance;
-    freshComponent.appointment = mockAppointment;
-    freshComponent.onApprove();
-    expect(freshComponent.errorMessage).toContain('Missing auth token');
-    expect(viewingServiceMock.updateOutcome).not.toHaveBeenCalled();
-  });
 });
+

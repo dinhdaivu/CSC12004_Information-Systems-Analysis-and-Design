@@ -137,7 +137,8 @@ public class AuthService
     }
 
     @Override
-    public void verifyEmail(@SuppressWarnings("unused") VerifyEmailCommand command) {
-        // TODO: validate verification code, mark account as verified (Phase 9).
+    public VerifyEmailResult verifyEmail(@SuppressWarnings("unused") VerifyEmailCommand command) {
+        // TODO: validate verification code, mark account as verified, then issue token (Phase 9).
+        throw new UnsupportedOperationException("Email verification not yet implemented");
     }
 }

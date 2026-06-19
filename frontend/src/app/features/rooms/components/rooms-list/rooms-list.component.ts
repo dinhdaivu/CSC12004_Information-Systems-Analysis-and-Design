@@ -5,7 +5,9 @@ import { LanguageSwitcherComponent } from '@shared/components';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
-import { inject } from '@angular/core';
+import { inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 // Nâng cấp: Import các Services thực tế từ Backend
 import { AuthService } from '@core/services/auth.service';
@@ -285,6 +287,7 @@ export class RoomsListComponent implements OnInit {
   branchService = inject(BranchService);
   rentalRequestService = inject(RentalRequestService);
   zoneService = inject(ZoneService);
+  private readonly destroyRef = inject(DestroyRef);
 
   step: 'room' | 'bed' = 'room';
 
@@ -345,7 +348,13 @@ export class RoomsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.onResize();
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.currentUser$.pipe(
+      map(u => !!u),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      this.isAuthenticated = v;
+      this.cdr.detectChanges();
+    });
     this.loadBranchesAndRooms();
   }
 
@@ -585,7 +594,6 @@ export class RoomsListComponent implements OnInit {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
       this.isUserMenuOpen = false;
       this.router.navigate(['/login']);
     });

@@ -1,11 +1,13 @@
 package vn.edu.hcmus.homestay.adapter.in.web.identity;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.http.HttpHeaders;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -159,6 +161,48 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.email").value("user@example.com"));
+    }
+
+    @Test
+    void login_validCredentials_setsHttpOnlyCookie() throws Exception {
+        UUID userId = UUID.randomUUID();
+        User user = buildUser(userId, "user@example.com");
+        LoginUseCase.LoginResult loginResult = new LoginUseCase.LoginResult("mock.jwt.token", user);
+        when(loginUseCase.login(any(LoginUseCase.LoginCommand.class))).thenReturn(loginResult);
+
+        mockMvc.perform(
+                        post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {"email":"user@example.com","password":"password123"}
+                                        """))
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    String setCookie = result.getResponse().getHeader(HttpHeaders.SET_COOKIE);
+                    assertThat(setCookie)
+                            .contains("auth_token=mock.jwt.token")
+                            .containsIgnoringCase("HttpOnly")
+                            .contains("Path=/");
+                });
+    }
+
+    @Test
+    void logout_authenticated_clearsCookie() throws Exception {
+        UUID userId = UUID.randomUUID();
+        UserPrincipal principal = new UserPrincipal(userId, "user@example.com", AppRole.CUSTOMER);
+
+        mockMvc.perform(
+                        post("/api/auth/logout")
+                                .with(SecurityMockMvcRequestPostProcessors.authentication(
+                                        new UsernamePasswordAuthenticationToken(
+                                                principal, null, principal.getAuthorities()))))
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    String setCookie = result.getResponse().getHeader(HttpHeaders.SET_COOKIE);
+                    assertThat(setCookie)
+                            .contains("auth_token=")
+                            .contains("Max-Age=0");
+                });
     }
 
     private User buildUser(UUID id, String email) {

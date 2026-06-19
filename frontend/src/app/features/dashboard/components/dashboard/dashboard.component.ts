@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -225,6 +227,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   isUserMenuOpen = false;
   isMobileMenuOpen = false;
   isAuthenticated = false;
@@ -239,7 +242,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   autoPlayTimer: number | null = null;
 
   ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.currentUser$.pipe(
+      map(u => !!u),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      this.isAuthenticated = v;
+      this.cdr.detectChanges();
+    });
 
     this.branchService.getBranches().subscribe((data) => {
       this.branches = data;
@@ -435,7 +444,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
       this.isUserMenuOpen = false;
       this.router.navigate(['/login']);
     });

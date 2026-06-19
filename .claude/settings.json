@@ -15,7 +15,8 @@
       "Bash(curl -s -o /dev/null -w \"GET /api/contracts:       %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/contracts)",
       "Bash(curl -s -o /dev/null -w \"GET /api/payments:        %{time_total}s | status: %{http_code}\\\\n\" http://localhost:3000/api/payments)",
       "Bash(npm *)",
-      "Bash(npx *)"
+      "Bash(npx *)",
+      "Bash(java -version)"
     ],
     "deny": [
       "Bash(git push --force*)",

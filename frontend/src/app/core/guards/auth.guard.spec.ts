@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { authGuard } from './auth.guard';
 import { roleGuard } from './role.guard';
 import { AuthService } from '@core/services/auth.service';
@@ -17,6 +17,7 @@ describe('Auth Guards', () => {
     getDefaultRouteForRole: jest.fn(() => '/dashboard'),
     loadCurrentUser: jest.fn(),
     clearSession: jest.fn(),
+    currentUser$: of(null) as Observable<unknown>,
   };
 
   beforeEach(() => {
@@ -30,21 +31,27 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should allow authenticated users through authGuard', () => {
-    authServiceMock.isAuthenticated.mockReturnValue(true);
+  it('should allow authenticated users through authGuard', (done) => {
+    authServiceMock.currentUser$ = of({ id: 'user-1', email: 'test@example.com', role: 'customer' });
 
     const result = TestBed.runInInjectionContext(() => authGuard());
 
-    expect(result).toBe(true);
+    (result as Observable<boolean | UrlTree>).subscribe(value => {
+      expect(value).toBe(true);
+      done();
+    });
   });
 
-  it('should redirect unauthenticated users to login', () => {
-    authServiceMock.isAuthenticated.mockReturnValue(false);
+  it('should redirect unauthenticated users to login', (done) => {
+    authServiceMock.currentUser$ = of(null);
 
     const result = TestBed.runInInjectionContext(() => authGuard());
 
-    expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/login']);
-    expect(result).toEqual({ commands: ['/login'] });
+    (result as Observable<boolean | UrlTree>).subscribe(value => {
+      expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/login']);
+      expect(value).toEqual({ commands: ['/login'] });
+      done();
+    });
   });
 
   it('should allow users with matching roles through roleGuard', () => {

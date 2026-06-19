@@ -1,4 +1,6 @@
-import { Component, OnInit, HostListener, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -116,6 +118,7 @@ export class GuidelinesComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   @HostListener('window:resize')
   onResize() {
@@ -124,7 +127,13 @@ export class GuidelinesComponent implements OnInit {
 
   ngOnInit(): void {
     this.onResize();
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.currentUser$.pipe(
+      map(u => !!u),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      this.isAuthenticated = v;
+      this.cdr.detectChanges();
+    });
   }
 
   navigate(path: string): void {
@@ -138,7 +147,6 @@ export class GuidelinesComponent implements OnInit {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
       this.isUserMenuOpen = false;
       this.router.navigate(['/login']);
     });

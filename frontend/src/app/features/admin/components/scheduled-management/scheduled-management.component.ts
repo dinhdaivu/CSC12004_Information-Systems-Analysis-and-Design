@@ -771,7 +771,6 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
   );
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ngZone = inject(NgZone);
-  private readonly authToken = localStorage.getItem("auth_token") ?? "";
   private readonly destroy$ = new Subject<void>();
   private readonly monthFilter$ = new BehaviorSubject<string>(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`);
   private readonly branchFilter$ = new BehaviorSubject<string | null>(null);
@@ -1226,17 +1225,6 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
             prev[3] === curr[3],
         ),
         switchMap(([month, branch, status, page]) => {
-          if (!this.authToken) {
-            this.runInView(() => {
-              this.errorMessage = "Missing auth token. Please sign in again.";
-              this.appointments = [];
-              this.totalPages = 1;
-              this.rebuildCalendar();
-              this.isLoading = false;
-            });
-            return of(null);
-          }
-
           const filters: AppointmentFilters = {
             month,
             branch,
@@ -1264,7 +1252,6 @@ export class ScheduledManagementComponent implements OnInit, OnDestroy {
 
           return this.viewingAppointmentsService
             .fetchViewingAppointments({
-              token: this.authToken,
               month,
               branch: branch ?? undefined,
               status: status ?? undefined,

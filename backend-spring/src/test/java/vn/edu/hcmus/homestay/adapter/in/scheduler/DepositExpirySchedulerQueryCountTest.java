@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
 import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
@@ -32,14 +31,11 @@ import vn.edu.hcmus.homestay.domain.model.user.User;
 import vn.edu.hcmus.homestay.domain.model.user.UserStatus;
 
 /**
- * Reproduces the N+1 query pattern in {@link DepositExpiryScheduler} at N=50.
+ * Verifies the bulk-load fix in {@link DepositExpiryScheduler} at N=50.
  *
- * <p>For each overdue deposit the scheduler issues an individual SELECT for the linked
- * rental request and an individual SELECT for the customer, producing 50+50 = 100 extra
- * round-trips instead of 2 bulk queries.
- *
- * <p>These assertions document the CURRENT (broken) baseline. After the batch-load fix the
- * counts must drop to loadRentalRequestPort×1 and loadUserPort×1 regardless of N.
+ * <p>Before the fix, the scheduler issued N individual SELECTs for rental requests and
+ * N individual SELECTs for customers (100 extra round-trips at N=50). After the fix,
+ * both are fetched with a single IN query each — 2 bulk calls regardless of N.
  */
 @ExtendWith(MockitoExtension.class)
 class DepositExpirySchedulerQueryCountTest {
@@ -65,7 +61,7 @@ class DepositExpirySchedulerQueryCountTest {
     private LoadUserPort loadUserPort;
 
     @Mock
-    private EmailPort emailPort;
+    private AsyncEmailSender asyncEmailSender;
 
     private DepositExpiryScheduler scheduler;
 
@@ -73,39 +69,41 @@ class DepositExpirySchedulerQueryCountTest {
     void setUp() {
         scheduler = new DepositExpiryScheduler(
                 loadDepositPort, saveDepositPort, eventPublisher,
-                saveRentalRequestPort, loadRentalRequestPort, loadUserPort, emailPort);
+                saveRentalRequestPort, loadRentalRequestPort, loadUserPort, asyncEmailSender);
     }
 
     /**
      * N=50 overdue deposits, all with a linked rental request.
      *
      * <pre>
-     * CURRENT call counts per deposit (2 individual SELECTs per item):
-     *   loadRentalRequestPort.loadById  ×1  ← individual SELECT per deposit
-     *   loadUserPort.loadById           ×1  ← individual SELECT per deposit
+     * After bulk-load fix:
+     *   loadRentalRequestPort.loadByIds  ×1  ← single IN query for all rental requests
+     *   loadUserPort.loadByIds           ×1  ← single IN query for all customers
      *
-     * At N=50 total read calls: loadRentalRequest×50 + loadUser×50 = 100
-     * (Optimal after fix:        loadRentalRequest×1  + loadUser×1  = 2 bulk queries)
+     * Total read calls: 2 (was 100 before the fix)
      * </pre>
      */
     @Test
-    void baseline_N50_allWithRentalRequest_doubleIndividualLoad() {
+    void fixed_N50_allWithRentalRequest_bulkLoad() {
         List<DepositRequest> deposits = buildDeposits(N);
 
         when(loadDepositPort.loadPendingExpired(any())).thenReturn(deposits);
         when(saveDepositPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(loadRentalRequestPort.loadById(any())).thenAnswer(inv ->
-                Optional.of(rentalRequest(inv.getArgument(0))));
+        when(loadRentalRequestPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
+            return ids.stream().map(this::rentalRequest).toList();
+        });
         when(saveRentalRequestPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(loadUserPort.loadById(any())).thenAnswer(inv ->
-                Optional.of(user(inv.getArgument(0))));
+        when(loadUserPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
+            return ids.stream().map(this::user).toList();
+        });
 
         scheduler.expireOverdueDeposits();
 
-        // 1 loadById per deposit — individual SELECT instead of a single IN query
-        verify(loadRentalRequestPort, times(N)).loadById(any());
-        // 1 loadById per deposit — individual SELECT instead of a single IN query
-        verify(loadUserPort, times(N)).loadById(any());
+        // 1 bulk loadByIds call each — replaced N individual loadById calls
+        verify(loadRentalRequestPort, times(1)).loadByIds(any());
+        verify(loadUserPort, times(1)).loadByIds(any());
         verify(saveDepositPort, times(N)).save(any());
         verify(saveRentalRequestPort, times(N)).save(any());
     }

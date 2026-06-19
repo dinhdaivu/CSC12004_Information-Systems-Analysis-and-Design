@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
 import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadDepositPort;
 import vn.edu.hcmus.homestay.application.port.out.rental.LoadRentalRequestPort;
@@ -51,7 +49,7 @@ class DepositExpirySchedulerTest {
     private LoadUserPort loadUserPort;
 
     @Mock
-    private EmailPort emailPort;
+    private AsyncEmailSender asyncEmailSender;
 
     private DepositExpiryScheduler scheduler;
 
@@ -64,8 +62,9 @@ class DepositExpirySchedulerTest {
                 saveRentalRequestPort,
                 loadRentalRequestPort,
                 loadUserPort,
-                emailPort);
-        lenient().when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
+                asyncEmailSender);
+        lenient().when(loadUserPort.loadByIds(any())).thenReturn(List.of());
+        lenient().when(loadRentalRequestPort.loadByIds(any())).thenReturn(List.of());
     }
 
     @Test

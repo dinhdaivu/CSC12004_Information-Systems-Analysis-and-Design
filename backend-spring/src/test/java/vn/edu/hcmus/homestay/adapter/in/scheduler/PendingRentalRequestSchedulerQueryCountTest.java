@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
 import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
@@ -34,14 +33,12 @@ import vn.edu.hcmus.homestay.domain.model.user.User;
 import vn.edu.hcmus.homestay.domain.model.user.UserStatus;
 
 /**
- * Reproduces the N+1 query pattern in {@link PendingRentalRequestScheduler} at N=50.
+ * Verifies the bulk-load fix in {@link PendingRentalRequestScheduler} at N=50.
  *
- * <p>For each pending request the scheduler calls {@code loadRoomPort.loadById} three times
+ * <p>Before the fix, the scheduler called {@code loadRoomPort.loadById} three times per request
  * (checkAvailability, checkGenderPolicy, resolvePrice) and {@code loadUserPort.loadById} once,
- * producing 150+50 = 200 individual SELECT calls instead of 2 bulk queries.
- *
- * <p>These assertions document the CURRENT (broken) baseline. After the batch-load fix the
- * counts must drop to loadRoomPort×1 and loadUserPort×1 regardless of N.
+ * producing 200 individual SELECT calls at N=50. After the fix, both are fetched with a single
+ * IN query each — 2 bulk calls regardless of N.
  */
 @ExtendWith(MockitoExtension.class)
 class PendingRentalRequestSchedulerQueryCountTest {
@@ -67,7 +64,7 @@ class PendingRentalRequestSchedulerQueryCountTest {
     private LoadUserPort loadUserPort;
 
     @Mock
-    private EmailPort emailPort;
+    private AsyncEmailSender asyncEmailSender;
 
     private PendingRentalRequestScheduler scheduler;
 
@@ -75,33 +72,34 @@ class PendingRentalRequestSchedulerQueryCountTest {
     void setUp() {
         scheduler = new PendingRentalRequestScheduler(
                 loadRentalRequestPort, saveRentalRequestPort, saveDepositPort,
-                loadRoomPort, loadBedPort, loadUserPort, emailPort);
+                loadRoomPort, loadBedPort, loadUserPort, asyncEmailSender);
     }
 
     /**
      * N=50 room-only requests, all AVAILABLE + MIXED gender → all accepted.
      *
      * <pre>
-     * CURRENT call counts per request (3 call-sites hit loadRoomPort.loadById):
-     *   checkAvailability  → loadRoomPort.loadById  ×1
-     *   checkGenderPolicy  → loadRoomPort.loadById  ×1   ← duplicate load
-     *   resolvePrice       → loadRoomPort.loadById  ×1   ← duplicate load
-     *   acceptRequest      → loadUserPort.loadById  ×1
+     * After bulk-load fix:
+     *   loadRoomPort.loadByIds   ×1  ← single IN query for all rooms
+     *   loadUserPort.loadByIds   ×1  ← single IN query for all customers
      *
-     * At N=50 total read calls: loadRoomPort×150 + loadUserPort×50 = 200
-     * (Optimal after fix:        loadRoomPort×1   + loadUserPort×1 = 2 bulk queries)
+     * Total read calls: 2 (was 200 before the fix)
      * </pre>
      */
     @Test
-    void baseline_N50_roomOnly_allAccepted_tripleRoomLoad() {
+    void fixed_N50_roomOnly_allAccepted_bulkLoad() {
         List<RentalRequest> requests = buildRequests(N);
 
         when(loadRentalRequestPort.loadByStatus(RentalRequestStatus.REQUESTED))
                 .thenReturn(requests);
-        when(loadRoomPort.loadById(any())).thenAnswer(inv ->
-                Optional.of(availableRoom(inv.getArgument(0))));
-        when(loadUserPort.loadById(any())).thenAnswer(inv ->
-                Optional.of(user(inv.getArgument(0))));
+        when(loadRoomPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
+            return ids.stream().map(this::availableRoom).toList();
+        });
+        when(loadUserPort.loadByIds(any())).thenAnswer(inv -> {
+            Collection<UUID> ids = inv.getArgument(0);
+            return ids.stream().map(this::user).toList();
+        });
         when(saveDepositPort.save(any())).thenAnswer(inv -> {
             DepositRequest d = inv.getArgument(0);
             return new DepositRequest(
@@ -113,11 +111,9 @@ class PendingRentalRequestSchedulerQueryCountTest {
 
         scheduler.processPendingRentalRequests();
 
-        // 3 loadById calls per request: checkAvailability + checkGenderPolicy + resolvePrice
-        verify(loadRoomPort, times(3 * N)).loadById(any());
-        // 1 loadById call per request: acceptRequest email lookup
-        verify(loadUserPort, times(N)).loadById(any());
-        // 1 save per request
+        // 1 bulk loadByIds call each — replaced 3×N room and N user individual lookups
+        verify(loadRoomPort, times(1)).loadByIds(any());
+        verify(loadUserPort, times(1)).loadByIds(any());
         verify(saveDepositPort, times(N)).save(any());
         verify(saveRentalRequestPort, times(N)).save(any());
     }

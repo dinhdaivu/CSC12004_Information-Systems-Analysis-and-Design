@@ -3,7 +3,6 @@ package vn.edu.hcmus.homestay.adapter.in.scheduler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import vn.edu.hcmus.homestay.application.port.out.identity.EmailPort;
 import vn.edu.hcmus.homestay.application.port.out.identity.LoadUserPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadBedPort;
 import vn.edu.hcmus.homestay.application.port.out.property.LoadRoomPort;
@@ -59,7 +56,7 @@ class PendingRentalRequestSchedulerTest {
     private LoadUserPort loadUserPort;
 
     @Mock
-    private EmailPort emailPort;
+    private AsyncEmailSender asyncEmailSender;
 
     private PendingRentalRequestScheduler scheduler;
 
@@ -72,7 +69,7 @@ class PendingRentalRequestSchedulerTest {
                 loadRoomPort,
                 loadBedPort,
                 loadUserPort,
-                emailPort);
+                asyncEmailSender);
     }
 
     @Test
@@ -96,8 +93,8 @@ class PendingRentalRequestSchedulerTest {
 
         when(loadRentalRequestPort.loadByStatus(RentalRequestStatus.REQUESTED))
                 .thenReturn(List.of(req));
-        when(loadRoomPort.loadById(roomId)).thenReturn(Optional.of(room));
-        when(loadUserPort.loadById(customerId)).thenReturn(Optional.of(user));
+        when(loadRoomPort.loadByIds(any())).thenReturn(List.of(room));
+        when(loadUserPort.loadByIds(any())).thenReturn(List.of(user));
         when(saveDepositPort.save(any())).thenAnswer(inv -> {
             DepositRequest d = inv.getArgument(0);
             return new DepositRequest(
@@ -129,8 +126,8 @@ class PendingRentalRequestSchedulerTest {
 
         when(loadRentalRequestPort.loadByStatus(RentalRequestStatus.REQUESTED))
                 .thenReturn(List.of(req));
-        when(loadRoomPort.loadById(roomId)).thenReturn(Optional.of(room));
-        when(loadUserPort.loadById(any())).thenReturn(Optional.empty());
+        when(loadRoomPort.loadByIds(any())).thenReturn(List.of(room));
+        when(loadUserPort.loadByIds(any())).thenReturn(List.of());
         when(saveRentalRequestPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         scheduler.processPendingRentalRequests();
@@ -142,7 +139,7 @@ class PendingRentalRequestSchedulerTest {
     }
 
     @Test
-    void emailFailure_doesNotThrow() {
+    void asyncEmailSender_doesNotThrowOnSchedulerCompletion() {
         UUID customerId = UUID.randomUUID();
         UUID roomId = UUID.randomUUID();
         RentalRequest req = rentalRequest(UUID.randomUUID(), customerId, roomId, null);
@@ -151,8 +148,8 @@ class PendingRentalRequestSchedulerTest {
 
         when(loadRentalRequestPort.loadByStatus(RentalRequestStatus.REQUESTED))
                 .thenReturn(List.of(req));
-        when(loadRoomPort.loadById(roomId)).thenReturn(Optional.of(room));
-        when(loadUserPort.loadById(customerId)).thenReturn(Optional.of(user));
+        when(loadRoomPort.loadByIds(any())).thenReturn(List.of(room));
+        when(loadUserPort.loadByIds(any())).thenReturn(List.of(user));
         when(saveDepositPort.save(any())).thenAnswer(inv -> {
             DepositRequest d = inv.getArgument(0);
             return new DepositRequest(
@@ -161,9 +158,6 @@ class PendingRentalRequestSchedulerTest {
                     null, null, null, null, d.getStatus(), Instant.now(), Instant.now());
         });
         when(saveRentalRequestPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        doThrow(new RuntimeException("Email service unavailable"))
-                .when(emailPort)
-                .sendDepositInstruction(any(), any(), any(), any(), any());
 
         assertThatNoException().isThrownBy(() -> scheduler.processPendingRentalRequests());
     }
