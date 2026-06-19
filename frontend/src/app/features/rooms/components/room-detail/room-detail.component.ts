@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy, HostListener, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -308,6 +310,7 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private branchService = inject(BranchService);
   private cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   scaleFactor = 1;
   branchDetail: BranchDetail | null = null;
@@ -372,7 +375,13 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onResize();
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.currentUser$.pipe(
+      map(u => !!u),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      this.isAuthenticated = v;
+      this.cdr.detectChanges();
+    });
     this.calculateScale();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
@@ -387,7 +396,6 @@ export class RoomDetailComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      this.isAuthenticated = false;
       this.isUserMenuOpen = false;
       this.router.navigate(['/login']);
     });

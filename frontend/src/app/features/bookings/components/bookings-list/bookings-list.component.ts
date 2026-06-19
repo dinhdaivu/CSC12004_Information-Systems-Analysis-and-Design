@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -324,6 +326,7 @@ interface BookingRecord {
   `
 })
 export class BookingsListComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   isUserMenuOpen = false;
   isAuthenticated = false;
   scaleFactor = 1;
@@ -355,7 +358,13 @@ export class BookingsListComponent implements OnInit {
   
   ngOnInit(): void {
     this.onResize();
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authService.currentUser$.pipe(
+      map(u => !!u),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(v => {
+      this.isAuthenticated = v;
+      this.cdr.detectChanges();
+    });
     this.loadBookings();
   }
 

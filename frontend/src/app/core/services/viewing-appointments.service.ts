@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -37,7 +37,6 @@ export type ViewingAppointmentsResponse = {
 };
 
 export type FetchViewingAppointmentsParams = {
-  token: string;
   page?: number;
   limit?: number;
   month?: string;
@@ -46,7 +45,6 @@ export type FetchViewingAppointmentsParams = {
 };
 
 export type UpdateOutcomeParams = {
-  token: string;
   appointmentId: string;
   status: "scheduled" | "cancelled";
   resultNote: string;
@@ -68,7 +66,7 @@ export class ViewingAppointmentsService {
   fetchViewingAppointments(
     params: FetchViewingAppointmentsParams,
   ): Observable<ViewingAppointmentsResponse> {
-    const { token, page = 1, limit = 5, month, branch, status } = params;
+    const { page = 1, limit = 5, month, branch, status } = params;
 
     let httpParams = new HttpParams()
       .set("page", String(page))
@@ -86,34 +84,20 @@ export class ViewingAppointmentsService {
       httpParams = httpParams.set("status", status);
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
     return this.http.get<ViewingAppointmentsResponse>(this.apiUrl, {
       params: httpParams,
-      headers,
     });
   }
 
   updateOutcome(
     params: UpdateOutcomeParams,
   ): Observable<ViewingAppointmentRecord> {
-    const { token, appointmentId, status, resultNote } = params;
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    });
+    const { appointmentId, status, resultNote } = params;
 
     return this.http
       .patch<UpdateOutcomeResponse>(
         `${this.apiUrl}/${appointmentId}/outcome`,
-        {
-          status,
-          resultNote,
-        },
-        { headers },
+        { status, resultNote },
       )
       .pipe(map((response) => response.data));
   }

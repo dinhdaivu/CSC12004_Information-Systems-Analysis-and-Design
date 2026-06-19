@@ -148,11 +148,14 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
-    public ResponseEntity<ApiResponse<Void>> verifyEmail(
-            @Valid @RequestBody VerifyEmailRequest req) {
-        verifyEmailUseCase.verifyEmail(
+    public ResponseEntity<ApiResponse<AuthResponse>> verifyEmail(
+            @Valid @RequestBody VerifyEmailRequest req,
+            HttpServletResponse response) {
+        VerifyEmailUseCase.VerifyEmailResult result = verifyEmailUseCase.verifyEmail(
                 new VerifyEmailUseCase.VerifyEmailCommand(req.getEmail(), req.getCode()));
-        return ResponseEntity.ok(ApiResponseBuilder.success(null, "Email verified successfully"));
+        response.addHeader(HttpHeaders.SET_COOKIE, buildAuthCookie(result.token()).toString());
+        AuthResponse data = new AuthResponse(result.token(), UserResponse.from(result.user()));
+        return ResponseEntity.ok(ApiResponseBuilder.success(data, "Email verified successfully"));
     }
 
     private ResponseCookie buildAuthCookie(String token) {

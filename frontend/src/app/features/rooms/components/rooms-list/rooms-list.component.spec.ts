@@ -29,7 +29,7 @@ describe('RoomsListComponent', () => {
   beforeEach(async () => {
     routerSpy = { navigate: jest.fn() } as any;
 
-    const authSpy = { isAuthenticated: jest.fn().mockReturnValue(true), logout: jest.fn().mockReturnValue(of({})) };
+    const authSpy = { isAuthenticated: jest.fn().mockReturnValue(true), logout: jest.fn().mockReturnValue(of({})), currentUser$: of(null) };
     const branchSpy = { getBranches: jest.fn().mockReturnValue(of(mockBranches)) };
     const zoneSpy = { getZones: jest.fn().mockReturnValue(of(mockZones)) };
     const roomSpy = { getRooms: jest.fn().mockReturnValue(of(mockRooms)) };

@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RentalRequestService } from '@core/services/rental-request.service';
 import { BranchService } from '@core/services/branch.service';
+import { AuthService } from '@core/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
@@ -51,6 +52,15 @@ describe('NewBookingComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             queryParams: of({ roomId: 'test-room-id-123' }) // Giả lập có roomId từ URL
+          }
+        },
+        {
+          provide: AuthService,
+          useValue: {
+            currentUser$: of(null),
+            isAuthenticated: jest.fn().mockReturnValue(false),
+            getCurrentUser: jest.fn().mockReturnValue(null),
+            logout: jest.fn().mockReturnValue(of(void 0))
           }
         },
         TranslateService,

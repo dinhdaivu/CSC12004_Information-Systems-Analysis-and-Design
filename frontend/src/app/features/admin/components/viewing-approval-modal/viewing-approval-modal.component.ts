@@ -196,7 +196,6 @@ export class ViewingApprovalModalComponent implements OnInit, OnDestroy {
   private readonly viewingAppointmentsService = inject(
     ViewingAppointmentsService,
   );
-  private readonly authToken = localStorage.getItem("auth_token") ?? "";
 
   @Input({ required: true }) appointment!: ViewingApprovalModalAppointment;
 
@@ -261,17 +260,11 @@ export class ViewingApprovalModalComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.authToken) {
-      this.errorMessage = "Missing auth token. Please sign in again.";
-      return;
-    }
-
     this.isSubmitting = true;
     this.errorMessage = null;
 
     this.viewingAppointmentsService
       .updateOutcome({
-        token: this.authToken,
         appointmentId: this.appointment.id,
         status,
         resultNote,

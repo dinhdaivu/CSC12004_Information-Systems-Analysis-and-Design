@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { catchError, of } from 'rxjs';
+import { catchError, of, timeout } from 'rxjs';
 import { AuthService } from '@core/services/auth.service';
 import { LanguageService } from '@core/i18n/language.service';
 import { ToastComponent } from '@shared/components/toast/toast.component';
@@ -18,11 +18,12 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.languageService.initializeLanguage();
 
-    if (!this.authService.getToken()) {
+    if (!this.authService.isAuthenticated()) {
       return;
     }
 
     this.authService.loadCurrentUser().pipe(
+      timeout(5000),
       catchError(() => {
         this.authService.clearSession();
         return of(null);

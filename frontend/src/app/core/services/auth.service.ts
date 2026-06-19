@@ -24,7 +24,6 @@ export class AuthService {
   private readonly router = inject(Router);
 
   private readonly apiUrl = `${environment.apiUrl}/auth`;
-  private readonly tokenKey = 'auth_token';
   private readonly userKey = 'auth_user';
   private readonly pendingRegistrationEmailKey = 'pending_registration_email';
   private readonly currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
@@ -34,7 +33,7 @@ export class AuthService {
   login(payload: LoginRequest): Observable<User> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload).pipe(
       map((response) => response.data),
-      tap(({ token, user }) => this.setSession(token, user)),
+      tap(({ user }) => this.setStoredUser(user)),
       map(({ user }) => user)
     );
   }
@@ -76,11 +75,11 @@ export class AuthService {
   verifyRegistrationCode(payload: VerifyEmailRequest): Observable<User> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/verify-email`, payload).pipe(
       map((response) => response.data),
-      tap(({ token, user }) => this.setSession(token, user)),
-      map(({ user }) => user),
-      tap(() => {
+      tap(({ user }) => {
+        this.setStoredUser(user);
         this.clearPendingRegistrationEmail();
-      })
+      }),
+      map(({ user }) => user)
     );
   }
 
@@ -112,20 +111,8 @@ export class AuthService {
     );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
-  }
-
-  clearToken(): void {
-    localStorage.removeItem(this.tokenKey);
-  }
-
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.currentUserSubject.value;
   }
 
   getCurrentUser(): User | null {
@@ -150,14 +137,9 @@ export class AuthService {
   }
 
   clearSession(): void {
-    this.clearToken();
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem('auth_token');
     this.currentUserSubject.next(null);
-  }
-
-  private setSession(token: string, user: User): void {
-    this.setToken(token);
-    this.setStoredUser(user);
   }
 
   private setStoredUser(user: User): void {
